@@ -37,7 +37,7 @@ const WelCome = ({navigation} : WelComeScreenProps) => {
                         <Text style={[styles.title,{color:colors.title}]}>Morning begins with Ombe coffee</Text>
                         <View style={{marginBottom:10}}>
                             <SocialBtn
-                                text='Login with email'
+                                text='Login with aadhaar'
                                 color={COLORS.primary}
                                 textcolor={COLORS.card}
                                 rounded

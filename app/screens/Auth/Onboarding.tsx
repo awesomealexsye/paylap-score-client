@@ -11,11 +11,11 @@ import Button from '../../components/Button/Button';
 
 const DATA = [
     {
-        title: "Let's meet our summer coffee drinks",
+        title: "do meet our summer coffee drinks",
         subtitle:"orem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
     },
     {
-        title: "Let's meet our summer coffee drinks",
+        title: "do meet our summer coffee drinks",
         subtitle:"orem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
     },
     {
