@@ -50,7 +50,7 @@ const SignUp = ({navigation} : SignUpScreenProps) => {
                         <Text style={[styles.title2, {color: colors.title }]}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</Text>
                     </View>
                     <View style={[GlobalStyleSheet.container,{padding:0}]}>
-                        <Text style={[styles.title3,{color:'#8A8A8A'}]}>Username</Text>
+                        <Text style={[styles.title3,{color:'#8A8A8A'}]}>Your Name</Text>
                     </View>
                     <View style={{ marginBottom: 20, marginTop: 10 }}>
                         <Input
@@ -59,11 +59,11 @@ const SignUp = ({navigation} : SignUpScreenProps) => {
                             onChangeText={(value) => console.log(value)}
                             isFocused={isFocused}
                             inputBorder
-                            defaultValue='williamsmith'
+                            defaultValue=''
                         />
                     </View>
                     <View style={[GlobalStyleSheet.container,{padding:0}]}>
-                        <Text style={[styles.title3,{color:'#8A8A8A'}]}>Email</Text>
+                        <Text style={[styles.title3,{color:'#8A8A8A'}]}>Your Email</Text>
                     </View>
                     <View style={{ marginBottom: 20,marginTop:10 }}>
                         <Input
@@ -73,14 +73,15 @@ const SignUp = ({navigation} : SignUpScreenProps) => {
                             onChangeText={(value) => console.log(value)}
                             isFocused={isFocused2}
                             inputBorder
-                            defaultValue='williamsmithy@mail.com'
+                            defaultValue=''
                         />
                     </View>
                     <View style={[GlobalStyleSheet.container,{padding:0}]}>
-                        <Text style={[styles.title3,{color:'#8A8A8A'}]}>Password</Text>
+                        <Text style={[styles.title3,{color:'#8A8A8A'}]}>Phone Number</Text>
                     </View>
                     <View style={{ marginBottom: 10,marginTop:10 }}>
                         <Input
+                            keyboardType="numeric"
                             onFocus={() => setisFocused3(true)}
                             onBlur={() => setisFocused3(false)}
                             backround={colors.card}
@@ -88,15 +89,15 @@ const SignUp = ({navigation} : SignUpScreenProps) => {
                             isFocused={isFocused3}
                             type={'password'}
                             inputBorder
-                            defaultValue='williamsmithy@mail.com'
+                            defaultValue=''
                         />
                     </View>
                 </View>
                 <View style={{marginTop:30}}>
                     <Button
-                        title={"Sign Up"}
+                        title={"Send OTP"}
                         color={'#606060'}
-                        onPress={() => navigation.navigate('SingIn')}
+                        onPress={() => navigation.navigate('OtpVerify')}
                         style={{borderRadius:52}}
                     />
                     <View style={{marginTop:10}}>

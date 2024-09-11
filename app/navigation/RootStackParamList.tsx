@@ -10,6 +10,8 @@ export type RootStackParamList = {
     WelCome: undefined;
     SignUp: undefined;
     SingIn: undefined;
+    MobileSignIn: undefined;
+    OtpVerify: undefined;
     Onboarding: undefined;
     Login: undefined;
     Register: undefined;

@@ -68,7 +68,7 @@ const MenuItems = [
         id:"9",
         icon: IMAGES.logout,
         name: "Logout",
-        navigate: 'SingIn',
+        navigate: 'MobileSignIn',
     },
 ]
 
