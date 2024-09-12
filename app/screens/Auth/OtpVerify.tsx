@@ -8,17 +8,39 @@ import { RootStackParamList } from '../../navigation/RootStackParamList'
 import Input from '../../components/Input/Input'
 import { IMAGES } from '../../constants/Images'
 import Button from '../../components/Button/Button'
+import { postWithoutToken } from '../../lib/API';
+import { CommonMessage } from '../../lib/Messages';
 
 
 type SingInScreenProps = StackScreenProps<RootStackParamList, 'OtpVerify'>;
 
-const OtpVerify = ({navigation} : SingInScreenProps) => {
+const OtpVerify = ({navigation,route} : SingInScreenProps) => {
+    const {mobile} = route.params;
+    console.log("mobile",mobile);
 
     const theme = useTheme();
     const { colors }: { colors : any} = theme;
 
     const [isFocused , setisFocused] = useState(false);
     const [isFocused2 , setisFocused2] = useState(false);
+    const [otp, setOtp] = useState("");
+
+    const verifyOtp = async() => {
+        console.log(otp);
+        if(otp.length == 4){
+            const res:any =  await postWithoutToken("api/auth/otp-verify", { mobile,otp })
+            if(res != null){
+                 if(res.status){
+                    navigation.navigate('DrawerNavigation',{screen : 'Home'});
+                 }else{
+                     CommonMessage(res.message)
+                 }
+            }
+        }else{
+            CommonMessage("OTP Lenth Must be 4 Digit")
+        }
+       
+    }
 
   return (
     <SafeAreaView style={{flex:1,backgroundColor:colors.card,}}>
@@ -43,7 +65,7 @@ const OtpVerify = ({navigation} : SingInScreenProps) => {
                             keyboardType="numeric"
                             onFocus={() => setisFocused(true)}
                             onBlur={() => setisFocused(false)}
-                            onChangeText={(value) => console.log(value)}
+                            onChangeText={(value) => setOtp(value)}
                             isFocused={isFocused}
                             inputBorder
                             defaultValue=''
@@ -54,7 +76,7 @@ const OtpVerify = ({navigation} : SingInScreenProps) => {
                 <View style={{marginTop:30}}>
                     <Button
                         title={"Verify"}
-                        onPress={() => navigation.navigate('DrawerNavigation',{screen : 'Home'} )}
+                        onPress={verifyOtp}
                         style={{borderRadius:52}}
                     />
                     

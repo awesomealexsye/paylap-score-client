@@ -11,7 +11,7 @@ export type RootStackParamList = {
     SignUp: undefined;
     SingIn: undefined;
     MobileSignIn: undefined;
-    OtpVerify: undefined;
+    OtpVerify: {mobile:string};
     Onboarding: undefined;
     Login: undefined;
     Register: undefined;
