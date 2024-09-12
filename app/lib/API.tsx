@@ -5,8 +5,11 @@ import { CommonMessage } from './Messages';
 const postWithoutToken = async (uri: string, data: object) => {
 
     let api_url = `${CONFIG.APP_URL}/${uri}`;
+    console.log('checking',api_url,data)
     try {
         const res = await axios.post(api_url, data); // Sending POST request
+        console.log('ress',res)
+
         if(res.status == 200){
             if(res.data.status == false){
                 CommonMessage(res.data.message);
@@ -14,10 +17,10 @@ const postWithoutToken = async (uri: string, data: object) => {
                 return res.data;
             }
         }else{
-            CommonMessage("Something went Wrong");
+            CommonMessage(`Something went Wrong, Status:${res.status}`);
         }
     } catch (error) {
-        CommonMessage("Error sending data");
+        CommonMessage("Internal Server Error");
     }
 
     return null;
