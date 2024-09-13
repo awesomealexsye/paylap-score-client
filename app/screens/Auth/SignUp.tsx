@@ -9,8 +9,8 @@ import { RootStackParamList } from '../../navigation/RootStackParamList'
 import Input from '../../components/Input/Input'
 import { IMAGES } from '../../constants/Images'
 import Button from '../../components/Button/Button'
-import { postWithoutToken } from '../../lib/API'
-import { CommonMessage } from '../../lib/Messages'
+import { ApiService } from '../../lib/ApiService'
+import { MessagesService } from '../../lib/MessagesService'
 
 
 type SignUpScreenProps = StackScreenProps<RootStackParamList, 'SignUp'>;
@@ -30,20 +30,20 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
     const sentOtp = async () => {
         console.log(name, email, mobile);
         if (name == '' || name.length < 2) {
-            CommonMessage("Invalid Name")
+            MessagesService.commonMessage("Invalid Name")
         } else if (email == '' || email.length < 2) {
-            CommonMessage("Invalid Email")
+            MessagesService.commonMessage("Invalid Email")
         }
         else if (mobile.length != 10) {
-            CommonMessage("Invalid Mobile Number")
+            MessagesService.commonMessage("Invalid Mobile Number")
         }
         else {
-            const res: any = await postWithoutToken("api/auth/register", { name, email, mobile })
+            const res: any = await ApiService.postWithoutToken("api/auth/register", { name, email, mobile })
             if (res != null) {
                 if (res.status) {
                     navigation.navigate("OtpVerify", { mobile: mobile })
                 }
-                CommonMessage(res.message)
+                MessagesService.commonMessage(res.message)
             }
 
         }

@@ -7,6 +7,7 @@ import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { COLORS,FONTS, SIZES } from '../../constants/theme';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import Button from '../../components/Button/Button';
+import StorageService from '../../lib/StorageService';
 
 
 const DATA = [
@@ -26,7 +27,18 @@ const DATA = [
 
 type OnboardingScreenProps = StackScreenProps<RootStackParamList, 'Onboarding'>;
 
-const Onboarding = ({navigation} : OnboardingScreenProps) => {
+const Onboarding =  ({navigation} : OnboardingScreenProps) => {
+    // const is_login =  StorageService.isLoggedIn().then((res)=>console.log(res))
+    // if(is_login){
+        // navigation.replace("DrawerNavigation",{screen:'Home'});
+    // }
+    StorageService.isLoggedIn().then((is_login)=>{
+        console.log(is_login)
+        if(is_login){
+            navigation.replace("DrawerNavigation",{screen:'Home'});
+        }
+    })
+
 
     const theme = useTheme();
     const {colors}:{colors : any} = theme;
