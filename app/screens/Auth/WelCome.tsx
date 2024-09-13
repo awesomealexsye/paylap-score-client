@@ -37,32 +37,23 @@ const WelCome = ({navigation} : WelComeScreenProps) => {
                         <Text style={[styles.title,{color:colors.title}]}>Morning begins with Ombe coffee</Text>
                         <View style={{marginBottom:10}}>
                             <SocialBtn
-                                text='Login with aadhaar'
+                                text='Login with Mobile'
                                 color={COLORS.primary}
                                 textcolor={COLORS.card}
                                 rounded
                                 icon={<FontAwesome name='envelope' size={22} color={COLORS.card}/>}
                                 border={COLORS.primary}
-                                onpress={() => navigation.navigate('SingIn')}
+                                onpress={() => navigation.navigate('MobileSignIn')}
                             />
                         </View>
                         <View style={{marginBottom:10}}>
                             <SocialBtn
-                                text='Login with facebook'
+                                text='Sign Up For Store'
                                 color={'#376AED'}
                                 textcolor={COLORS.card}
                                 rounded
                                 icon={<Ionicons name='logo-facebook' size={22} color={COLORS.card}/>}
                                 border={'#376AED'}
-                            />
-                        </View>
-                        <View>
-                            <SocialBtn
-                                text='Login with Google'
-                                color={COLORS.card}
-                                textcolor={COLORS.title}
-                                rounded
-                                icon={<Image source={IMAGES.google2} style={{resizeMode:'contain',height:22,width:22}}/>}
                             />
                         </View>
                     </View>

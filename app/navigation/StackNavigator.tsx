@@ -56,6 +56,8 @@ import Tabs from '../screens/Components/Tabs';
 import Tables from '../screens/Components/Tables';
 import Toggles from '../screens/Components/Toggles';
 import AddPayment from '../screens/Payment/AddPayment';
+import MobileSignIn from '../screens/Auth/MobileSignIn';
+import OtpVerify from '../screens/Auth/OtpVerify';
 
 
 
@@ -78,7 +80,9 @@ const StackNavigator = () => {
 				<Stack.Screen name="Onboarding" component={Onboarding} />
 				<Stack.Screen name="WelCome" component={WelCome} />
 				<Stack.Screen name="SignUp" component={SignUp} />
-				<Stack.Screen name="SingIn" component={SingIn} />
+				{/* <Stack.Screen name="SingIn" component={SingIn} /> */}
+				<Stack.Screen name="MobileSignIn" component={MobileSignIn} />
+				<Stack.Screen name="OtpVerify" component={OtpVerify} />
 				<Stack.Screen name="ForgotPassword" component={ForgotPassword} />
 				<Stack.Screen name="OTPAuthentication" component={OTPAuthentication} />
 				<Stack.Screen name="NewPassword" component={NewPassword} />
