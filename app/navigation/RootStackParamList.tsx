@@ -48,6 +48,7 @@ export type RootStackParamList = {
     Checkout: undefined;
     Addcard: undefined;
     Payment: undefined;
+    AddPayment:undefined;
     AddDeliveryAddress: undefined;
     Myorder: undefined;
     Notification: undefined;

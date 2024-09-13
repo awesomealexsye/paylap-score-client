@@ -55,6 +55,7 @@ import SwipeableScreen from '../screens/Components/Swipeable';
 import Tabs from '../screens/Components/Tabs';
 import Tables from '../screens/Components/Tables';
 import Toggles from '../screens/Components/Toggles';
+import AddPayment from '../screens/Payment/AddPayment';
 
 
 
@@ -90,6 +91,7 @@ const StackNavigator = () => {
 				<Stack.Screen name="DeliveryAddress" component={DeliveryAddress} />
 				<Stack.Screen name="AddDeliveryAddress" component={AddDeliveryAddress} />
 				<Stack.Screen name="Payment" component={Payment} />
+				<Stack.Screen name="AddPayment" component={AddPayment} />
 				<Stack.Screen name="Addcard" component={Addcard} />
 				<Stack.Screen name="Checkout" component={Checkout} />
 				<Stack.Screen name="Myorder" component={Myorder} />
