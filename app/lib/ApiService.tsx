@@ -8,6 +8,7 @@ import StorageService from './StorageService';
 const ApiService = {
     async postWithoutToken(uri: string, data: object) {
         let api_url = `${CONFIG.APP_URL}/${uri}`;
+        console.log(api_url,data);
         try {
             const res = await axios.post(api_url, data); // Sending POST request
 

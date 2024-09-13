@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "PaylapScore",
-    "slug": "paylap-cloud",
+    "slug": "paylap-score",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -46,7 +46,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "df01eda5-b046-4c48-9f97-6ea0e3e42927"
+        "projectId": "4073ab77-f309-4ef8-bcf8-fdb8042bdfe9"
       }
     },
     "plugins": [
@@ -64,6 +64,7 @@
           "initialOrientation": "DEFAULT"
         }
       ]
-    ]
+    ],
+    "owner": "alexsye1999"
   }
 }
