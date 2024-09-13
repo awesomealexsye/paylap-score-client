@@ -8,6 +8,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import Header from '../../layout/Header';
 import axios from 'axios';
+import { ApiService } from '../../lib/ApiService';
 
 
 type ProfileScreenProps = StackScreenProps<RootStackParamList, 'Profile'>;
@@ -17,27 +18,9 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
     const [profile, setProfile] = React.useState<any>({});
 
     useEffect(() => {
-        const fetchProfileData = async () => {
-            try {
-
-                const response = await axios.post('https://paylapscore.com/api/user/info', {
-                    user_id: '1',
-                    auth_key: 'OTYyNTQ0MjcyNTY2ZGRjOTgxZWFkMzU='
-                }, {
-                    headers: {
-                        'Authorization': 'Bearer 2|PpJsg67XPa75M1J8kZNXi15rAryDT91le76vWoZAeaa3a7b9'
-                    }
-                });
-                const profile = response.data;
-
-                console.log("profile:", profile);
-                setProfile(profile)
-                // Do something with the profile data
-            } catch (error) {
-                console.error(error);
-            }
-        };
-        fetchProfileData();
+        ApiService.postWithToken("api/user/info", {}).then((res: any) => {
+            setProfile(res);
+        });
     }, []);
 
 
@@ -57,7 +40,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                     >
                         <Image
                             style={{ height: 104, width: 104, }}
-                            source={{uri:profile?.data?.profile_image}}
+                            source={{ uri: profile?.data?.profile_image }}
                         />
                     </View>
                     <Text style={{ ...FONTS.fontSemiBold, fontSize: 28, color: colors.title }}>{profile?.data?.name}</Text>
