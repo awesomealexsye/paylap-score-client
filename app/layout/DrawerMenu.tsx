@@ -136,7 +136,6 @@ const DrawerMenu = () => {
                                 activeOpacity={0.8}
                                 onPress={() => {
                                     data.navigate === "DrawerNavigation" ? dispatch(closeDrawer()) : dispatch(closeDrawer());
-                                    console.log("nav::", data.navigate);
                                     if (data.name == "Logout") {
                                         handleLogout();
                                     } else {
