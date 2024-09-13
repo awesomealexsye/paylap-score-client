@@ -8,8 +8,8 @@ import { RootStackParamList } from '../../navigation/RootStackParamList'
 import Input from '../../components/Input/Input'
 import { IMAGES } from '../../constants/Images'
 import Button from '../../components/Button/Button'
-import { postWithoutToken } from '../../lib/API';
-import { CommonMessage } from '../../lib/Messages';
+import { ApiService } from '../../lib/ApiService';
+import { MessagesService } from '../../lib/MessagesService';
 
 
 type SingInScreenProps = StackScreenProps<RootStackParamList, 'MobileSignIn'>;
@@ -25,17 +25,16 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
     const [mobile, setMobile] = useState("");
 
     const sentOtp = async() => {
-        console.log(mobile);
         if(mobile.length == 10){
-            const res:any =  await postWithoutToken("api/auth/login", { mobile: mobile })
+            const res:any =  await ApiService.postWithoutToken("api/auth/login", { mobile: mobile })
             if(res != null){
                  if(res.status){
                      navigation.navigate("OtpVerify",{mobile:mobile})
                  }
-                 CommonMessage(res.message)
+                 MessagesService.commonMessage(res.message)
             }
         }else{
-            CommonMessage("Invalid Mobile Number")
+            MessagesService.commonMessage("Invalid Mobile Number")
 
 
         }

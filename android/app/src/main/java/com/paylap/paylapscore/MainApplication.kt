@@ -1,4 +1,4 @@
-package com.w3itexperts.ombe
+package com.paylap.paylapscore
 
 import android.app.Application
 import android.content.res.Configuration
