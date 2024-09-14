@@ -1,21 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
 import { COLORS, FONTS } from '../../constants/theme';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
-import Button from '../Button/Button';
-import Input from '../Input/Input';
+import Button from '../../components/Button/Button';
+import Input from '../../components/Input/Input';
+import { MessagesService } from '../../lib/MessagesService';
 
 type Props = {
     sheetRef: any;
     value: string;
 }
 
-const LoginSheet = ({ sheetRef, value }: Props) => {
+const AadhaarOtp = ({ sheetRef, value }: Props) => {
 
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
+    const [otp, setOtp] = useState("");
+
+    const verifyOtp = () => {
+        if (otp.length >= 4) {
+            console.log("verify otp", otp)
+        } else {
+            MessagesService.commonMessage("Invalid OTP");
+        }
+    }
 
     return (
         <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
@@ -30,7 +40,7 @@ const LoginSheet = ({ sheetRef, value }: Props) => {
                         borderBottomColor: colors.border,
                     }}
                 >
-                    <Text style={{ flex: 1, ...FONTS.h6, color: colors.title }}>Sign In</Text>
+                    <Text style={{ flex: 1, ...FONTS.h6, color: colors.title }}>Verify OTP</Text>
                     <TouchableOpacity
                         onPress={() => sheetRef.current.close()}
                         style={{
@@ -47,25 +57,16 @@ const LoginSheet = ({ sheetRef, value }: Props) => {
                     </TouchableOpacity>
                 </View>
                 <View style={{ marginBottom: 15 }}>
-                    <Text style={{ ...FONTS.font, color: colors.title, marginBottom: 4 }}>Username</Text>
+                    <Text style={{ ...FONTS.font, color: colors.title, marginBottom: 4 }}>Your OTP</Text>
                     <Input
                         //value={''}    
-                        placeholder={'Type Username Here'}
-                        onChangeText={(value) => console.log(value)}
-                    />
-                </View>
-                <View style={{ marginBottom: 25 }}>
-                    <Text style={{ ...FONTS.font, color: colors.title, marginBottom: 4 }}>Password</Text>
-                    <Input
-                        //value={''}   
-                        type="password"
-                        placeholder={'Type Password Here'}
-                        onChangeText={(value) => console.log(value)}
+                        placeholder={'Enter OTP'}
+                        onChangeText={(value) => setOtp(value)}
                     />
                 </View>
                 <Button
-                    onPress={() => { }}
-                    title={'Login'}
+                    onPress={verifyOtp}
+                    title={'Verify OTP'}
                     text={theme.dark ? COLORS.title : COLORS.card}
                     color={colors.title}
                 />
@@ -76,4 +77,4 @@ const LoginSheet = ({ sheetRef, value }: Props) => {
 
 
 
-export default LoginSheet;
+export default AadhaarOtp;

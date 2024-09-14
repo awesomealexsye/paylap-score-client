@@ -19,10 +19,11 @@ const MenuItems = [
     },
     {
         id: "1",
-        icon: IMAGES.producta,
-        name: "Products",
-        navigate: "Products",
+        icon: IMAGES.user3,
+        name: "User Kyc",
+        navigate: 'UserKyc',
     },
+
     {
         id: "2",
         icon: IMAGES.components,
@@ -31,52 +32,23 @@ const MenuItems = [
     },
     {
         id: "3",
-        icon: IMAGES.star,
-        name: "Featured",
-        navigate: "Writereview",
-    },
-    {
-        id: "4",
-        icon: IMAGES.heart,
-        name: "Wishlist",
-        navigate: "Wishlist",
-    },
-    {
-        id: "5",
-        icon: IMAGES.order,
-        name: "My Orders",
-        navigate: 'Myorder',
-    },
-    {
-        id: "6",
-        icon: IMAGES.shopping,
-        name: "My Cart",
-        navigate: 'MyCart',
-    },
-    {
-        id: "7",
         icon: IMAGES.chat,
         name: "Chat List",
         navigate: 'Chat',
     },
     {
-        id: "8",
+        id: "4",
         icon: IMAGES.user3,
         name: "Profile",
         navigate: "Profile",
     },
     {
-        id: "9",
+        id: "5",
         icon: IMAGES.logout,
         name: "Logout",
         navigate: 'MobileSignIn',
     },
-    {
-        id: "10",
-        icon: IMAGES.logout,
-        name: "UserKyc",
-        navigate: 'UserKyc',
-    },
+
 ]
 
 const DrawerMenu = () => {
