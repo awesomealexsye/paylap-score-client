@@ -9,10 +9,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { addTowishList } from '../../redux/reducer/wishListReducer';
-import ImageSwiper from '../../components/ImageSwiper';
-import Cardstyle4 from '../../components/Card/Cardstyle4';
 import { openDrawer } from '../../redux/actions/drawerAction';
-import { white } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 
 
@@ -29,13 +27,13 @@ interface Customer {
   }
   
 const customersData: Customer[] = [
-    { id: '1', name: 'Anup Gujjar', amount: '₹71,600', lastInteraction: '1 week ago',type:"credit" },
-    { id: '2', name: 'Mukeem Bhaiya', amount: '₹10,000', lastInteraction: '2 weeks ago', type: "credit" },
-    { id: '3', name: 'Vakil Home', amount: '₹400', lastInteraction: '3 weeks ago', type: "credit" },
-    { id: '4', name: 'Ajay College', amount: '₹0', lastInteraction: '1 month ago', type: "credit" },
-    { id: '5', name: 'Rashik Khan Parvana', amount: '₹0', lastInteraction: '1 month ago', type: "credit" },
-    { id: '6', name: 'Sunil Sir', amount: '₹6', lastInteraction: '1 month ago', type: "credit" },
-    { id: '7', name: 'Talib Khan', amount: '₹3,000', lastInteraction: '1 month ago', type: "credit" },
+    { id: '1', name: 'Anup Gujjar', amount: '₹ 71,600', lastInteraction: '1 week ago',type:"Debit" },
+    { id: '2', name: 'Mukeem Bhaiya', amount: '₹ 10,000', lastInteraction: '2 weeks ago', type: "Credit" },
+    { id: '3', name: 'Vakil Home', amount: '₹ 400', lastInteraction: '3 weeks ago', type: "Credit" },
+    { id: '4', name: 'Ajay College', amount: '₹ 0', lastInteraction: '1 month ago', type: "Credit" },
+    { id: '5', name: 'Rashik Khan Parvana', amount: '₹0', lastInteraction: '1 month ago', type: "Credit" },
+    { id: '6', name: 'Sunil Sir', amount: '₹ 6', lastInteraction: '1 month ago', type: "Credit" },
+    { id: '7', name: 'Talib Khan', amount: '₹ 3,000', lastInteraction: '1 month ago', type: "Credit" },
   ];
 
 
@@ -63,6 +61,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
     const theme = useTheme();
     const { colors }: { colors: any; } = theme;
+    
 
     const addItemToWishList = (data: any) => {
         dispatch(addTowishList(data));
@@ -70,7 +69,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
 
     const renderCustomer = ({ item }: { item: Customer }) => (
-        <View style={styles.customerItem}>
+        <View style={[styles.customerItem, {backgroundColor: colors.card}]}>
           <View style={{}}>
             <View style={{flexDirection:'row'}}>
                 <Image
@@ -78,7 +77,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                         source={IMAGES.small6}
                     />
                     <View style={{marginLeft:14}}>
-                        <Text style={styles.customerName}>{item.name}</Text>
+                        <Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{item.name}</Text>
                         <Text style={styles.lastInteraction}>{item.lastInteraction}</Text>
                     </View>
                    
@@ -87,8 +86,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
           </View>
 
           <View style={{flexDirection:"column", alignItems:"center" ,position:"relative"}}> 
-                <Text style={item.amount === '₹0' ? styles.amountZero : styles.amount}>{item.amount}</Text>
-                <Text style={styles.type}>{item.type}</Text>
+                <Text style={item.type === 'Credit' ? { color: "green", fontSize: 18, fontWeight: "900" } : {fontSize:18,fontWeight:"900",color:"red"}}>{item.amount}</Text>
+                <Text style={[styles.type,{color:colors.title}]}>{item.type}</Text>
           </View>
           
         </View>
@@ -126,7 +125,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                             height:13,
                                             width:13,
                                             borderRadius:13,
-                                            backgroundColor:COLORS.primary
+                                            backgroundColor: colors.primary
                                         }}
                                     />
                                 </View>
@@ -161,7 +160,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
             <View style={{flex:1,alignItems:'center'}} >
             <View style={{
-                  height: 200, 
+                  height: 140, 
                   width: 400, 
                   top:20,
                   backgroundColor: COLORS.primary, 
@@ -176,19 +175,22 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                   elevation: 8, flexDirection :'column'}}>
                 
 
-        <View style={{width:400, flexDirection:'row', marginTop:22, rowGap:4,justifyContent:'center'}}>
-            <View style={{flex:1, alignItems:'center',justifyContent:'center'}}>
-          <Text style={{ ...FONTS.fontRegular, fontSize: SIZES.h3, color: COLORS.primaryLight }}>Credit Amt.</Text>
-          <Text style={{ ...FONTS.fontRegular, fontSize: SIZES.h2, color: COLORS.secondary }}>₹0</Text>
+        <View style={{width:400, flexDirection:'row', marginTop:22, rowGap:4,justifyContent:'center',borderBlockColor:colors.dark,borderBottomWidth:1 ,padding:10}}>
+            <View style={{flex:1, alignItems:'center',justifyContent:'center', borderRightWidth:1,borderRightColor:colors.dark}}>
+          <Text style={{ ...FONTS.fontBold, fontSize: SIZES.h6, color: COLORS.primaryLight }}>Credit Amt.</Text>
+          <Text style={{ ...FONTS.fontRegular, fontSize: SIZES.h3, color: COLORS.secondary }}>₹0</Text>
         </View>
         <View style={{flex:1, alignItems:'center',justifyContent:"center"}}>
-          <Text style={{ ...FONTS.fontRegular, fontSize:SIZES.h3, color: COLORS.primaryLight }}>Debit Amt.</Text>
-          <Text style={{ ...FONTS.fontRegular, fontSize:SIZES.h2, color: COLORS.danger }}>₹1,43,186</Text>
+          <Text style={{ ...FONTS.fontBold, fontSize:SIZES.h6, color: COLORS.primaryLight }}>Debit Amt.</Text>
+          <Text style={{ ...FONTS.fontRegular, fontSize:SIZES.h3, color: COLORS.danger }}>₹1,43,186</Text>
         </View>
         </View>
                         <View style={{ flex: 1, alignItems: 'center', justifyContent: "center" }}>
                             <TouchableOpacity style={{}}>
-                                <Text style={{}}>VIEW REPORT</Text>
+                                <Text style={{color:colors.title,...FONTS.fontBold,}}>
+                                    VIEW REPORT
+                                    <Feather name='arrow-right' size={16} color={colors.title} />
+                                </Text>
                             </TouchableOpacity>
 
                         </View>
@@ -201,8 +203,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 <View style={[GlobalStyleSheet.container,{padding:0,paddingHorizontal:30,paddingTop:35}]}>
                     <View>
                         <TextInput
-                            placeholder='Search Best items for You'
-                            style={[styles.TextInput, { color: COLORS.title,backgroundColor:'#FAFAFA' }]}
+                            placeholder='Search Customer'
+                            style={[styles.TextInput, { color: colors.title,backgroundColor:colors.card ,...FONTS.fontSemiBold}]}
                             placeholderTextColor={'#929292'}
                         value={searchText}
                         onChangeText={handleSearch} />
@@ -215,7 +217,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 {/* Search box ends */}
 
               
-      <FlatList
+                <FlatList scrollEnabled={false}
                     data={filteredCustomers}
         renderItem={renderCustomer}
         keyExtractor={(item) => item.id}
@@ -306,7 +308,9 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 </View> */}
             </ScrollView>
             <TouchableOpacity style={styles.addButton}>
-                <Text style={styles.addButtonText}>+ Add Customer</Text>
+                <Text style={styles.addButtonText}>
+                    <Feather name='user-plus' size={18} color={'#C9C9C9'} />
+                     Add Customer</Text>
             </TouchableOpacity> 
         </View>
     );
@@ -333,13 +337,13 @@ const styles = StyleSheet.create({
     TextInput:{
         ...FONTS.fontRegular,
         fontSize:16,
-        color:COLORS.title,
+         color:COLORS.title,
         height:60,
         borderRadius:61,
          paddingHorizontal:20,
         paddingLeft:30,
         borderWidth:1,
-        borderColor:'#EBEBEB',
+        //  borderColor:'#EBEBEB',
         backgroundColor:'#FAFAFA',
         marginBottom:10
        
@@ -409,7 +413,7 @@ const styles = StyleSheet.create({
           justifyContent: 'space-between',
           padding: 15,
         
-            backgroundColor: '#FAFAFA',
+            backgroundColor: Colors.white,
             borderRadius: 18,
             shadowColor: "#025135",
             shadowOffset: {
@@ -418,8 +422,10 @@ const styles = StyleSheet.create({
             },
             shadowOpacity: 0.34,
             shadowRadius: 31.27,
-            marginTop:6,
+            marginHorizontal:10,
+            marginVertical:4,
             elevation: 4, 
+            top:4
         },
         customerName: {
           color: COLORS.title,
