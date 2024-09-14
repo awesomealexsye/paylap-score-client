@@ -58,6 +58,7 @@ import Toggles from '../screens/Components/Toggles';
 import AddPayment from '../screens/Payment/AddPayment';
 import MobileSignIn from '../screens/Auth/MobileSignIn';
 import OtpVerify from '../screens/Auth/OtpVerify';
+import UserKyc from '../screens/Profile/UserKyc';
 
 
 
@@ -65,14 +66,14 @@ const Stack = createStackNavigator<RootStackParamList>();
 
 const StackNavigator = () => {
 
-    const theme = useTheme();
+	const theme = useTheme();
 
-    return (
-		<View style={{width : '100%',flex:1}}>
+	return (
+		<View style={{ width: '100%', flex: 1 }}>
 			<Stack.Navigator
 				initialRouteName='Onboarding'
 				screenOptions={{
-					headerShown:false,
+					headerShown: false,
 					cardStyle: { backgroundColor: "transparent" },
 					cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
 				}}
@@ -104,9 +105,10 @@ const StackNavigator = () => {
 				<Stack.Screen name="Rewards" component={Rewards} />
 				<Stack.Screen name="Demo" component={Demo} />
 				<Stack.Screen name="Chat" component={Chat} />
-				 <Stack.Screen name="Singlechat" component={Singlechat} />
-				 <Stack.Screen name="Call" component={Call} /> 
-				 <Stack.Screen name="EditProfile" component={EditProfile} />
+				<Stack.Screen name="Singlechat" component={Singlechat} />
+				<Stack.Screen name="Call" component={Call} />
+				<Stack.Screen name="EditProfile" component={EditProfile} />
+				<Stack.Screen name="UserKyc" component={UserKyc} />
 
 
 				<Stack.Screen name="Components" component={Components} />
@@ -119,10 +121,10 @@ const StackNavigator = () => {
 				<Stack.Screen name="Headers" component={Headers} />
 				<Stack.Screen name="Footers" component={Footers} />
 				<Stack.Screen name="TabStyle1" component={TabStyle1} />
-                <Stack.Screen name="TabStyle2" component={TabStyle2} />
-                <Stack.Screen name="TabStyle3" component={TabStyle3} />
-                <Stack.Screen name="TabStyle4" component={TabStyle4} />
-                <Stack.Screen name="Inputs" component={Inputs} />
+				<Stack.Screen name="TabStyle2" component={TabStyle2} />
+				<Stack.Screen name="TabStyle3" component={TabStyle3} />
+				<Stack.Screen name="TabStyle4" component={TabStyle4} />
+				<Stack.Screen name="Inputs" component={Inputs} />
 				<Stack.Screen name="lists" component={ListScreen} />
 				<Stack.Screen name="Pricings" component={Pricings} />
 				<Stack.Screen name="DividerElements" component={DividerElements} />
@@ -134,7 +136,7 @@ const StackNavigator = () => {
 				<Stack.Screen name="Toggles" component={Toggles} />
 			</Stack.Navigator>
 		</View>
-    )
+	)
 }
 
 export default StackNavigator;

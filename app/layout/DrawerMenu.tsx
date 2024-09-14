@@ -71,6 +71,12 @@ const MenuItems = [
         name: "Logout",
         navigate: 'MobileSignIn',
     },
+    {
+        id: "10",
+        icon: IMAGES.logout,
+        name: "UserKyc",
+        navigate: 'UserKyc',
+    },
 ]
 
 const DrawerMenu = () => {
