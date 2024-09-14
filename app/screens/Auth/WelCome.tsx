@@ -37,7 +37,7 @@ const WelCome = ({navigation} : WelComeScreenProps) => {
                         <Text style={[styles.title,{color:colors.title}]}>Morning begins with Ombe coffee</Text>
                         <View style={{marginBottom:10}}>
                             <SocialBtn
-                                text='Login with Mobile'
+                                text='Register as ShopKeeper'
                                 color={COLORS.primary}
                                 textcolor={COLORS.card}
                                 rounded
@@ -48,7 +48,7 @@ const WelCome = ({navigation} : WelComeScreenProps) => {
                         </View>
                         <View style={{marginBottom:10}}>
                             <SocialBtn
-                                text='Sign Up For Store'
+                                text='Register as User'
                                 color={'#376AED'}
                                 textcolor={COLORS.card}
                                 rounded
