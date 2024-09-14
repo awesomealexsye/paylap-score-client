@@ -30,8 +30,8 @@ export default function App() {
         <SafeAreaView
           style={{
             flex: 1,
-            //paddingTop: Platform.OS === 'android' ? 25 : 0,
-            //backgroundColor:COLORS.primary ,
+            // paddingTop: Platform.OS === 'android' ? 25 : 0,
+            // backgroundColor:COLORS.primary ,
           }}>
             <StatusBar style="dark" />
             <Provider store={store}>
