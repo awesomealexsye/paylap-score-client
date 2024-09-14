@@ -54,6 +54,7 @@ const Input = ({
     keyboardType,
     isFocused,
     inputicon
+    
 }: Props) => {
 
     const [showPass , setShowPass] = useState<boolean>(true);
@@ -63,30 +64,30 @@ const Input = ({
 
     return (
         <View>
-            {icon &&
-                <View
-                    style={[{
-                        position:'absolute',
-                        height:'100%',
-                        width:48,
-                        alignItems:'center',
-                        justifyContent:'center',
-                        borderRightWidth:1,
-                        borderRightColor:COLORS.inputborder,
-                        zIndex:25
-                    },inputBorder && {
-                        borderRightWidth:0,
-                        width:25
-                    },inputicon && {
-                        borderRightWidth:0,
-                        width:48,
-                        paddingLeft:20,
-                        zIndex:25
-                    }]}
-                >
-                    {icon}
-                </View>
-            }
+                {icon &&
+                    <View
+                        style={[{
+                            position:'absolute',
+                            height:'100%',
+                            width:48,
+                            alignItems:'center',
+                            justifyContent:'center',
+                            borderRightWidth:1,
+                            borderRightColor:COLORS.inputborder,
+                            zIndex:25
+                        },inputBorder && {
+                            borderRightWidth:0,
+                            width:25
+                        },inputicon && {
+                            borderRightWidth:0,
+                            width:48,
+                            paddingLeft:20,
+                            zIndex:25
+                        }]}
+                    >
+                        {icon}
+                    </View>
+                }
             <TextInput
                 style={[styles.input,{
                     backgroundColor:backround ? colors.card :colors.input,

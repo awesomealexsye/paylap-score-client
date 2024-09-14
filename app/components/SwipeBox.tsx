@@ -65,7 +65,7 @@ export default class SwipeBox extends Component {
             >
               <Image
                 style={{ height: 45, width: 45, borderRadius: 10 }}
-                source={this.props.data.image}
+                source={{ uri:this.props.data.image }}
               />
               <View>
                 <Text style={{ ...FONTS.fontRegular, fontSize: 14, color: this.props.colors.title }}>{this.props.data.title}</Text>

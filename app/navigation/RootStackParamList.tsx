@@ -10,6 +10,8 @@ export type RootStackParamList = {
     WelCome: undefined;
     SignUp: undefined;
     SingIn: undefined;
+    MobileSignIn: undefined;
+    OtpVerify: {mobile:string};
     Onboarding: undefined;
     Login: undefined;
     Register: undefined;
@@ -40,6 +42,7 @@ export type RootStackParamList = {
     ProductsDetails: undefined;
     Writereview: undefined;
     Profile: undefined;
+    UserKyc:undefined;
     Wishlist: undefined;
     Search: undefined;
     Components: undefined;
@@ -48,6 +51,7 @@ export type RootStackParamList = {
     Checkout: undefined;
     Addcard: undefined;
     Payment: undefined;
+    AddPayment:undefined;
     AddDeliveryAddress: undefined;
     Myorder: undefined;
     Notification: undefined;

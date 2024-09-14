@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "ombe",
-    "slug": "ombe",
+    "name": "PaylapScore",
+    "slug": "paylap-score",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode":"cover",
+      "resizeMode": "cover",
       "backgroundColor": "#70747D"
     },
     "assetBundlePatterns": [
@@ -21,15 +21,20 @@
         "image": "./assets/splash.png",
         "resizeMode": "cover",
         "backgroundColor": "#70747D"
-      }
+      },
+      "bundleIdentifier": "com.paylap.paylapscore"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.w3itexperts.ombe",
-      "permissions": ["ACCESS_FINE_LOCATION"],
+      "package": "com.paylap.paylapscore",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
       "config": {
         "googleMaps": {
           "apiKey": "YOUR_GOOGLE_MAPS_API_KEY"
@@ -41,7 +46,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "df01eda5-b046-4c48-9f97-6ea0e3e42927"
+        "projectId": "4073ab77-f309-4ef8-bcf8-fdb8042bdfe9"
       }
     },
     "plugins": [
@@ -59,6 +64,7 @@
           "initialOrientation": "DEFAULT"
         }
       ]
-    ]
+    ],
+    "owner": "alexsye1999"
   }
 }

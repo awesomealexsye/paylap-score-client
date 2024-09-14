@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import { View, Text,  ScrollView, Image, TouchableOpacity, StyleSheet, Platform } from 'react-native'
 import { useNavigation, useTheme } from '@react-navigation/native';
 import Header from '../../layout/Header';
@@ -8,8 +8,17 @@ import Input from '../../components/Input/Input';
 import ImagePicker from 'react-native-image-crop-picker';
 import Button from '../../components/Button/Button';
 import { COLORS, FONTS } from '../../constants/theme';
+import { ApiService } from '../../lib/ApiService';
 
 const EditProfile = () => {
+    
+    const [profile, setProfile] = React.useState<any>({});
+
+    useEffect(() => {
+        ApiService.postWithToken("api/user/info", {}).then((res: any) => {
+            setProfile(res);
+        });
+    }, []);
 
     const theme = useTheme();
     const { colors } : {colors : any} = theme;
@@ -61,7 +70,7 @@ const EditProfile = () => {
                             <View style={styles.imageborder}>
                                 <Image
                                     style={{ height: 82, width: 82, borderRadius: 50 }}
-                                    source={IMAGES.small6}
+                                    source={{ uri:profile?.data?.profile_image }}
                                 />
                             </View>
                             <TouchableOpacity
@@ -78,8 +87,8 @@ const EditProfile = () => {
                             </TouchableOpacity>
                         </View>
                         <View>
-                            <Text style={[FONTS.fontMedium,{fontSize:19,color:colors.title}]}>James Smith</Text>
-                            <Text style={[FONTS.fontRegular,{fontSize:12,color:colors.text}]}>Last Visit : 17 Jan 2024</Text>
+                            <Text style={[FONTS.fontMedium,{fontSize:19,color:colors.title}]}>{profile?.data?.name}</Text>
+                            {/* <Text style={[FONTS.fontRegular,{fontSize:12,color:colors.text}]}>Last Visit : 17 Jan 2024</Text> */}
                         </View>
                     </View>
                 </View>
@@ -97,6 +106,8 @@ const EditProfile = () => {
                             style={{borderRadius:48}}
                             inputicon
                             placeholder='Full Name'
+                            
+                            value={profile?.data?.name}
                             icon={<Image source={IMAGES.user2} style={[styles.icon,{tintColor:colors.title}]}/>}
                         />
                     </View>
@@ -105,11 +116,10 @@ const EditProfile = () => {
                             onFocus={() => setisFocused1(true)}
                             onBlur={() => setisFocused1(false)}
                             isFocused={isFocused1}
-                            value={inputValue}
+                            value={profile?.data?.mobile}
                             onChangeText={(value) => handleChange(value)}
                             backround={colors.card}
                             style={{borderRadius:48}}
-                            keyboardType={'number-pad'}
                             inputicon
                             placeholder='Mobile No.'
                             icon={<Image source={IMAGES.Phoneduotone} style={[styles.icon,{tintColor:colors.title}]}/>}
@@ -125,6 +135,7 @@ const EditProfile = () => {
                             style={{borderRadius:48}}
                             inputicon
                             placeholder='Email Address '
+                            value={profile?.data?.email}
                             icon={<Image source={IMAGES.email2} style={[styles.icon,{tintColor:colors.title}]}/>}
                         />
                     </View>
