@@ -3,7 +3,7 @@ import { BottomTabParamList } from "./BottomTabParamList";
 
 export type RootStackParamList = {
     DrawerNavigation: NavigatorScreenParams<BottomTabParamList>;
-    openDrawer:undefined;
+    openDrawer: undefined;
     Demo: undefined;
     ChooseLanguage: undefined;
     QrCodeScanner: undefined;
@@ -11,7 +11,7 @@ export type RootStackParamList = {
     SignUp: undefined;
     SingIn: undefined;
     MobileSignIn: undefined;
-    OtpVerify: {mobile:string};
+    OtpVerify: { mobile: string };
     Onboarding: undefined;
     Login: undefined;
     Register: undefined;
@@ -42,8 +42,10 @@ export type RootStackParamList = {
     ProductsDetails: undefined;
     Writereview: undefined;
     Profile: undefined;
-    UserKyc:undefined;
     Wishlist: undefined;
+    UserKyc: undefined;
+    AddCustomer: undefined;
+    CustomerTransations: { item: any };
     Search: undefined;
     Components: undefined;
     Coupons: undefined;
@@ -51,7 +53,7 @@ export type RootStackParamList = {
     Checkout: undefined;
     Addcard: undefined;
     Payment: undefined;
-    AddPayment:undefined;
+    AddPayment: undefined;
     AddDeliveryAddress: undefined;
     Myorder: undefined;
     Notification: undefined;

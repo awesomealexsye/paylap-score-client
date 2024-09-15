@@ -11,10 +11,12 @@ import { MessagesService } from '../../lib/MessagesService';
 type Props = {
     sheetRef: any;
     value: string;
+    mobileNumber: string;
 }
 
-const AadhaarOtp = ({ sheetRef, value }: Props) => {
+const AadhaarOtp = ({ sheetRef, value, mobileNumber }: Props) => {
 
+    console.log(mobileNumber);
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
     const [otp, setOtp] = useState("");
