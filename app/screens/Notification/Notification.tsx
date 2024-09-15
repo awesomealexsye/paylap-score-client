@@ -42,7 +42,7 @@ const Notification = () => {
     return (
         <View style={{ backgroundColor: colors.background, flex: 1 }}>
             <Header
-                title='Notifications (12)'
+                title='Notifications'
                 leftIcon='back'
                 rightIcon1={'search'}
             />
