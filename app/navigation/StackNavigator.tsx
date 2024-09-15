@@ -59,7 +59,8 @@ import AddPayment from '../screens/Payment/AddPayment';
 import MobileSignIn from '../screens/Auth/MobileSignIn';
 import OtpVerify from '../screens/Auth/OtpVerify';
 import UserKyc from '../screens/Profile/UserKyc';
-
+import AddCustomer from '../screens/Customer/AddCustomer';
+import CustomerTransations from '../screens/Customer/CustomerTransations';
 
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -109,6 +110,8 @@ const StackNavigator = () => {
 				<Stack.Screen name="Call" component={Call} />
 				<Stack.Screen name="EditProfile" component={EditProfile} />
 				<Stack.Screen name="UserKyc" component={UserKyc} />
+				<Stack.Screen name="AddCustomer" component={AddCustomer} />
+				<Stack.Screen name="CustomerTransations" component={CustomerTransations} />
 
 
 				<Stack.Screen name="Components" component={Components} />
