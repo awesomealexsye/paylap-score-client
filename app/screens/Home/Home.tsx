@@ -175,8 +175,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                     }}>
 
 
-                        <View style={{ width: 400, flexDirection: 'row', marginTop: 22, rowGap: 4, justifyContent: 'center', borderBlockColor: colors.dark, borderBottomWidth: 1, padding: 10 }}>
-                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderRightColor: colors.dark }}>
+                        <View style={{ width: 400, flexDirection: 'row', marginTop: 22, rowGap: 4, justifyContent: 'center', borderBlockColor: COLORS.white, borderBottomWidth: 1, padding: 10 }}>
+                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderRightColor: COLORS.white }}>
                                 <Text style={{ ...FONTS.fontBold, fontSize: SIZES.h6, color: COLORS.primaryLight }}>Credit Amt.</Text>
                                 <Text style={{ ...FONTS.fontRegular, fontSize: SIZES.h3, color: COLORS.secondary }}>₹0</Text>
                             </View>
@@ -227,7 +227,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
             </ScrollView>
             <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("AddCustomer")}>
-                <FontAwesome style={{ marginRight: 6, color: colors.white }} name={'user-plus'} size={20} />
+                <FontAwesome style={{ marginRight: 6, color: COLORS.white }} name={'user-plus'} size={20} />
                 <Text style={styles.addButtonText}>
                     Add Customer</Text>
             </TouchableOpacity>
