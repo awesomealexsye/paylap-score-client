@@ -46,6 +46,7 @@ export type RootStackParamList = {
     UserKyc: undefined;
     AddCustomer: undefined;
     CustomerTransations: { item: any };
+    CustomerTransationsDetails: { transationId: string };
     Search: undefined;
     Components: undefined;
     Coupons: undefined;
@@ -80,4 +81,5 @@ export type RootStackParamList = {
     TabStyle2: undefined;
     TabStyle3: undefined;
     TabStyle4: undefined;
+
 };

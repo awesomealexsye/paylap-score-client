@@ -64,9 +64,9 @@ const Header = ({ title, leftIcon, leftAction, transparent, productId, titleLeft
                 {leftIcon === 'back' &&
                     <TouchableOpacity
                         onPress={() => leftAction ? leftAction() : navigation.goBack()}
-                        style={[styles.actionBtn, { backgroundColor: '#F6F6F6' }]}
+                        style={[styles.actionBtn, { backgroundColor: colors.background }]}
                     >
-                        <Feather size={24} color={COLORS.title} name={'arrow-left'} />
+                        <Feather size={24} color={colors.title} name={'arrow-left'} />
                     </TouchableOpacity>
                 }
                 <View style={{ flex: 1 }}>

@@ -61,6 +61,7 @@ import OtpVerify from '../screens/Auth/OtpVerify';
 import UserKyc from '../screens/Profile/UserKyc';
 import AddCustomer from '../screens/Customer/AddCustomer';
 import CustomerTransations from '../screens/Customer/CustomerTransations';
+import CustomerTransationsDetails from '../screens/Customer/CustomerTransactionDetail';
 
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -112,6 +113,8 @@ const StackNavigator = () => {
 				<Stack.Screen name="UserKyc" component={UserKyc} />
 				<Stack.Screen name="AddCustomer" component={AddCustomer} />
 				<Stack.Screen name="CustomerTransations" component={CustomerTransations} />
+
+				<Stack.Screen name="CustomerTransationsDetails" component={CustomerTransationsDetails} />
 
 
 				<Stack.Screen name="Components" component={Components} />

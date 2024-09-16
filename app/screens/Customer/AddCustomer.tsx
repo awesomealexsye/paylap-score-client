@@ -99,12 +99,25 @@ const AddCustomer = forwardRef((props, ref) => {
                                                 onChangeText={(value) => setAadhaar(value)}
                                             />
                                         </View>
-                                        <Input
-                                            inputRounded
-                                            icon={<FontAwesome style={{ opacity: .6 }} name={'mobile-phone'} size={35} color={colors.text} />}
-                                            placeholder="Enter Customer Mobile number"
-                                            onChangeText={(value) => setMobileNumber(value)}
-                                        />
+
+                                        <View>
+                                            <Input
+                                                inputRounded
+                                                icon={<FontAwesome style={{ opacity: .6 }} name={'mobile-phone'} size={35} color={colors.text} />}
+                                                placeholder="Enter Customer Mobile number"
+                                                onChangeText={(value) => setMobileNumber(value)}
+                                            />
+                                        </View>
+
+                                        <View style={{ marginTop: 10 }}>
+                                            <Input
+                                                inputRounded
+                                                icon={<FontAwesome style={{ opacity: .6 }} name={'user'} size={30} color={colors.text} />}
+                                                placeholder="Enter Aadhaar Number"
+                                                onChangeText={(value) => setAadhaar(value)}
+                                            />
+                                        </View>
+
                                     </View>
 
                                     <View style={GlobalStyleSheet.cardBody}>

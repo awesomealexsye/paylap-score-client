@@ -150,7 +150,7 @@ const DrawerMenu = () => {
                     <ThemeBtn />
                 </View>
                 <View style={{ paddingVertical: 15, paddingHorizontal: 10 }}>
-                    <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: '#868686' }}>Ombe Coffee App</Text>
+                    <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: '#868686' }}>Paylap Score</Text>
                     <Text style={{ ...FONTS.fontMedium, fontSize: 12, color: '#B1B1C3' }}>App Version 1.0.0</Text>
                 </View>
             </View>

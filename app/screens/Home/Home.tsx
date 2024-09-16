@@ -25,13 +25,13 @@ interface Customer {
 }
 
 const customersData: Customer[] = [
-    { id: '1', name: 'Anup Gujjar', amount: '₹ 71,600', lastInteraction: '1 week ago', type: "Debit", profileImage: IMAGES.small6 },
-    { id: '2', name: 'Mukeem Bhaiya', amount: '₹ 10,000', lastInteraction: '2 weeks ago', type: "Credit", profileImage: IMAGES.small6 },
-    { id: '3', name: 'Vakil Home', amount: '₹ 400', lastInteraction: '3 weeks ago', type: "Credit", profileImage: IMAGES.small6 },
-    { id: '4', name: 'Ajay College', amount: '₹ 0', lastInteraction: '1 month ago', type: "Credit", profileImage: IMAGES.small6 },
-    { id: '5', name: 'Rashik Khan Parvana', amount: '₹0', lastInteraction: '1 month ago', type: "Credit", profileImage: IMAGES.small6 },
-    { id: '6', name: 'Sunil Sir', amount: '₹ 6', lastInteraction: '1 month ago', type: "Credit", profileImage: IMAGES.small6 },
-    { id: '7', name: 'Talib Khan', amount: '₹ 3,000', lastInteraction: '1 month ago', type: "Credit", profileImage: IMAGES.small6 },
+    { id: '1', name: 'aaaaa', amount: '₹ 71,600', lastInteraction: '1 week ago', type: "Debit", profileImage: IMAGES.small6 },
+    { id: '2', name: 'bbbb', amount: '₹ 10,000', lastInteraction: '2 weeks ago', type: "Credit", profileImage: IMAGES.small6 },
+    { id: '3', name: 'cccc', amount: '₹ 400', lastInteraction: '3 weeks ago', type: "Credit", profileImage: IMAGES.small6 },
+    { id: '4', name: 'dddd', amount: '₹ 0', lastInteraction: '1 month ago', type: "Credit", profileImage: IMAGES.small6 },
+    { id: '5', name: 'eeee', amount: '₹0', lastInteraction: '1 month ago', type: "Credit", profileImage: IMAGES.small6 },
+    { id: '6', name: 'ffff', amount: '₹ 6', lastInteraction: '1 month ago', type: "Credit", profileImage: IMAGES.small6 },
+    { id: '7', name: 'gggg', amount: '₹ 3,000', lastInteraction: '1 month ago', type: "Credit", profileImage: IMAGES.small6 },
 ];
 
 
@@ -178,18 +178,18 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                         <View style={{ width: 400, flexDirection: 'row', marginTop: 22, rowGap: 4, justifyContent: 'center', borderBlockColor: COLORS.white, borderBottomWidth: 1, padding: 10 }}>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderRightColor: COLORS.white }}>
                                 <Text style={{ ...FONTS.fontBold, fontSize: SIZES.h6, color: COLORS.primaryLight }}>Credit Amt.</Text>
-                                <Text style={{ ...FONTS.fontRegular, fontSize: SIZES.h3, color: COLORS.secondary }}>₹0</Text>
+                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.secondary }}>₹ 10,000</Text>
                             </View>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: "center" }}>
                                 <Text style={{ ...FONTS.fontBold, fontSize: SIZES.h6, color: COLORS.primaryLight }}>Debit Amt.</Text>
-                                <Text style={{ ...FONTS.fontRegular, fontSize: SIZES.h3, color: COLORS.danger }}>₹1,43,186</Text>
+                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.danger }}>₹ 1,43,186</Text>
                             </View>
                         </View>
                         <View style={{ flex: 1, alignItems: 'center', justifyContent: "center" }}>
                             <TouchableOpacity style={{}}>
-                                <Text style={{ color: colors.title, ...FONTS.fontBold, }}>
+                                <Text style={{ color: COLORS.white, ...FONTS.fontBold, }}>
                                     VIEW REPORT
-                                    <Feather name='arrow-right' size={16} color={colors.title} />
+                                    <Feather name='arrow-right' size={16} color={COLORS.white} />
                                 </Text>
                             </TouchableOpacity>
 
@@ -255,11 +255,11 @@ const styles = StyleSheet.create({
         color: COLORS.title,
         height: 60,
         borderRadius: 61,
-        paddingHorizontal: 20,
+        paddingHorizontal: 10,
         paddingLeft: 30,
-        borderWidth: 1,
+        // borderWidth: 1,
         //  borderColor:'#EBEBEB',
-        backgroundColor: '#FAFAFA',
+        // backgroundColor: '#FAFAFA',
         marginBottom: 10
 
     },

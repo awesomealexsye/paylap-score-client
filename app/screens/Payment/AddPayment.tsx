@@ -13,7 +13,7 @@ import Input from '../../components/Input/Input';
 import { FontAwesome } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import ButtonIcon from '../../components/Button/ButtonIcon';
-
+import useImagePicker from '../../customHooks/ImagePickerHook';
 
 type AddPaymentScreenProps = StackScreenProps<RootStackParamList, 'AddPayment'>;
 
@@ -36,6 +36,12 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
     const showDatepicker = () => {
         setShow(true);
     };
+
+    // imagePickerFunction
+
+    const { image, pickImage, takePhoto } = useImagePicker();
+
+
     return (
         <View style={{ backgroundColor: colors.background, flex: 1, }}>
             <Header
@@ -61,7 +67,7 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
                                 onChangeText={(value) => console.log(value)}
                             />
                         </View>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between',marginTop:12 }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 12 }}>
                             <View>
                                 <ButtonIcon onPress={showDatepicker}
                                     size={'sm'}
@@ -78,7 +84,7 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
                                 )}
                             </View>
                             <View>
-                                <ButtonIcon onPress={showDatepicker}
+                                <ButtonIcon onPress={pickImage}
                                     size={'sm'}
                                     title='Attach bills'
                                     icon={<FontAwesome style={{ opacity: .6 }} name={'camera'} size={20} color={colors.white} />}
@@ -86,12 +92,16 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
 
                             </View>
 
+
                         </View>
 
                     </View>
                 </View>
 
             </ScrollView>
+            {image && <Image source={{ uri: image }} style={{ width: 400, height: 400 }} />
+
+            }
             <View style={[GlobalStyleSheet.container]}>
                 <Button
                     title='Continue'

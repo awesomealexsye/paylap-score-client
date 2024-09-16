@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList } from 'react-native';
+import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList, TouchableHighlight } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { IMAGES } from '../../constants/Images';
@@ -73,30 +73,37 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
 
 
     const renderCustomer = ({ item }: { item: Customer }) => (
-        <View style={[styles.customerItem, { backgroundColor: colors.card }]}>
-            <View style={{}}>
-                <View style={{ flexDirection: 'row' }}>
-                    {/* <Image
+        <TouchableOpacity onPress={() => navigation.navigate("CustomerTransationsDetails", { transationId: "" })
+        }>
+            <View style={[styles.customerItem, { backgroundColor: colors.card }]}>
+                <View style={{}}>
+                    <View style={{ flexDirection: 'row' }}>
+                        {/* <Image
                         style={{ height: 50, width: 50, borderRadius: 50 }}
                         source={IMAGES.small6}
                     /> */}
-                    <View style={{ marginLeft: 14 }}>
-                        <Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{item.name}</Text>
-                        <Text style={styles.lastInteraction}>{item.lastInteraction}</Text>
-                        <Text style={styles.lastInteraction}>{item.transactionDate.toLocaleString()}</Text>
-                        <Text style={styles.lastInteraction}>{item.desc}</Text>
+                        <View style={{ marginLeft: 14 }}>
+                            <Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{item.name}</Text>
+                            <Text style={styles.lastInteraction}>{item.lastInteraction}</Text>
+                            <Text style={styles.lastInteraction}>{item.transactionDate.toLocaleString()}</Text>
+                            <Text style={styles.lastInteraction}>{item.desc}</Text>
+                        </View>
+
                     </View>
 
                 </View>
 
+                <View style={{ flexDirection: "column", alignItems: "center", position: "relative" }}>
+                    <Text style={item.type === 'Credit' ? { color: "green", fontSize: 18, fontWeight: "900" } : { fontSize: 18, fontWeight: "900", color: "red" }}>{item.amount}</Text>
+                    <Text style={[styles.type, { color: colors.title }]}>{item.type}</Text>
+                </View>
+
             </View>
 
-            <View style={{ flexDirection: "column", alignItems: "center", position: "relative" }}>
-                <Text style={item.type === 'Credit' ? { color: "green", fontSize: 18, fontWeight: "900" } : { fontSize: 18, fontWeight: "900", color: "red" }}>{item.amount}</Text>
-                <Text style={[styles.type, { color: colors.title }]}>{item.type}</Text>
-            </View>
 
-        </View>
+
+        </TouchableOpacity>
+
     );
 
     return (
@@ -109,16 +116,24 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                         //borderBlockColor:colors.border
                     }]}
                 >
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5, }}>
                         <TouchableOpacity
                             onPress={() => navigation.goBack()}
-                            style={{ padding: 10, marginRight: 5 }}
+                            style={{
+                                padding: 10, marginRight: 5,
+                                height: 45,
+                                width: 45,
+                                borderRadius: 45,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: colors.background
+                            }}
                         >
                             {/* <Ionicons size={20} color={colors.title} name='chevron-back'/> */}
                             <Feather size={24} color={colors.title} name={'arrow-left'} />
                         </TouchableOpacity>
                         <Image
-                            style={{ height: 40, width: 40, borderRadius: 12, marginLeft: -5, marginRight: 10, resizeMode: 'contain' }}
+                            style={{ height: 40, width: 40, borderRadius: 12, marginLeft: 10, marginRight: 15, resizeMode: 'contain' }}
                             source={item.profileImage}
                         />
                         <View>
@@ -176,23 +191,23 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                             <CustomerActivityBtn
 
                                 gap
-                                icon={<FontAwesome style={{ color: colors.white }} name={'file-pdf-o'} size={20} />}
+                                icon={<FontAwesome style={{ color: colors.title }} name={'file-pdf-o'} size={20} />}
                                 color={colors.card}
                                 text='Report'
                             />
                             <CustomerActivityBtn
                                 gap
-                                icon={<FontAwesome style={{ color: colors.white }} name={'rupee'} size={20} />}
+                                icon={<FontAwesome style={{ color: colors.title }} name={'rupee'} size={20} />}
                                 color={colors.card}
                                 text='Payments'
                             /><CustomerActivityBtn
                                 gap
-                                icon={<FontAwesome style={{ color: colors.white }} name={'bell'} size={20} />}
+                                icon={<FontAwesome style={{ color: colors.title }} name={'bell'} size={20} />}
                                 color={colors.card}
                                 text='Reminder'
                             /><CustomerActivityBtn
                                 gap
-                                icon={<FontAwesome style={{ color: colors.white }} name={'envelope'} size={20} />}
+                                icon={<FontAwesome style={{ color: colors.title }} name={'envelope'} size={20} />}
                                 color={colors.card}
                                 text='SMS'
                             />
