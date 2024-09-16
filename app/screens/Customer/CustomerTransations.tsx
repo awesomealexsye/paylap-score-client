@@ -245,15 +245,15 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
 
             </ScrollView>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 30, backgroundColor: colors.dark }}>
-                <TouchableOpacity style={[styles.addAmmount]} onPress={() => navigation.navigate("AddPayment")}>
+                <TouchableOpacity style={[styles.removeBtn]} onPress={() => navigation.navigate("AddPayment")}>
 
                     <Text style={styles.addButtonText}>
-                        Debit Ammount</Text>
+                        Debit</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.removeBtn} onPress={() => navigation.navigate("AddPayment")}>
+                <TouchableOpacity style={styles.addAmmount} onPress={() => navigation.navigate("AddPayment")}>
 
                     <Text style={styles.addButtonText}>
-                        Credit Ammount</Text>
+                        Credit</Text>
                 </TouchableOpacity>
             </View>
 
@@ -361,8 +361,10 @@ const styles = StyleSheet.create({
     },
     addButtonText: {
         color: COLORS.white,
-        fontSize: 16,
+        fontSize: 20,
         fontWeight: 'bold',
+        paddingLeft: 40,
+        paddingRight: 40
     },
 
     header: {

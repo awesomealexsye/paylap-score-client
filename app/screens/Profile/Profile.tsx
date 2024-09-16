@@ -75,6 +75,34 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                                 <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>{profile?.data?.email}</Text>
                             </View>
                         </View>
+                        {profile?.data?.aadhar_card && <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 25, alignItems: 'flex-start' }]} >
+                            <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
+                                <Image
+                                    style={[GlobalStyleSheet.image3, { tintColor: COLORS.primary }]}
+                                    source={IMAGES.card2}
+                                />
+                            </View>
+                            <View>
+                                <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>Aadhaar Number</Text>
+                                <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>{profile?.data?.aadhar_card}</Text>
+                            </View>
+
+                        </View>}
+                        {profile?.data?.pan_card && <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 25, alignItems: 'flex-start' }]}  >
+                            <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
+                                <Image
+                                    style={[GlobalStyleSheet.image3, { tintColor: COLORS.primary }]}
+                                    source={IMAGES.card2}
+                                />
+                            </View>
+                            <View>
+                                <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>Pancard</Text>
+                                <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>{profile?.data?.pan_card}</Text>
+                            </View>
+
+                        </View>}
+
+
 
                     </View>
                 </View>
