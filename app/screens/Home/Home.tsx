@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
 
         backgroundColor: Colors.white,
         borderRadius: 18,
-        shadowColor: "#025135",
+        // shadowColor: "#025135",
         shadowOffset: {
             width: 0,
             height: 15,
@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
         shadowRadius: 31.27,
         marginHorizontal: 10,
         marginVertical: 4,
-        elevation: 4,
+        // elevation: 4,
         top: 4
     },
     customerName: {
