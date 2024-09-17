@@ -8,7 +8,7 @@ import StorageService from './StorageService';
 const ApiService = {
     async postWithoutToken(uri: string, data: object) {
         let api_url = `${CONFIG.APP_URL}/${uri}`;
-        console.log(api_url,data);
+        // console.log(api_url, data);
         try {
             const res = await axios.post(api_url, data); // Sending POST request
 
@@ -32,13 +32,22 @@ const ApiService = {
         let auth_key = await StorageService.getStorage(CONFIG.HARDCODE_VALUES.AUTH_KEY)
         let jwt_token = await StorageService.getStorage(CONFIG.HARDCODE_VALUES.JWT_TOKEN)
         let common_payload = { user_id: Number(user_id), auth_key: auth_key };
-        data = {...common_payload,...data}
-        // console.log(api_url,data,jwt_token);
+        data = { ...common_payload, ...data }
         try {
-            const res = await axios.post(api_url, data,{headers:{Authorization:`Bearer ${jwt_token}`}});
+            const res = await axios.post(api_url, data, { headers: { Authorization: `Bearer ${jwt_token}` } });
+            console.log("loggin", api_url, data, jwt_token, res.status, res.data);
+
             if (res.status == 200) {
                 if (res.data.status == false) {
-                    MessagesService.commonMessage(res.data.message);
+                    if (res.data.message && typeof res.data.message === 'object') {
+                        let errorMessage = '';
+                        for (const key in res.data.message) {
+                            errorMessage += `${key} ${res.data.message[key].join(', ')}. `;
+                        }
+                        MessagesService.commonMessage(errorMessage);
+                    } else {
+                        MessagesService.commonMessage(res.data.message);
+                    }
                 } else {
                     return res.data;
                 }
