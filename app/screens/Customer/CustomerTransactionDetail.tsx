@@ -72,14 +72,15 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                     top: 20,
                     backgroundColor: colors.primary,
                     borderRadius: 31,
-                    shadowColor: "#025135",
-                    shadowOffset: {
-                        width: 0,
-                        height: 15,
-                    },
-                    shadowOpacity: 0.34,
-                    shadowRadius: 31.27,
-                    elevation: 8, flexDirection: 'column'
+                    // shadowColor: "#025135",
+                    // shadowOffset: {
+                    //     width: 0,
+                    //     height: 15,
+                    // },
+                    // shadowOpacity: 0.34,
+                    // shadowRadius: 31.27,
+                    // elevation: 8,
+                    flexDirection: 'column'
                 }}>
 
 
@@ -135,7 +136,8 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                     },
                     shadowOpacity: 0.34,
                     shadowRadius: 31.27,
-                    elevation: 8, flexDirection: 'column'
+                    elevation: 8,
+                    flexDirection: 'column'
                 }}>
                     <View style={{ borderBottomWidth: 1, height: 50 }} >
                         <Text style={{ ...FONTS.fontSemiBold, fontSize: 18, color: COLORS.white, marginLeft: 20, top: 10 }}>Description</Text>
@@ -198,7 +200,6 @@ const styles = StyleSheet.create({
         shadowRadius: 31.27,
         marginHorizontal: 10,
         marginVertical: 4,
-        elevation: 4,
         top: 4
     },
     customerName: {

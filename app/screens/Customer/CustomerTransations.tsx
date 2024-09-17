@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
         shadowRadius: 31.27,
         marginHorizontal: 10,
         marginVertical: 4,
-        elevation: 4,
+
         top: 4
     },
     customerName: {
