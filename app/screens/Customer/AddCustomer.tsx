@@ -11,7 +11,7 @@ import Button from '../../components/Button/Button';
 import { MessagesService } from '../../lib/MessagesService';
 import { COLORS, FONTS } from '../../constants/theme';
 import AadhaarOtp from '../Profile/AadhaarOtp';
-
+import { ApiService } from '../../lib/ApiService';
 type Props = {
     height?: string,
 }
@@ -27,6 +27,12 @@ const AddCustomer = forwardRef((props, ref) => {
     const [isSheet, setIsSheet] = useState(false);
     const [aadhaar, setAadhaar] = useState("");
     const [mobileNumber, setMobileNumber] = useState("");
+    const [name, setName] = useState("");
+
+    const CallAadharApi = async () => {
+
+    };
+
     useImperativeHandle(ref, () => ({
 
         openSheet: async (value: string) => {
@@ -41,9 +47,11 @@ const AddCustomer = forwardRef((props, ref) => {
     const handleSheet = async () => {
         await refRBSheet.current.open();
     }
-    const sendOtp = () => {
+    const sendOtp = async () => {
+
         console.log(aadhaar)
-        if (mobileNumber.length != 10) {
+
+        if (aadhaar.length != 12) {
             MessagesService.commonMessage("Invalid Mobile Number")
         } else {
             handleSheet();
@@ -72,7 +80,7 @@ const AddCustomer = forwardRef((props, ref) => {
                     }
                 }}
             >
-                {<AadhaarOtp value={aadhaar} mobileNumber={mobileNumber} sheetRef={refRBSheet} />}
+                {<AadhaarOtp value={aadhaar} mobileNumber={mobileNumber} name={name} sheetRef={refRBSheet} />}
 
             </RBSheet>
 
@@ -96,7 +104,7 @@ const AddCustomer = forwardRef((props, ref) => {
                                                 inputRounded
                                                 icon={<FontAwesome style={{ opacity: .6 }} name={'user'} size={30} color={colors.text} />}
                                                 placeholder="Enter Customer Name"
-                                                onChangeText={(value) => setAadhaar(value)}
+                                                onChangeText={(value) => setName(value)}
                                             />
                                         </View>
 
@@ -122,7 +130,6 @@ const AddCustomer = forwardRef((props, ref) => {
 
                                     <View style={GlobalStyleSheet.cardBody}>
                                         <Button title={'Add Customer'} onPress={() => { sendOtp() }} />
-
                                     </View>
                                 </View>
                             </View>

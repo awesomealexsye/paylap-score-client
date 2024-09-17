@@ -11,7 +11,7 @@ import Button from '../../components/Button/Button';
 import { MessagesService } from '../../lib/MessagesService';
 import AadhaarOtp from './AadhaarOtp';
 import { COLORS, FONTS } from '../../constants/theme';
-
+import { ApiService } from '../../lib/ApiService';
 type Props = {
     height?: string,
 }
@@ -23,9 +23,13 @@ const UserKyc = forwardRef((props, ref) => {
     const { colors }: { colors: any } = theme;
 
     const refRBSheet = useRef<any>(null);
-
     const [isSheet, setIsSheet] = useState(false);
     const [aadhaar, setAadhaar] = useState("");
+    const CallAadharApi = async () => {
+        ApiService.postWithToken("api/kyc/aadhaar-otp-generate", { "aadhaar_number": aadhaar }).then((res: any) => {
+            //setProfile(res);
+        });
+    };
     useImperativeHandle(ref, () => ({
 
         openSheet: async (value: string) => {
