@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
@@ -11,28 +11,25 @@ import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { addTowishList } from '../../redux/reducer/wishListReducer';
 import { openDrawer } from '../../redux/actions/drawerAction';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { ApiService } from '../../lib/ApiService';
+import { MessagesService } from '../../lib/MessagesService';
 
 
 
 
 interface Customer {
     id: string;
+    customer_id: string;
     name: string;
     amount: string;
-    lastInteraction: string;
-    type: string;
-    profileImage: any;
+    joined_at: string;
+    latest_updated_at: string;
+    transaction_type: string;
+    profile_image: any;
 }
 
-const customersData: Customer[] = [
-    { id: '1', name: 'aaaaa', amount: '₹ 71,600', lastInteraction: '1 week ago', type: "Debit", profileImage: IMAGES.small6 },
-    { id: '2', name: 'bbbb', amount: '₹ 10,000', lastInteraction: '2 weeks ago', type: "Credit", profileImage: IMAGES.small6 },
-    { id: '3', name: 'cccc', amount: '₹ 400', lastInteraction: '3 weeks ago', type: "Credit", profileImage: IMAGES.small6 },
-    { id: '4', name: 'dddd', amount: '₹ 0', lastInteraction: '1 month ago', type: "Credit", profileImage: IMAGES.small6 },
-    { id: '5', name: 'eeee', amount: '₹0', lastInteraction: '1 month ago', type: "Credit", profileImage: IMAGES.small6 },
-    { id: '6', name: 'ffff', amount: '₹ 6', lastInteraction: '1 month ago', type: "Credit", profileImage: IMAGES.small6 },
-    { id: '7', name: 'gggg', amount: '₹ 3,000', lastInteraction: '1 month ago', type: "Credit", profileImage: IMAGES.small6 },
-];
+// const customersData: Customer[] = [
+// ];
 
 
 
@@ -42,15 +39,35 @@ type HomeScreenProps = StackScreenProps<RootStackParamList, 'Home'>
 export const Home = ({ navigation }: HomeScreenProps) => {
 
     const [searchText, setSearchText] = useState('');
+    const [customersData, setCustomersData] = useState<any>([]);
+    const [homeBanner, setHomeBanner] = useState<any>({});
     const [filteredCustomers, setFilteredCustomers] = useState(customersData);
 
+    useEffect(() => {
+        fetchCustomerList();
+
+    }, [])
     const handleSearch = (text: string) => {
+        console.log("handle search", text);
         setSearchText(text);
-        const filteredList = customersData.filter(customer =>
+        const filteredList = customersData.filter((customer: Customer) =>
             customer.name.toLowerCase().includes(text.toLowerCase())
         );
         setFilteredCustomers(filteredList);
     };
+    const fetchCustomerList = async () => {
+        const homeApiRes = await ApiService.postWithToken("api/shopkeeper/list-customer", {});
+        if (homeApiRes.status == true) {
+            let customersApiData: Customer = homeApiRes?.data?.records;
+            let homeBanner = homeApiRes?.data?.shopkeeper_transaction_sum;
+            setHomeBanner(homeBanner);
+            setCustomersData(customersApiData);
+            setFilteredCustomers(customersApiData);
+            console.log("c8ster", customersApiData)
+        } else {
+            MessagesService.commonMessage(homeApiRes.message)
+        }
+    }
 
 
     const dispatch = useDispatch();
@@ -72,11 +89,11 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                     <View style={{ flexDirection: 'row' }}>
                         <Image
                             style={{ height: 50, width: 50, borderRadius: 50 }}
-                            source={item.profileImage}
+                            src={item.profile_image}
                         />
                         <View style={{ marginLeft: 14 }}>
                             <Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{item.name}</Text>
-                            <Text style={styles.lastInteraction}>{item.lastInteraction}</Text>
+                            <Text style={styles.lastInteraction}>{item.latest_updated_at}</Text>
                         </View>
 
                     </View>
@@ -84,8 +101,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 </View>
 
                 <View style={{ flexDirection: "column", alignItems: "center", position: "relative" }}>
-                    <Text style={item.type === 'Credit' ? { color: "green", fontSize: 18, fontWeight: "900" } : { fontSize: 18, fontWeight: "900", color: "red" }}>{item.amount}</Text>
-                    <Text style={[styles.type, { color: colors.title }]}>{item.type}</Text>
+                    <Text style={item.transaction_type === 'Credit' ? { color: "green", fontSize: 18, fontWeight: "900" } : { fontSize: 18, fontWeight: "900", color: "red" }}>₹ {item.amount}</Text>
+                    <Text style={[styles.type, { color: colors.title }]}>{item.transaction_type}</Text>
                 </View>
 
             </View>
@@ -131,8 +148,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                             </TouchableOpacity>
 
                             {/* /ssafsf
-                            
-                            
+
+
                             */}
                             <TouchableOpacity
                                 activeOpacity={0.5}
@@ -178,11 +195,11 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                         <View style={{ width: 400, flexDirection: 'row', marginTop: 22, rowGap: 4, justifyContent: 'center', borderBlockColor: COLORS.white, borderBottomWidth: 1, padding: 10 }}>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderRightColor: COLORS.white }}>
                                 <Text style={{ ...FONTS.fontBold, fontSize: SIZES.h6, color: COLORS.primaryLight }}>Credit Amt.</Text>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.secondary }}>₹ 10,000</Text>
+                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.secondary }}>₹ {homeBanner?.credit}</Text>
                             </View>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: "center" }}>
                                 <Text style={{ ...FONTS.fontBold, fontSize: SIZES.h6, color: COLORS.primaryLight }}>Debit Amt.</Text>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.danger }}>₹ 1,43,186</Text>
+                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.danger }}>₹ {homeBanner?.debit}</Text>
                             </View>
                         </View>
                         <View style={{ flex: 1, alignItems: 'center', justifyContent: "center" }}>
@@ -352,3 +369,4 @@ const styles = StyleSheet.create({
 })
 
 export default Home;
+
