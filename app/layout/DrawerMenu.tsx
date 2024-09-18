@@ -12,16 +12,10 @@ import StorageService from '../lib/StorageService';
 
 const MenuItems = [
     {
-        id: "0",
+        id: "1",
         icon: IMAGES.home,
         name: "Home",
         navigate: "Home",
-    },
-    {
-        id: "1",
-        icon: IMAGES.user3,
-        name: "User Kyc",
-        navigate: 'UserKyc',
     },
 
     {
