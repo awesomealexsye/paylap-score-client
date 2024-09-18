@@ -11,34 +11,28 @@ import { ApiService } from '../../lib/ApiService';
 
 type Props = {
     sheetRef: any;
-    value: string;
-    mobileNumber?: string;
-    name?: string;
+    client_id?: string;
+    customer_id?: string;
 }
 
-const AadhaarOtp = ({ sheetRef, value, mobileNumber, name }: Props) => {
+const AadhaarOtp = ({ sheetRef, client_id, customer_id }: Props) => {
 
-    console.log(mobileNumber);
-    console.log(name);
-    console.log(value);
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
     const [otp, setOtp] = useState("");
-    const [addharDetail, setAddharDetail] = useState<any>({});
+
+    const [addharVarificationDetail, setAddharVarificationDetail] = useState<any>({});
 
     useEffect(() => {
-        ApiService.postWithToken("api/shopkeeper/add-customer", { "aadhaar_number": value, "mobile": mobileNumber, name }).then((res: any) => {
-            setAddharDetail(res);
-            console.log("Aadhar Verification", res);
-        });
+
     }, []);
 
     const verifyOtp = () => {
         if (otp.length == 6) {
-            ApiService.postWithToken("api/shopkeeper/verify-otp-customer", { "client_id": addharDetail?.client_id, "customer_id": addharDetail?.customer_id, "otp": otp }).then((res: any) => {
-                setAddharDetail(res);
+            ApiService.postWithToken("api/shopkeeper/verify-otp-customer", { "client_id": client_id, "customer_id": customer_id, "otp": otp }).then((res: any) => {
+                setAddharVarificationDetail(res);
+                console.log("verify otp", res)
             });
-            console.log("verify otp", otp)
         } else {
             MessagesService.commonMessage("Invalid OTP");
         }

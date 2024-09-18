@@ -1,6 +1,6 @@
 import { useTheme } from '@react-navigation/native';
 import React, { useState } from 'react'
-import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, StyleSheet, DatePickerIOS } from 'react-native'
+import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
 import Header from '../../layout/Header';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { COLORS, FONTS } from '../../constants/theme';
@@ -8,8 +8,6 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import Button from '../../components/Button/Button';
 import Input from '../../components/Input/Input';
-// import DateTimePicker from '@react-native-community/datetimepicker';
-// import { Icon } from 'react-native-elements';  // If using icons
 import { FontAwesome } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import ButtonIcon from '../../components/Button/ButtonIcon';
@@ -21,7 +19,6 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
 
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
-    const [isFocused, setisFocused] = useState(false);
     let d = new Date(), f = `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`;
 
     const [date, setDate] = useState(d);
