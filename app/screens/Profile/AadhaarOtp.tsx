@@ -23,10 +23,6 @@ const AadhaarOtp = ({ sheetRef, client_id, customer_id }: Props) => {
 
     const [addharVarificationDetail, setAddharVarificationDetail] = useState<any>({});
 
-    useEffect(() => {
-
-    }, []);
-
     const verifyOtp = () => {
         if (otp.length == 6) {
             ApiService.postWithToken("api/shopkeeper/verify-otp-customer", { "client_id": client_id, "customer_id": customer_id, "otp": otp }).then((res: any) => {
