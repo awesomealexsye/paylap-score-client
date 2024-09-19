@@ -92,7 +92,7 @@ const AddCustomer = forwardRef((props, ref) => {
                         titleRight
                     />
                     <ScrollView>
-                        <View style={[GlobalStyleSheet.container, { padding: 0, paddingTop: 10 }]}>
+                        <View style={[GlobalStyleSheet.container, { flex: 1, padding: 0, paddingTop: 10 }]}>
                             <View style={{ marginTop: 20, }}>
                                 {/* <View style={[GlobalStyleSheet.cardHeader, { borderBottomColor: COLORS.inputborder }]}>
                                     <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, textAlign: 'center' }}>Your Aadhaar Card Number</Text>

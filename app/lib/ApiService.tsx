@@ -8,7 +8,7 @@ import StorageService from './StorageService';
 const ApiService = {
     async postWithoutToken(uri: string, data: object) {
         let api_url = `${CONFIG.APP_URL}/${uri}`;
-        console.log(api_url, data);
+        //console.log(api_url, data);
         try {
             const res = await axios.post(api_url, data); // Sending POST request
 
@@ -33,7 +33,7 @@ const ApiService = {
         let jwt_token = await StorageService.getStorage(CONFIG.HARDCODE_VALUES.JWT_TOKEN)
         let common_payload = { user_id: Number(user_id), auth_key: auth_key };
         data = { ...common_payload, ...data }
-        console.log(api_url, data, jwt_token);
+        //console.log(api_url, data, jwt_token);
         try {
             const res = await axios.post(api_url, data, { headers: { Authorization: `Bearer ${jwt_token}` } });
             console.log(res, "resresres")

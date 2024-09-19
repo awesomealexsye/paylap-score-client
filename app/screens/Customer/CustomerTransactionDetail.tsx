@@ -9,6 +9,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+// import { Button } from 'react-native-paper';
+// import Button from '../../components/Button/Button';
+import ButtonIcon from '../../components/Button/ButtonIcon';
 
 
 
@@ -68,17 +71,17 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
             <View style={{ flex: 1, alignItems: 'center' }} >
                 <View style={{
                     height: 220,
-                    width: 400,
+                    width: 380,
                     top: 20,
-                    backgroundColor: colors.primary,
+                    backgroundColor: COLORS.primary,
                     borderRadius: 31,
-                    // shadowColor: "#025135",
-                    // shadowOffset: {
-                    //     width: 0,
-                    //     height: 15,
-                    // },
-                    // shadowOpacity: 0.34,
-                    // shadowRadius: 31.27,
+                    shadowColor: "#025135",
+                    shadowOffset: {
+                        width: 0,
+                        height: 15,
+                    },
+                    shadowOpacity: 0.34,
+                    shadowRadius: 31.27,
                     // elevation: 8,
                     flexDirection: 'column'
                 }}>
@@ -102,7 +105,7 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                         </View>
 
                         <View style={{ flexDirection: "column", alignItems: "center", position: "relative", }}>
-                            <Text style={"Credit" === 'Credit' ? { color: "green", fontSize: 18, fontWeight: "900" } : { fontSize: 18, fontWeight: "900", color: "red" }}> ₹ 10,000</Text>
+                            <Text style={"Credit" === 'Credit' ? { color: COLORS.primaryLight, fontSize: 18, fontWeight: "900" } : { fontSize: 18, fontWeight: "900", color: "red" }}> ₹ 10,000</Text>
                             <Text style={[styles.type, { color: COLORS.white }]}>Debit</Text>
                         </View>
 
@@ -125,9 +128,9 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                 </View>
                 <View style={{
                     height: 180,
-                    width: 400,
+                    width: 380,
                     top: 40,
-                    backgroundColor: colors.primary,
+                    backgroundColor: COLORS.primary,
                     borderRadius: 31,
                     shadowColor: "#025135",
                     shadowOffset: {
@@ -156,12 +159,15 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
 
 
 
-            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: "center" }}>
-                <TouchableOpacity style={[styles.addAmmount, { flexDirection: 'row', justifyContent: 'center', alignItems: "center", }]} onPress={() => { }}>
+            <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: "center" }}>
+                <ButtonIcon title='Share' icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'share'} size={18} />}>
 
-                    <Text style={styles.addButtonText}>
+                </ButtonIcon>
+                <TouchableOpacity style={[styles.button, { flexDirection: 'row', justifyContent: 'center', alignItems: "center", }]} onPress={() => { }}>
+
+                    <Text style={styles.buttonText}>
                         Share</Text>
-                    <FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'share'} size={18} />
+
                 </TouchableOpacity>
             </View>
         </View>
@@ -221,8 +227,9 @@ const styles = StyleSheet.create({
     },
 
 
-    addAmmount: {
-        width: 400,
+    button: {
+        width: 380,
+        height: 60,
         backgroundColor: COLORS.primary,
         marginBottom: 20,
         padding: 15, // 15px padding around the button content
@@ -234,7 +241,7 @@ const styles = StyleSheet.create({
 
         // Shadow blur radius for iOS
     },
-    addButtonText: {
+    buttonText: {
         color: Colors.white,
         fontSize: 16,
         fontWeight: 'bold',

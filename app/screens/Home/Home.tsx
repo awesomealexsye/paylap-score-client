@@ -48,7 +48,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
     }, [])
     const handleSearch = (text: string) => {
-        console.log("handle search", text);
+        // console.log("handle search", text);
         setSearchText(text);
         const filteredList = customersData.filter((customer: Customer) =>
             customer.name.toLowerCase().includes(text.toLowerCase())
@@ -63,7 +63,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
             setHomeBanner(homeBanner);
             setCustomersData(customersApiData);
             setFilteredCustomers(customersApiData);
-            console.log("c8ster", customersApiData)
+            // console.log("c8ster", customersApiData)
         } else {
             MessagesService.commonMessage(homeApiRes.message)
         }
@@ -174,10 +174,10 @@ export const Home = ({ navigation }: HomeScreenProps) => {
             <ScrollView showsVerticalScrollIndicator={false}>
 
 
-                <View style={{ flex: 1, alignItems: 'center' }} >
+                <View style={{ flex: 1, alignItems: 'center', }} >
                     <View style={{
                         height: 140,
-                        width: 400,
+                        width: 380,
                         top: 20,
                         backgroundColor: COLORS.primary,
                         borderRadius: 31,
@@ -188,11 +188,12 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                         },
                         shadowOpacity: 0.34,
                         shadowRadius: 31.27,
-                        elevation: 8, flexDirection: 'column'
+                        elevation: 8,
+                        flexDirection: 'column'
                     }}>
 
 
-                        <View style={{ width: 400, flexDirection: 'row', marginTop: 22, rowGap: 4, justifyContent: 'center', borderBlockColor: COLORS.white, borderBottomWidth: 1, padding: 10 }}>
+                        <View style={{ width: 380, flexDirection: 'row', marginTop: 22, rowGap: 4, justifyContent: 'center', borderBlockColor: COLORS.inputborder, borderBottomWidth: 1, padding: 10 }}>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderRightColor: COLORS.white }}>
                                 <Text style={{ ...FONTS.fontBold, fontSize: SIZES.h6, color: COLORS.primaryLight }}>Credit Amt.</Text>
                                 <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.secondary }}>₹ {homeBanner?.credit}</Text>

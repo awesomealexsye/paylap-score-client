@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList, TouchableHighlight } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
@@ -16,30 +16,42 @@ import Header from '../../layout/Header';
 import { Icon } from 'react-native-paper/lib/typescript/components/Avatar/Avatar';
 import SocialBtn from '../../components/Socials/SocialBtn';
 import CustomerActivityBtn from './CustomerActivityBtn';
+import { ApiService } from '../../lib/ApiService';
+import { MessagesService } from '../../lib/MessagesService';
 
 
 
 
 interface Customer {
     id: string;
-    name: string;
+    customer_name: string;
     amount: string;
-    lastInteraction: string;
-    type: string;
-    transactionDate: Date;
-    desc: string;
+    last_updated_date: string;
+    transaction_type: string;
+    transaction_date: Date;
+    description: string;
+    image: any;
 }
 
-const customersData: Customer[] = [
-    { id: '1', name: 'Anup Gujjar', amount: '₹ 71,600', transactionDate: new Date(), lastInteraction: '1 week ago', type: "Debit", desc: "Given products to by" },
-    { id: '2', name: 'Mukeem Bhaiya', amount: '₹ 10,000', lastInteraction: '2 weeks ago', transactionDate: new Date(), type: "Credit", desc: "Given products to by" },
-    { id: '3', name: 'Vakil CustomerTransations', amount: '₹ 400', lastInteraction: '3 weeks ago', transactionDate: new Date(), type: "Credit", desc: "Given products to by" },
-    { id: '4', name: 'Ajay College', amount: '₹ 0', lastInteraction: '1 month ago', transactionDate: new Date(), type: "Credit", desc: "Given products to by" },
-    { id: '5', name: 'Rashik Khan Parvana', amount: '₹0', lastInteraction: '1 month ago', transactionDate: new Date(), type: "Credit", desc: "Given products to by" },
-    { id: '6', name: 'Sunil Sir', amount: '₹ 6', lastInteraction: '1 month ago', transactionDate: new Date(), type: "Credit", desc: "Given products to by" },
-    { id: '7', name: 'Talib Khan', amount: '₹ 3,000', lastInteraction: '1 month ago', transactionDate: new Date(), type: "Credit", desc: "Given products to by" },
-];
-
+// const customersData: Customer[] = [
+//     { id: '1', name: 'Anup Gujjar', amount: '₹ 71,600', transactionDate: new Date(), lastInteraction: '1 week ago', type: "Debit", desc: "Given products to by" },
+//     { id: '2', name: 'Mukeem Bhaiya', amount: '₹ 10,000', lastInteraction: '2 weeks ago', transactionDate: new Date(), type: "Credit", desc: "Given products to by" },
+//     { id: '3', name: 'Vakil CustomerTransations', amount: '₹ 400', lastInteraction: '3 weeks ago', transactionDate: new Date(), type: "Credit", desc: "Given products to by" },
+//     { id: '4', name: 'Ajay College', amount: '₹ 0', lastInteraction: '1 month ago', transactionDate: new Date(), type: "Credit", desc: "Given products to by" },
+//     { id: '5', name: 'Rashik Khan Parvana', amount: '₹0', lastInteraction: '1 month ago', transactionDate: new Date(), type: "Credit", desc: "Given products to by" },
+//     { id: '6', name: 'Sunil Sir', amount: '₹ 6', lastInteraction: '1 month ago', transactionDate: new Date(), type: "Credit", desc: "Given products to by" },
+//     { id: '7', name: 'Talib Khan', amount: '₹ 3,000', lastInteraction: '1 month ago', transactionDate: new Date(), type: "Credit", desc: "Given products to by" },
+// ];
+// {   "amount": 0; 
+//     "customer": { "id": 17, "mobile": "9899036401", "name": "Manish Saini", "profile_image": null },
+//     "customer_id": 17,
+//       "id": 10,
+//        "joined_at":
+//         "18 hours ago",
+//          "latest_updated_at": "21 hours ago", 
+//          "name": "Manish Saini", 
+//          "profile_image": "https://paylapscore.com/uploads/avatar.png", "transaction_type": "CREDIT" 
+//         }
 
 
 
@@ -47,18 +59,34 @@ type CustomerTransationsScreenProps = StackScreenProps<RootStackParamList, 'Cust
 
 export const CustomerTransations = ({ navigation, route }: CustomerTransationsScreenProps) => {
     const { item } = route.params;
+    console.log("newwww");
+    console.log("######################", item.profile_image, "######################");
 
 
-    const [searchText, setSearchText] = useState('');
-    const [filteredCustomers, setFilteredCustomers] = useState(customersData);
+    // const [searchText, setSearchText] = useState('');
+    // const [filteredCustomers, setFilteredCustomers] = useState(customersData);
 
-    const handleSearch = (text: string) => {
-        setSearchText(text);
-        const filteredList = customersData.filter(customer =>
-            customer.name.toLowerCase().includes(text.toLowerCase())
-        );
-        setFilteredCustomers(filteredList);
-    };
+    // const handleSearch = (text: string) => {
+    //     setSearchText(text);
+    //     const filteredList = customersData.filter(customer =>
+    //         customer.name.toLowerCase().includes(text.toLowerCase())
+    //     );
+    //     setFilteredCustomers(filteredList);
+    // };
+    const [customerData, setCustomersData] = useState<any>({});
+
+    useEffect(() => {
+        fetchCustomerList();
+
+    }, [])
+
+    const fetchCustomerList = async () => {
+        const res = await ApiService.postWithToken("api/shopkeeper/transactions/list-shopkeeper-customer-transaction", { "customer_id": 7 });
+
+        //console.log(res.data.records, "gdzdsxfdtdc")
+        setCustomersData(res);
+        // console.log("********************************", customerData.data.records)
+    }
 
 
     const dispatch = useDispatch();
@@ -79,14 +107,18 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                 <View style={{}}>
                     <View style={{ flexDirection: 'row' }}>
                         {/* <Image
-                        style={{ height: 50, width: 50, borderRadius: 50 }}
-                        source={IMAGES.small6}
-                    /> */}
+                            style={{ height: 50, width: 50, borderRadius: 50 }}
+                            source={item.image}
+                        /> */}
                         <View style={{ marginLeft: 14 }}>
-                            <Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{item.name}</Text>
-                            <Text style={styles.lastInteraction}>{item.lastInteraction}</Text>
-                            <Text style={styles.lastInteraction}>{item.transactionDate.toLocaleString()}</Text>
-                            <Text style={styles.lastInteraction}>{item.desc}</Text>
+                            <Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{item.customer_name}</Text>
+                            <Text style={styles.lastInteraction}>{item.last_updated_date}</Text>
+                            <Text style={styles.lastInteraction}>{
+                                item.transaction_date.toLocaleString()
+                            }
+
+                            </Text>
+                            <Text style={styles.lastInteraction}>{item.description}</Text>
                         </View>
 
                     </View>
@@ -94,8 +126,8 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                 </View>
 
                 <View style={{ flexDirection: "column", alignItems: "center", position: "relative" }}>
-                    <Text style={item.type === 'Credit' ? { color: "green", fontSize: 18, fontWeight: "900" } : { fontSize: 18, fontWeight: "900", color: "red" }}>{item.amount}</Text>
-                    <Text style={[styles.type, { color: colors.title }]}>{item.type}</Text>
+                    <Text style={item.transaction_type === 'Credit' ? { color: "green", fontSize: 18, fontWeight: "900" } : { fontSize: 18, fontWeight: "900", color: "red" }}>₹ {item.amount}</Text>
+                    <Text style={[styles.type, { color: colors.title }]}>{item.transaction_type}</Text>
                 </View>
 
             </View>
@@ -105,7 +137,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
         </TouchableOpacity>
 
     );
-
+    console.log(item.profile_image,)
     return (
         <View style={{ backgroundColor: colors.card, flex: 1 }}>
             {/* AppBar Start */}
@@ -134,8 +166,9 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                         </TouchableOpacity>
                         <Image
                             style={{ height: 40, width: 40, borderRadius: 12, marginLeft: 10, marginRight: 15, resizeMode: 'contain' }}
-                            source={item.profileImage}
+                            src={item.profile_image}
                         />
+
                         <View>
                             <Text style={{ ...FONTS.fontSemiBold, fontSize: 18, color: colors.title, }}>{item.name}</Text>
                         </View>
@@ -159,7 +192,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                 <View style={{ flex: 1, alignItems: 'center' }} >
                     <View style={{
                         height: 80,
-                        width: 400,
+                        width: 380,
                         top: 15,
                         backgroundColor: COLORS.primary,
                         borderRadius: 31,
@@ -177,10 +210,10 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
 
                         <View style={{ width: 400, flexDirection: 'row', justifyContent: "space-evenly", paddingTop: 20, alignItems: "center", alignContent: "center" }}>
                             <View style={{ alignItems: 'center', justifyContent: 'center', borderRightColor: colors.dark }}>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.primaryLight, textAlign: "center" }}>{item.type}</Text>
+                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h4, color: COLORS.primaryLight, textAlign: "center" }}>{item.transaction_type} </Text>
                             </View>
                             <View style={{ alignItems: 'center', justifyContent: "center" }}>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.danger }}>{item.amount}</Text>
+                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.danger }}>₹ {item.amount}</Text>
                             </View>
                         </View>
                     </View>
@@ -236,7 +269,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
 
 
                 <FlatList scrollEnabled={false}
-                    data={filteredCustomers}
+                    data={customerData.data?.records}
                     renderItem={renderCustomer}
                     keyExtractor={(item) => item.id}
                     contentContainerStyle={{}}
