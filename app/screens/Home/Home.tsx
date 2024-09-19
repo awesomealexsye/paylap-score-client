@@ -13,6 +13,7 @@ import { openDrawer } from '../../redux/actions/drawerAction';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { ApiService } from '../../lib/ApiService';
 import { MessagesService } from '../../lib/MessagesService';
+import CommonService from '../../lib/CommonService';
 
 
 
@@ -42,9 +43,12 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const [customersData, setCustomersData] = useState<any>([]);
     const [homeBanner, setHomeBanner] = useState<any>({});
     const [filteredCustomers, setFilteredCustomers] = useState(customersData);
-
+    const [userName, setUsername] = useState("");
     useEffect(() => {
         fetchCustomerList();
+        CommonService.currentUserDetail().then((res) => {
+            setUsername(res?.name);
+        })
 
     }, [])
     const handleSearch = (text: string) => {
@@ -58,12 +62,16 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const fetchCustomerList = async () => {
         const homeApiRes = await ApiService.postWithToken("api/shopkeeper/list-customer", {});
         if (homeApiRes.status == true) {
-            let customersApiData: Customer = homeApiRes?.data?.records;
+            let customersApiData: Customer = homeApiRes?.data?.records ?? [];
             let homeBanner = homeApiRes?.data?.shopkeeper_transaction_sum;
             setHomeBanner(homeBanner);
             setCustomersData(customersApiData);
             setFilteredCustomers(customersApiData);
+<<<<<<< HEAD
             // console.log("c8ster", customersApiData)
+=======
+            //console.log("c8ster", customersApiData)
+>>>>>>> 557d27588a3f85e083206716693b0bf76a9dfa33
         } else {
             MessagesService.commonMessage(homeApiRes.message)
         }
@@ -101,7 +109,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 </View>
 
                 <View style={{ flexDirection: "column", alignItems: "center", position: "relative" }}>
-                    <Text style={item.transaction_type === 'Credit' ? { color: "green", fontSize: 18, fontWeight: "900" } : { fontSize: 18, fontWeight: "900", color: "red" }}>₹ {item.amount}</Text>
+                    <Text style={item.transaction_type === 'CREDIT' ? { color: "green", fontSize: 18, fontWeight: "900" } : { fontSize: 18, fontWeight: "900", color: "red" }}>₹ {item.amount}</Text>
                     <Text style={[styles.type, { color: colors.title }]}>{item.transaction_type}</Text>
                 </View>
 
@@ -118,8 +126,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 <View style={[GlobalStyleSheet.container, { paddingHorizontal: 30, padding: 0, paddingTop: 30 }]}>
                     <View style={[GlobalStyleSheet.flex]}>
                         <View>
-                            <Text style={{ ...FONTS.fontRegular, fontSize: 14, color: colors.title }}>Good Morning</Text>
-                            <Text style={{ ...FONTS.fontSemiBold, fontSize: 24, color: colors.title }}>Williams</Text>
+                            <Text style={{ ...FONTS.fontRegular, fontSize: 14, color: colors.title }}>Namaste</Text>
+                            <Text style={{ ...FONTS.fontSemiBold, fontSize: 24, color: colors.title }}>{userName}</Text>
                         </View>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <TouchableOpacity

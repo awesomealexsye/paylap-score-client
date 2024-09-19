@@ -7,8 +7,7 @@ import { COLORS, FONTS } from '../../constants/theme';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import Header from '../../layout/Header';
-import axios from 'axios';
-import { ApiService } from '../../lib/ApiService';
+import CommonService from '../../lib/CommonService';
 
 
 type ProfileScreenProps = StackScreenProps<RootStackParamList, 'Profile'>;
@@ -18,9 +17,9 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
     const [profile, setProfile] = React.useState<any>({});
 
     useEffect(() => {
-        ApiService.postWithToken("api/user/info", {}).then((res: any) => {
+        CommonService.currentUserDetail().then((res) => {
             setProfile(res);
-        });
+        })
     }, []);
 
 
@@ -40,10 +39,10 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                     >
                         <Image
                             style={{ height: 104, width: 104, }}
-                            source={{ uri: profile?.data?.profile_image }}
+                            source={{ uri: profile?.profile_image }}
                         />
                     </View>
-                    <Text style={{ ...FONTS.fontSemiBold, fontSize: 28, color: colors.title }}>{profile?.data?.name}</Text>
+                    <Text style={{ ...FONTS.fontSemiBold, fontSize: 28, color: colors.title }}>{profile?.name}</Text>
                     {/* <Text style={{ ...FONTS.fontRegular, fontSize: 16, color: COLORS.primary }}>London, England</Text> */}
                 </View>
                 <View
@@ -60,7 +59,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                             </View>
                             <View>
                                 <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>Mobile Number</Text>
-                                <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>{profile?.data?.mobile}</Text>
+                                <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>{profile?.mobile}</Text>
                             </View>
                         </View>
                         <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 25, alignItems: 'flex-start' }]} >
@@ -72,10 +71,10 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                             </View>
                             <View>
                                 <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>Email Address</Text>
-                                <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>{profile?.data?.email}</Text>
+                                <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>{profile?.email}</Text>
                             </View>
                         </View>
-                        {profile?.data?.aadhar_card && <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 25, alignItems: 'flex-start' }]} >
+                        {profile?.aadhar_card && <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 25, alignItems: 'flex-start' }]} >
                             <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
                                 <Image
                                     style={[GlobalStyleSheet.image3, { tintColor: COLORS.primary }]}
@@ -84,11 +83,11 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                             </View>
                             <View>
                                 <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>Aadhaar Number</Text>
-                                <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>{profile?.data?.aadhar_card}</Text>
+                                <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>{profile?.aadhar_card}</Text>
                             </View>
 
                         </View>}
-                        {profile?.data?.pan_card && <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 25, alignItems: 'flex-start' }]}  >
+                        {profile?.pan_card && <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 25, alignItems: 'flex-start' }]}  >
                             <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
                                 <Image
                                     style={[GlobalStyleSheet.image3, { tintColor: COLORS.primary }]}
@@ -97,7 +96,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                             </View>
                             <View>
                                 <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>Pancard</Text>
-                                <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>{profile?.data?.pan_card}</Text>
+                                <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>{profile?.pan_card}</Text>
                             </View>
 
                         </View>}

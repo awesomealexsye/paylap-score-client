@@ -36,10 +36,18 @@ const ApiService = {
         //console.log(api_url, data, jwt_token);
         try {
             const res = await axios.post(api_url, data, { headers: { Authorization: `Bearer ${jwt_token}` } });
-            console.log(res, "resresres")
+            //console.log(res, "resresres")
             if (res.status == 200) {
                 if (res.data.status == false) {
-                    MessagesService.commonMessage(res.data.message);
+                    if (res.data.message && typeof res.data.message === 'object') {
+                        let errorMessage = '';
+                        for (const key in res.data.message) {
+                            errorMessage += `${key} ${res.data.message[key].join(', ')}. `;
+                        }
+                        MessagesService.commonMessage(errorMessage);
+                    } else {
+                        MessagesService.commonMessage(res.data.message);
+                    }
                 } else {
                     return res.data;
                 }
