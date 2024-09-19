@@ -67,7 +67,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
             setHomeBanner(homeBanner);
             setCustomersData(customersApiData);
             setFilteredCustomers(customersApiData);
-            // console.log("c8ster", customersApiData)
+            //console.log("c8ster", customersApiData)
         } else {
             MessagesService.commonMessage(homeApiRes.message)
         }

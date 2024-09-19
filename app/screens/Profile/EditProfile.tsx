@@ -40,13 +40,13 @@ const EditProfile = () => {
     };
 
     // const handleImageSelect = () => {
-    //     if(Platform.OS == 'android'){
+    //     if (Platform.OS == 'android') {
     //         try {
     //             ImagePicker.openPicker({
     //                 width: 200,
     //                 height: 200,
     //                 cropping: true
-    //             }).then((image: { path: React.SetStateAction<string>; })  => {
+    //             }).then((image: { path: React.SetStateAction<string>; }) => {
     //                 setImageUrl(image.path);
     //             });
     //         } catch (e) {
