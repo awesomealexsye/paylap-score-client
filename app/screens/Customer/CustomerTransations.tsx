@@ -33,46 +33,13 @@ interface Customer {
     image: any;
 }
 
-// const customersData: Customer[] = [
-//     { id: '1', name: 'Anup Gujjar', amount: '₹ 71,600', transactionDate: new Date(), lastInteraction: '1 week ago', type: "Debit", desc: "Given products to by" },
-//     { id: '2', name: 'Mukeem Bhaiya', amount: '₹ 10,000', lastInteraction: '2 weeks ago', transactionDate: new Date(), type: "Credit", desc: "Given products to by" },
-//     { id: '3', name: 'Vakil CustomerTransations', amount: '₹ 400', lastInteraction: '3 weeks ago', transactionDate: new Date(), type: "Credit", desc: "Given products to by" },
-//     { id: '4', name: 'Ajay College', amount: '₹ 0', lastInteraction: '1 month ago', transactionDate: new Date(), type: "Credit", desc: "Given products to by" },
-//     { id: '5', name: 'Rashik Khan Parvana', amount: '₹0', lastInteraction: '1 month ago', transactionDate: new Date(), type: "Credit", desc: "Given products to by" },
-//     { id: '6', name: 'Sunil Sir', amount: '₹ 6', lastInteraction: '1 month ago', transactionDate: new Date(), type: "Credit", desc: "Given products to by" },
-//     { id: '7', name: 'Talib Khan', amount: '₹ 3,000', lastInteraction: '1 month ago', transactionDate: new Date(), type: "Credit", desc: "Given products to by" },
-// ];
-// {   "amount": 0; 
-//     "customer": { "id": 17, "mobile": "9899036401", "name": "Manish Saini", "profile_image": null },
-//     "customer_id": 17,
-//       "id": 10,
-//        "joined_at":
-//         "18 hours ago",
-//          "latest_updated_at": "21 hours ago", 
-//          "name": "Manish Saini", 
-//          "profile_image": "https://paylapscore.com/uploads/avatar.png", "transaction_type": "CREDIT" 
-//         }
-
 
 
 type CustomerTransationsScreenProps = StackScreenProps<RootStackParamList, 'CustomerTransations'>
 
 export const CustomerTransations = ({ navigation, route }: CustomerTransationsScreenProps) => {
     const { item } = route.params;
-    console.log("newwww");
-    console.log("######################", item.profile_image, "######################");
 
-
-    // const [searchText, setSearchText] = useState('');
-    // const [filteredCustomers, setFilteredCustomers] = useState(customersData);
-
-    // const handleSearch = (text: string) => {
-    //     setSearchText(text);
-    //     const filteredList = customersData.filter(customer =>
-    //         customer.name.toLowerCase().includes(text.toLowerCase())
-    //     );
-    //     setFilteredCustomers(filteredList);
-    // };
     const [customerData, setCustomersData] = useState<any>({});
 
     useEffect(() => {
@@ -81,7 +48,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
     }, [])
 
     const fetchCustomerList = async () => {
-        const res = await ApiService.postWithToken("api/shopkeeper/transactions/list-shopkeeper-customer-transaction", { "customer_id": 7 });
+        const res = await ApiService.postWithToken("api/shopkeeper/transactions/list-shopkeeper-customer-transaction", { "customer_id": item.customer_id });
 
         //console.log(res.data.records, "gdzdsxfdtdc")
         setCustomersData(res);
