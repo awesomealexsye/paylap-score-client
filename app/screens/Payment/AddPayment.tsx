@@ -1,5 +1,5 @@
 import { useTheme } from '@react-navigation/native';
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
 import Header from '../../layout/Header';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
@@ -12,23 +12,37 @@ import { FontAwesome } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import ButtonIcon from '../../components/Button/ButtonIcon';
 import useImagePicker from '../../customHooks/ImagePickerHook';
+import { ApiService } from '../../lib/ApiService';
+import { MessagesService } from '../../lib/MessagesService';
 
 type AddPaymentScreenProps = StackScreenProps<RootStackParamList, 'AddPayment'>;
 
 const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
 
+
+    const { image, pickImage, takePhoto } = useImagePicker();
+
+
+    const [addPaymentData, setAddPaymentData] = useState<any>({});
+
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
-    let d = new Date(), f = `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`;
+
+    let d = new Date();
+
 
     const [date, setDate] = useState(d);
     const [show, setShow] = useState(false);
+
 
     const onChange = (event: any, selectedDate: any) => {
         const currentDate = selectedDate || date;
         setShow(false);
         setDate(currentDate);
+        setAddPaymentData({ ...addPaymentData, "date": `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}` });
+
     };
+
 
     const showDatepicker = () => {
         setShow(true);
@@ -36,7 +50,53 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
 
     // imagePickerFunction
 
-    const { image, pickImage, takePhoto } = useImagePicker();
+
+
+
+    const imagePicker = async () => {
+        await pickImage();
+
+
+    }
+
+    setTimeout(myGreeting, 1000);
+
+    function myGreeting() {
+        setAddPaymentData({ ...addPaymentData, "image": image })
+    }
+
+    const file: any = {
+        uri: image,
+        name: 'image.jpg', // Extract the file name if available or use a default one
+        type: 'image/jpeg', // Correct type of the image
+    };
+
+
+    const formdata = new FormData();
+    formdata.append("customer_id", "7");
+    formdata.append("amount", `${addPaymentData.amount}`);
+    formdata.append("transaction_type", "CREDIT");
+    formdata.append("description", addPaymentData.description);
+    formdata.append("transaction_date", addPaymentData.date);
+    formdata.append("image", file);
+    // console.log("img", image);
+
+    const fetchAddPaymentData = async () => {
+        console.log("function called");
+
+        console.log(image)
+        console.log("form data", formdata)
+        try {
+
+            const res = await ApiService.postWithToken("api/shopkeeper/transactions/add-transaction",
+                formdata, { 'Content-Type': 'multipart/form-data', });
+            // MessagesService.commonMessage(res.message)
+            console.log("********************************", addPaymentData)
+            console.log(res, "gdzdsxfdtdc")
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
 
     return (
@@ -54,19 +114,20 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
                                 icon={<FontAwesome style={{ opacity: .6 }} name={'rupee'} size={20} color={colors.text} />}
                                 //value={''}  
                                 placeholder="Enter amount"
-                                onChangeText={(value) => console.log(value)}
+                                onChangeText={(amount) => setAddPaymentData({ ...addPaymentData, "amount": amount })}
                             />
                         </View>
                         <View style={{ marginBottom: 10 }}>
                             <Input
                                 multiline={true}
                                 placeholder="Enter Details (Item Name, Bill no)"
-                                onChangeText={(value) => console.log(value)}
+                                onChangeText={(description) => setAddPaymentData({ ...addPaymentData, "description": description })}
                             />
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 12 }}>
                             <View>
-                                <ButtonIcon onPress={showDatepicker}
+                                <ButtonIcon
+                                    onPress={showDatepicker}
                                     size={'sm'}
                                     title={date.toLocaleDateString()}
                                     icon={<FontAwesome style={{ opacity: .6 }} name={'calendar'} size={20} color={colors.white} />}
@@ -81,22 +142,20 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
                                 )}
                             </View>
                             <View>
-                                <ButtonIcon onPress={pickImage}
+                                <ButtonIcon onPress={imagePicker}
                                     size={'sm'}
                                     title='Attach bills'
                                     icon={<FontAwesome style={{ opacity: .6 }} name={'camera'} size={20} color={colors.white} />}
                                 />
 
                             </View>
-
-
                         </View>
-
                     </View>
                 </View>
 
             </ScrollView>
-            {image && <Image source={{ uri: image }} style={{ width: 400, height: 400 }} />
+
+            {image && <Image source={{ uri: image }} style={{ width: 300, height: 300, marginHorizontal: 50, marginVertical: 20 }} />
 
             }
             <View style={[GlobalStyleSheet.container]}>
@@ -104,7 +163,7 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
                     title='Continue'
                     color={COLORS.primary}
                     text={COLORS.card}
-                    onPress={() => navigation.navigate('Checkout')}
+                    onPress={fetchAddPaymentData}
                     style={{ borderRadius: 48 }}
                 />
             </View>
