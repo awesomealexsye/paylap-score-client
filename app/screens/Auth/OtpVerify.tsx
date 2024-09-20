@@ -19,7 +19,13 @@ type SingInScreenProps = StackScreenProps<RootStackParamList, 'OtpVerify'>;
 
 const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
     const { mobile } = route.params;
-    console.log("mobile", mobile);
+    //redirect to home if already login
+    StorageService.isLoggedIn().then((is_login) => {
+        console.log("is_logged_in otp verify page", is_login);
+        if (is_login) {
+            navigation.replace("DrawerNavigation", { screen: 'Home' });
+        }
+    })
 
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
