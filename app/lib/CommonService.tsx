@@ -34,7 +34,13 @@ const CommonService = {
         if (storageData != null) {
             return JSON.parse(storageData);
         } else {
-            MessagesService.commonMessage("No User Data found in storage");
+            const res = await ApiService.postWithToken("api/user/info", {});
+            if (res.data) {
+                await StorageService.setStorage(CONFIG.HARDCODE_VALUES.USER_DETAIL, JSON.stringify(res.data));
+                return res.data;
+            } else {
+                MessagesService.commonMessage("Failed to get data from User Api");
+            }
         }
         return {};
     }

@@ -26,7 +26,6 @@ export default function App() {
   if (!loaded) {
     return null;
   }
-  CommonService.storageUserDetail();
   return (
     <SafeAreaProvider>
       <SafeAreaView

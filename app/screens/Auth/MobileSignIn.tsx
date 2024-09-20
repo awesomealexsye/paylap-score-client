@@ -10,11 +10,20 @@ import { IMAGES } from '../../constants/Images'
 import Button from '../../components/Button/Button'
 import { ApiService } from '../../lib/ApiService';
 import { MessagesService } from '../../lib/MessagesService';
+import StorageService from '../../lib/StorageService';
 
 
 type SingInScreenProps = StackScreenProps<RootStackParamList, 'MobileSignIn'>;
 
 const MobileSignIn = ({ navigation }: SingInScreenProps) => {
+
+    //redirect to home if already login
+    StorageService.isLoggedIn().then((is_login) => {
+        console.log("is_logged_in MobileSignIn page", is_login);
+        if (is_login) {
+            navigation.replace("DrawerNavigation", { screen: 'Home' });
+        }
+    })
 
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
@@ -24,21 +33,21 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
 
     const [mobile, setMobile] = useState("");
 
-    const sentOtp = async() => {
-        if(mobile.length == 10){
-            const res:any =  await ApiService.postWithoutToken("api/auth/login", { mobile: mobile })
-            if(res != null){
-                 if(res.status){
-                     navigation.navigate("OtpVerify",{mobile:mobile})
-                 }
-                 MessagesService.commonMessage(res.message)
+    const sentOtp = async () => {
+        if (mobile.length == 10) {
+            const res: any = await ApiService.postWithoutToken("api/auth/login", { mobile: mobile })
+            if (res != null) {
+                if (res.status) {
+                    navigation.navigate("OtpVerify", { mobile: mobile })
+                }
+                MessagesService.commonMessage(res.message)
             }
-        }else{
+        } else {
             MessagesService.commonMessage("Invalid Mobile Number")
 
 
         }
-       
+
     }
 
     return (
