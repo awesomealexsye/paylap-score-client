@@ -14,7 +14,6 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { ApiService } from '../../lib/ApiService';
 import { MessagesService } from '../../lib/MessagesService';
 import CommonService from '../../lib/CommonService';
-import { useFocusEffect } from '@react-navigation/native'; // Hook to detect when screen is focused
 
 
 
@@ -46,12 +45,12 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const [filteredCustomers, setFilteredCustomers] = useState(customersData);
     const [userName, setUsername] = useState("");
 
-    useFocusEffect(() => {
+    useEffect(() => {
         fetchCustomerList();
         CommonService.currentUserDetail().then((res) => {
             setUsername(res?.name);
         })
-    })
+    }, [])
     const handleSearch = (text: string) => {
         console.log("handle search", text);
         setSearchText(text);
