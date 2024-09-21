@@ -68,7 +68,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
 
 
     const renderCustomer = ({ item }: { item: Customer }) => (
-        <TouchableOpacity onPress={() => navigation.navigate("CustomerTransationsDetails", { transationId: "" })
+        <TouchableOpacity onPress={() => navigation.navigate("CustomerTransationsDetails", { customer: item })
         }>
             <View style={[styles.customerItem, { backgroundColor: colors.card }]}>
                 <View style={{}}>
