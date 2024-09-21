@@ -42,32 +42,38 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const [searchText, setSearchText] = useState('');
     const [customersData, setCustomersData] = useState<any>([]);
     const [homeBanner, setHomeBanner] = useState<any>({});
-    const [filteredCustomers, setFilteredCustomers] = useState(customersData);
+    const [filteredCustomers, setFilteredCustomers] = useState([]);
     const [userName, setUsername] = useState("");
 
     useEffect(() => {
         fetchCustomerList();
         CommonService.currentUserDetail().then((res) => {
+            console.log("res  ss", res, typeof (res))
             setUsername(res?.name);
         })
     }, [])
     const handleSearch = (text: string) => {
         console.log("handle search", text);
         setSearchText(text);
-        const filteredList = customersData.filter((customer: Customer) =>
+        const filteredList = customersData.filter((customer: any) =>
             customer.name.toLowerCase().includes(text.toLowerCase())
         );
         setFilteredCustomers(filteredList);
     };
     const fetchCustomerList = async () => {
         const homeApiRes = await ApiService.postWithToken("api/shopkeeper/list-customer", {});
+
+        // if (homeApiRes === null) {
+        //     setCustomersData([]);
+        //     setFilteredCustomers([]);
+        //     return;
+        // }
+        console.log("homeApiRes", homeApiRes)
         if (homeApiRes?.status == true) {
-            let customersApiData: Customer = homeApiRes?.data?.records ?? [];
             let homeBanner = homeApiRes?.data?.shopkeeper_transaction_sum;
             setHomeBanner(homeBanner);
-            setCustomersData(customersApiData);
-            setFilteredCustomers(customersApiData);
-            //console.log("c8ster", customersApiData)
+            setCustomersData(homeApiRes?.data?.records);
+            setFilteredCustomers(homeApiRes?.data?.records);
         } else {
             MessagesService.commonMessage(homeApiRes?.message)
         }
