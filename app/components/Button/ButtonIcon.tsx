@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { COLORS, SIZES, FONTS } from '../../constants/theme';
 
 type Props = {
-    title: string,
+    title: String,
     onPress?: (e: any) => void,
     color?: any,
     style?: object,
