@@ -1,6 +1,6 @@
 import { useTheme } from '@react-navigation/native';
-import React, { useState, useEffect } from 'react'
-import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, StyleSheet, Platform } from 'react-native'
+import React, { useState, useEffect } from 'react';
+import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import Header from '../../layout/Header';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { COLORS, FONTS } from '../../constants/theme';
@@ -17,119 +17,62 @@ import { MessagesService } from '../../lib/MessagesService';
 
 type AddPaymentScreenProps = StackScreenProps<RootStackParamList, 'AddPayment'>;
 
-const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
+const AddPayment = ({ navigation,route }: AddPaymentScreenProps) => {
+        const {item,transaction_type}:any = route.params;
+        // console.log("itemss::",route.params,item?.customer_id,typeof(item),transaction_type);
 
-
-    const { image, pickImage, takePhoto } = useImagePicker();
-
-
+    const { image, pickImage, takePhoto }:any = useImagePicker();
 
     const [addPaymentData, setAddPaymentData] = useState<any>({});
     const [amount, setAmount] = useState<String>("");
     const [description, setDescription] = useState<String>("");
     const [newDate, setNewDate] = useState<String>("");
 
-
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
 
-
     const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
-
 
     const onChange = (event: any, selectedDate: any) => {
         const currentDate = selectedDate || date;
         setShow(false);
         setDate(currentDate);
         setNewDate(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
-
     };
-
 
     const showDatepicker = () => {
         setShow(true);
     };
 
-    // imagePickerFunction
-
-
-
-
-    // const imagePicker = async () => {
-    //     await pickImage();
-
-
-    // }
-
-    // setTimeout(myGreeting, 1000);
-
-    // function myGreeting() {
-
-    //     setAddPaymentData({ ...addPaymentData, "image": image })
-    // }
-
-    // const file: any = {
-    //     uri: image,
-    //     name: 'image.jpg', // Extract the file name if available or use a default one
-    //     type: 'image/jpeg', // Correct type of the image
-    // };
-
-
-
-
-    const convertToBlob = async (uri) => {
-        const response = await fetch(uri);
-        const blob = await response.blob();
-        return blob;
-    };
-    // console.log("img", formdata);
+    useEffect(() => {
+        setNewDate(`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`);
+    }, []);
 
     const fetchAddPaymentData = async () => {
-        console.log("function called");
-        const formdata = new FormData();
-
-
-        formdata.append("customer_id", "7");
-        formdata.append("amount", `${amount}`);
-        formdata.append("transaction_type", "CREDIT");
-        formdata.append("description", `${description}`);
-        formdata.append("transaction_date", `${newDate}`);
-        const blob = await convertToBlob(image?.uri);
-        formdata.append('image', blob, image?.fileName);
-        console.log(image)
-        // console.log("form data", formdata)
-        try {
-
-            const res = await ApiService.postWithToken("api/shopkeeper/transactions/add-transaction",
-                // {
-                //     "customer_id": "7",
-                //     "amount": amount,
-                //     "transaction_type": "CREDIT",
-                //     "description": description,
-                //     "transaction_date": newDate,
-                //     "image": {
-                //         "uri": image?.uri,
-                //         "name": image?.fileName,
-                //         "type": image?.type,
-                //         "fileSize": image?.fileSize
-                //     }
-
-                // }
-                formdata
-                ,
-                {
-                    'Content-Type': 'multipart/form-data'
+        // console.log("inputs..",item,amount,description,newDate,image)
+        const data:any = {customer_id:item?.customer_id,amount:amount,transaction_type:transaction_type,description:description,transaction_date:newDate}
+// console.log(data,"api")
+        if (image && image.uri) {
+            const base64Image = await fetch(image.uri).then(res => res.blob()).then(blob => {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
                 });
-            // MessagesService.commonMessage(res.message)
-            console.log("********************************", "amount", amount, "description", description, "date", newDate, "image", image)
-            // console.log(formdata, "#########################    ")
-            console.log(res, "gdzdsxfdtdc")
-        } catch (error) {
-            console.log(error);
-        }
-    }
+            });
 
+            data.image = base64Image;
+        }
+
+        ApiService.postWithToken("api/shopkeeper/transactions/add-transaction", data).then((res) => {
+            console.log("api res::", res)
+            if(res.status == true){
+                navigation.goBack();
+            }
+        });
+    };
 
     return (
         <View style={{ backgroundColor: colors.background, flex: 1, }}>
@@ -145,7 +88,6 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
                             <Input
                                 keyboardType='numeric'
                                 icon={<FontAwesome style={{ opacity: .6 }} name={'rupee'} size={20} color={colors.text} />}
-                                //value={''}  
                                 placeholder="Enter amount"
                                 onChangeText={amount => setAmount(amount)}
                             />
@@ -180,17 +122,19 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
                                     title='Attach bills'
                                     icon={<FontAwesome style={{ opacity: .6 }} name={'camera'} size={20} color={colors.white} />}
                                 />
-
                             </View>
                         </View>
                     </View>
                 </View>
-
             </ScrollView>
 
-            {image?.uri && <Image source={{ uri: image?.uri }} style={{ width: 300, height: 300, marginHorizontal: 50, marginVertical: 20 }} />
+            {image && image.uri && (
+                <Image 
+                    source={{ uri: image.uri }} 
+                    style={{ width: 300, height: 300, marginHorizontal: 50, marginVertical: 20 }} 
+                />
+            )}
 
-            }
             <View style={[GlobalStyleSheet.container]}>
                 <Button
                     title='Continue'

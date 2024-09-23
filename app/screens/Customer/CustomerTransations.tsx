@@ -104,7 +104,6 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
         </TouchableOpacity>
 
     );
-    console.log(item.profile_image,)
     return (
         <View style={{ backgroundColor: colors.card, flex: 1 }}>
             {/* AppBar Start */}
@@ -245,12 +244,12 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
 
             </ScrollView>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 30, backgroundColor: colors.dark }}>
-                <TouchableOpacity style={[styles.removeBtn]} onPress={() => navigation.navigate("AddPayment")}>
+                <TouchableOpacity style={[styles.removeBtn]} onPress={() => navigation.navigate("AddPayment",{item:item,transaction_type:"DEBIT"})}>
 
                     <Text style={styles.addButtonText}>
                         Debit</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.addAmmount} onPress={() => navigation.navigate("AddPayment")}>
+                <TouchableOpacity style={styles.addAmmount} onPress={() => navigation.navigate("AddPayment",{item:item,transaction_type:"CREDIT"})}>
 
                     <Text style={styles.addButtonText}>
                         Credit</Text>
