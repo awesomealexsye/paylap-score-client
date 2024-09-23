@@ -1,6 +1,6 @@
 import { useTheme } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react'
-import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, StyleSheet, Platform } from 'react-native'
 import Header from '../../layout/Header';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { COLORS, FONTS } from '../../constants/theme';
@@ -23,15 +23,18 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
     const { image, pickImage, takePhoto } = useImagePicker();
 
 
+
     const [addPaymentData, setAddPaymentData] = useState<any>({});
+    const [amount, setAmount] = useState<String>("");
+    const [description, setDescription] = useState<String>("");
+    const [newDate, setNewDate] = useState<String>("");
+
 
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
 
-    let d = new Date();
 
-
-    const [date, setDate] = useState(d);
+    const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
 
 
@@ -39,7 +42,7 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
         const currentDate = selectedDate || date;
         setShow(false);
         setDate(currentDate);
-        setAddPaymentData({ ...addPaymentData, "date": `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}` });
+        setNewDate(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
 
     };
 
@@ -53,45 +56,74 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
 
 
 
-    const imagePicker = async () => {
-        await pickImage();
+    // const imagePicker = async () => {
+    //     await pickImage();
 
 
-    }
+    // }
 
-    setTimeout(myGreeting, 1000);
+    // setTimeout(myGreeting, 1000);
 
-    function myGreeting() {
-        setAddPaymentData({ ...addPaymentData, "image": image })
-    }
+    // function myGreeting() {
 
-    const file: any = {
-        uri: image,
-        name: 'image.jpg', // Extract the file name if available or use a default one
-        type: 'image/jpeg', // Correct type of the image
+    //     setAddPaymentData({ ...addPaymentData, "image": image })
+    // }
+
+    // const file: any = {
+    //     uri: image,
+    //     name: 'image.jpg', // Extract the file name if available or use a default one
+    //     type: 'image/jpeg', // Correct type of the image
+    // };
+
+
+
+
+    const convertToBlob = async (uri) => {
+        const response = await fetch(uri);
+        const blob = await response.blob();
+        return blob;
     };
-
-
-    const formdata = new FormData();
-    formdata.append("customer_id", "7");
-    formdata.append("amount", `${addPaymentData.amount}`);
-    formdata.append("transaction_type", "CREDIT");
-    formdata.append("description", addPaymentData.description);
-    formdata.append("transaction_date", addPaymentData.date);
-    formdata.append("image", file);
-    // console.log("img", image);
+    // console.log("img", formdata);
 
     const fetchAddPaymentData = async () => {
         console.log("function called");
+        const formdata = new FormData();
 
+
+        formdata.append("customer_id", "7");
+        formdata.append("amount", `${amount}`);
+        formdata.append("transaction_type", "CREDIT");
+        formdata.append("description", `${description}`);
+        formdata.append("transaction_date", `${newDate}`);
+        const blob = await convertToBlob(image?.uri);
+        formdata.append('image', blob, image?.fileName);
         console.log(image)
-        console.log("form data", formdata)
+        // console.log("form data", formdata)
         try {
 
             const res = await ApiService.postWithToken("api/shopkeeper/transactions/add-transaction",
-                formdata, { 'Content-Type': 'multipart/form-data', });
+                // {
+                //     "customer_id": "7",
+                //     "amount": amount,
+                //     "transaction_type": "CREDIT",
+                //     "description": description,
+                //     "transaction_date": newDate,
+                //     "image": {
+                //         "uri": image?.uri,
+                //         "name": image?.fileName,
+                //         "type": image?.type,
+                //         "fileSize": image?.fileSize
+                //     }
+
+                // }
+                formdata
+                ,
+                {
+                    'Content-Type': 'multipart/form-data'
+                });
             // MessagesService.commonMessage(res.message)
-            console.log("********************************", addPaymentData)
+            console.log("********************************", "amount", amount, "description", description, "date", newDate, "image", image)
+            // console.log(formdata, "#########################    ")
             console.log(res, "gdzdsxfdtdc")
         } catch (error) {
             console.log(error);
@@ -111,17 +143,18 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
                     <View style={GlobalStyleSheet.cardBody}>
                         <View style={{ marginBottom: 10 }}>
                             <Input
+                                keyboardType='numeric'
                                 icon={<FontAwesome style={{ opacity: .6 }} name={'rupee'} size={20} color={colors.text} />}
                                 //value={''}  
                                 placeholder="Enter amount"
-                                onChangeText={(amount) => setAddPaymentData({ ...addPaymentData, "amount": amount })}
+                                onChangeText={amount => setAmount(amount)}
                             />
                         </View>
                         <View style={{ marginBottom: 10 }}>
                             <Input
                                 multiline={true}
                                 placeholder="Enter Details (Item Name, Bill no)"
-                                onChangeText={(description) => setAddPaymentData({ ...addPaymentData, "description": description })}
+                                onChangeText={description => setDescription(description)}
                             />
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 12 }}>
@@ -129,7 +162,7 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
                                 <ButtonIcon
                                     onPress={showDatepicker}
                                     size={'sm'}
-                                    title={date.toLocaleDateString()}
+                                    title={newDate || date.toLocaleDateString()}
                                     icon={<FontAwesome style={{ opacity: .6 }} name={'calendar'} size={20} color={colors.white} />}
                                 />
                                 {show && (
@@ -142,7 +175,7 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
                                 )}
                             </View>
                             <View>
-                                <ButtonIcon onPress={imagePicker}
+                                <ButtonIcon onPress={pickImage}
                                     size={'sm'}
                                     title='Attach bills'
                                     icon={<FontAwesome style={{ opacity: .6 }} name={'camera'} size={20} color={colors.white} />}
@@ -155,7 +188,7 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
 
             </ScrollView>
 
-            {image && <Image source={{ uri: image }} style={{ width: 300, height: 300, marginHorizontal: 50, marginVertical: 20 }} />
+            {image?.uri && <Image source={{ uri: image?.uri }} style={{ width: 300, height: 300, marginHorizontal: 50, marginVertical: 20 }} />
 
             }
             <View style={[GlobalStyleSheet.container]}>
