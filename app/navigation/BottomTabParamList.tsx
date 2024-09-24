@@ -4,4 +4,5 @@ export type BottomTabParamList = {
     MyCart: undefined;
     Category: undefined;
     Profile: undefined;
+    Score: undefined;
 };

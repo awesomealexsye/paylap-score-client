@@ -120,8 +120,8 @@ export const AddCustomer = ({ navigation }: AddCustomerScreenProps) => {
                                     </View>
 
                                     <View style={GlobalStyleSheet.cardBody}>
-                                        {isLoading && <ActivityIndicator size="large" color={COLORS.primary} />}
-                                        <Button title={buttonText} onPress={() => { sendOtp() }} />
+                                        {isLoading === true ? <ActivityIndicator size={70} color={COLORS.primary} />
+                                            : <Button title={buttonText} onPress={() => { sendOtp() }} />}
                                     </View>
                                 </View>
                             </View>

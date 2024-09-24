@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, StyleSheet } from 'react-native'
+import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, StyleSheet, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react';
 import { COLORS, FONTS } from '../../constants/theme'
 import { GlobalStyleSheet } from '../../constants/StyleSheet'
@@ -28,13 +28,15 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
 
+    const [isLoading, setIsLoading] = useState(false);
     const [isFocused, setisFocused] = useState(false);
-    const [isFocused2, setisFocused2] = useState(false);
+
 
     const [mobile, setMobile] = useState("");
 
     const sentOtp = async () => {
         if (mobile.length == 10) {
+            setIsLoading(true);
             const res: any = await ApiService.postWithoutToken("api/auth/login", { mobile: mobile })
             if (res != null) {
                 if (res.status) {
@@ -47,6 +49,7 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
 
 
         }
+        setIsLoading(false);
 
     }
 
@@ -82,11 +85,14 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
                     </View>
 
                     <View style={{ marginTop: 30 }}>
-                        <Button
-                            title={"Send OTP"}
-                            onPress={sentOtp}
-                            style={{ borderRadius: 52 }}
-                        />
+                        {
+                            isLoading === false ?
+                                <Button
+                                    title={"Send OTP"}
+                                    onPress={sentOtp}
+                                    style={{ borderRadius: 52 }}
+                                /> : <ActivityIndicator color={COLORS.primary} size={70} />
+                        }
                         <View
                             style={[GlobalStyleSheet.flex, {
                                 marginBottom: 20,

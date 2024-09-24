@@ -18,7 +18,6 @@ type CustomerTransationsDetailsScreenProps = StackScreenProps<RootStackParamList
 
 export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransationsDetailsScreenProps) => {
     const { customer } = route.params;
-    console.log('customer detail', customer)
     const theme = useTheme();
     const { colors }: { colors: any; } = theme;
 
@@ -157,16 +156,9 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
 
 
 
-            <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: "center" }}>
+            <View style={{ paddingHorizontal: 20, marginBottom: 30 }}>
                 <ButtonIcon title='Share' icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'share'} size={18} />}>
-
                 </ButtonIcon>
-                <TouchableOpacity style={[styles.button, { flexDirection: 'row', justifyContent: 'center', alignItems: "center", }]} onPress={() => { }}>
-
-                    <Text style={styles.buttonText}>
-                        Share</Text>
-
-                </TouchableOpacity>
             </View>
         </View>
     );

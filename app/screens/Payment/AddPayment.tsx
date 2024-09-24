@@ -14,6 +14,7 @@ import ButtonIcon from '../../components/Button/ButtonIcon';
 import useImagePicker from '../../customHooks/ImagePickerHook';
 import { ApiService } from '../../lib/ApiService';
 import { MessagesService } from '../../lib/MessagesService';
+import { ActivityIndicator } from 'react-native-paper';
 
 type AddPaymentScreenProps = StackScreenProps<RootStackParamList, 'AddPayment'>;
 
@@ -33,7 +34,7 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
 
     const [date, setDate] = useState(d);
     const [show, setShow] = useState(false);
-
+    const [isLoading, setIsLoading] = useState(false);
 
     const onChange = (event: any, selectedDate: any) => {
         const currentDate = selectedDate || date;
@@ -82,17 +83,11 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
     // console.log("img", image);
 
     const fetchAddPaymentData = async () => {
-        console.log("function called");
-
-        console.log(image)
-        console.log("form data", formdata)
         try {
-
+            setIsLoading(true);
             const res = await ApiService.postWithToken("api/shopkeeper/transactions/add-transaction",
                 formdata, { 'Content-Type': 'multipart/form-data', });
-            // MessagesService.commonMessage(res.message)
-            console.log("********************************", addPaymentData)
-            console.log(res, "gdzdsxfdtdc")
+            setIsLoading(false);
         } catch (error) {
             console.log(error);
         }
@@ -129,8 +124,9 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
                                 <ButtonIcon
                                     onPress={showDatepicker}
                                     size={'sm'}
+                                    iconDirection='left'
                                     title={date.toLocaleDateString()}
-                                    icon={<FontAwesome style={{ opacity: .6 }} name={'calendar'} size={20} color={colors.white} />}
+                                    icon={<FontAwesome style={{ opacity: 1, color: COLORS.white, }} name={'calendar'} size={20} color={colors.white} />}
                                 />
                                 {show && (
                                     <DateTimePicker
@@ -145,7 +141,8 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
                                 <ButtonIcon onPress={imagePicker}
                                     size={'sm'}
                                     title='Attach bills'
-                                    icon={<FontAwesome style={{ opacity: .6 }} name={'camera'} size={20} color={colors.white} />}
+                                    iconDirection='left'
+                                    icon={<FontAwesome style={{ opacity: 1, color: COLORS.white, }} name={'camera'} size={20} color={colors.white} />}
                                 />
 
                             </View>
@@ -159,13 +156,16 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
 
             }
             <View style={[GlobalStyleSheet.container]}>
-                <Button
-                    title='Continue'
-                    color={COLORS.primary}
-                    text={COLORS.card}
-                    onPress={fetchAddPaymentData}
-                    style={{ borderRadius: 48 }}
-                />
+                {
+                    isLoading === false ?
+                        <Button
+                            title='Continue'
+                            color={COLORS.primary}
+                            text={COLORS.card}
+                            onPress={fetchAddPaymentData}
+                            style={{ borderRadius: 48 }}
+                        /> : <ActivityIndicator size={70} color={COLORS.primary} />
+                }
             </View>
         </View>
     )

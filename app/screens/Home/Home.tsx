@@ -48,12 +48,10 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     useEffect(() => {
         fetchCustomerList();
         CommonService.currentUserDetail().then((res) => {
-            console.log("res  ss", res, typeof (res))
             setUsername(res?.name);
         })
     }, [])
     const handleSearch = (text: string) => {
-        console.log("handle search", text);
         setSearchText(text);
         const filteredList = customersData.filter((customer: any) =>
             customer.name.toLowerCase().includes(text.toLowerCase())
@@ -62,13 +60,6 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     };
     const fetchCustomerList = async () => {
         const homeApiRes = await ApiService.postWithToken("api/shopkeeper/list-customer", {});
-
-        // if (homeApiRes === null) {
-        //     setCustomersData([]);
-        //     setFilteredCustomers([]);
-        //     return;
-        // }
-        console.log("homeApiRes", homeApiRes)
         if (homeApiRes?.status == true) {
             let homeBanner = homeApiRes?.data?.shopkeeper_transaction_sum;
             setHomeBanner(homeBanner);
@@ -84,11 +75,6 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
     const theme = useTheme();
     const { colors }: { colors: any; } = theme;
-
-
-    const addItemToWishList = (data: any) => {
-        dispatch(addTowishList(data));
-    }
 
 
     const renderCustomer = ({ item }: { item: Customer }) => (

@@ -36,6 +36,7 @@ export type RootStackParamList = {
     Products: undefined;
     Language: undefined;
     MyCart: undefined;
+    Score: undefined;
     Category: undefined;
     Notifications: undefined;
     Questions: undefined;

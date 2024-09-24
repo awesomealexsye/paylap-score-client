@@ -44,13 +44,12 @@ const ButtonIcon = ({
             >
                 {icon &&
                     <View
-                        style={[{
-                            height: '100%',
-                            // marginRight: 12,
-                            alignItems: 'center',
-                            justifyContent: 'center',
+                    // style={[{
+                    //     height: '100%',
+                    //     alignItems: 'center',
+                    //     justifyContent: 'center',
 
-                        }]}
+                    // }]}
                     >
                         {icon}
                     </View>
@@ -70,11 +69,10 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.primary,
         height: 60,
         borderRadius: 12,
+        gap: 10,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
-
-        // paddingHorizontal:20,
+        justifyContent: 'center',
     },
     buttnTitle: {
         ...FONTS.fontSemiBold,

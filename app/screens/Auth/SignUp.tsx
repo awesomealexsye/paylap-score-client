@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, StyleSheet } from 'react-native'
+import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, StyleSheet, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import { COLORS, FONTS } from '../../constants/theme'
 import { GlobalStyleSheet } from '../../constants/StyleSheet'
@@ -23,12 +23,12 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
     const [isFocused, setisFocused] = useState(false);
     const [isFocused2, setisFocused2] = useState(false);
     const [isFocused3, setisFocused3] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [mobile, setMobile] = useState("");
 
     const sentOtp = async () => {
-        console.log(name, email, mobile);
         if (name == '' || name.length < 2) {
             MessagesService.commonMessage("Invalid Name")
         } else if (email == '' || email.length < 2) {
@@ -38,6 +38,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
             MessagesService.commonMessage("Invalid Mobile Number")
         }
         else {
+            setIsLoading(true);
             const res: any = await ApiService.postWithoutToken("api/auth/register", { name, email, mobile })
             if (res != null) {
                 if (res.status) {
@@ -45,7 +46,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                 }
                 MessagesService.commonMessage(res.message)
             }
-
+            setIsLoading(false);
         }
 
 
@@ -122,12 +123,16 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                         </View>
                     </View>
                     <View style={{ marginTop: 30 }}>
-                        <Button
-                            title={"Send OTP"}
-                            color={'#606060'}
-                            onPress={sentOtp}
-                            style={{ borderRadius: 52 }}
-                        />
+                        {
+                            isLoading === false ?
+                                <Button
+                                    title={"Send OTP"}
+                                    color={'#606060'}
+                                    onPress={sentOtp}
+                                    style={{ borderRadius: 52 }}
+                                /> : <ActivityIndicator size={70} color={COLORS.primary} />
+
+                        }
                         <View style={{ marginTop: 10 }}>
                             <Text style={[styles.title2, { color: theme.dark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)', textAlign: 'center' }]}>By tapping “Sign Up” you accept our <Text style={[styles.title1, { fontSize: 14, color: COLORS.primary }]}>terms</Text> and <Text style={[styles.title1, { fontSize: 14, color: COLORS.primary }]}>condition</Text></Text>
                         </View>

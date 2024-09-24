@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, StyleSheet } from 'react-native'
+import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, StyleSheet, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react';
 import { COLORS, FONTS } from '../../constants/theme'
 import { GlobalStyleSheet } from '../../constants/StyleSheet'
@@ -31,12 +31,13 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
     const { colors }: { colors: any } = theme;
 
     const [isFocused, setisFocused] = useState(false);
-    const [isFocused2, setisFocused2] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [otp, setOtp] = useState("");
 
     const verifyOtp = async () => {
 
         if (otp.length == 4) {
+            setIsLoading(true);
             const res: any = await ApiService.postWithoutToken("api/auth/otp-verify", { mobile, otp })
             if (res != null) {
                 if (res.status) {
@@ -55,6 +56,7 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
         } else {
             MessagesService.commonMessage("OTP Lenth Must be 4 Digit")
         }
+        setIsLoading(false);
     }
 
     return (
@@ -89,11 +91,14 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
                     </View>
 
                     <View style={{ marginTop: 30 }}>
-                        <Button
-                            title={"Verify"}
-                            onPress={verifyOtp}
-                            style={{ borderRadius: 52 }}
-                        />
+                        {
+                            isLoading === false ?
+                                <Button
+                                    title={"Verify"}
+                                    onPress={verifyOtp}
+                                    style={{ borderRadius: 52 }}
+                                /> : <ActivityIndicator color={COLORS.primary} size={70} />
+                        }
 
                     </View>
                 </View>

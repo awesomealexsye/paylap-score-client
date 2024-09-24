@@ -45,6 +45,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                     <Text style={{ ...FONTS.fontSemiBold, fontSize: 28, color: colors.title }}>{profile?.name}</Text>
                     {/* <Text style={{ ...FONTS.fontRegular, fontSize: 16, color: COLORS.primary }}>London, England</Text> */}
                 </View>
+
                 <View
                     style={[GlobalStyleSheet.container, { paddingHorizontal: 40, marginTop: 20 }]}
                 >

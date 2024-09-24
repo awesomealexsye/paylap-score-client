@@ -9,6 +9,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import Button from '../../components/Button/Button';
 import { COLORS, FONTS } from '../../constants/theme';
 import CommonService from '../../lib/CommonService';
+import { ActivityIndicator } from 'react-native-paper';
 
 const EditProfile = () => {
 
@@ -29,6 +30,7 @@ const EditProfile = () => {
     const [isFocused1, setisFocused1] = useState(false)
     const [isFocused2, setisFocused2] = useState(false)
     const [isFocused3, setisFocused3] = useState(false)
+    const [isLoading, setIsLoading] = useState(false);
 
     const [imageUrl, setImageUrl] = useState('');
 
@@ -38,23 +40,6 @@ const EditProfile = () => {
         const numericValue = text.replace(/[^0-9]/g, "");
         setInputValue(numericValue);
     };
-
-    // const handleImageSelect = () => {
-    //     if (Platform.OS == 'android') {
-    //         try {
-    //             ImagePicker.openPicker({
-    //                 width: 200,
-    //                 height: 200,
-    //                 cropping: true
-    //             }).then((image: { path: React.SetStateAction<string>; }) => {
-    //                 setImageUrl(image.path);
-    //             });
-    //         } catch (e) {
-    //             console.log(e);
-    //         }
-
-    //     }
-    // }
 
     return (
         <View style={{ backgroundColor: colors.background, flex: 1 }}>
@@ -155,13 +140,16 @@ const EditProfile = () => {
                 </View>
             </ScrollView>
             <View style={[GlobalStyleSheet.container]}>
-                <Button
-                    title='Update Profile'
-                    color={COLORS.primary}
-                    text={COLORS.card}
-                    onPress={() => navigation.navigate('Profile')}
-                    style={{ borderRadius: 50 }}
-                />
+                {
+                    isLoading === false ?
+                        <Button
+                            title='Update Profile'
+                            color={COLORS.primary}
+                            text={COLORS.card}
+                            onPress={() => navigation.navigate('Profile')}
+                            style={{ borderRadius: 50 }}
+                        /> : <ActivityIndicator size={70} color={COLORS.primary} />
+                }
             </View>
         </View>
     )
