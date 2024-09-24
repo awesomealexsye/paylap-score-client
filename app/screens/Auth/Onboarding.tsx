@@ -12,17 +12,17 @@ import StorageService from '../../lib/StorageService';
 
 const DATA = [
     {
-        title: "do meet our summer coffee drinks",
-        subtitle: "orem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
+    title: "Welcome to PaylapScore",
+    subtitle: "Discover an efficient way to track your customer’s credit behavior, manage lent items, and streamline your business with smart analytics."
     },
     {
-        title: "do meet our summer coffee drinks",
-        subtitle: "orem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
+        title: "Find Customer Credit Score",
+        subtitle: "Quickly access and analyze detailed credit scores for your customers, ensuring informed lending decisions and fostering trust."
     },
     {
-        title: "Let's meet our summer coffee drinks",
-        subtitle: "orem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
-    },
+        title: "100% Safe And Secure",
+        subtitle: "Your data and transactions are fully encrypted, ensuring a secure and private environment for your shop and customers."
+    }
 ]
 
 type OnboardingScreenProps = StackScreenProps<RootStackParamList, 'Onboarding'>;
