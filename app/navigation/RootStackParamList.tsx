@@ -55,7 +55,7 @@ export type RootStackParamList = {
     Checkout: undefined;
     Addcard: undefined;
     Payment: undefined;
-    AddPayment: undefined;
+    AddPayment: object|undefined;
     AddDeliveryAddress: undefined;
     Myorder: undefined;
     Notification: undefined;

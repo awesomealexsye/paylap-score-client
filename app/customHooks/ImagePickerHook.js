@@ -5,7 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 const useImagePicker = () => {
 	const [image, setImage] = useState(null);
 
-	// Request permissions on mount
+	// Request permissions on mount 
 	// useEffect(() => {
 	// 	(async () => {
 	// 		if (Platform.OS !== 'web') {
@@ -33,9 +33,11 @@ const useImagePicker = () => {
 				aspect: [4, 3],
 				quality: 1,
 			});
+			// console.log(result)
 
 			if (!result.canceled) {
-				setImage(result.assets[0].uri);
+				setImage(result.assets[0]);
+
 			}
 		} catch (error) {
 			console.log('Error picking image: ', error);
@@ -58,7 +60,13 @@ const useImagePicker = () => {
 
 
 			if (!result.canceled) {
-				setImage(result.assets[0].uri);
+				setImage(result);
+				// setImage({
+				// 	"uri": Platform.OS === 'ios' ? result.assets[0].uri.replace('file://', '') : result.assets[0].uri,
+				// 	"name": result.assets[0].fileName,
+				// 	"type": result.assets[0].type,
+				// 	"fileSize": result.assets[0].fileSize
+				// });
 			}
 
 		} catch (error) {

@@ -1,6 +1,6 @@
 import { useTheme } from '@react-navigation/native';
-import React, { useState, useEffect } from 'react'
-import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
+import React, { useState, useEffect } from 'react';
+import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import Header from '../../layout/Header';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { COLORS, FONTS } from '../../constants/theme';
@@ -18,81 +18,62 @@ import { ActivityIndicator } from 'react-native-paper';
 
 type AddPaymentScreenProps = StackScreenProps<RootStackParamList, 'AddPayment'>;
 
-const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
+const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
+    const { item, transaction_type }: any = route.params;
+    // console.log("itemss::",route.params,item?.customer_id,typeof(item),transaction_type);
 
-
-    const { image, pickImage, takePhoto } = useImagePicker();
-
+    const { image, pickImage, takePhoto }: any = useImagePicker();
 
     const [addPaymentData, setAddPaymentData] = useState<any>({});
-
+    const [amount, setAmount] = useState<String>("");
+    const [description, setDescription] = useState<String>("");
+    const [newDate, setNewDate] = useState<String>("");
+    const [isLoading, setIsLoading] = useState(false)
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
 
-    let d = new Date();
-
-
-    const [date, setDate] = useState(d);
+    const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
 
     const onChange = (event: any, selectedDate: any) => {
         const currentDate = selectedDate || date;
         setShow(false);
         setDate(currentDate);
-        setAddPaymentData({ ...addPaymentData, "date": `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}` });
-
+        setNewDate(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
     };
-
 
     const showDatepicker = () => {
         setShow(true);
     };
 
-    // imagePickerFunction
-
-
-
-
-    const imagePicker = async () => {
-        await pickImage();
-
-
-    }
-
-    setTimeout(myGreeting, 1000);
-
-    function myGreeting() {
-        setAddPaymentData({ ...addPaymentData, "image": image })
-    }
-
-    const file: any = {
-        uri: image,
-        name: 'image.jpg', // Extract the file name if available or use a default one
-        type: 'image/jpeg', // Correct type of the image
-    };
-
-
-    const formdata = new FormData();
-    formdata.append("customer_id", "7");
-    formdata.append("amount", `${addPaymentData.amount}`);
-    formdata.append("transaction_type", "CREDIT");
-    formdata.append("description", addPaymentData.description);
-    formdata.append("transaction_date", addPaymentData.date);
-    formdata.append("image", file);
-    // console.log("img", image);
+    useEffect(() => {
+        setNewDate(`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`);
+    }, []);
 
     const fetchAddPaymentData = async () => {
-        try {
-            setIsLoading(true);
-            const res = await ApiService.postWithToken("api/shopkeeper/transactions/add-transaction",
-                formdata, { 'Content-Type': 'multipart/form-data', });
-            setIsLoading(false);
-        } catch (error) {
-            console.log(error);
-        }
-    }
+        setIsLoading(true);
+        const data: any = { customer_id: item?.customer_id, amount: amount, transaction_type: transaction_type, description: description, transaction_date: newDate }
 
+        if (image && image.uri) {
+            const base64Image = await fetch(image.uri).then(res => res.blob()).then(blob => {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                });
+            });
+
+            data.image = base64Image;
+        }
+
+        ApiService.postWithToken("api/shopkeeper/transactions/add-transaction", data).then((res) => {
+            setIsLoading(false);
+            if (res.status == true) {
+                navigation.goBack();
+            }
+        });
+    };
 
     return (
         <View style={{ backgroundColor: colors.background, flex: 1, }}>
@@ -106,17 +87,17 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
                     <View style={GlobalStyleSheet.cardBody}>
                         <View style={{ marginBottom: 10 }}>
                             <Input
+                                keyboardType='numeric'
                                 icon={<FontAwesome style={{ opacity: .6 }} name={'rupee'} size={20} color={colors.text} />}
-                                //value={''}  
                                 placeholder="Enter amount"
-                                onChangeText={(amount) => setAddPaymentData({ ...addPaymentData, "amount": amount })}
+                                onChangeText={amount => setAmount(amount)}
                             />
                         </View>
                         <View style={{ marginBottom: 10 }}>
                             <Input
                                 multiline={true}
                                 placeholder="Enter Details (Item Name, Bill no)"
-                                onChangeText={(description) => setAddPaymentData({ ...addPaymentData, "description": description })}
+                                onChangeText={description => setDescription(description)}
                             />
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 12 }}>
@@ -124,9 +105,8 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
                                 <ButtonIcon
                                     onPress={showDatepicker}
                                     size={'sm'}
-                                    iconDirection='left'
-                                    title={date.toLocaleDateString()}
-                                    icon={<FontAwesome style={{ opacity: 1, color: COLORS.white, }} name={'calendar'} size={20} color={colors.white} />}
+                                    title={newDate || date.toLocaleDateString()}
+                                    icon={<FontAwesome style={{ opacity: .6 }} name={'calendar'} size={20} color={colors.white} />}
                                 />
                                 {show && (
                                     <DateTimePicker
@@ -138,23 +118,25 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
                                 )}
                             </View>
                             <View>
-                                <ButtonIcon onPress={imagePicker}
+                                <ButtonIcon onPress={pickImage}
                                     size={'sm'}
                                     title='Attach bills'
                                     iconDirection='left'
                                     icon={<FontAwesome style={{ opacity: 1, color: COLORS.white, }} name={'camera'} size={20} color={colors.white} />}
                                 />
-
                             </View>
                         </View>
                     </View>
                 </View>
-
             </ScrollView>
 
-            {image && <Image source={{ uri: image }} style={{ width: 300, height: 300, marginHorizontal: 50, marginVertical: 20 }} />
+            {image && image.uri && (
+                <Image
+                    source={{ uri: image.uri }}
+                    style={{ width: 300, height: 300, marginHorizontal: 50, marginVertical: 20 }}
+                />
+            )}
 
-            }
             <View style={[GlobalStyleSheet.container]}>
                 {
                     isLoading === false ?
