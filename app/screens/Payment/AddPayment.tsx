@@ -17,13 +17,12 @@ import { MessagesService } from '../../lib/MessagesService';
 
 type AddPaymentScreenProps = StackScreenProps<RootStackParamList, 'AddPayment'>;
 
-const AddPayment = ({ navigation,route }: AddPaymentScreenProps) => {
-        const {item,transaction_type}:any = route.params;
-        // console.log("itemss::",route.params,item?.customer_id,typeof(item),transaction_type);
+const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
+    const { item, transaction_type }: any = route.params;
+    // console.log("itemss::",route.params,item?.customer_id,typeof(item),transaction_type);
 
-    const { image, pickImage, takePhoto }:any = useImagePicker();
+    const { image, pickImage, takePhoto }: any = useImagePicker();
 
-    const [addPaymentData, setAddPaymentData] = useState<any>({});
     const [amount, setAmount] = useState<String>("");
     const [description, setDescription] = useState<String>("");
     const [newDate, setNewDate] = useState<String>("");
@@ -50,25 +49,10 @@ const AddPayment = ({ navigation,route }: AddPaymentScreenProps) => {
     }, []);
 
     const fetchAddPaymentData = async () => {
-        // console.log("inputs..",item,amount,description,newDate,image)
-        const data:any = {customer_id:item?.customer_id,amount:amount,transaction_type:transaction_type,description:description,transaction_date:newDate}
-// console.log(data,"api")
-        if (image && image.uri) {
-            const base64Image = await fetch(image.uri).then(res => res.blob()).then(blob => {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => resolve(reader.result);
-                    reader.onerror = reject;
-                    reader.readAsDataURL(blob);
-                });
-            });
-
-            data.image = base64Image;
-        }
-
+        const data: any = { customer_id: item?.customer_id, amount: amount, transaction_type: transaction_type, description: description, transaction_date: newDate, image: image }
         ApiService.postWithToken("api/shopkeeper/transactions/add-transaction", data).then((res) => {
-            console.log("api res::", res)
-            if(res.status == true){
+            if (res.status == true) {
+                console.log(res)
                 navigation.goBack();
             }
         });
@@ -129,9 +113,9 @@ const AddPayment = ({ navigation,route }: AddPaymentScreenProps) => {
             </ScrollView>
 
             {image && image.uri && (
-                <Image 
-                    source={{ uri: image.uri }} 
-                    style={{ width: 300, height: 300, marginHorizontal: 50, marginVertical: 20 }} 
+                <Image
+                    source={{ uri: image.uri }}
+                    style={{ width: 300, height: 300, marginHorizontal: 50, marginVertical: 20 }}
                 />
             )}
 

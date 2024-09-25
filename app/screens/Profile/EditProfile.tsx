@@ -1,16 +1,29 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Platform } from 'react-native'
+import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Platform, Alert } from 'react-native'
 import { useNavigation, useTheme } from '@react-navigation/native';
 import Header from '../../layout/Header';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { IMAGES } from '../../constants/Images';
 import Input from '../../components/Input/Input';
-import ImagePicker from 'react-native-image-crop-picker';
 import Button from '../../components/Button/Button';
 import { COLORS, FONTS } from '../../constants/theme';
 import CommonService from '../../lib/CommonService';
+import ImagePickerModal from '../../components/Modal/ImagePickerModal';
+import useImagePicker from '../../customHooks/ImagePickerHook';
+import { ApiService } from '../../lib/ApiService';
+import { MessagesService } from '../../lib/MessagesService';
 
 const EditProfile = () => {
+    const { image, pickImage, takePhoto }: any = useImagePicker();
+
+    const [modalVisible, setModalVisible] = useState(false)
+
+    useEffect(() => {
+        if (image !== null) {
+            setModalVisible(false);
+        }
+    }, [image])
+
 
     const [profile, setProfile] = React.useState<any>({});
 
@@ -30,7 +43,8 @@ const EditProfile = () => {
     const [isFocused2, setisFocused2] = useState(false)
     const [isFocused3, setisFocused3] = useState(false)
 
-    const [imageUrl, setImageUrl] = useState('');
+
+    // const [imageUrl, setImageUrl] = useState('');
 
     const [inputValue, setInputValue] = useState("");
 
@@ -39,25 +53,29 @@ const EditProfile = () => {
         setInputValue(numericValue);
     };
 
-    // const handleImageSelect = () => {
-    //     if (Platform.OS == 'android') {
-    //         try {
-    //             ImagePicker.openPicker({
-    //                 width: 200,
-    //                 height: 200,
-    //                 cropping: true
-    //             }).then((image: { path: React.SetStateAction<string>; }) => {
-    //                 setImageUrl(image.path);
-    //             });
-    //         } catch (e) {
-    //             console.log(e);
-    //         }
+    const handleImageSelect = () => {
+        setModalVisible(true);
+    }
 
-    //     }
-    // }
+
+
+
+
+
+    const updateProfileData = async () => {
+
+        ApiService.postWithToken("api/user/profile-update", { profile_image: image, name: "Vishal" }).then((res) => {
+            if (res.status == true) {
+                console.log(res)
+                MessagesService.commonMessage(res.message);
+
+            }
+        });
+    };
 
     return (
         <View style={{ backgroundColor: colors.background, flex: 1 }}>
+
             <Header
                 title='Edit Profile'
                 leftIcon='back'
@@ -70,12 +88,13 @@ const EditProfile = () => {
                             <View style={styles.imageborder}>
                                 <Image
                                     style={{ height: 82, width: 82, borderRadius: 50 }}
-                                    source={{ uri: profile?.profile_image }}
+                                    source={{ uri: image === null ? profile?.profile_image : image }}
+
                                 />
                             </View>
                             <TouchableOpacity
                                 activeOpacity={0.8}
-                                // onPress={handleImageSelect} 
+                                onPress={handleImageSelect}
                                 style={[styles.WriteIconBackground, { backgroundColor: colors.card }]}
                             >
                                 <View style={styles.WriteIcon}>
@@ -86,6 +105,8 @@ const EditProfile = () => {
                                 </View>
                             </TouchableOpacity>
                         </View>
+                        <ImagePickerModal close={setModalVisible} modalVisible={modalVisible} removeImage={{}}
+                            pickImageFromCamera={takePhoto} pickImageFromGallery={pickImage} />
                         <View>
                             <Text style={[FONTS.fontMedium, { fontSize: 19, color: colors.title }]}>{profile?.name}</Text>
                             {/* <Text style={[FONTS.fontRegular,{fontSize:12,color:colors.text}]}>Last Visit : 17 Jan 2024</Text> */}
@@ -159,7 +180,7 @@ const EditProfile = () => {
                     title='Update Profile'
                     color={COLORS.primary}
                     text={COLORS.card}
-                    onPress={() => navigation.navigate('Profile')}
+                    onPress={updateProfileData}
                     style={{ borderRadius: 50 }}
                 />
             </View>
