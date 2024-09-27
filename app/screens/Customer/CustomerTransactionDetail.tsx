@@ -158,9 +158,9 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
 
 
             <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: "center" }}>
-                <ButtonIcon title='Share' icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'share'} size={18} />}>
+                {/* <ButtonIcon title='Share' icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'share'} size={18} />}>
 
-                </ButtonIcon>
+                </ButtonIcon> */}
                 <TouchableOpacity style={[styles.button, { flexDirection: 'row', justifyContent: 'center', alignItems: "center", }]} onPress={() => { }}>
 
                     <Text style={styles.buttonText}>

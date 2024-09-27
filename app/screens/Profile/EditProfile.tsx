@@ -63,14 +63,22 @@ const EditProfile = () => {
 
 
     const updateProfileData = async () => {
+        console.log("calling,,,");
+        const res = await ApiService.postWithToken(
+            "api/user/profile-update",
+            { profile_image: image, name: "Vishal" },
+        )
+        console.log("image profle", image)
+        // .then(async (res) => {
 
-        ApiService.postWithToken("api/user/profile-update", { profile_image: image, name: "Vishal" }).then((res) => {
-            if (res.status == true) {
-                console.log(res)
-                MessagesService.commonMessage(res.message);
+        // });
+        if (res.status == true) {
 
-            }
-        });
+            // await CommonService.storageUserDetail();
+            MessagesService.commonMessage(res.message);
+            navigation.goBack();
+        }
+
     };
 
     return (

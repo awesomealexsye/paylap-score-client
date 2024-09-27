@@ -31,6 +31,12 @@ const MenuItems = [
     //     navigate: 'Chat',
     // },
     {
+        id: "3",
+        icon: IMAGES.chat,
+        name: "User Kyc",
+        navigate: 'UserKyc',
+    },
+    {
         id: "4",
         icon: IMAGES.user3,
         name: "Profile",

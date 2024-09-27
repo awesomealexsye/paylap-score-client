@@ -18,6 +18,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
 
     useEffect(() => {
         CommonService.currentUserDetail().then((res) => {
+            console.log("calling inside profile")
             setProfile(res);
         })
     }, []);
