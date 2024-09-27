@@ -190,9 +190,10 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                             <CustomerActivityBtn
 
                                 gap
-                                icon={<FontAwesome style={{ color: colors.title }} name={'file-pdf-o'} size={20} />}
+                                icon={<Image source={IMAGES.tachometerfast} style={{ height: 20, width: 20, resizeMode: 'contain' }}></Image>}
                                 color={colors.card}
-                                text='Report'
+                                text='Score'
+                                onpress={() => navigation.navigate('CustomerScore', { customer: item })}
                             />
                             <CustomerActivityBtn
                                 gap
@@ -244,12 +245,12 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
 
             </ScrollView>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 30, backgroundColor: colors.dark }}>
-                <TouchableOpacity style={[styles.removeBtn]} onPress={() => navigation.navigate("AddPayment",{item:item,transaction_type:"DEBIT"})}>
+                <TouchableOpacity style={[styles.removeBtn]} onPress={() => navigation.navigate("AddPayment", { item: item, transaction_type: "DEBIT" })}>
 
                     <Text style={styles.addButtonText}>
                         Debit</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.addAmmount} onPress={() => navigation.navigate("AddPayment",{item:item,transaction_type:"CREDIT"})}>
+                <TouchableOpacity style={styles.addAmmount} onPress={() => navigation.navigate("AddPayment", { item: item, transaction_type: "CREDIT" })}>
 
                     <Text style={styles.addButtonText}>
                         Credit</Text>

@@ -48,6 +48,7 @@ export type RootStackParamList = {
     AddCustomer: undefined;
     CustomerTransations: { item: any };
     CustomerTransationsDetails: { customer: any };
+    CustomerScore: { customer: any };
     Search: undefined;
     Components: undefined;
     Coupons: undefined;
@@ -55,7 +56,7 @@ export type RootStackParamList = {
     Checkout: undefined;
     Addcard: undefined;
     Payment: undefined;
-    AddPayment: object|undefined;
+    AddPayment: object | undefined;
     AddDeliveryAddress: undefined;
     Myorder: undefined;
     Notification: undefined;

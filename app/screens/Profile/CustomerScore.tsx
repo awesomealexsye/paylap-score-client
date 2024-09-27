@@ -12,7 +12,7 @@ import { RootStackParamList } from '../../navigation/RootStackParamList';
 import ProfileScore from './PeofileScore';
 import CommonService from '../../lib/CommonService';
 
-type CustomerScoreScreenProps = StackScreenProps<RootStackParamList, 'Score'>;
+type CustomerScoreScreenProps = StackScreenProps<RootStackParamList, 'CustomerScore'>;
 
 const CustomerScore = ({ navigation }: CustomerScoreScreenProps) => {
 

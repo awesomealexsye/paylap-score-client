@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { ScrollView, View, Text } from 'react-native';
+import { ScrollView, View, Text, ActivityIndicator } from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { useTheme } from '@react-navigation/native';
 import LoginSheet from '../../components/BottomSheet/LoginSheet';
@@ -22,62 +22,45 @@ const UserKyc = forwardRef((props, ref) => {
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
 
-    const refRBSheet = useRef<any>(null);
-    const [isSheet, setIsSheet] = useState(false);
-    const [aadhaar, setAadhaar] = useState("");
-    const CallAadharApi = async () => {
-        ApiService.postWithToken("api/kyc/aadhaar-otp-generate", { "aadhaar_number": aadhaar }).then((res: any) => {
-            //setProfile(res);
-        });
-    };
-    useImperativeHandle(ref, () => ({
+    const [buttonText, setButtonText] = useState("Send OTP");
+    const [otp, setOtp] = useState("");
+    const [isOtpSent, setIsOtpSent] = useState(false);
+    const [aadharDetail, setAadharDetail] = useState<any>({});
+    const [isLoading, setIsLoading] = useState(false);
+    const [aadhar, setAadhar] = useState("");
 
-        openSheet: async (value: string) => {
-            await refRBSheet.current.open();
-        },
-        closeSheet() {
-            refRBSheet.current.close();
+    const sendOtp = async () => {
+        setIsLoading(true);
+        if (buttonText === "Send OTP") {
+
+            if (aadhar?.length != 12) {
+                MessagesService.commonMessage("Invalid Aadhar Number");
+                return;
+            }
+            const res = await ApiService.postWithToken("api/kyc/aadhaar-otp-generate", { "aadhaar_number": aadhar });
+            if (res !== null && res.status === true) {
+                if (res?.data?.otp_sent) {
+                    setAadharDetail(res.data);
+                    setIsOtpSent(true);
+                    setButtonText("Verify OTP");
+                } else {
+                    MessagesService.commonMessage(aadharDetail?.message);
+                }
+            }
+        } else if (buttonText === "Verify OTP") {
+            const res = await ApiService.postWithToken("/api/kyc/aadhaar-otp-verify", { "client_id": aadharDetail?.data.client_id, "otp": otp });
+            if (res !== null) {
+                if (res?.status === true) {
+                    setIsLoading(false);
+                    MessagesService.commonMessage(res.message);
+                    //navigation.navigate("Home");
+                }
+            }
         }
-
-    }));
-
-    const handleSheet = async () => {
-        await refRBSheet.current.open();
-    }
-    const sendOtp = () => {
-        console.log(aadhaar)
-        if (aadhaar.length != 12) {
-            MessagesService.commonMessage("Invalid Aadhaar Number")
-        } else {
-            handleSheet();
-        }
-
     }
 
     return (
         <>
-            <RBSheet
-                ref={refRBSheet}
-                closeOnDragDown={true}
-                height={300}
-                openDuration={100}
-                customStyles={{
-
-                    container: {
-                        backgroundColor: theme.dark ? colors.background : colors.cardBg,
-                    },
-                    draggableIcon: {
-                        marginTop: 10,
-                        marginBottom: 5,
-                        height: 5,
-                        width: 80,
-                        backgroundColor: colors.border,
-                    }
-                }}
-            >
-                {<AadhaarOtp value={aadhaar} sheetRef={refRBSheet} />}
-
-            </RBSheet>
 
             <View style={{ flex: 1, backgroundColor: colors.background }}>
                 <View style={{}}>
@@ -98,13 +81,24 @@ const UserKyc = forwardRef((props, ref) => {
                                             inputRounded
                                             icon={<FontAwesome style={{ opacity: .6 }} name={'address-card'} size={20} color={colors.text} />}
                                             placeholder="Your Aadhaar Card Number"
-                                            onChangeText={(value) => setAadhaar(value)}
+                                            onChangeText={(value) => setAadhar(value)}
                                         />
                                     </View>
+                                    {isOtpSent &&
+                                        <View style={{ marginBottom: 10 }}>
+                                            <Input
+                                                inputRounded
+                                                icon={<FontAwesome style={{ opacity: .6 }} name={'address-card'} size={20} color={colors.text} />}
+                                                placeholder="Your Aadhaar OTP"
+                                                onChangeText={(value) => setOtp(value)}
+                                            />
+                                        </View>
+                                    }
 
                                     <View style={GlobalStyleSheet.cardBody}>
-                                        <Button title={'Sent OTP'} onPress={() => { sendOtp() }} />
-
+                                        {isLoading === true ? <ActivityIndicator size="small" color={colors.primary} />
+                                            : <Button title={buttonText} onPress={() => { sendOtp() }} />
+                                        }
                                     </View>
                                 </View>
                             </View>
