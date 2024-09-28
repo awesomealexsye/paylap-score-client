@@ -1,7 +1,7 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { ScrollView, View, Text, ActivityIndicator } from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import { useTheme } from '@react-navigation/native';
+import { useNavigation, useTheme } from '@react-navigation/native';
 import LoginSheet from '../../components/BottomSheet/LoginSheet';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import Header from '../../layout/Header';
@@ -12,6 +12,7 @@ import { MessagesService } from '../../lib/MessagesService';
 import AadhaarOtp from './AadhaarOtp';
 import { COLORS, FONTS } from '../../constants/theme';
 import { ApiService } from '../../lib/ApiService';
+import CommonService from '../../lib/CommonService';
 type Props = {
     height?: string,
 }
@@ -21,14 +22,23 @@ const UserKyc = forwardRef((props, ref) => {
 
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
-
+    const navigation = useNavigation<any>();
     const [buttonText, setButtonText] = useState("Send OTP");
     const [otp, setOtp] = useState("");
     const [isOtpSent, setIsOtpSent] = useState(false);
     const [aadharDetail, setAadharDetail] = useState({ client_id: "" });
     const [isLoading, setIsLoading] = useState(false);
     const [aadhar, setAadhar] = useState("");
-
+    useEffect(() => {
+        CommonService.currentUserDetail().then((res) => {
+            if (res !== null) {
+                if (res.aadhar_card === "") {
+                    navigation.navigate("Profile")
+                    MessagesService.commonMessage("Your KYC has been already completed.");
+                }
+            }
+        });
+    }, []);
     const sendOtp = async () => {
         setIsLoading(true);
         if (buttonText === "Send OTP") {
@@ -57,8 +67,10 @@ const UserKyc = forwardRef((props, ref) => {
                 if (res?.status === true) {
                     setIsLoading(false);
                     setIsOtpSent(false);
+
                     MessagesService.commonMessage(res.message);
-                    //navigation.navigate("Home");
+                    navigation.navigate("Profile")
+                    MessagesService.commonMessage("Your KYC has been completed.");
                 }
                 else {
                     setIsLoading(false);

@@ -24,12 +24,6 @@ const MenuItems = [
         name: "Components",
         navigate: "Components",
     },
-    {
-        id: "3",
-        icon: IMAGES.components,
-        name: "UserKyc",
-        navigate: "UserKyc",
-    },
     // {
     //     id: "3",
     //     icon: IMAGES.chat,

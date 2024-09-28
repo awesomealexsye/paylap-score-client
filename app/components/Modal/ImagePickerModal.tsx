@@ -33,13 +33,13 @@ const ImagePickerModal = ({ close, modalVisible, pickImageFromCamera, pickImageF
 					justifyContent: "space-around",
 					paddingHorizontal: 10,
 					paddingVertical: 30,
-					margin: 300,
+					margin: 250,
 					elevation: 5,
 					backgroundColor: theme.dark ? "#3B3B3B" : colors.card,
 					borderRadius: SIZES.radius_lg,
 					marginHorizontal: 30,
-					maxWidth: 340,
-					// height: 300,
+					// maxWidth: 340,
+					// height: 280,
 					shadowColor: "#025135",
 					shadowOffset: {
 						width: 0,
@@ -49,11 +49,11 @@ const ImagePickerModal = ({ close, modalVisible, pickImageFromCamera, pickImageF
 					shadowRadius: 31.27,
 
 				}}>
-					<Text style={{ ...FONTS.h5, color: colors.title, marginBottom: 5, textAlign: "center" }}>Profile Photo</Text>
-					<View style={{ borderTopWidth: 1, margin: 10 }}>
+					<Text style={{ ...FONTS.h5, color: colors.title, textAlign: "center", }}>Profile Photo</Text>
+					<View style={{ borderTopWidth: 1, }}>
 
 					</View>
-					<View style={[{ flexDirection: "row", justifyContent: "space-around", alignItems: "center", marginTop: 20, }]}>
+					<View style={[{ flexDirection: "row", justifyContent: "space-around", alignItems: "center", paddingVertical: 10, }]}>
 						<CustomerActivityBtn
 							onpress={pickImageFromCamera}
 							gap
@@ -76,7 +76,7 @@ const ImagePickerModal = ({ close, modalVisible, pickImageFromCamera, pickImageF
 						/>
 
 					</View>
-					<View style={{ flexDirection: 'row', justifyContent: "space-evenly", marginTop: 25 }}>
+					<View style={{ flexDirection: 'row', justifyContent: "space-evenly", marginTop: 10, }}>
 						<Button
 							onPress={() => close(false)}
 							color={COLORS.primary}
