@@ -70,7 +70,7 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                     height: 220,
                     width: 380,
                     top: 20,
-                    backgroundColor: colors,
+                    backgroundColor: colors.card,
                     borderRadius: 31,
                     shadowColor: "#025135",
                     shadowOffset: {

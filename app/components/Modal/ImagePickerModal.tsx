@@ -24,7 +24,7 @@ const ImagePickerModal = ({ close, modalVisible, pickImageFromCamera, pickImageF
 	return (
 		<>
 			<Modal
-				animationType="slide"
+				animation="slide"
 				transparent={true}
 				visible={modalVisible}
 			>
@@ -38,12 +38,6 @@ const ImagePickerModal = ({ close, modalVisible, pickImageFromCamera, pickImageF
 					backgroundColor: theme.dark ? "#3B3B3B" : colors.card,
 					borderRadius: SIZES.radius_lg,
 					marginHorizontal: 30,
-					// maxWidth: 340,
-<<<<<<< HEAD
-					// height: 300,
-=======
-					// height: 280,
->>>>>>> 7b1db25c2c837865f875fc5b9ea38e1e4def53cd
 					shadowColor: "#025135",
 					shadowOffset: {
 						width: 0,
