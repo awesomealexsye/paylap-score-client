@@ -33,11 +33,19 @@ const useImagePicker = () => {
 				aspect: [4, 3],
 				quality: 1,
 			});
-			// console.log(result)
 
 			if (!result.canceled) {
-				setImage(result.assets[0]);
 
+				const base64Image = await fetch(result.assets[0].uri).then(res => res.blob()).then(blob => {
+					return new Promise((resolve, reject) => {
+						const reader = new FileReader();
+						reader.onloadend = () => resolve(reader.result);
+						reader.onerror = reject;
+						reader.readAsDataURL(blob);
+					});
+				});
+
+				setImage(base64Image);
 			}
 		} catch (error) {
 			console.log('Error picking image: ', error);
@@ -60,13 +68,14 @@ const useImagePicker = () => {
 
 
 			if (!result.canceled) {
-				setImage(result);
-				// setImage({
-				// 	"uri": Platform.OS === 'ios' ? result.assets[0].uri.replace('file://', '') : result.assets[0].uri,
-				// 	"name": result.assets[0].fileName,
-				// 	"type": result.assets[0].type,
-				// 	"fileSize": result.assets[0].fileSize
-				// });
+				const base64Image = await fetch(result.assets[0].uri).then(res => res.blob()).then(blob => {
+					return new Promise((resolve, reject) => {
+						const reader = new FileReader();
+						reader.onloadend = () => resolve(reader.result);
+						reader.onerror = reject;
+						reader.readAsDataURL(blob);
+					});
+				});
 			}
 
 		} catch (error) {
@@ -75,7 +84,7 @@ const useImagePicker = () => {
 	};
 
 	return {
-		image,          // The URI of the selected or captured 
+		image,          // The Base64 image of the selected or captured 
 		pickImage,      // Function to open image picker
 		takePhoto,      // Function to open the camera
 	};

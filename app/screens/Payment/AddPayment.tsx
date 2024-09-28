@@ -24,7 +24,6 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
 
     const { image, pickImage, takePhoto }: any = useImagePicker();
 
-    const [addPaymentData, setAddPaymentData] = useState<any>({});
     const [amount, setAmount] = useState<String>("");
     const [description, setDescription] = useState<String>("");
     const [newDate, setNewDate] = useState<String>("");

@@ -173,7 +173,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 <View style={{ flex: 1, alignItems: 'center' }} >
                     <View style={{
                         height: 140,
-                        width: 400,
+                        width: 380,
                         top: 20,
                         backgroundColor: COLORS.primary,
                         borderRadius: 31,
@@ -188,7 +188,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                     }}>
 
 
-                        <View style={{ width: 400, flexDirection: 'row', marginTop: 22, rowGap: 4, justifyContent: 'center', borderBlockColor: COLORS.white, borderBottomWidth: 1, padding: 10 }}>
+                        <View style={{ width: 380, flexDirection: 'row', marginTop: 22, rowGap: 4, justifyContent: 'center', borderBlockColor: COLORS.white, borderBottomWidth: 1, padding: 10 }}>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderRightColor: COLORS.white }}>
                                 <Text style={{ ...FONTS.fontBold, fontSize: SIZES.h6, color: COLORS.primaryLight }}>Credit Amt.</Text>
                                 <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.secondary }}>₹ {homeBanner?.credit}</Text>

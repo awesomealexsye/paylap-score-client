@@ -25,7 +25,7 @@ const UserKyc = forwardRef((props, ref) => {
     const [buttonText, setButtonText] = useState("Send OTP");
     const [otp, setOtp] = useState("");
     const [isOtpSent, setIsOtpSent] = useState(false);
-    const [aadharDetail, setAadharDetail] = useState<any>({});
+    const [aadharDetail, setAadharDetail] = useState({ client_id: "" });
     const [isLoading, setIsLoading] = useState(false);
     const [aadhar, setAadhar] = useState("");
 
@@ -41,19 +41,27 @@ const UserKyc = forwardRef((props, ref) => {
             if (res !== null && res.status === true) {
                 if (res?.data?.otp_sent) {
                     setAadharDetail(res.data);
+                    //console.log("Aadhar res", aadharDetail)
                     setIsOtpSent(true);
+                    setIsLoading(false);
                     setButtonText("Verify OTP");
                 } else {
-                    MessagesService.commonMessage(aadharDetail?.message);
+                    MessagesService.commonMessage(res?.message);
                 }
             }
         } else if (buttonText === "Verify OTP") {
-            const res = await ApiService.postWithToken("/api/kyc/aadhaar-otp-verify", { "client_id": aadharDetail?.data.client_id, "otp": otp });
+            console.log("Otp", otp);
+            const res = await ApiService.postWithToken("api/kyc/aadhaar-otp-verify", { "client_id": aadharDetail?.client_id, "otp": otp });
             if (res !== null) {
+                console.log("Verify", res)
                 if (res?.status === true) {
                     setIsLoading(false);
+                    setIsOtpSent(false);
                     MessagesService.commonMessage(res.message);
                     //navigation.navigate("Home");
+                }
+                else {
+                    setIsLoading(false);
                 }
             }
         }
@@ -96,7 +104,7 @@ const UserKyc = forwardRef((props, ref) => {
                                     }
 
                                     <View style={GlobalStyleSheet.cardBody}>
-                                        {isLoading === true ? <ActivityIndicator size="small" color={colors.primary} />
+                                        {isLoading === true ? <ActivityIndicator size={70} color={COLORS.primary} />
                                             : <Button title={buttonText} onPress={() => { sendOtp() }} />
                                         }
                                     </View>

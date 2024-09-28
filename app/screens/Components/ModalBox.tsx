@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal,  ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import Ripple from 'react-native-material-ripple';
 import { useTheme } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
@@ -15,31 +15,31 @@ import Header from '../../layout/Header';
 const ModalBox = () => {
 
     const theme = useTheme();
-    const { colors } : {colors : any} = theme;
+    const { colors }: { colors: any } = theme;
 
-    const [activeSheet , setActiveSheet] = useState('');
+    const [activeSheet, setActiveSheet] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
 
     const ActionData = [
         {
-            icon : "info",
-            title : "Confirm modal",
-            sheet : 'option',
+            icon: "info",
+            title: "Confirm modal",
+            sheet: 'option',
         },
         {
-            icon : "check-circle",
-            title : "Success Bar",
-            sheet : 'success',
+            icon: "check-circle",
+            title: "Success Bar",
+            sheet: 'success',
         },
         {
-            icon : "log-out",
-            title : "Login",
-            sheet : 'login',
+            icon: "log-out",
+            title: "Login",
+            sheet: 'login',
         },
         {
-            icon : "file-text",
-            title : "Register",
-            sheet : 'register',
+            icon: "file-text",
+            title: "Register",
+            sheet: 'register',
         },
     ]
 
@@ -53,55 +53,55 @@ const ModalBox = () => {
                 visible={modalVisible}
             >
                 <View style={{
-                    alignItems:'center',
-                    justifyContent:'center',
-                    flex:1,
-                    position:'relative',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flex: 1,
+                    position: 'relative',
                 }}>
                     <TouchableOpacity
                         activeOpacity={1}
                         onPress={() => setModalVisible(false)}
                         style={{
-                            position:'absolute',
-                            height:'100%',
-                            width:'100%',
-                            backgroundColor:'rgba(0,0,0,.3)',
+                            position: 'absolute',
+                            height: '100%',
+                            width: '100%',
+                            backgroundColor: 'rgba(0,0,0,.3)',
                         }}
                     />
                     {activeSheet === "option" ?
-                        <OptionModal close={setModalVisible}/> :
+                        <OptionModal close={setModalVisible} /> :
                         activeSheet === "success" ?
-                        <SuccessModal/> :
-                        activeSheet === "login" ?
-                        <LoginModal close={setModalVisible}/> :
-                        activeSheet === "register" ?
-                        <RegisterModal close={setModalVisible}/>
-                        :
-                        <SuccessModal/>
+                            <SuccessModal /> :
+                            activeSheet === "login" ?
+                                <LoginModal close={setModalVisible} /> :
+                                activeSheet === "register" ?
+                                    <RegisterModal close={setModalVisible} />
+                                    :
+                                    <SuccessModal />
                     }
                 </View>
             </Modal>
 
-            <View style={{flex:1,backgroundColor:colors.background}}>
+            <View style={{ flex: 1, backgroundColor: colors.background }}>
                 <View
                     style={{
-                        flex:1,
-                        backgroundColor:colors.background,
+                        flex: 1,
+                        backgroundColor: colors.background,
                     }}
                 >
-                    <Header 
+                    <Header
                         title={'Modal Box'}
                         leftIcon={'back'}
                         titleRight
                     />
-                    <ScrollView contentContainerStyle={{flexGrow:1}}>
-                        <View style={[GlobalStyleSheet.container,{padding:0,paddingTop:10}]}>
+                    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                        <View style={[GlobalStyleSheet.container, { padding: 0, paddingTop: 10 }]}>
                             <View style={{}}>
                                 <View style={{}}>
-                                    {ActionData.map((data:any,index) => {
-                                        return(
+                                    {ActionData.map((data: any, index) => {
+                                        return (
                                             <Ripple
-                                                onPress={() => {setActiveSheet(data.sheet);setModalVisible(true)}}
+                                                onPress={() => { setActiveSheet(data.sheet); setModalVisible(true) }}
                                                 key={index}
                                                 style={[{
                                                     flexDirection: 'row',
@@ -110,11 +110,11 @@ const ModalBox = () => {
                                                     alignItems: 'center',
                                                     padding: 10,
                                                     borderRadius: SIZES.radius_lg,
-                                                    backgroundColor:colors.card,
-                                                    marginBottom:10
+                                                    backgroundColor: colors.card,
+                                                    marginBottom: 10
                                                 },
                                                 index === ActionData.length - 1 && {
-                                                    borderBottomWidth:0,
+                                                    borderBottomWidth: 0,
                                                 }
                                                 ]}
                                             >
@@ -129,11 +129,11 @@ const ModalBox = () => {
                                                     }}
                                                 >
                                                     {/* <FeatherIcon size={16} color={colors.title} name={data.icon}/> */}
-                                                    <Feather size={16} color={COLORS.primary} name={data.icon}/>
+                                                    <Feather size={16} color={COLORS.primary} name={data.icon} />
                                                 </View>
-                                                <Text style={{...FONTS.fontRegular,fontSize:14,flex:1,color:colors.title}}>{data.title}</Text>
+                                                <Text style={{ ...FONTS.fontRegular, fontSize: 14, flex: 1, color: colors.title }}>{data.title}</Text>
                                                 {/* <FeatherIcon color={colors.text} name={'chevron-right'} size={22}/> */}
-                                                <Feather color={colors.text} name={'chevron-right'} size={22}/>
+                                                <Feather color={colors.text} name={'chevron-right'} size={22} />
                                             </Ripple>
                                         )
                                     })}
