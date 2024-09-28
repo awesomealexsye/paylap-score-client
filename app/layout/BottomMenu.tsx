@@ -170,8 +170,7 @@ const BottomMenu = ({ state, navigation, descriptors }: Props) => {
                                             label === 'Home' ? IMAGES.Home :
                                                 label === 'Wishlist' ? IMAGES.heart2 :
                                                     label === 'CustomerScore' ? IMAGES.tachometerfast :
-                                                        // label === 'MyCart' ? IMAGES.mycart :
-                                                        label === 'Profile' ? IMAGES.user3 : IMAGES.Home
+                                                        label === 'Profile' ? IMAGES.user3 : IMAGES.tachometerfast
                                         }
                                     />
                                     {/* </Animated.View> */}

@@ -51,24 +51,25 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
 
     const fetchAddPaymentData = async () => {
         setIsLoading(true);
-        const data: any = { customer_id: item?.customer_id, amount: amount, transaction_type: transaction_type, description: description, transaction_date: newDate }
+        const data: any = { customer_id: item?.customer_id, amount: amount, transaction_type: transaction_type, description: description, transaction_date: newDate, image: image }
 
-        if (image && image.uri) {
-            const base64Image = await fetch(image.uri).then(res => res.blob()).then(blob => {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => resolve(reader.result);
-                    reader.onerror = reject;
-                    reader.readAsDataURL(blob);
-                });
-            });
+        // if (image && image.uri) {
+        //     const base64Image = await fetch(image.uri).then(res => res.blob()).then(blob => {
+        //         return new Promise((resolve, reject) => {
+        //             const reader = new FileReader();
+        //             reader.onloadend = () => resolve(reader.result);
+        //             reader.onerror = reject;
+        //             reader.readAsDataURL(blob);
+        //         });
+        //     });
 
-            data.image = base64Image;
-        }
+
+        // }
 
         ApiService.postWithToken("api/shopkeeper/transactions/add-transaction", data).then((res) => {
             setIsLoading(false);
             if (res.status == true) {
+                MessagesService.commonMessage(res.message);
                 navigation.goBack();
             }
         });
@@ -77,7 +78,7 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
     return (
         <View style={{ backgroundColor: colors.background, flex: 1, }}>
             <Header
-                title='Add Payment'
+                title={transaction_type}
                 leftIcon='back'
                 titleRight
             />
@@ -129,9 +130,9 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
                 </View>
             </ScrollView>
 
-            {image && image.uri && (
+            {image && (
                 <Image
-                    source={{ uri: image.uri }}
+                    source={{ uri: image }}
                     style={{ width: 300, height: 300, marginHorizontal: 50, marginVertical: 20 }}
                 />
             )}

@@ -29,8 +29,8 @@ const useImagePicker = () => {
 		try {
 			let result = await ImagePicker.launchImageLibraryAsync({
 				mediaTypes: ImagePicker.MediaTypeOptions.Images,
-				allowsEditing: true,
-				aspect: [4, 3],
+				// allowsEditing: true,
+				// aspect: [4, 3],
 				quality: 1,
 			});
 
@@ -58,15 +58,13 @@ const useImagePicker = () => {
 			const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
 			if (cameraPermission.status !== 'granted') {
 				Alert.alert('Camera permission is required to take a photo');
-
 			}
 
 			let result = await ImagePicker.launchCameraAsync({
-				allowsEditing: true,
+				// allowsEditing: true,
 				quality: 1,
 			});
-
-
+			console.log("result: ", result)
 			if (!result.canceled) {
 				const base64Image = await fetch(result.assets[0].uri).then(res => res.blob()).then(blob => {
 					return new Promise((resolve, reject) => {
@@ -76,6 +74,7 @@ const useImagePicker = () => {
 						reader.readAsDataURL(blob);
 					});
 				});
+				setImage(base64Image);
 			}
 
 		} catch (error) {

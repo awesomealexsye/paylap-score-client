@@ -38,7 +38,7 @@ const ImagePickerModal = ({ close, modalVisible, pickImageFromCamera, pickImageF
 					backgroundColor: theme.dark ? "#3B3B3B" : colors.card,
 					borderRadius: SIZES.radius_lg,
 					marginHorizontal: 30,
-					maxWidth: 340,
+					// maxWidth: 340,
 					// height: 300,
 					shadowColor: "#025135",
 					shadowOffset: {

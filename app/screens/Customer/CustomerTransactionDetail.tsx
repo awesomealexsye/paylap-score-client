@@ -70,7 +70,7 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                     height: 220,
                     width: 380,
                     top: 20,
-                    backgroundColor: COLORS.primary,
+                    backgroundColor: colors,
                     borderRadius: 31,
                     shadowColor: "#025135",
                     shadowOffset: {
@@ -87,10 +87,7 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                     <View style={[styles.customerItem, { marginTop: 25 }]}>
                         <View style={{}}>
                             <View style={{ flexDirection: 'row', }}>
-                                <Image
-                                    style={{ height: 60, width: 60, borderRadius: 50 }}
-                                    source={{ uri: customer.image }}
-                                />
+
                                 <View style={{ marginLeft: 18 }}>
                                     <Text style={[styles.customerName, { color: COLORS.primaryLight, ...FONTS.fontSemiBold }]}>{customer.customer_name}</Text>
                                     <Text style={styles.lastInteraction}>{customer.last_updated_date}</Text>
@@ -102,8 +99,8 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                         </View>
 
                         <View style={{ flexDirection: "column", alignItems: "center", position: "relative", }}>
-                            <Text style={"Credit" === 'Credit' ? { color: COLORS.primaryLight, fontSize: 18, fontWeight: "900" } : { fontSize: 18, fontWeight: "900", color: "red" }}> ₹ {customer.amount}</Text>
-                            <Text style={[styles.type, { color: COLORS.white }]}>{customer.transaction_type}</Text>
+                            <Text style={{ color: customer.transaction_type === "CREDIT" ? COLORS.primary : COLORS.danger, fontSize: 18, fontWeight: "900" }} > ₹ {customer.amount}</Text>
+                            <Text style={[styles.type, { color: COLORS.primaryLight }]}>{customer.transaction_type}</Text>
                         </View>
 
                     </View>
@@ -124,10 +121,10 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                     </View>
                 </View>
                 <View style={{
-                    height: 180,
+                    height: 150,
                     width: 380,
                     top: 40,
-                    backgroundColor: COLORS.primary,
+                    backgroundColor: colors.card,
                     borderRadius: 31,
                     shadowColor: "#025135",
                     shadowOffset: {
@@ -136,7 +133,7 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                     },
                     shadowOpacity: 0.34,
                     shadowRadius: 31.27,
-                    elevation: 8,
+                    // elevation: 8,
                     flexDirection: 'column'
                 }}>
                     <View style={{ borderBottomWidth: 1, height: 50 }} >
@@ -146,6 +143,37 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                         <Text style={{ ...FONTS.fontSemiBold, fontSize: 14, color: COLORS.white, margin: 15, textAlign: "justify" }}>
                             {customer.description}
                         </Text>
+                    </View>
+
+
+                </View>
+
+                <View style={{
+                    height: 180,
+                    width: 380,
+                    top: 40,
+                    marginTop: 20,
+                    backgroundColor: colors.card,
+                    borderRadius: 31,
+                    shadowColor: "#025135",
+                    shadowOffset: {
+                        width: 0,
+                        height: 15,
+                    },
+                    shadowOpacity: 0.34,
+                    shadowRadius: 31.27,
+                    // elevation: 8,
+                    flexDirection: 'column',
+
+                }}>
+                    <View style={{ borderBottomWidth: 1, height: 50 }} >
+                        <Text style={{ ...FONTS.fontSemiBold, fontSize: 18, color: COLORS.white, marginLeft: 20, top: 10 }}>Attached Bill Reciept</Text>
+                    </View>
+                    <View style={{ paddingHorizontal: 15, top: 10 }}  >
+                        <Image
+                            style={{ height: 110, width: 350, borderRadius: 10 }}
+                            source={{ uri: customer.image }}
+                        />
                     </View>
 
 

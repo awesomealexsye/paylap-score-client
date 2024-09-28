@@ -46,6 +46,8 @@ const CustomerScore = ({ navigation }: CustomerScoreScreenProps) => {
 
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
+
+
     const scoreVal = { min: 0, max: 100 };
     const [userScore, setUserScore] = useState(0)
     useEffect(() => {
@@ -66,13 +68,13 @@ const CustomerScore = ({ navigation }: CustomerScoreScreenProps) => {
             <View style={[GlobalStyleSheet.container, { marginTop: 70, paddingHorizontal: 30 }]}>
                 <View style={{ marginTop: 10, flexDirection: 'row', gap: 80 }}>
                     <View>
-                        <Text style={{ ...FONTS.font, ...FONTS.fontMedium, ...FONTS.fontBold }}>Color</Text>
+                        <Text style={{ ...FONTS.font, ...FONTS.fontMedium, ...FONTS.fontBold, color: colors.title }}>Color</Text>
                     </View>
                     <View>
-                        <Text style={{ ...FONTS.font, ...FONTS.fontMedium, ...FONTS.fontBold }}>Description</Text>
+                        <Text style={{ ...FONTS.font, ...FONTS.fontMedium, ...FONTS.fontBold, color: colors.title }}>Description</Text>
                     </View>
                     <View>
-                        <Text style={{ ...FONTS.font, ...FONTS.fontMedium, ...FONTS.fontBold }}>Range</Text>
+                        <Text style={{ ...FONTS.font, ...FONTS.fontMedium, ...FONTS.fontBold, color: colors.title }}>Range</Text>
                     </View>
                 </View>
                 <View style={{ marginTop: 10, flexDirection: 'column', gap: 5 }}>
@@ -83,10 +85,10 @@ const CustomerScore = ({ navigation }: CustomerScoreScreenProps) => {
                                     <View style={{ width: 50, height: 20, backgroundColor: item.labelColor, flex: 1 }} key={index}>
                                     </View>
                                     <View style={{ flex: 1 }}>
-                                        <Text>{item.name}</Text>
+                                        <Text style={{ color: colors.title }}>{item.name}</Text>
                                     </View>
                                     <View style={{ flex: 1 }}>
-                                        <Text>{`${((scoreVal.max / labels.length) * index) + 1} - ${(scoreVal.max / labels.length) * (index + 1)}`}</Text>
+                                        <Text style={{ color: colors.title }}>{`${((scoreVal.max / labels.length) * index) + 1} - ${(scoreVal.max / labels.length) * (index + 1)}`}</Text>
                                     </View>
                                 </View>
                             )

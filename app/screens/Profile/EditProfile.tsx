@@ -46,7 +46,6 @@ const EditProfile = () => {
     const [isLoading, setIsLoading] = useState(false);
 
 
-    // const [imageUrl, setImageUrl] = useState('');
 
     const [inputValue, setInputValue] = useState("");
 
@@ -60,12 +59,13 @@ const EditProfile = () => {
     }
 
     const updateProfileData = async () => {
+        setIsLoading(true);
         console.log("calling,,,");
         const res = await ApiService.postWithToken(
             "api/user/profile-update",
-            { profile_image: image, name: "Vishal" },
+            { profile_image: image, name: "ajay" },
         )
-        console.log("image profle", image)
+        console.log("**************************************************", image)
         // .then(async (res) => {
 
         // });
@@ -110,7 +110,7 @@ const EditProfile = () => {
                                 </View>
                             </TouchableOpacity>
                         </View>
-                        <ImagePickerModal close={setModalVisible} modalVisible={modalVisible} removeImage={{}}
+                        <ImagePickerModal close={setModalVisible} modalVisible={modalVisible} removeImage={() => { console.log("remove Image") }}
                             pickImageFromCamera={takePhoto} pickImageFromGallery={pickImage} />
                         <View>
                             <Text style={[FONTS.fontMedium, { fontSize: 19, color: colors.title }]}>{profile?.name}</Text>

@@ -100,7 +100,7 @@ export const AddCustomer = ({ navigation }: AddCustomerScreenProps) => {
                                         <View style={{ marginTop: 10 }}>
                                             <Input
                                                 inputRounded
-                                                icon={<FontAwesome style={{ opacity: .6 }} name={'user'} size={30} color={colors.text} />}
+                                                icon={<FontAwesome style={{ opacity: .6 }} name={'address-card'} size={30} color={colors.text} />}
                                                 placeholder="Enter Aadhaar Number"
                                                 onChangeText={(aadhar) => setCustomerDetail({ ...customerDetail, "aadhar": aadhar })}
                                             />

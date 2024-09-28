@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 
+
 const { width: deviceWidth } = Dimensions.get('window');
 
 interface Label {
@@ -44,6 +45,8 @@ interface ProfileScoreProps {
 }
 
 class ProfileScore extends Component<ProfileScoreProps> {
+
+
 
     static defaultProps = {
         defaultValue: 50,
@@ -174,6 +177,9 @@ class ProfileScore extends Component<ProfileScoreProps> {
         });
 
         const currentSize = this.validateSize(size ?? 200, deviceWidth - 20);
+
+
+
         return (
             <View
                 style={[
@@ -198,6 +204,7 @@ class ProfileScore extends Component<ProfileScoreProps> {
                     ]}
                 >
                     {labels?.map((level, index) => {
+
                         const circleDegree = 90 + index * perLevelDegree;
                         return (
                             <View
@@ -256,7 +263,7 @@ class ProfileScore extends Component<ProfileScoreProps> {
                     />
                 </View>
                 <View style={[style.labelWrapper, labelWrapperStyle]}>
-                    <Text style={[style.label, labelStyle]}>
+                    <Text style={[style.label, labelStyle, { color: "grey" }]}>
                         {this.limitValue(value, Number(minValue), Number(maxValue), allowedDecimals)}
                     </Text>
                     <Text style={[style.labelNote, { color: label.labelColor }, labelNoteStyle]}>

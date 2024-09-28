@@ -26,6 +26,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
 
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
+
     return (
         <View style={{ backgroundColor: colors.card, flex: 1 }}>
             <Header
@@ -39,7 +40,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                         style={[styles.sectionimg]}
                     >
                         <Image
-                            style={{ height: 104, width: 104, }}
+                            style={{ height: 90, width: 90, borderRadius: 50 }}
                             source={{ uri: profile?.profile_image }}
                         />
                     </View>
@@ -125,9 +126,13 @@ const styles = StyleSheet.create({
         height: 104,
         width: 104,
         borderRadius: 150,
-        backgroundColor: COLORS.primary,
+        backgroundColor: COLORS.background,
         overflow: 'hidden',
-        marginBottom: 25
+        marginBottom: 25,
+        borderWidth: 3,
+        borderColor: COLORS.primary,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     brandsubtitle2: {
         ...FONTS.fontRegular,

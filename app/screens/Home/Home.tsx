@@ -97,7 +97,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 </View>
 
                 <View style={{ flexDirection: "column", alignItems: "center", position: "relative" }}>
-                    <Text style={item.transaction_type === 'CREDIT' ? { color: "green", fontSize: 18, fontWeight: "900" } : { fontSize: 18, fontWeight: "900", color: "red" }}>₹ {item.amount}</Text>
+                    <Text style={{ color: item.transaction_type === "CREDIT" ? COLORS.primary : COLORS.danger, fontSize: 18, fontWeight: "900" }}>₹ {item.amount}</Text>
                     <Text style={[styles.type, { color: colors.title }]}>{item.transaction_type}</Text>
                 </View>
 

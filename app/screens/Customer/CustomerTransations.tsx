@@ -93,14 +93,10 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                 </View>
 
                 <View style={{ flexDirection: "column", alignItems: "center", position: "relative" }}>
-                    <Text style={item.transaction_type === 'Credit' ? { color: "green", fontSize: 18, fontWeight: "900" } : { fontSize: 18, fontWeight: "900", color: "red" }}>₹ {item.amount}</Text>
+                    <Text style={{ color: item.transaction_type === "CREDIT" ? COLORS.primary : COLORS.danger, fontSize: 18, fontWeight: "900" }}>₹ {item.amount}</Text>
                     <Text style={[styles.type, { color: colors.title }]}>{item.transaction_type}</Text>
                 </View>
-
             </View>
-
-
-
         </TouchableOpacity>
 
     );
@@ -151,10 +147,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
 
             {/* AppBar End */}
 
-
             <ScrollView showsVerticalScrollIndicator={true}>
-
-
                 <View style={{ flex: 1, alignItems: 'center' }} >
                     <View style={{
                         height: 80,
@@ -179,7 +172,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                                 <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h4, color: COLORS.primaryLight, textAlign: "center" }}>{item.transaction_type} </Text>
                             </View>
                             <View style={{ alignItems: 'center', justifyContent: "center" }}>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.danger }}>₹ {item.amount}</Text>
+                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.primaryLight }}>₹ {item.amount}</Text>
                             </View>
                         </View>
                     </View>
