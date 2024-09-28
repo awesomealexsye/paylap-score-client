@@ -14,8 +14,9 @@ import CommonService from '../../lib/CommonService';
 
 type CustomerScoreScreenProps = StackScreenProps<RootStackParamList, 'CustomerScore'>;
 
-const CustomerScore = ({ navigation }: CustomerScoreScreenProps) => {
+const CustomerScore = ({ navigation, route }: CustomerScoreScreenProps) => {
 
+    const { customer } = route.params;
     const labels = [
         {
             name: 'Very Poor',
@@ -62,7 +63,7 @@ const CustomerScore = ({ navigation }: CustomerScoreScreenProps) => {
                 leftIcon='back'
                 titleRight
             />
-            <View style={{ marginTop: 50 }}>
+            <View style={{ marginTop: customer.credit_score }}>
                 <ProfileScore value={userScore} labels={labels} minValue={scoreVal.min} maxValue={scoreVal.max} />
             </View>
             <View style={[GlobalStyleSheet.container, { marginTop: 70, paddingHorizontal: 30 }]}>
