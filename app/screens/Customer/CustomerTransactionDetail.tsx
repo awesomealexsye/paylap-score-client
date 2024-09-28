@@ -151,13 +151,8 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
 
                 </View>
             </View>
-
-
-
-
-
             <View style={{ paddingHorizontal: 20, marginBottom: 30 }}>
-                <ButtonIcon title='Share' icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'share'} size={18} />}>
+                <ButtonIcon title='Share' iconDirection='right' icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'share'} size={18} />}>
                 </ButtonIcon>
             </View>
         </View>
