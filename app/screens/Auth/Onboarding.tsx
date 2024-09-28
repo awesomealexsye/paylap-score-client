@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Text, View,Image,  ScrollView,Animated, Platform, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
+import { Text, View, Image, ScrollView, Animated, Platform, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { IMAGES } from '../../constants/Images';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
-import { COLORS,FONTS, SIZES } from '../../constants/theme';
+import { COLORS, FONTS, SIZES } from '../../constants/theme';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import Button from '../../components/Button/Button';
 import StorageService from '../../lib/StorageService';
@@ -12,46 +12,42 @@ import StorageService from '../../lib/StorageService';
 
 const DATA = [
     {
-        title: "do meet our summer coffee drinks",
-        subtitle:"orem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
+    title: "Welcome to PaylapScore",
+    subtitle: "Discover an efficient way to track your customer’s credit behavior, manage lent items, and streamline your business with smart analytics."
     },
     {
-        title: "do meet our summer coffee drinks",
-        subtitle:"orem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
+        title: "Find Customer Credit Score",
+        subtitle: "Quickly access and analyze detailed credit scores for your customers, ensuring informed lending decisions and fostering trust."
     },
     {
-        title: "Let's meet our summer coffee drinks",
-        subtitle:"orem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
-    },
+        title: "100% Safe And Secure",
+        subtitle: "Your data and transactions are fully encrypted, ensuring a secure and private environment for your shop and customers."
+    }
 ]
 
 type OnboardingScreenProps = StackScreenProps<RootStackParamList, 'Onboarding'>;
 
-const Onboarding =  ({navigation} : OnboardingScreenProps) => {
-    // const is_login =  StorageService.isLoggedIn().then((res)=>console.log(res))
-    // if(is_login){
-        // navigation.replace("DrawerNavigation",{screen:'Home'});
-    // }
-    StorageService.isLoggedIn().then((is_login)=>{
-        console.log(is_login)
-        if(is_login){
-            navigation.replace("DrawerNavigation",{screen:'Home'});
+const Onboarding = ({ navigation }: OnboardingScreenProps) => {
+    StorageService.isLoggedIn().then((is_login) => {
+        console.log("is_logged_in", is_login);
+        if (is_login) {
+            navigation.replace("DrawerNavigation", { screen: 'Home' });
         }
     })
 
 
     const theme = useTheme();
-    const {colors}:{colors : any} = theme;
+    const { colors }: { colors: any } = theme;
 
-    const IndexData = ["01","02","03"]
+    const IndexData = ["01", "02", "03"]
 
-    const IndexImage =[IMAGES.onborder5,IMAGES.onborder3,IMAGES.onborder4]
+    const IndexImage = [IMAGES.onborder5, IMAGES.onborder3, IMAGES.onborder4]
 
     const scrollRef = useRef<any>();
 
     const scrollX = useRef(new Animated.Value(0)).current;
 
-    const [sliderIndex , setSliderIndex] = useState<any>(1);
+    const [sliderIndex, setSliderIndex] = useState<any>(1);
 
     const onScroll = (event: any) => {
         scrollX.setValue(event.nativeEvent.contentOffset.x);
@@ -81,79 +77,79 @@ const Onboarding =  ({navigation} : OnboardingScreenProps) => {
             }),
         ]).start();
     }, [sliderIndex]);
-    
-  return (
-    <SafeAreaView style={{flex:1,backgroundColor: colors.card}}>
-        <ScrollView contentContainerStyle={{flexGrow:1}}>
-            <View style={{flex:1}}>
-                <View style={[GlobalStyleSheet.container,{marginTop:160,padding:0,flex:1}]}>
-                    <Animated.View
-                        style={{
-                            transform: [{ scale: imageScale }], // Apply scale transform
-                        }}
-                    >
-                        <Image
-                            style={styles.image2}
-                            source={IndexImage[sliderIndex-1]}
-                        />
-                    </Animated.View>
-                </View>
-                <View style={[GlobalStyleSheet.container,{padding:0,marginBottom:55}]}>
-                    <ScrollView
-                        ref={scrollRef}
-                        horizontal
-                        pagingEnabled
-                        scrollEventThrottle={16}
-                        decelerationRate="fast"
-                        showsHorizontalScrollIndicator={false}
-                        onScroll={onScroll}
-                    >
-                        {DATA.map((data:any, index) => (
-                            <View style={[styles.slideItem,Platform.OS === "ios" && {
-                                // paddingBottom:35
-                            }]} key={index}>
-                                <View style={{paddingHorizontal:30 }}>
-                                    <Text style={[styles.title1,{color:colors.title},Platform.OS === 'web' && {textAlign:'center'}]}>{data.title}</Text>
-                                    <Text style={[styles.title2,{color:colors.text},Platform.OS === 'web' && {textAlign:'center'}]}>{data.subtitle}</Text>
+
+    return (
+        <SafeAreaView style={{ flex: 1, backgroundColor: colors.card }}>
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                <View style={{ flex: 1 }}>
+                    <View style={[GlobalStyleSheet.container, { marginTop: 160, padding: 0, flex: 1 }]}>
+                        <Animated.View
+                            style={{
+                                transform: [{ scale: imageScale }], // Apply scale transform
+                            }}
+                        >
+                            <Image
+                                style={styles.image2}
+                                source={IndexImage[sliderIndex - 1]}
+                            />
+                        </Animated.View>
+                    </View>
+                    <View style={[GlobalStyleSheet.container, { padding: 0, marginBottom: 55 }]}>
+                        <ScrollView
+                            ref={scrollRef}
+                            horizontal
+                            pagingEnabled
+                            scrollEventThrottle={16}
+                            decelerationRate="fast"
+                            showsHorizontalScrollIndicator={false}
+                            onScroll={onScroll}
+                        >
+                            {DATA.map((data: any, index) => (
+                                <View style={[styles.slideItem, Platform.OS === "ios" && {
+                                    // paddingBottom:35
+                                }]} key={index}>
+                                    <View style={{ paddingHorizontal: 30 }}>
+                                        <Text style={[styles.title1, { color: colors.title }, Platform.OS === 'web' && { textAlign: 'center' }]}>{data.title}</Text>
+                                        <Text style={[styles.title2, { color: colors.text }, Platform.OS === 'web' && { textAlign: 'center' }]}>{data.subtitle}</Text>
+                                    </View>
                                 </View>
-                            </View>
                             ))
-                        }
-                    </ScrollView>
-                    <View style={[styles.indicatorConatiner,Platform.OS === "ios" && { 
-                        bottom:0
-                    }]} pointerEvents="none">
-                        {DATA.map((x:any, i:any) => (
-                            <Indicator i={i} key={i} scrollValue={scrollX} />
-                        ))}
+                            }
+                        </ScrollView>
+                        <View style={[styles.indicatorConatiner, Platform.OS === "ios" && {
+                            bottom: 0
+                        }]} pointerEvents="none">
+                            {DATA.map((x: any, i: any) => (
+                                <Indicator i={i} key={i} scrollValue={scrollX} />
+                            ))}
+                        </View>
                     </View>
                 </View>
-            </View>
-            <View style={[GlobalStyleSheet.container,{padding:0,paddingHorizontal:30,paddingBottom:30}]}>
-                <Button
-                    style={{ borderRadius:52}}
-                    title="GET STARTED"
-                    onPress={() => navigation.navigate('WelCome')} 
-                />
-            </View>
-        </ScrollView>
-    </SafeAreaView>
-  )
+                <View style={[GlobalStyleSheet.container, { padding: 0, paddingHorizontal: 30, paddingBottom: 30 }]}>
+                    <Button
+                        style={{ borderRadius: 52 }}
+                        title="GET STARTED"
+                        onPress={() => navigation.navigate('WelCome')}
+                    />
+                </View>
+            </ScrollView>
+        </SafeAreaView>
+    )
 }
 
-function Indicator({ i, scrollValue } : any) {
+function Indicator({ i, scrollValue }: any) {
 
     const theme = useTheme();
-    const {colors}:{colors : any} = theme;
+    const { colors }: { colors: any } = theme;
 
     const translateX = scrollValue.interpolate({
         inputRange: [-SIZES.width + i * SIZES.width, i * SIZES.width, SIZES.width + i * SIZES.width],
         outputRange: [-20, 0, 20],
     });
     return (
-        <View style={[styles.indicator, { backgroundColor:theme.dark ? 'rgba(255,255,255,0.20)':'rgba(0, 0, 0, 0.20)', borderColor:theme.dark ? 'rgba(255,255,255,0.20)':'rgba(0, 0, 0, 0.20)' }]}>
+        <View style={[styles.indicator, { backgroundColor: theme.dark ? 'rgba(255,255,255,0.20)' : 'rgba(0, 0, 0, 0.20)', borderColor: theme.dark ? 'rgba(255,255,255,0.20)' : 'rgba(0, 0, 0, 0.20)' }]}>
             <Animated.View
-                style={[styles.activeIndicator, { transform: [{ translateX }], backgroundColor:COLORS.primary }]}
+                style={[styles.activeIndicator, { transform: [{ translateX }], backgroundColor: COLORS.primary }]}
             />
         </View>
     );
@@ -162,9 +158,9 @@ function Indicator({ i, scrollValue } : any) {
 
 const styles = StyleSheet.create({
     indicatorConatiner: {
-        alignSelf:'center',
+        alignSelf: 'center',
         flexDirection: 'row',
-        top:25,
+        top: 25,
     },
     indicator: {
         height: 10,
@@ -175,8 +171,8 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     activeIndicator: {
-        height:'100%',
-        width:'100%',
+        height: '100%',
+        width: '100%',
         backgroundColor: COLORS.primary,
         borderRadius: 10,
     },
@@ -184,38 +180,38 @@ const styles = StyleSheet.create({
         width: SIZES.width,
         //paddingBottom: 10,    
     },
-    text:{
+    text: {
         ...FONTS.fontLight,
-        fontSize:14,
-        color:COLORS.title,
-        textDecorationLine:'underline'
+        fontSize: 14,
+        color: COLORS.title,
+        textDecorationLine: 'underline'
     },
-    image2:{
-        width:'100%',
-        height:undefined,
-        aspectRatio:1/.6,
-       //position:'absolute',
-        left:0,
-        right:0,
-        top:0,
-        resizeMode:'contain',
+    image2: {
+        width: '100%',
+        height: undefined,
+        aspectRatio: 1 / .6,
+        //position:'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        resizeMode: 'contain',
         //backgroundColor:COLORS.primary
         //bottom:0,
     },
-    title1:{
+    title1: {
         ...FONTS.fontSemiBold,
-        fontSize:24,
-        textAlign:'center',
-        color:COLORS.title,
+        fontSize: 24,
+        textAlign: 'center',
+        color: COLORS.title,
         //paddingHorizontal:30
     },
-    title2:{
+    title2: {
         ...FONTS.fontRegular,
-        fontSize:14,
-        textAlign:'center',
-        color:COLORS.text,
-        paddingHorizontal:10,
-        marginTop:5
+        fontSize: 14,
+        textAlign: 'center',
+        color: COLORS.text,
+        paddingHorizontal: 10,
+        marginTop: 5
     },
 })
 

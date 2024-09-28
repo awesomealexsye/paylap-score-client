@@ -7,6 +7,7 @@ import HomeScreen from '../screens/Home/Home';
 import ProfileScreen from '../screens/Profile/Profile';
 import BottomMenu from '../layout/BottomMenu';
 import { useTheme } from '@react-navigation/native';
+import CustomerScore from '../screens/Profile/CustomerScore';
 
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
@@ -15,29 +16,33 @@ const Tab = createBottomTabNavigator<BottomTabParamList>();
 const BottomNavigation = () => {
 
     const theme = useTheme();
-    const {colors}:{colors : any} = theme;
+    const { colors }: { colors: any } = theme;
 
     return (
         <Tab.Navigator
             initialRouteName='Home'
             screenOptions={{
-                headerShown : false
+                headerShown: false
             }}
-            tabBar={(props:any) => <BottomMenu {...props}/>}
+            tabBar={(props: any) => <BottomMenu {...props} />}
         >
-            <Tab.Screen 
+            <Tab.Screen
                 name='Home'
                 component={HomeScreen}
             />
-            <Tab.Screen 
+            <Tab.Screen
                 name='Wishlist'
                 component={WishlistScreen}
             />
-            <Tab.Screen 
+            {/* <Tab.Screen
                 name='MyCart'
                 component={MyCartScreen}
+            /> */}
+            <Tab.Screen
+                name='Score'
+                component={CustomerScore}
             />
-            <Tab.Screen 
+            <Tab.Screen
                 name='Profile'
                 component={ProfileScreen}
             />

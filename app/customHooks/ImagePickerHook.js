@@ -5,7 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 const useImagePicker = () => {
 	const [image, setImage] = useState(null);
 
-	// Request permissions on mount
+	// Request permissions on mount 
 	// useEffect(() => {
 	// 	(async () => {
 	// 		if (Platform.OS !== 'web') {
@@ -35,7 +35,17 @@ const useImagePicker = () => {
 			});
 
 			if (!result.canceled) {
-				setImage(result.assets[0].uri);
+
+				const base64Image = await fetch(result.assets[0].uri).then(res => res.blob()).then(blob => {
+					return new Promise((resolve, reject) => {
+						const reader = new FileReader();
+						reader.onloadend = () => resolve(reader.result);
+						reader.onerror = reject;
+						reader.readAsDataURL(blob);
+					});
+				});
+
+				setImage(base64Image);
 			}
 		} catch (error) {
 			console.log('Error picking image: ', error);
@@ -58,7 +68,14 @@ const useImagePicker = () => {
 
 
 			if (!result.canceled) {
-				setImage(result.assets[0].uri);
+				const base64Image = await fetch(result.assets[0].uri).then(res => res.blob()).then(blob => {
+					return new Promise((resolve, reject) => {
+						const reader = new FileReader();
+						reader.onloadend = () => resolve(reader.result);
+						reader.onerror = reject;
+						reader.readAsDataURL(blob);
+					});
+				});
 			}
 
 		} catch (error) {
@@ -67,7 +84,7 @@ const useImagePicker = () => {
 	};
 
 	return {
-		image,          // The URI of the selected or captured 
+		image,          // The Base64 image of the selected or captured 
 		pickImage,      // Function to open image picker
 		takePhoto,      // Function to open the camera
 	};

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
@@ -9,15 +9,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { ApiService } from '../../lib/ApiService';
+import ButtonIcon from '../../components/Button/ButtonIcon';
 
 
 
 type CustomerTransationsDetailsScreenProps = StackScreenProps<RootStackParamList, 'CustomerTransationsDetails'>
 
 export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransationsDetailsScreenProps) => {
-    const { transationId } = route.params;
-
-
+    const { customer } = route.params;
     const theme = useTheme();
     const { colors }: { colors: any; } = theme;
 
@@ -68,17 +68,17 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
             <View style={{ flex: 1, alignItems: 'center' }} >
                 <View style={{
                     height: 220,
-                    width: 400,
+                    width: 380,
                     top: 20,
-                    backgroundColor: colors.primary,
+                    backgroundColor: COLORS.primary,
                     borderRadius: 31,
-                    // shadowColor: "#025135",
-                    // shadowOffset: {
-                    //     width: 0,
-                    //     height: 15,
-                    // },
-                    // shadowOpacity: 0.34,
-                    // shadowRadius: 31.27,
+                    shadowColor: "#025135",
+                    shadowOffset: {
+                        width: 0,
+                        height: 15,
+                    },
+                    shadowOpacity: 0.34,
+                    shadowRadius: 31.27,
                     // elevation: 8,
                     flexDirection: 'column'
                 }}>
@@ -89,11 +89,11 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                             <View style={{ flexDirection: 'row', }}>
                                 <Image
                                     style={{ height: 60, width: 60, borderRadius: 50 }}
-                                    source={IMAGES.small5}
+                                    source={{ uri: customer.image }}
                                 />
                                 <View style={{ marginLeft: 18 }}>
-                                    <Text style={[styles.customerName, { color: COLORS.primaryLight, ...FONTS.fontSemiBold }]}>Arbaz</Text>
-                                    <Text style={styles.lastInteraction}>1 Week ago</Text>
+                                    <Text style={[styles.customerName, { color: COLORS.primaryLight, ...FONTS.fontSemiBold }]}>{customer.customer_name}</Text>
+                                    <Text style={styles.lastInteraction}>{customer.last_updated_date}</Text>
 
                                 </View>
 
@@ -102,8 +102,8 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                         </View>
 
                         <View style={{ flexDirection: "column", alignItems: "center", position: "relative", }}>
-                            <Text style={"Credit" === 'Credit' ? { color: "green", fontSize: 18, fontWeight: "900" } : { fontSize: 18, fontWeight: "900", color: "red" }}> ₹ 10,000</Text>
-                            <Text style={[styles.type, { color: COLORS.white }]}>Debit</Text>
+                            <Text style={"Credit" === 'Credit' ? { color: COLORS.primaryLight, fontSize: 18, fontWeight: "900" } : { fontSize: 18, fontWeight: "900", color: "red" }}> ₹ {customer.amount}</Text>
+                            <Text style={[styles.type, { color: COLORS.white }]}>{customer.transaction_type}</Text>
                         </View>
 
                     </View>
@@ -117,7 +117,7 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                             {/* <Feather name='arrow-right' size={16} color={COLORS.white} /> */}
                         </Text>
                         <Text style={{ color: COLORS.white, ...FONTS.fontBold, fontSize: 16 }}>
-                            7236576457485
+                            {customer.transaction_id}
                             {/* <Feather name='arrow-right' size={16} color={COLORS.white} /> */}
                         </Text>
 
@@ -125,9 +125,9 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                 </View>
                 <View style={{
                     height: 180,
-                    width: 400,
+                    width: 380,
                     top: 40,
-                    backgroundColor: colors.primary,
+                    backgroundColor: COLORS.primary,
                     borderRadius: 31,
                     shadowColor: "#025135",
                     shadowOffset: {
@@ -143,26 +143,17 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                         <Text style={{ ...FONTS.fontSemiBold, fontSize: 18, color: COLORS.white, marginLeft: 20, top: 10 }}>Description</Text>
                     </View>
                     <View >
-                        <Text style={{ ...FONTS.fontSemiBold, fontSize: 14, color: COLORS.white, margin: 15, textAlign: "justify" }}>I'll do my best to provide accurate and helpful responses! Let me know the task, and I'll make sure to handle it with care and precision. What's the task you'd like me to work on?
-
+                        <Text style={{ ...FONTS.fontSemiBold, fontSize: 14, color: COLORS.white, margin: 15, textAlign: "justify" }}>
+                            {customer.description}
                         </Text>
                     </View>
 
 
                 </View>
             </View>
-
-
-
-
-
-            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: "center" }}>
-                <TouchableOpacity style={[styles.addAmmount, { flexDirection: 'row', justifyContent: 'center', alignItems: "center", }]} onPress={() => { }}>
-
-                    <Text style={styles.addButtonText}>
-                        Share</Text>
-                    <FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'share'} size={18} />
-                </TouchableOpacity>
+            <View style={{ paddingHorizontal: 20, marginBottom: 30 }}>
+                <ButtonIcon title='Share' iconDirection='right' icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'share'} size={18} />}>
+                </ButtonIcon>
             </View>
         </View>
     );
@@ -221,8 +212,9 @@ const styles = StyleSheet.create({
     },
 
 
-    addAmmount: {
-        width: 400,
+    button: {
+        width: 380,
+        height: 60,
         backgroundColor: COLORS.primary,
         marginBottom: 20,
         padding: 15, // 15px padding around the button content
@@ -234,7 +226,7 @@ const styles = StyleSheet.create({
 
         // Shadow blur radius for iOS
     },
-    addButtonText: {
+    buttonText: {
         color: Colors.white,
         fontSize: 16,
         fontWeight: 'bold',

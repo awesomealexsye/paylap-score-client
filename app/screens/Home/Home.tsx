@@ -13,6 +13,7 @@ import { openDrawer } from '../../redux/actions/drawerAction';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { ApiService } from '../../lib/ApiService';
 import { MessagesService } from '../../lib/MessagesService';
+import CommonService from '../../lib/CommonService';
 
 
 
@@ -41,31 +42,31 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const [searchText, setSearchText] = useState('');
     const [customersData, setCustomersData] = useState<any>([]);
     const [homeBanner, setHomeBanner] = useState<any>({});
-    const [filteredCustomers, setFilteredCustomers] = useState(customersData);
+    const [filteredCustomers, setFilteredCustomers] = useState([]);
+    const [userName, setUsername] = useState("");
 
     useEffect(() => {
         fetchCustomerList();
-
+        CommonService.currentUserDetail().then((res) => {
+            setUsername(res?.name);
+        })
     }, [])
     const handleSearch = (text: string) => {
-        console.log("handle search", text);
         setSearchText(text);
-        const filteredList = customersData.filter((customer: Customer) =>
+        const filteredList = customersData.filter((customer: any) =>
             customer.name.toLowerCase().includes(text.toLowerCase())
         );
         setFilteredCustomers(filteredList);
     };
     const fetchCustomerList = async () => {
         const homeApiRes = await ApiService.postWithToken("api/shopkeeper/list-customer", {});
-        if (homeApiRes.status == true) {
-            let customersApiData: Customer = homeApiRes?.data?.records;
+        if (homeApiRes?.status == true) {
             let homeBanner = homeApiRes?.data?.shopkeeper_transaction_sum;
             setHomeBanner(homeBanner);
-            setCustomersData(customersApiData);
-            setFilteredCustomers(customersApiData);
-            console.log("c8ster", customersApiData)
+            setCustomersData(homeApiRes?.data?.records);
+            setFilteredCustomers(homeApiRes?.data?.records);
         } else {
-            MessagesService.commonMessage(homeApiRes.message)
+            MessagesService.commonMessage(homeApiRes?.message)
         }
     }
 
@@ -74,11 +75,6 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
     const theme = useTheme();
     const { colors }: { colors: any; } = theme;
-
-
-    const addItemToWishList = (data: any) => {
-        dispatch(addTowishList(data));
-    }
 
 
     const renderCustomer = ({ item }: { item: Customer }) => (
@@ -101,7 +97,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 </View>
 
                 <View style={{ flexDirection: "column", alignItems: "center", position: "relative" }}>
-                    <Text style={item.transaction_type === 'Credit' ? { color: "green", fontSize: 18, fontWeight: "900" } : { fontSize: 18, fontWeight: "900", color: "red" }}>₹ {item.amount}</Text>
+                    <Text style={item.transaction_type === 'CREDIT' ? { color: "green", fontSize: 18, fontWeight: "900" } : { fontSize: 18, fontWeight: "900", color: "red" }}>₹ {item.amount}</Text>
                     <Text style={[styles.type, { color: colors.title }]}>{item.transaction_type}</Text>
                 </View>
 
@@ -118,8 +114,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 <View style={[GlobalStyleSheet.container, { paddingHorizontal: 30, padding: 0, paddingTop: 30 }]}>
                     <View style={[GlobalStyleSheet.flex]}>
                         <View>
-                            <Text style={{ ...FONTS.fontRegular, fontSize: 14, color: colors.title }}>Good Morning</Text>
-                            <Text style={{ ...FONTS.fontSemiBold, fontSize: 24, color: colors.title }}>Williams</Text>
+                            <Text style={{ ...FONTS.fontRegular, fontSize: 14, color: colors.title }}>Namaste</Text>
+                            <Text style={{ ...FONTS.fontSemiBold, fontSize: 24, color: colors.title }}>{userName}</Text>
                         </View>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <TouchableOpacity
@@ -177,7 +173,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 <View style={{ flex: 1, alignItems: 'center' }} >
                     <View style={{
                         height: 140,
-                        width: 400,
+                        width: 380,
                         top: 20,
                         backgroundColor: COLORS.primary,
                         borderRadius: 31,
@@ -192,7 +188,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                     }}>
 
 
-                        <View style={{ width: 400, flexDirection: 'row', marginTop: 22, rowGap: 4, justifyContent: 'center', borderBlockColor: COLORS.white, borderBottomWidth: 1, padding: 10 }}>
+                        <View style={{ width: 380, flexDirection: 'row', marginTop: 22, rowGap: 4, justifyContent: 'center', borderBlockColor: COLORS.white, borderBottomWidth: 1, padding: 10 }}>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderRightColor: COLORS.white }}>
                                 <Text style={{ ...FONTS.fontBold, fontSize: SIZES.h6, color: COLORS.primaryLight }}>Credit Amt.</Text>
                                 <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.secondary }}>₹ {homeBanner?.credit}</Text>
@@ -237,7 +233,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 <FlatList scrollEnabled={false}
                     data={filteredCustomers}
                     renderItem={renderCustomer}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item, index) => index.toString()}
                     contentContainerStyle={{}}
 
                 />

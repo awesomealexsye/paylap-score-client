@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, StyleSheet } from 'react-native'
+import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, StyleSheet, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react';
 import { COLORS, FONTS } from '../../constants/theme'
 import { GlobalStyleSheet } from '../../constants/StyleSheet'
@@ -10,35 +10,47 @@ import { IMAGES } from '../../constants/Images'
 import Button from '../../components/Button/Button'
 import { ApiService } from '../../lib/ApiService';
 import { MessagesService } from '../../lib/MessagesService';
+import StorageService from '../../lib/StorageService';
 
 
 type SingInScreenProps = StackScreenProps<RootStackParamList, 'MobileSignIn'>;
 
 const MobileSignIn = ({ navigation }: SingInScreenProps) => {
 
+    //redirect to home if already login
+    StorageService.isLoggedIn().then((is_login) => {
+        console.log("is_logged_in MobileSignIn page", is_login);
+        if (is_login) {
+            navigation.replace("DrawerNavigation", { screen: 'Home' });
+        }
+    })
+
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
 
+    const [isLoading, setIsLoading] = useState(false);
     const [isFocused, setisFocused] = useState(false);
-    const [isFocused2, setisFocused2] = useState(false);
+
 
     const [mobile, setMobile] = useState("");
 
-    const sentOtp = async() => {
-        if(mobile.length == 10){
-            const res:any =  await ApiService.postWithoutToken("api/auth/login", { mobile: mobile })
-            if(res != null){
-                 if(res.status){
-                     navigation.navigate("OtpVerify",{mobile:mobile})
-                 }
-                 MessagesService.commonMessage(res.message)
+    const sentOtp = async () => {
+        if (mobile.length == 10) {
+            setIsLoading(true);
+            const res: any = await ApiService.postWithoutToken("api/auth/login", { mobile: mobile })
+            if (res != null) {
+                if (res.status) {
+                    navigation.navigate("OtpVerify", { mobile: mobile })
+                }
+                MessagesService.commonMessage(res.message)
             }
-        }else{
+        } else {
             MessagesService.commonMessage("Invalid Mobile Number")
 
 
         }
-       
+        setIsLoading(false);
+
     }
 
     return (
@@ -73,11 +85,14 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
                     </View>
 
                     <View style={{ marginTop: 30 }}>
-                        <Button
-                            title={"Send OTP"}
-                            onPress={sentOtp}
-                            style={{ borderRadius: 52 }}
-                        />
+                        {
+                            isLoading === false ?
+                                <Button
+                                    title={"Send OTP"}
+                                    onPress={sentOtp}
+                                    style={{ borderRadius: 52 }}
+                                /> : <ActivityIndicator color={COLORS.primary} size={70} />
+                        }
                         <View
                             style={[GlobalStyleSheet.flex, {
                                 marginBottom: 20,

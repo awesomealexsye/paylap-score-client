@@ -34,7 +34,7 @@ const WelCome = ({navigation} : WelComeScreenProps) => {
                 </View>
                 <LinearGradient colors={['rgba(4,118,78,0)', 'rgba(4,118,78,.5)']}>
                     <View style={[GlobalStyleSheet.container,{paddingHorizontal:35,paddingBottom:50}]}>
-                        <Text style={[styles.title,{color:colors.title}]}>Morning begins with Ombe coffee</Text>
+                        <Text style={[styles.title,{color:colors.title}]}>Open Your Account</Text>
                         <View style={{marginBottom:10}}>
                             <SocialBtn
                                 text='Register as ShopKeeper'
@@ -46,7 +46,7 @@ const WelCome = ({navigation} : WelComeScreenProps) => {
                                 onpress={() => navigation.navigate('MobileSignIn')}
                             />
                         </View>
-                        <View style={{marginBottom:10}}>
+                        {/* <View style={{marginBottom:10}}>
                             <SocialBtn
                                 text='Register as User'
                                 color={'#376AED'}
@@ -55,7 +55,7 @@ const WelCome = ({navigation} : WelComeScreenProps) => {
                                 icon={<Ionicons name='logo-facebook' size={22} color={COLORS.card}/>}
                                 border={'#376AED'}
                             />
-                        </View>
+                        </View> */}
                     </View>
                 </LinearGradient>
             </ScrollView>

@@ -1,6 +1,6 @@
 import { useTheme } from '@react-navigation/native';
-import React, { useState } from 'react'
-import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, StyleSheet, DatePickerIOS } from 'react-native'
+import React, { useState, useEffect } from 'react';
+import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import Header from '../../layout/Header';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { COLORS, FONTS } from '../../constants/theme';
@@ -8,39 +8,71 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import Button from '../../components/Button/Button';
 import Input from '../../components/Input/Input';
-// import DateTimePicker from '@react-native-community/datetimepicker';
-// import { Icon } from 'react-native-elements';  // If using icons
 import { FontAwesome } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import ButtonIcon from '../../components/Button/ButtonIcon';
 import useImagePicker from '../../customHooks/ImagePickerHook';
+import { ApiService } from '../../lib/ApiService';
+import { MessagesService } from '../../lib/MessagesService';
+import { ActivityIndicator } from 'react-native-paper';
 
 type AddPaymentScreenProps = StackScreenProps<RootStackParamList, 'AddPayment'>;
 
-const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
+const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
+    const { item, transaction_type }: any = route.params;
+    // console.log("itemss::",route.params,item?.customer_id,typeof(item),transaction_type);
 
+    const { image, pickImage, takePhoto }: any = useImagePicker();
+
+    const [amount, setAmount] = useState<String>("");
+    const [description, setDescription] = useState<String>("");
+    const [newDate, setNewDate] = useState<String>("");
+    const [isLoading, setIsLoading] = useState(false)
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
-    const [isFocused, setisFocused] = useState(false);
-    let d = new Date(), f = `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`;
 
-    const [date, setDate] = useState(d);
+    const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
 
     const onChange = (event: any, selectedDate: any) => {
         const currentDate = selectedDate || date;
         setShow(false);
         setDate(currentDate);
+        setNewDate(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
     };
 
     const showDatepicker = () => {
         setShow(true);
     };
 
-    // imagePickerFunction
+    useEffect(() => {
+        setNewDate(`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`);
+    }, []);
 
-    const { image, pickImage, takePhoto } = useImagePicker();
+    const fetchAddPaymentData = async () => {
+        setIsLoading(true);
+        const data: any = { customer_id: item?.customer_id, amount: amount, transaction_type: transaction_type, description: description, transaction_date: newDate }
 
+        if (image && image.uri) {
+            const base64Image = await fetch(image.uri).then(res => res.blob()).then(blob => {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                });
+            });
+
+            data.image = base64Image;
+        }
+
+        ApiService.postWithToken("api/shopkeeper/transactions/add-transaction", data).then((res) => {
+            setIsLoading(false);
+            if (res.status == true) {
+                navigation.goBack();
+            }
+        });
+    };
 
     return (
         <View style={{ backgroundColor: colors.background, flex: 1, }}>
@@ -54,24 +86,25 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
                     <View style={GlobalStyleSheet.cardBody}>
                         <View style={{ marginBottom: 10 }}>
                             <Input
+                                keyboardType='numeric'
                                 icon={<FontAwesome style={{ opacity: .6 }} name={'rupee'} size={20} color={colors.text} />}
-                                //value={''}  
                                 placeholder="Enter amount"
-                                onChangeText={(value) => console.log(value)}
+                                onChangeText={amount => setAmount(amount)}
                             />
                         </View>
                         <View style={{ marginBottom: 10 }}>
                             <Input
                                 multiline={true}
                                 placeholder="Enter Details (Item Name, Bill no)"
-                                onChangeText={(value) => console.log(value)}
+                                onChangeText={description => setDescription(description)}
                             />
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 12 }}>
                             <View>
-                                <ButtonIcon onPress={showDatepicker}
+                                <ButtonIcon
+                                    onPress={showDatepicker}
                                     size={'sm'}
-                                    title={date.toLocaleDateString()}
+                                    title={newDate || date.toLocaleDateString()}
                                     icon={<FontAwesome style={{ opacity: .6 }} name={'calendar'} size={20} color={colors.white} />}
                                 />
                                 {show && (
@@ -87,29 +120,33 @@ const AddPayment = ({ navigation }: AddPaymentScreenProps) => {
                                 <ButtonIcon onPress={pickImage}
                                     size={'sm'}
                                     title='Attach bills'
-                                    icon={<FontAwesome style={{ opacity: .6 }} name={'camera'} size={20} color={colors.white} />}
+                                    iconDirection='left'
+                                    icon={<FontAwesome style={{ opacity: 1, color: COLORS.white, }} name={'camera'} size={20} color={colors.white} />}
                                 />
-
                             </View>
-
-
                         </View>
-
                     </View>
                 </View>
-
             </ScrollView>
-            {image && <Image source={{ uri: image }} style={{ width: 400, height: 400 }} />
 
-            }
-            <View style={[GlobalStyleSheet.container]}>
-                <Button
-                    title='Continue'
-                    color={COLORS.primary}
-                    text={COLORS.card}
-                    onPress={() => navigation.navigate('Checkout')}
-                    style={{ borderRadius: 48 }}
+            {image && image.uri && (
+                <Image
+                    source={{ uri: image.uri }}
+                    style={{ width: 300, height: 300, marginHorizontal: 50, marginVertical: 20 }}
                 />
+            )}
+
+            <View style={[GlobalStyleSheet.container]}>
+                {
+                    isLoading === false ?
+                        <Button
+                            title='Continue'
+                            color={COLORS.primary}
+                            text={COLORS.card}
+                            onPress={fetchAddPaymentData}
+                            style={{ borderRadius: 48 }}
+                        /> : <ActivityIndicator size={70} color={COLORS.primary} />
+                }
             </View>
         </View>
     )

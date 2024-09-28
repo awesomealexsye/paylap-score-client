@@ -12,16 +12,10 @@ import StorageService from '../lib/StorageService';
 
 const MenuItems = [
     {
-        id: "0",
+        id: "1",
         icon: IMAGES.home,
         name: "Home",
         navigate: "Home",
-    },
-    {
-        id: "1",
-        icon: IMAGES.user3,
-        name: "User Kyc",
-        navigate: 'UserKyc',
     },
 
     {
@@ -32,9 +26,21 @@ const MenuItems = [
     },
     {
         id: "3",
+        icon: IMAGES.components,
+        name: "UserKyc",
+        navigate: "UserKyc",
+    },
+    // {
+    //     id: "3",
+    //     icon: IMAGES.chat,
+    //     name: "Chat List",
+    //     navigate: 'Chat',
+    // },
+    {
+        id: "3",
         icon: IMAGES.chat,
-        name: "Chat List",
-        navigate: 'Chat',
+        name: "User Kyc",
+        navigate: 'UserKyc',
     },
     {
         id: "4",

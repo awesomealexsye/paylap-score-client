@@ -36,6 +36,7 @@ export type RootStackParamList = {
     Products: undefined;
     Language: undefined;
     MyCart: undefined;
+    Score: undefined;
     Category: undefined;
     Notifications: undefined;
     Questions: undefined;
@@ -46,7 +47,8 @@ export type RootStackParamList = {
     UserKyc: undefined;
     AddCustomer: undefined;
     CustomerTransations: { item: any };
-    CustomerTransationsDetails: { transationId: string };
+    CustomerTransationsDetails: { customer: any };
+    CustomerScore: { customer: any };
     Search: undefined;
     Components: undefined;
     Coupons: undefined;
@@ -54,7 +56,7 @@ export type RootStackParamList = {
     Checkout: undefined;
     Addcard: undefined;
     Payment: undefined;
-    AddPayment: undefined;
+    AddPayment: object | undefined;
     AddDeliveryAddress: undefined;
     Myorder: undefined;
     Notification: undefined;
