@@ -32,7 +32,7 @@ const UserKyc = forwardRef((props, ref) => {
     useEffect(() => {
         CommonService.currentUserDetail().then((res) => {
             if (res !== null) {
-                if (res.aadhar_card === "") {
+                if (res.aadhar_card !== "") {
                     navigation.navigate("Profile")
                     MessagesService.commonMessage("Your KYC has been already completed.");
                 }
