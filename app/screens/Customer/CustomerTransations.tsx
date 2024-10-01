@@ -1,6 +1,6 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList, TouchableHighlight } from 'react-native';
-import { useTheme } from '@react-navigation/native';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
+import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList, } from 'react-native';
+import { useTheme, useFocusEffect } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { IMAGES } from '../../constants/Images';
 import { COLORS, FONTS, SIZES } from '../../constants/theme';
@@ -8,18 +8,9 @@ import { Feather, FontAwesome } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
-import { addTowishList } from '../../redux/reducer/wishListReducer';
-import { openDrawer } from '../../redux/actions/drawerAction';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import HeaderWithImage from '../../layout/HeaderWithImage';
-import Header from '../../layout/Header';
-import { Icon } from 'react-native-paper/lib/typescript/components/Avatar/Avatar';
-import SocialBtn from '../../components/Socials/SocialBtn';
 import CustomerActivityBtn from './CustomerActivityBtn';
 import { ApiService } from '../../lib/ApiService';
-import { MessagesService } from '../../lib/MessagesService';
-
-
 
 
 interface Customer {
@@ -42,29 +33,18 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
 
     const [customerData, setCustomersData] = useState<any>({});
 
-    useEffect(() => {
-        fetchCustomerList();
-
-    }, [])
+    useFocusEffect(
+        useCallback(() => {
+            fetchCustomerList();
+        }, [])
+    );
 
     const fetchCustomerList = async () => {
         const res = await ApiService.postWithToken("api/shopkeeper/transactions/list-shopkeeper-customer-transaction", { "customer_id": item.customer_id });
-
-        //console.log(res.data.records, "gdzdsxfdtdc")
         setCustomersData(res);
-        // console.log("********************************", customerData.data.records)
     }
-
-
-    const dispatch = useDispatch();
-
     const theme = useTheme();
     const { colors }: { colors: any; } = theme;
-
-
-    const addItemToWishList = (data: any) => {
-        dispatch(addTowishList(data));
-    }
 
 
     const renderCustomer = ({ item }: { item: Customer }) => (
@@ -107,7 +87,6 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                 <View
                     style={[styles.header, {
                         backgroundColor: colors.card,
-                        //borderBlockColor:colors.border
                     }]}
                 >
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5, }}>
@@ -123,7 +102,6 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                                 backgroundColor: colors.background
                             }}
                         >
-                            {/* <Ionicons size={20} color={colors.title} name='chevron-back'/> */}
                             <Feather size={24} color={colors.title} name={'arrow-left'} />
                         </TouchableOpacity>
                         <Image
@@ -135,15 +113,8 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                             <Text style={{ ...FONTS.fontSemiBold, fontSize: 18, color: colors.title, }}>{item.name}</Text>
                         </View>
                     </View>
-                    {/* <TouchableOpacity
-                        onPress={() => navigation.navigate('Call')}
-                    >  <FontAwesome style={{ marginRight: 15, color: colors.white }} name={'ellipsis-v'} size={20} />
-                    </TouchableOpacity> */}
                 </View>
             </View>
-
-
-
 
             {/* AppBar End */}
 
@@ -209,25 +180,6 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                     </View>
                 </View>
 
-                {/* search Box Start */}
-
-                {/* <View style={[GlobalStyleSheet.container, { padding: 0, paddingHorizontal: 22, paddingTop: 10 }]}>
-                    <View>
-                        <TextInput
-                            placeholder='Search ShopKeeper'
-                            style={[styles.TextInput, { color: colors.title, backgroundColor: colors.card, ...FONTS.fontSemiBold }]}
-                            placeholderTextColor={'#929292'}
-                            value={searchText}
-                            onChangeText={handleSearch} />
-                        <View style={{ position: 'absolute', top: 15, right: 20 }}>
-                            <Feather name='search' size={24} color={'#C9C9C9'} />
-                        </View>
-                    </View>
-                </View> */}
-
-                {/* Search box ends */}
-
-
                 <FlatList scrollEnabled={false}
                     data={customerData.data?.records}
                     renderItem={renderCustomer}
@@ -267,28 +219,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingLeft: 30,
         borderWidth: 1,
-        //  borderColor:'#EBEBEB',
         backgroundColor: '#FAFAFA',
         marginBottom: 10
 
     },
-    // brandsubtitle2: {
-    //     ...FONTS.fontSemiBold,
-    //     fontSize: 12,
-    //     color: COLORS.card
-    // },
-    // brandsubtitle3: {
-    //     ...FONTS.fontMedium,
-    //     fontSize: 12,
-    //     color: COLORS.title
-    // },
-
-
     customerList: {
-        marginBottom: 100, // Leave space for the floating button
+        marginBottom: 100,
     },
-
-
     customerItem: {
         flexDirection: 'row',
         justifyContent: 'space-between',

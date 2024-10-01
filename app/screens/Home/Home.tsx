@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList } from 'react-native';
-import { useTheme } from '@react-navigation/native';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList, BackHandler } from 'react-native';
+import { useTheme, useFocusEffect } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { IMAGES } from '../../constants/Images';
 import { COLORS, FONTS, SIZES } from '../../constants/theme';
@@ -8,13 +8,11 @@ import { Feather, FontAwesome } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
-import { addTowishList } from '../../redux/reducer/wishListReducer';
 import { openDrawer } from '../../redux/actions/drawerAction';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { ApiService } from '../../lib/ApiService';
 import { MessagesService } from '../../lib/MessagesService';
 import CommonService from '../../lib/CommonService';
-
 
 
 
@@ -29,10 +27,6 @@ interface Customer {
     profile_image: any;
 }
 
-// const customersData: Customer[] = [
-// ];
-
-
 
 
 type HomeScreenProps = StackScreenProps<RootStackParamList, 'Home'>
@@ -45,12 +39,16 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const [filteredCustomers, setFilteredCustomers] = useState([]);
     const [userName, setUsername] = useState("");
 
-    useEffect(() => {
-        fetchCustomerList();
-        CommonService.currentUserDetail().then((res) => {
-            setUsername(res?.name);
-        })
-    }, [])
+    BackHandler.addEventListener('hardwareBackPress', () => { BackHandler.exitApp(); return true })
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchCustomerList();
+            CommonService.currentUserDetail().then((res) => {
+                setUsername(res?.name);
+            })
+        }, [])
+    );
     const handleSearch = (text: string) => {
         setSearchText(text);
         const filteredList = customersData.filter((customer: any) =>
@@ -65,8 +63,6 @@ export const Home = ({ navigation }: HomeScreenProps) => {
             setHomeBanner(homeBanner);
             setCustomersData(homeApiRes?.data?.records);
             setFilteredCustomers(homeApiRes?.data?.records);
-        } else {
-            MessagesService.commonMessage(homeApiRes?.message)
         }
     }
 
@@ -149,7 +145,6 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                             */}
                             <TouchableOpacity
                                 activeOpacity={0.5}
-                                //onPress={() => navigation.openDrawer()}
                                 onPress={() => dispatch(openDrawer())}
                                 style={[GlobalStyleSheet.background3, {}]}
                             >
@@ -270,9 +265,6 @@ const styles = StyleSheet.create({
         borderRadius: 61,
         paddingHorizontal: 10,
         paddingLeft: 30,
-        // borderWidth: 1,
-        //  borderColor:'#EBEBEB',
-        // backgroundColor: '#FAFAFA',
         marginBottom: 10
 
     },
@@ -300,7 +292,6 @@ const styles = StyleSheet.create({
 
         backgroundColor: Colors.white,
         borderRadius: 18,
-        // shadowColor: "#025135",
         shadowOffset: {
             width: 0,
             height: 15,
@@ -309,7 +300,6 @@ const styles = StyleSheet.create({
         shadowRadius: 31.27,
         marginHorizontal: 10,
         marginVertical: 4,
-        // elevation: 4,
         top: 4
     },
     customerName: {
