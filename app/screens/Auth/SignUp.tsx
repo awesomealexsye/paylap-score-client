@@ -31,7 +31,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
     const sentOtp = async () => {
         if (name == '' || name.length < 2) {
             MessagesService.commonMessage("Invalid Name")
-        } else if (email == '' || email.length < 2) {
+        } else if (email == '' || email.length < 2 || email) {
             MessagesService.commonMessage("Invalid Email")
         }
         else if (mobile.length != 10) {

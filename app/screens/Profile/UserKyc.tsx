@@ -51,7 +51,6 @@ const UserKyc = forwardRef((props, ref) => {
             if (res !== null && res.status === true) {
                 if (res?.data?.otp_sent) {
                     setAadharDetail(res.data);
-                    //console.log("Aadhar res", aadharDetail)
                     setIsOtpSent(true);
                     setIsLoading(false);
                     setButtonText("Verify OTP");

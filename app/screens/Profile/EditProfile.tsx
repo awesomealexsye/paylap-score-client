@@ -114,7 +114,6 @@ const EditProfile = () => {
                             pickImageFromCamera={takePhoto} pickImageFromGallery={pickImage} />
                         <View>
                             <Text style={[FONTS.fontMedium, { fontSize: 19, color: colors.title }]}>{profile?.name}</Text>
-                            {/* <Text style={[FONTS.fontRegular,{fontSize:12,color:colors.text}]}>Last Visit : 17 Jan 2024</Text> */}
                         </View>
                     </View>
                 </View>
@@ -127,28 +126,14 @@ const EditProfile = () => {
                             onFocus={() => setisFocused(true)}
                             onBlur={() => setisFocused(false)}
                             isFocused={isFocused}
-                            onChangeText={(value) => console.log(value)}
+                            onChangeText={(value) => { profile.name = value }}
+
                             backround={colors.card}
                             style={{ borderRadius: 48 }}
                             inputicon
                             placeholder='Full Name'
-
-                            value={profile?.name}
+                            value={profile.name}
                             icon={<Image source={IMAGES.user2} style={[styles.icon, { tintColor: colors.title }]} />}
-                        />
-                    </View>
-                    <View style={{ marginBottom: 15 }}>
-                        <Input
-                            onFocus={() => setisFocused1(true)}
-                            onBlur={() => setisFocused1(false)}
-                            isFocused={isFocused1}
-                            value={profile?.mobile}
-                            onChangeText={(value) => handleChange(value)}
-                            backround={colors.card}
-                            style={{ borderRadius: 48 }}
-                            inputicon
-                            placeholder='Mobile No.'
-                            icon={<Image source={IMAGES.Phoneduotone} style={[styles.icon, { tintColor: colors.title }]} />}
                         />
                     </View>
                     <View style={{ marginBottom: 15 }}>
@@ -156,7 +141,7 @@ const EditProfile = () => {
                             onFocus={() => setisFocused2(true)}
                             onBlur={() => setisFocused2(false)}
                             isFocused={isFocused2}
-                            onChangeText={(value) => console.log(value)}
+                            onChangeText={(value) => { profile.email = value }}
                             backround={colors.card}
                             style={{ borderRadius: 48 }}
                             inputicon
