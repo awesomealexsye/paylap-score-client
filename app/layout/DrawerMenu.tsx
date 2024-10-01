@@ -18,12 +18,12 @@ const MenuItems = [
         navigate: "Home",
     },
 
-    {
-        id: "2",
-        icon: IMAGES.components,
-        name: "Components",
-        navigate: "Components",
-    },
+    // {
+    //     id: "2",
+    //     icon: IMAGES.components,
+    //     name: "Components",
+    //     navigate: "Components",
+    // },
     // {
     //     id: "3",
     //     icon: IMAGES.chat,
