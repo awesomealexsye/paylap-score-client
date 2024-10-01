@@ -46,6 +46,7 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
                     await StorageService.setStorage(CONFIG.HARDCODE_VALUES.AUTH_KEY, api_data.auth_key)
                     await StorageService.setStorage(CONFIG.HARDCODE_VALUES.JWT_TOKEN, res.jwt_token)
                     const is_login = await StorageService.isLoggedIn();
+
                     if (is_login) {
                         navigation.navigate('DrawerNavigation', { screen: 'Home' });
                     }

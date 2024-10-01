@@ -1,5 +1,5 @@
-import { useTheme } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react'
+import { useTheme, useFocusEffect } from '@react-navigation/native';
+import React, { useEffect, useCallback, useState } from 'react'
 import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet } from 'react-native'
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { IMAGES } from '../../constants/Images';
@@ -17,13 +17,14 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
 
     const [profile, setProfile] = React.useState<any>({});
 
-    useEffect(() => {
-        CommonService.currentUserDetail().then((res) => {
-            console.log("calling inside profile")
-            setProfile(res);
-        })
-    }, []);
-
+    useFocusEffect(
+        useCallback(() => {
+            CommonService.currentUserDetail().then((res) => {
+                console.log("calling inside profile")
+                setProfile(res);
+            })
+        }, [])
+    );
 
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
