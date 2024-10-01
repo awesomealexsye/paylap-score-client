@@ -1,5 +1,5 @@
 import { useTheme } from '@react-navigation/native';
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet } from 'react-native'
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { IMAGES } from '../../constants/Images';
@@ -8,6 +8,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import Header from '../../layout/Header';
 import CommonService from '../../lib/CommonService';
+import FilePreviewModal from '../../components/Modal/FilePreviewModal';
 
 
 type ProfileScreenProps = StackScreenProps<RootStackParamList, 'Profile'>;
@@ -27,6 +28,14 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
 
+
+
+    const [modalVisible, setModalVisible] = useState(false)
+    const handlePreview = () => {
+        setModalVisible(true);
+    }
+
+
     return (
         <View style={{ backgroundColor: colors.card, flex: 1 }}>
             <Header
@@ -34,16 +43,24 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                 leftIcon={'back'}
                 rightIcon2={'Edit'}
             />
+
+            <FilePreviewModal close={setModalVisible} modalVisible={modalVisible} title="Preview" previewImage={profile.profile_image} />
             <ScrollView showsHorizontalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1, paddingBottom: 50 }}>
+
+
                 <View style={[GlobalStyleSheet.container, { alignItems: 'center', marginTop: 50, padding: 0 }]}>
-                    <View
-                        style={[styles.sectionimg]}
-                    >
-                        <Image
-                            style={{ height: 90, width: 90, borderRadius: 50 }}
-                            source={{ uri: profile?.profile_image }}
-                        />
-                    </View>
+                    <TouchableOpacity onPress={handlePreview}>
+
+                        <View
+                            style={[styles.sectionimg]}
+                        >
+                            <Image
+                                style={{ height: 90, width: 90, borderRadius: 50 }}
+                                source={{ uri: profile?.profile_image }}
+                            />
+                        </View>
+                    </TouchableOpacity>
+
                     <Text style={{ ...FONTS.fontSemiBold, fontSize: 28, color: colors.title }}>{profile?.name}</Text>
                     {/* <Text style={{ ...FONTS.fontRegular, fontSize: 16, color: COLORS.primary }}>London, England</Text> */}
                 </View>

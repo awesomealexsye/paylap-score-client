@@ -27,10 +27,12 @@ type Props = {
     rightIcon2?: any,
     rightIcon3?: string,
     rightIcon4?: any,
+    rightIcon5?: any,
+    rightIcon5Callback?: any,
 }
 
 
-const Header = ({ title, leftIcon, leftAction, transparent, productId, titleLeft, titleLeft2, titleRight, rightIcon1, rightIcon4, rightIcon2, rightIcon3 }: Props) => {
+const Header = ({ title, leftIcon, leftAction, transparent, productId, titleLeft, titleLeft2, titleRight, rightIcon1, rightIcon4, rightIcon2, rightIcon3, rightIcon5, rightIcon5Callback }: Props) => {
 
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
@@ -111,6 +113,15 @@ const Header = ({ title, leftIcon, leftAction, transparent, productId, titleLeft
                         style={[styles.actionBtn, {}]}
                     >
                         <FontAwesome size={22} color={colors.title} name={'home'} />
+                    </TouchableOpacity>
+                }
+                {rightIcon5 == "close" &&
+                    <TouchableOpacity
+                        activeOpacity={0.5}
+                        onPress={rightIcon5Callback}
+                        style={[styles.actionBtn, {}]}
+                    >
+                        <FontAwesome size={22} color={colors.title} name={'close'} />
                     </TouchableOpacity>
                 }
             </View>

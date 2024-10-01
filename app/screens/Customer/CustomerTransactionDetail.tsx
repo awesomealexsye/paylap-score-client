@@ -11,6 +11,7 @@ import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { ApiService } from '../../lib/ApiService';
 import ButtonIcon from '../../components/Button/ButtonIcon';
+import FilePreviewModal from '../../components/Modal/FilePreviewModal';
 
 
 
@@ -20,6 +21,13 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
     const { customer } = route.params;
     const theme = useTheme();
     const { colors }: { colors: any; } = theme;
+
+
+    const [modalVisible, setModalVisible] = useState(false)
+    const handlePreview = () => {
+        setModalVisible(true);
+    }
+
 
 
     return (
@@ -65,6 +73,10 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
 
             {/* AppBar End */}
 
+            <FilePreviewModal close={setModalVisible} modalVisible={modalVisible} title="Preview" previewImage={customer?.image} />
+
+
+
             <View style={{ flex: 1, alignItems: 'center' }} >
                 <View style={{
                     height: 220,
@@ -89,8 +101,8 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                             <View style={{ flexDirection: 'row', }}>
 
                                 <View style={{ marginLeft: 18 }}>
-                                    <Text style={[styles.customerName, { color: COLORS.primaryLight, ...FONTS.fontSemiBold }]}>{customer.customer_name}</Text>
-                                    <Text style={styles.lastInteraction}>{customer.last_updated_date}</Text>
+                                    <Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{customer.customer_name}</Text>
+                                    <Text style={[styles.lastInteraction, { color: colors.title }]}>{customer.last_updated_date}</Text>
 
                                 </View>
 
@@ -100,20 +112,20 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
 
                         <View style={{ flexDirection: "column", alignItems: "center", position: "relative", }}>
                             <Text style={{ color: customer.transaction_type === "CREDIT" ? COLORS.primary : COLORS.danger, fontSize: 18, fontWeight: "900" }} > ₹ {customer.amount}</Text>
-                            <Text style={[styles.type, { color: COLORS.primaryLight }]}>{customer.transaction_type}</Text>
+                            <Text style={[styles.type, { color: colors.title }]}>{customer.transaction_type}</Text>
                         </View>
 
                     </View>
                     <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: "center", marginTop: 20 }}>
 
                         <Text style={{
-                            color: Colors.white, ...FONTS.fontBold, marginRight: 5, fontSize
+                            color: colors.title, ...FONTS.fontBold, marginRight: 5, fontSize
                                 : 16
                         }}>
                             Transaction ID :
                             {/* <Feather name='arrow-right' size={16} color={COLORS.white} /> */}
                         </Text>
-                        <Text style={{ color: COLORS.white, ...FONTS.fontBold, fontSize: 16 }}>
+                        <Text style={{ color: colors.title, ...FONTS.fontBold, fontSize: 16 }}>
                             {customer.transaction_id}
                             {/* <Feather name='arrow-right' size={16} color={COLORS.white} /> */}
                         </Text>
@@ -121,7 +133,7 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                     </View>
                 </View>
                 <View style={{
-                    height: 150,
+                    height: 140,
                     width: 380,
                     top: 40,
                     backgroundColor: colors.card,
@@ -137,10 +149,10 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                     flexDirection: 'column'
                 }}>
                     <View style={{ borderBottomWidth: 1, height: 50 }} >
-                        <Text style={{ ...FONTS.fontSemiBold, fontSize: 18, color: COLORS.white, marginLeft: 20, top: 10 }}>Description</Text>
+                        <Text style={{ ...FONTS.fontSemiBold, fontSize: 18, color: colors.title, marginLeft: 20, top: 10 }}>Description</Text>
                     </View>
                     <View >
-                        <Text style={{ ...FONTS.fontSemiBold, fontSize: 14, color: COLORS.white, margin: 15, textAlign: "justify" }}>
+                        <Text style={{ ...FONTS.fontSemiBold, fontSize: 14, color: colors.title, margin: 15, textAlign: "justify" }}>
                             {customer.description}
                         </Text>
                     </View>
@@ -148,7 +160,7 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
 
                 </View>
 
-                <View style={{
+                {customer?.image !== "" && <View style={{
                     height: 180,
                     width: 380,
                     top: 40,
@@ -167,17 +179,21 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
 
                 }}>
                     <View style={{ borderBottomWidth: 1, height: 50 }} >
-                        <Text style={{ ...FONTS.fontSemiBold, fontSize: 18, color: COLORS.white, marginLeft: 20, top: 10 }}>Attached Bill Reciept</Text>
-                    </View>
-                    <View style={{ paddingHorizontal: 15, top: 10 }}  >
-                        <Image
-                            style={{ height: 110, width: 350, borderRadius: 10 }}
-                            source={{ uri: customer.image }}
-                        />
+                        <Text style={{ ...FONTS.fontSemiBold, fontSize: 18, color: colors.title, marginLeft: 20, top: 10 }}>Attached Bill Reciept</Text>
                     </View>
 
+                    < TouchableOpacity onPress={handlePreview} >
+                        <View style={{ paddingHorizontal: 15, top: 10 }}  >
+                            <Image
+                                style={{ height: 110, width: 350, borderRadius: 10 }}
+                                source={{ uri: customer?.image }}
+                            />
+                        </View>
+                    </TouchableOpacity >
 
-                </View>
+
+
+                </View>}
             </View>
             <View style={{ paddingHorizontal: 20, marginBottom: 30 }}>
                 <ButtonIcon title='Share' iconDirection='right' icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'share'} size={18} />}>
