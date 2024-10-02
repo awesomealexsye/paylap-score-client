@@ -19,7 +19,7 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
 
     //redirect to home if already login
     StorageService.isLoggedIn().then((is_login) => {
-        console.log("is_logged_in MobileSignIn page", is_login);
+        // console.log("is_logged_in MobileSignIn page", is_login);
         if (is_login) {
             navigation.replace("DrawerNavigation", { screen: 'Home' });
         }
@@ -55,9 +55,9 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.card, }}>
-            <View style={[GlobalStyleSheet.container, { justifyContent: 'center', alignItems: 'center', paddingVertical: 50 }]}>
+            <View style={[GlobalStyleSheet.container, { justifyContent: 'center', alignItems: 'center', paddingVertical: 15 }]}>
                 <Image
-                    style={{ resizeMode: 'contain', height: 36, width: 120 }}
+                    style={{ resizeMode: 'contain', height: 130, width: 150 }}
                     source={theme.dark ? IMAGES.appnamedark : IMAGES.appname}
                 />
             </View>
@@ -107,7 +107,7 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
                                 activeOpacity={0.5}
                                 onPress={() => navigation.navigate('ForgotPassword')}
                             >
-                                <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: COLORS.primary }}>Reset here</Text>
+                                <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: COLORS.danger }}>Reset here</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={{ marginBottom: 15 }}>

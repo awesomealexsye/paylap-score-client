@@ -109,9 +109,20 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
                 <View style={[GlobalStyleSheet.container, { paddingHorizontal: 30, padding: 0, paddingTop: 30 }]}>
                     <View style={[GlobalStyleSheet.flex]}>
-                        <View>
-                            <Text style={{ ...FONTS.fontRegular, fontSize: 14, color: colors.title }}>Namaste</Text>
-                            <Text style={{ ...FONTS.fontSemiBold, fontSize: 24, color: colors.title }}>{userName}</Text>
+                        <View style={{
+                            flexDirection: "row", alignItems: "center",
+                        }}>
+                            < View >
+                                <Image style={{ height: 45, width: 45, borderRadius: 50 }}
+                                    source={IMAGES.small6} />
+                            </View>
+                            <View style={{
+                                flexDirection: "column", alignItems: "center", marginLeft: 10
+                            }}>
+                                <Text style={{ ...FONTS.fontRegular, fontSize: 14, color: colors.title }}>Namaste</Text>
+                                <Text style={{ ...FONTS.fontSemiBold, fontSize: 24, color: colors.title }}>{userName}</Text>
+                            </View>
+
                         </View>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <TouchableOpacity
@@ -156,13 +167,13 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                         </View>
                     </View>
                 </View>
-            </View>
+            </View >
 
 
             {/* AppBar End */}
 
 
-            <ScrollView showsVerticalScrollIndicator={false}>
+            < ScrollView showsVerticalScrollIndicator={false} >
 
 
                 <View style={{ flex: 1, alignItems: 'center' }} >
@@ -233,13 +244,13 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
                 />
 
-            </ScrollView>
+            </ScrollView >
             <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("AddCustomer")}>
                 <FontAwesome style={{ marginRight: 6, color: COLORS.white }} name={'user-plus'} size={20} />
                 <Text style={styles.addButtonText}>
                     Add Customer</Text>
             </TouchableOpacity>
-        </View>
+        </View >
     );
 };
 

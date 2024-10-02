@@ -78,7 +78,7 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
     return (
         <View style={{ backgroundColor: colors.background, flex: 1, }}>
             <Header
-                title={transaction_type}
+                title={"Payment"}
                 leftIcon='back'
                 titleRight
             />
@@ -141,7 +141,7 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
                 {
                     isLoading === false ?
                         <Button
-                            title='Continue'
+                            title={transaction_type}
                             color={COLORS.primary}
                             text={COLORS.card}
                             onPress={fetchAddPaymentData}
