@@ -37,7 +37,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const [customersData, setCustomersData] = useState<any>([]);
     const [homeBanner, setHomeBanner] = useState<any>({});
     const [filteredCustomers, setFilteredCustomers] = useState([]);
-    const [userName, setUsername] = useState("");
+    const [userDetail, setUserDetail] = useState({ name: "", profile_image: "" });
 
     BackHandler.addEventListener('hardwareBackPress', () => { BackHandler.exitApp(); return true })
 
@@ -45,7 +45,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         useCallback(() => {
             fetchCustomerList();
             CommonService.currentUserDetail().then((res) => {
-                setUsername(res?.name);
+                setUserDetail(res);
             })
         }, [])
     );
@@ -109,9 +109,9 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
                 <View style={[GlobalStyleSheet.container, { paddingHorizontal: 30, padding: 0, paddingTop: 30 }]}>
                     <View style={[GlobalStyleSheet.flex]}>
-                        <View>
+                        <View style={{ flexDirection: 'column' }}>
                             <Text style={{ ...FONTS.fontRegular, fontSize: 14, color: colors.title }}>Namaste</Text>
-                            <Text style={{ ...FONTS.fontSemiBold, fontSize: 24, color: colors.title }}>{userName}</Text>
+                            <Text style={{ ...FONTS.fontSemiBold, fontSize: 24, color: colors.title }}>{userDetail.name}</Text>
                         </View>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <TouchableOpacity

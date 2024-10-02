@@ -8,6 +8,7 @@ import ProfileScreen from '../screens/Profile/Profile';
 import BottomMenu from '../layout/BottomMenu';
 import { useTheme } from '@react-navigation/native';
 import CustomerScore from '../screens/Profile/CustomerScore';
+import NotAvailable from '../screens/NotAvailable';
 
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
@@ -31,17 +32,13 @@ const BottomNavigation = () => {
                 component={HomeScreen}
             />
             <Tab.Screen
-                name='Wishlist'
-                component={WishlistScreen}
+                name='CustomerScore'
+                component={CustomerScore}
             />
             <Tab.Screen
-                name='MyCart'
-                component={MyCartScreen}
+                name='NotAvailable'
+                component={NotAvailable}
             />
-            {/* <Tab.Screen
-                name='Score'
-                component={CustomerScore}
-            /> */}
             <Tab.Screen
                 name='Profile'
                 component={ProfileScreen}

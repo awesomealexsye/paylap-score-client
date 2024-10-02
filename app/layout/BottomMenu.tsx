@@ -168,8 +168,8 @@ const BottomMenu = ({ state, navigation, descriptors }: Props) => {
                                         }}
                                         source={
                                             label === 'Home' ? IMAGES.Home :
-                                                label === 'Wishlist' ? IMAGES.heart2 :
-                                                    label === 'MyCart' ? IMAGES.list :
+                                                label === 'CustomerScore' ? IMAGES.tachometerfast :
+                                                    label === 'NotAvailable' ? IMAGES.list :
                                                         label === 'Profile' ? IMAGES.user3 : IMAGES.tachometerfast
                                         }
                                     />

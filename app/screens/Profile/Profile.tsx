@@ -20,7 +20,6 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
     useFocusEffect(
         useCallback(() => {
             CommonService.currentUserDetail().then((res) => {
-                console.log("calling inside profile")
                 setProfile(res);
             })
         }, [])

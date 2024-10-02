@@ -49,6 +49,7 @@ export type RootStackParamList = {
     CustomerTransations: { item: any };
     CustomerTransationsDetails: { customer: any };
     CustomerScore: { customer: any };
+    NotAvailable: undefined;
     Search: undefined;
     Components: undefined;
     Coupons: undefined;

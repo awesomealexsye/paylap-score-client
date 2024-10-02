@@ -24,8 +24,6 @@ interface Customer {
     image: any;
 }
 
-
-
 type CustomerTransationsScreenProps = StackScreenProps<RootStackParamList, 'CustomerTransations'>
 
 export const CustomerTransations = ({ navigation, route }: CustomerTransationsScreenProps) => {
@@ -164,16 +162,19 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                                 icon={<FontAwesome style={{ color: colors.title }} name={'rupee'} size={20} />}
                                 color={colors.card}
                                 text='Payments'
+                                onpress={() => navigation.navigate('NotAvailable')}
                             /><CustomerActivityBtn
                                 gap
                                 icon={<FontAwesome style={{ color: colors.title }} name={'bell'} size={20} />}
                                 color={colors.card}
                                 text='Reminder'
+                                onpress={() => navigation.navigate('NotAvailable')}
                             /><CustomerActivityBtn
                                 gap
                                 icon={<FontAwesome style={{ color: colors.title }} name={'envelope'} size={20} />}
                                 color={colors.card}
                                 text='SMS'
+                                onpress={() => navigation.navigate('NotAvailable')}
                             />
                         </View>
 

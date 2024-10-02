@@ -1,12 +1,9 @@
-import { useTheme } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react'
+import { useTheme, useFocusEffect } from '@react-navigation/native';
+import React, { useEffect, useState, useCallback } from 'react'
 import { View, Text, ScrollView } from 'react-native'
 import Header from '../../layout/Header';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
-import { IMAGES } from '../../constants/Images';
 import { COLORS, FONTS } from '../../constants/theme';
-import { Feather } from '@expo/vector-icons';
-import Button from '../../components/Button/Button';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import ProfileScore from './PeofileScore';
@@ -14,9 +11,9 @@ import CommonService from '../../lib/CommonService';
 
 type CustomerScoreScreenProps = StackScreenProps<RootStackParamList, 'CustomerScore'>;
 
-const CustomerScore = ({ navigation, route }: CustomerScoreScreenProps) => {
+const CustomerScore = ({ navigation }: CustomerScoreScreenProps) => {
 
-    const { customer } = route.params;
+    //const { customer } = route.params;
     const labels = [
         {
             name: 'Very Poor',
@@ -48,14 +45,15 @@ const CustomerScore = ({ navigation, route }: CustomerScoreScreenProps) => {
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
 
-
     const scoreVal = { min: 0, max: 100 };
     const [userScore, setUserScore] = useState(0)
-    useEffect(() => {
-        CommonService.currentUserDetail().then((res) => {
-            setUserScore(res?.credit_score);
-        })
-    })
+    useFocusEffect(
+        useCallback(() => {
+            CommonService.currentUserDetail().then((res) => {
+                setUserScore(res?.credit_score);
+            })
+        }, [])
+    );
     return (
         <>
             <Header
@@ -63,7 +61,7 @@ const CustomerScore = ({ navigation, route }: CustomerScoreScreenProps) => {
                 leftIcon='back'
                 titleRight
             />
-            <View style={{ marginTop: customer.credit_score }}>
+            <View style={{ marginTop: 50 }}>
                 <ProfileScore value={userScore} labels={labels} minValue={scoreVal.min} maxValue={scoreVal.max} />
             </View>
             <View style={[GlobalStyleSheet.container, { marginTop: 70, paddingHorizontal: 30 }]}>
