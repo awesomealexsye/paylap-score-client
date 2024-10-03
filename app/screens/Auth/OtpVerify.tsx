@@ -64,7 +64,7 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.card, }}>
             <View style={[GlobalStyleSheet.container, { justifyContent: 'center', alignItems: 'center', paddingVertical: 50 }]}>
                 <Image
-                    style={{ resizeMode: 'contain', height: 36, width: 120 }}
+                    style={{ resizeMode: 'contain', height: 120, width: 150 }}
                     source={theme.dark ? IMAGES.appnamedark : IMAGES.appname}
                 />
             </View>
