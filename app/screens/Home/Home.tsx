@@ -195,10 +195,12 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                         </View>
                         <View style={{ flex: 1, alignItems: 'center', justifyContent: "center" }}>
                             <TouchableOpacity style={{}}>
-                                <Text style={{ color: COLORS.white, ...FONTS.fontBold, }}>
-                                    VIEW REPORT
-                                    <Feather name='arrow-right' size={16} color={COLORS.white} />
-                                </Text>
+                                <TouchableOpacity onPress={() => navigation.navigate("NotAvailable")}>
+                                    <Text style={{ color: COLORS.white, ...FONTS.fontBold, }}>
+                                        VIEW REPORT
+                                        <Feather name='arrow-right' size={16} color={COLORS.white} />
+                                    </Text>
+                                </TouchableOpacity>
                             </TouchableOpacity>
 
                         </View>
