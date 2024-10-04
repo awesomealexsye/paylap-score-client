@@ -47,12 +47,8 @@ const EditProfile = () => {
 
 
 
-    const [inputValue, setInputValue] = useState("");
+    const [addressInputValue, setAddressInputValue] = useState("");
 
-    const handleChange = (text: any) => {
-        const numericValue = text.replace(/[^0-9]/g, "");
-        setInputValue(numericValue);
-    };
 
     const handleImageSelect = () => {
         setModalVisible(true);
@@ -60,15 +56,11 @@ const EditProfile = () => {
 
     const updateProfileData = async () => {
         setIsLoading(true);
-        console.log("calling,,,");
+
         const res = await ApiService.postWithToken(
             "api/user/profile-update",
-            { profile_image: image, name: "ajay" },
+            { profile_image: image, name: profile?.name, address: addressInputValue },
         )
-        console.log("**************************************************", image)
-        // .then(async (res) => {
-
-        // });
         if (res.status == true) {
 
             // await CommonService.storageUserDetail();
@@ -123,21 +115,22 @@ const EditProfile = () => {
                     </View>
                     <View style={{ marginBottom: 15, marginTop: 10 }}>
                         <Input
+                            editable={false}
                             onFocus={() => setisFocused(true)}
                             onBlur={() => setisFocused(false)}
                             isFocused={isFocused}
-                            onChangeText={(value) => { profile.name = value }}
-
+                            onChangeText={(value) => { profile.mobile = value }}
                             backround={colors.card}
                             style={{ borderRadius: 48 }}
                             inputicon
-                            placeholder='Full Name'
-                            value={profile.name}
-                            icon={<Image source={IMAGES.user2} style={[styles.icon, { tintColor: colors.title }]} />}
+                            placeholder='Mobile Number'
+                            value={profile.mobile}
+                            icon={<Image source={IMAGES.call} style={[styles.icon, { tintColor: colors.title }]} />}
                         />
                     </View>
                     <View style={{ marginBottom: 15 }}>
                         <Input
+                            editable={false}
                             onFocus={() => setisFocused2(true)}
                             onBlur={() => setisFocused2(false)}
                             isFocused={isFocused2}
@@ -147,7 +140,7 @@ const EditProfile = () => {
                             inputicon
                             placeholder='Email Address '
                             value={profile?.email}
-                            icon={<Image source={IMAGES.email2} style={[styles.icon, { tintColor: colors.title }]} />}
+                            icon={<Image source={IMAGES.email} style={[styles.icon, { tintColor: colors.title }]} />}
                         />
                     </View>
                     <View style={{ marginBottom: 15 }}>
@@ -155,12 +148,12 @@ const EditProfile = () => {
                             onFocus={() => setisFocused3(true)}
                             onBlur={() => setisFocused3(false)}
                             isFocused={isFocused3}
-                            onChangeText={(value) => console.log(value)}
+                            onChangeText={(value) => setAddressInputValue(value)}
                             backround={colors.card}
                             style={{ borderRadius: 48 }}
                             inputicon
-                            placeholder='Location'
-                            icon={<Image source={IMAGES.Pinduotone} style={[styles.icon, { tintColor: colors.title }]} />}
+                            placeholder={profile?.address ?? "Address"}
+                            icon={<Image source={IMAGES.Location} style={[styles.icon, { tintColor: colors.title }]} />}
                         />
                     </View>
                 </View>
@@ -183,8 +176,8 @@ const EditProfile = () => {
 
 const styles = StyleSheet.create({
     icon: {
-        height: 28,
-        width: 28,
+        height: 25,
+        width: 25,
         resizeMode: 'contain',
     },
     cardBackground: {
