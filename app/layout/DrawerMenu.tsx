@@ -26,7 +26,7 @@ const MenuItems = [
     // },
 
     {
-        id: "3",
+        id: "2",
         icon: IMAGES.chat,
         name: "User Kyc",
         navigate: 'UserKyc',
@@ -42,14 +42,22 @@ const MenuItems = [
         icon: IMAGES.user3,
         name: "Profile",
         navigate: "Profile",
-    }, {
-        id: "3",
+    },
+    {
+        id: "5",
         icon: IMAGES.share,
         name: "Share",
         navigate: 'ShareApp',
     },
     {
-        id: "5",
+        id: "6",
+        icon: IMAGES.bolt,
+        name: "Ledger Book",
+        navigate: 'LedgerMain',
+    },
+
+    {
+        id: "7",
         icon: IMAGES.logout,
         name: "Logout",
         navigate: 'MobileSignIn',

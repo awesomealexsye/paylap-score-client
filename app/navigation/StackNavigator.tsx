@@ -66,6 +66,8 @@ import CustomerScore from '../screens/Profile/CustomerScore';
 import NotAvailable from '../screens/NotAvailable';
 import ShareApp from '../screens/ShareApp';
 import FindUser from '../screens/Profile/FindUser';
+import LedgerMain from '../screens/LedgerBook/LedgerMain';
+import { LedgerAddCustomer } from '../screens/LedgerBook/LedgerAddCustomer';
 
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -145,6 +147,11 @@ const StackNavigator = () => {
 				<Stack.Screen name="Tables" component={Tables} />
 				<Stack.Screen name="Toggles" component={Toggles} />
 				<Stack.Screen name="ShareApp" component={ShareApp} />
+
+				{/* ledger book logic */}
+				<Stack.Screen name="LedgerMain" component={LedgerMain} />
+				<Stack.Screen name="LedgerAddCustomer" component={LedgerAddCustomer} />
+
 			</Stack.Navigator>
 		</View>
 	)
