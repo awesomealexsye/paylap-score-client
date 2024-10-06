@@ -32,6 +32,12 @@ const MenuItems = [
         navigate: 'UserKyc',
     },
     {
+        id: "3",
+        icon: IMAGES.search,
+        name: "Find User",
+        navigate: 'FindUser',
+    },
+    {
         id: "4",
         icon: IMAGES.user3,
         name: "Profile",

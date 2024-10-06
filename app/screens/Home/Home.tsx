@@ -133,7 +133,9 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                 flexDirection: "column", alignItems: "center", marginLeft: 10
                             }}>
                                 <Text style={{ ...FONTS.fontRegular, fontSize: 14, color: colors.title }}>Namaste</Text>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: 24, color: colors.title }}>{userDetail.name}</Text>
+                                <Text style={{ ...FONTS.fontSemiBold, fontSize: 24, color: colors.title }}> {userDetail.name.split(' ')[0]}
+
+                                </Text>
                             </View>
 
                         </View>
