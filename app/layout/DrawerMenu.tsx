@@ -24,12 +24,7 @@ const MenuItems = [
     //     name: "Components",
     //     navigate: "Components",
     // },
-    // {
-    //     id: "3",
-    //     icon: IMAGES.chat,
-    //     name: "Chat List",
-    //     navigate: 'Chat',
-    // },
+
     {
         id: "3",
         icon: IMAGES.chat,
@@ -41,6 +36,11 @@ const MenuItems = [
         icon: IMAGES.user3,
         name: "Profile",
         navigate: "Profile",
+    }, {
+        id: "3",
+        icon: IMAGES.share,
+        name: "Share",
+        navigate: 'ShareApp',
     },
     {
         id: "5",

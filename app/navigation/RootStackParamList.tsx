@@ -27,6 +27,7 @@ export type RootStackParamList = {
     BottomNavigation: undefined;
     Singlechat: undefined;
     Chat: undefined;
+    ShareApp: undefined;
     Support: undefined;
     History: undefined;
     Verification: undefined;

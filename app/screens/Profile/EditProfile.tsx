@@ -45,8 +45,6 @@ const EditProfile = () => {
     const [isFocused3, setisFocused3] = useState(false)
     const [isLoading, setIsLoading] = useState(false);
 
-
-
     const [addressInputValue, setAddressInputValue] = useState("");
 
 

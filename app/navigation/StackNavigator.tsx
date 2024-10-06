@@ -64,6 +64,7 @@ import CustomerTransations from '../screens/Customer/CustomerTransations';
 import CustomerTransationsDetails from '../screens/Customer/CustomerTransactionDetail';
 import CustomerScore from '../screens/Profile/CustomerScore';
 import NotAvailable from '../screens/NotAvailable';
+import ShareApp from '../screens/ShareApp';
 
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -141,6 +142,7 @@ const StackNavigator = () => {
 				<Stack.Screen name="Tabs" component={Tabs} />
 				<Stack.Screen name="Tables" component={Tables} />
 				<Stack.Screen name="Toggles" component={Toggles} />
+				<Stack.Screen name="ShareApp" component={ShareApp} />
 			</Stack.Navigator>
 		</View>
 	)
