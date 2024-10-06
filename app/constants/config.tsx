@@ -11,8 +11,41 @@ const CONFIG = {
             LIGHT: 'LIGHT',
             DARK: 'DARK'
         },
-    }
+    },
+    CREDIT_SCORE_RANGE: {
+        MIN: 0,
+        MAX: 100
+    },
+
+    CREDIT_SCORE_LABEL: [
+        {
+            name: 'Very Poor',
+            labelColor: '#ff2900',
+            activeBarColor: '#ff2900',
+        },
+        {
+            name: 'Poor',
+            labelColor: '#ff5400',
+            activeBarColor: '#ff5400',
+        },
+        {
+            name: 'Good',
+            labelColor: '#f4ab44',
+            activeBarColor: '#f4ab44',
+        },
+        {
+            name: 'Very Good',
+            labelColor: '#f2cf1f',
+            activeBarColor: '#f2cf1f',
+        },
+        {
+            name: 'Excellent',
+            labelColor: '#14eb6e',
+            activeBarColor: '#14eb6e',
+        },
+    ]
 }
+
 
 
 export default CONFIG;
