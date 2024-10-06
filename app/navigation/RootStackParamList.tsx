@@ -27,6 +27,7 @@ export type RootStackParamList = {
     BottomNavigation: undefined;
     Singlechat: undefined;
     Chat: undefined;
+    ShareApp: undefined;
     Support: undefined;
     History: undefined;
     Verification: undefined;
@@ -45,6 +46,7 @@ export type RootStackParamList = {
     Profile: undefined;
     Wishlist: undefined;
     UserKyc: undefined;
+    FindUser: undefined;
     AddCustomer: undefined;
     CustomerTransations: { item: any };
     CustomerTransationsDetails: { customer: any };

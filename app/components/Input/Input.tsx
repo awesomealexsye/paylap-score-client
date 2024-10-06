@@ -31,6 +31,7 @@ type Props = {
     text?: any,
     isFocused?: any,
     inputicon?: any,
+    editable?: any
 }
 
 const Input = ({
@@ -54,6 +55,7 @@ const Input = ({
     keyboardType,
     isFocused,
     inputicon
+    , editable
 
 }: Props) => {
 
@@ -89,6 +91,7 @@ const Input = ({
                 </View>
             }
             <TextInput
+                editable={editable}
                 style={[styles.input, {
                     backgroundColor: backround ? colors.card : colors.input,
                     //borderColor:colors.,
