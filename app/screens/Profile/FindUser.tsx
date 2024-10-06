@@ -1,7 +1,7 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { ScrollView, View, Text, ActivityIndicator, Image, StyleSheet } from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import { useNavigation, useTheme } from '@react-navigation/native';
+import { useNavigation, useTheme, useFocusEffect } from '@react-navigation/native';
 import LoginSheet from '../../components/BottomSheet/LoginSheet';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import Header from '../../layout/Header';
@@ -48,6 +48,12 @@ const FindUser = forwardRef((props, ref) => {
     // useEffect(() => {
 
     // }, []);
+    useFocusEffect(
+        useCallback(() => {
+
+            setShowDetail(false);
+        }, [])
+    );
     const searchAadhaar = async () => {
         setIsLoading(true);
 

@@ -145,7 +145,6 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                             isLoading === false ?
                                 <Button
                                     title={"Send OTP"}
-                                    color={'#606060'}
                                     onPress={sentOtp}
                                     style={{ borderRadius: 52 }}
                                 /> : <ActivityIndicator size={70} color={COLORS.primary} />

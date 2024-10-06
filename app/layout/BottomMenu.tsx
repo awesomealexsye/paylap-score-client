@@ -168,7 +168,7 @@ const BottomMenu = ({ state, navigation, descriptors }: Props) => {
                                         }}
                                         source={
                                             label === 'Home' ? IMAGES.Home :
-                                                label === 'CustomerScore' ? IMAGES.tachometerfast :
+                                                label === 'FindUser' ? IMAGES.search :
                                                     label === 'NotAvailable' ? IMAGES.list :
                                                         label === 'Profile' ? IMAGES.user3 : IMAGES.tachometerfast
                                         }
