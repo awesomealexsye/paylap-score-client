@@ -79,7 +79,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                     <View style={{}}>
                         <View style={{ marginBottom: 30 }}>
                             <Text style={[styles.title1, { color: colors.title }]}>Create an account</Text>
-                            <Text style={[styles.title2, { color: colors.title }]}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</Text>
+                            <Text style={[styles.title2, { color: colors.title }]}>Join us! Enter your mobile number to get an OTP and create your account</Text>
                         </View>
                         <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
                             <Text style={[styles.title3, { color: '#8A8A8A' }]}>Your Name / Business Name

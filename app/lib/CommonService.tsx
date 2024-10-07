@@ -7,19 +7,8 @@ import { ApiService } from './ApiService';
 
 
 const CommonService = {
-    getAppThemeApi() {
-        ApiService.postWithToken("api/fetch-settings", { setting_key: ["APP_NAME", "APP_THEME_CUSTOMIZATION"] }).then((res) => {
-            console.log("APP theme API calling..");
-            let app_theme = res?.data;
-            let APP_THEME_CUSTOMIZATION = app_theme.APP_THEME_CUSTOMIZATION;
-            StorageService.setStorage("APP_THEME_CUSTOMIZATION", APP_THEME_CUSTOMIZATION);
-        })
-    },
-    async handleAppTheme(keyItem: string) {
-        const APP_THEME_CUSTOMIZATION: any = await StorageService.getStorage("APP_THEME_CUSTOMIZATION");
-        const APP_THEME_CUSTOMIZATION_obj = JSON.parse(APP_THEME_CUSTOMIZATION);
-        return APP_THEME_CUSTOMIZATION_obj[keyItem];
-
+    async getAppSettings(keyList: string[]) {
+        return await ApiService.postWithoutToken("api/fetch-settings", { setting_key: keyList });
     },
     // async storageUserDetail() {
     //     const res = await ApiService.postWithToken("api/user/info", {});

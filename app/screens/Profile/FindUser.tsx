@@ -91,7 +91,7 @@ const FindUser = forwardRef((props, ref) => {
                     />
                     <ScrollView>
                         <View style={[GlobalStyleSheet.container, { padding: 0, paddingTop: 10 }]}>
-                            <View style={{ marginTop: 20, }}>
+                            <View style={{ marginTop: 0, }}>
 
                                 {
                                     !showDetail &&
@@ -99,7 +99,7 @@ const FindUser = forwardRef((props, ref) => {
                                         <View style={[GlobalStyleSheet.cardHeader, { borderBottomColor: COLORS.inputborder }]}>
                                             <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, textAlign: 'center' }}>Search Aadhaar Card</Text>
                                         </View>
-                                        <View style={{ marginTop: 20 }}>
+                                        <View style={{ marginTop: 0 }}>
                                             <View style={{ marginBottom: 10 }}>
                                                 <Input
                                                     inputRounded
@@ -121,7 +121,7 @@ const FindUser = forwardRef((props, ref) => {
                                     showDetail &&
                                     (<View>
                                         <View>
-                                            <View style={[GlobalStyleSheet.container, { alignItems: 'center', marginTop: 50, padding: 0 }]}>
+                                            <View style={[GlobalStyleSheet.container, { alignItems: 'center', marginTop: 0, padding: 0 }]}>
 
                                                 <View
                                                     style={[styles.sectionimg]}
@@ -137,7 +137,7 @@ const FindUser = forwardRef((props, ref) => {
                                             </View>
 
                                             <View
-                                                style={[GlobalStyleSheet.container, { paddingHorizontal: 40, marginTop: 20 }]}
+                                                style={[GlobalStyleSheet.container, { paddingHorizontal: 40, marginTop: 0 }]}
                                             >
                                                 <View>
 
@@ -162,7 +162,7 @@ const FindUser = forwardRef((props, ref) => {
                                                         </View>
                                                         <View>
                                                             <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>Email Address</Text>
-                                                            <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>{userDetail?.email}</Text>
+                                                            <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 0 }}>{userDetail?.email}</Text>
                                                         </View>
                                                     </View>
                                                 </View>

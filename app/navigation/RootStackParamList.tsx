@@ -87,6 +87,7 @@ export type RootStackParamList = {
     TabStyle2: undefined;
     TabStyle3: undefined;
     TabStyle4: undefined;
+    CustomerSupport: undefined;
 
     // ledgerbook
     LedgerMain: undefined;

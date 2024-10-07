@@ -57,6 +57,13 @@ const MenuItems = [
 
     {
         id: "5",
+        icon: IMAGES.technicalsupport,
+        name: "Support",
+        navigate: 'CustomerSupport',
+    },
+
+    {
+        id: "6",
         icon: IMAGES.logout,
         name: "Logout",
         navigate: 'MobileSignIn',

@@ -66,7 +66,7 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
                     <View style={{}}>
                         <View style={{ marginBottom: 30 }}>
                             <Text style={[styles.title1, { color: colors.title }]}>Sign In</Text>
-                            <Text style={[styles.title2, { color: colors.title }]}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</Text>
+                            <Text style={[styles.title2, { color: colors.title }]}>Welcome back! Enter your mobile number to receive an OTP for secure access</Text>
                         </View>
                         <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
                             <Text style={[styles.title3, { color: '#8A8A8A' }]}>Mobile Number</Text>
@@ -93,23 +93,6 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
                                     style={{ borderRadius: 52 }}
                                 /> : <ActivityIndicator color={COLORS.primary} size={70} />
                         }
-                        {/* <View
-                            style={[GlobalStyleSheet.flex, {
-                                marginBottom: 20,
-                                marginTop: 10,
-                                paddingHorizontal: 10,
-                                justifyContent: 'flex-start',
-                                gap: 5
-                            }]}
-                        >
-                            <Text style={[styles.text, { color: colors.title }]}>Forgot Password?</Text>
-                            <TouchableOpacity
-                                activeOpacity={0.5}
-                                onPress={() => navigation.navigate('ForgotPassword')}
-                            >
-                                <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: COLORS.danger }}>Reset here</Text>
-                            </TouchableOpacity>
-                        </View> */}
                         <View style={{ marginBottom: 15, marginTop: 60 }}>
                             <Text style={[styles.title2, { color: colors.title, textAlign: 'center', opacity: .5 }]}>Don’t have an account?</Text>
                         </View>
