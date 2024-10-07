@@ -32,19 +32,18 @@ const MenuItems = [
     //     navigate: 'UserKyc',
     // },
     // {
-    //     id: "3",
+    //     id: "2",
     //     icon: IMAGES.search,
     //     name: "Find User",
     //     navigate: 'FindUser',
     // },
     {
-        id: "4",
+        id: "3",
         icon: IMAGES.user3,
         name: "Profile",
         navigate: "Profile",
-    },
-    {
-        id: "5",
+    }, {
+        id: "4",
         icon: IMAGES.share,
         name: "Share",
         navigate: 'ShareApp',
@@ -57,7 +56,7 @@ const MenuItems = [
     // },
 
     {
-        id: "7",
+        id: "5",
         icon: IMAGES.logout,
         name: "Logout",
         navigate: 'MobileSignIn',

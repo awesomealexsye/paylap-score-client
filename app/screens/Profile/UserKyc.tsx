@@ -56,6 +56,8 @@ const UserKyc = forwardRef((props, ref) => {
                 } else {
                     MessagesService.commonMessage(res?.message);
                 }
+            } else {
+                setIsLoading(false);
             }
         } else if (buttonText === "Verify OTP") {
             setIsLoading(true);
