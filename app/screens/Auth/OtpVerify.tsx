@@ -48,7 +48,11 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
                     const is_login = await StorageService.isLoggedIn();
 
                     if (is_login) {
-                        navigation.navigate('DrawerNavigation', { screen: 'Home' });
+                        if (res.aadhar_card === "") {
+                            navigation.navigate("UserKyc");
+                        } else {
+                            navigation.navigate('DrawerNavigation', { screen: 'Home' });
+                        }
                     }
                 } else {
                     MessagesService.commonMessage(res.message)
