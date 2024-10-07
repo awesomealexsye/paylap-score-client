@@ -87,14 +87,13 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
                 return;
             }
         }
-        setIsLoading(true);
         ApiService.postWithToken("api/shopkeeper/transactions/add-transaction", data).then((res) => {
+            setIsLoading(false);
             if (res.status == true) {
                 MessagesService.commonMessage(res.message);
                 navigation.goBack();
             }
         });
-        setIsLoading(false);
 
     };
 
