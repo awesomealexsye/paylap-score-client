@@ -64,6 +64,7 @@ import CustomerTransations from '../screens/Customer/CustomerTransations';
 import CustomerTransationsDetails from '../screens/Customer/CustomerTransactionDetail';
 import CustomerScore from '../screens/Profile/CustomerScore';
 import NotAvailable from '../screens/NotAvailable';
+import EditUserPaymentDetail from '../screens/Payment/EditUserPaymentDetail';
 
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -118,6 +119,7 @@ const StackNavigator = () => {
 				<Stack.Screen name="CustomerScore" component={CustomerScore} />
 				<Stack.Screen name="CustomerTransationsDetails" component={CustomerTransationsDetails} />
 				<Stack.Screen name="NotAvailable" component={NotAvailable} />
+				<Stack.Screen name="EditUserPaymentDetail" component={EditUserPaymentDetail} />
 				<Stack.Screen name="Components" component={Components} />
 				<Stack.Screen name="Accordion" component={AccordionScreen} />
 				<Stack.Screen name="BottomSheet" component={BottomSheet} />

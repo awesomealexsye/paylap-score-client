@@ -40,7 +40,6 @@ const EditProfile = () => {
     const navigation = useNavigation<any>();
 
     const [isFocused, setisFocused] = useState(false)
-    const [isFocused1, setisFocused1] = useState(false)
     const [isFocused2, setisFocused2] = useState(false)
     const [isFocused3, setisFocused3] = useState(false)
     const [isLoading, setIsLoading] = useState(false);
@@ -60,18 +59,11 @@ const EditProfile = () => {
 
     const updateProfileData = async () => {
         setIsLoading(true);
-        console.log("calling,,,");
         const res = await ApiService.postWithToken(
             "api/user/profile-update",
             { profile_image: image, name: "ajay" },
-        )
-        console.log("**************************************************", image)
-        // .then(async (res) => {
-
-        // });
+        );
         if (res.status == true) {
-
-            // await CommonService.storageUserDetail();
             MessagesService.commonMessage(res.message);
             navigation.goBack();
         }
