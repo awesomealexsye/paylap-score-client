@@ -101,7 +101,7 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
     return (
         <View style={{ backgroundColor: colors.background, flex: 1, }}>
             <Header
-                title={transaction_type}
+                title={"Payment"}
                 leftIcon='back'
                 titleRight
             />

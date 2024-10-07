@@ -65,6 +65,8 @@ import CustomerTransationsDetails from '../screens/Customer/CustomerTransactionD
 import CustomerScore from '../screens/Profile/CustomerScore';
 import NotAvailable from '../screens/NotAvailable';
 import EditUserPaymentDetail from '../screens/Payment/EditUserPaymentDetail';
+import ShareApp from '../screens/ShareApp';
+import FindUser from '../screens/Profile/FindUser';
 
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -114,6 +116,7 @@ const StackNavigator = () => {
 				<Stack.Screen name="Call" component={Call} />
 				<Stack.Screen name="EditProfile" component={EditProfile} />
 				<Stack.Screen name="UserKyc" component={UserKyc} />
+				<Stack.Screen name="FindUser" component={FindUser} />
 				<Stack.Screen name="AddCustomer" component={AddCustomer} />
 				<Stack.Screen name="CustomerTransations" component={CustomerTransations} />
 				<Stack.Screen name="CustomerScore" component={CustomerScore} />
@@ -143,6 +146,7 @@ const StackNavigator = () => {
 				<Stack.Screen name="Tabs" component={Tabs} />
 				<Stack.Screen name="Tables" component={Tables} />
 				<Stack.Screen name="Toggles" component={Toggles} />
+				<Stack.Screen name="ShareApp" component={ShareApp} />
 			</Stack.Navigator>
 		</View>
 	)

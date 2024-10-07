@@ -23,10 +23,12 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
     const [isFocused, setisFocused] = useState(false);
     const [isFocused2, setisFocused2] = useState(false);
     const [isFocused3, setisFocused3] = useState(false);
+    const [isFocused4, setisFocused4] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [mobile, setMobile] = useState("");
+    const [referralCode, setReferralCode] = useState("");
 
     const sentOtp = async () => {
         if (name == '' || name.length < 2) {
@@ -54,7 +56,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.card, }}>
-            <View style={[GlobalStyleSheet.container, GlobalStyleSheet.flexcenter, { paddingVertical: 50 }]}>
+            <View style={[GlobalStyleSheet.container, GlobalStyleSheet.flexcenter, { paddingVertical: 15 }]}>
                 <TouchableOpacity
                     onPress={() => navigation.goBack()}
                     activeOpacity={0.5}
@@ -67,7 +69,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                 </TouchableOpacity>
                 <View style={{ flex: 1, alignItems: 'center', marginLeft: -40 }}>
                     <Image
-                        style={{ height: 36, width: 120, resizeMode: 'contain' }}
+                        style={{ height: 130, width: 150, resizeMode: 'contain' }}
                         source={theme.dark ? IMAGES.appnamedark : IMAGES.appname}
                     />
                 </View>
@@ -80,9 +82,10 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                             <Text style={[styles.title2, { color: colors.title }]}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</Text>
                         </View>
                         <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
-                            <Text style={[styles.title3, { color: '#8A8A8A' }]}>Your Name</Text>
+                            <Text style={[styles.title3, { color: '#8A8A8A' }]}>Your Name / Business Name
+                            </Text>
                         </View>
-                        <View style={{ marginBottom: 20, marginTop: 10 }}>
+                        <View style={{ marginBottom: 10, marginTop: 10 }}>
                             <Input
                                 onFocus={() => setisFocused(true)}
                                 onBlur={() => setisFocused(false)}
@@ -117,6 +120,21 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                                 backround={colors.card}
                                 onChangeText={(value) => setMobile(value)}
                                 isFocused={isFocused3}
+                                inputBorder
+                                defaultValue=''
+                            />
+                        </View>
+                        <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
+                            <Text style={[styles.title3, { color: '#8A8A8A' }]}>Referral Code (Optional)</Text>
+                        </View>
+                        <View style={{ marginBottom: 10, marginTop: 10 }}>
+                            <Input
+                                // keyboardType="numeric"
+                                onFocus={() => setisFocused4(true)}
+                                onBlur={() => setisFocused4(false)}
+                                backround={colors.card}
+                                onChangeText={(value) => setReferralCode(value)}
+                                isFocused={isFocused4}
                                 inputBorder
                                 defaultValue=''
                             />
