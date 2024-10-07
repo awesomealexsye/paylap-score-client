@@ -25,18 +25,18 @@ const MenuItems = [
     //     navigate: "Components",
     // },
 
-    {
-        id: "2",
-        icon: IMAGES.chat,
-        name: "User Kyc",
-        navigate: 'UserKyc',
-    },
-    {
-        id: "3",
-        icon: IMAGES.search,
-        name: "Find User",
-        navigate: 'FindUser',
-    },
+    // {
+    //     id: "2",
+    //     icon: IMAGES.chat,
+    //     name: "User Kyc",
+    //     navigate: 'UserKyc',
+    // },
+    // {
+    //     id: "3",
+    //     icon: IMAGES.search,
+    //     name: "Find User",
+    //     navigate: 'FindUser',
+    // },
     {
         id: "4",
         icon: IMAGES.user3,
@@ -49,12 +49,12 @@ const MenuItems = [
         name: "Share",
         navigate: 'ShareApp',
     },
-    {
-        id: "6",
-        icon: IMAGES.bolt,
-        name: "Ledger Book",
-        navigate: 'LedgerMain',
-    },
+    // {
+    //     id: "6",
+    //     icon: IMAGES.bolt,
+    //     name: "Ledger Book",
+    //     navigate: 'LedgerMain',
+    // },
 
     {
         id: "7",

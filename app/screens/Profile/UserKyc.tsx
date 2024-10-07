@@ -33,20 +33,19 @@ const UserKyc = forwardRef((props, ref) => {
         CommonService.currentUserDetail().then((res) => {
             if (res !== null) {
                 if (res.aadhar_card !== "") {
-                    navigation.navigate("Profile")
-                    MessagesService.commonMessage("Your KYC has been already completed.");
+                    navigation.navigate("Profile");
+                    MessagesService.commonMessage("Aadhar is already up to date.");
                 }
             }
         });
     }, []);
     const sendOtp = async () => {
-        setIsLoading(true);
         if (buttonText === "Send OTP") {
-
             if (aadhar?.length != 12) {
                 MessagesService.commonMessage("Invalid Aadhar Number");
                 return;
             }
+            setIsLoading(true);
             const res = await ApiService.postWithToken("api/kyc/aadhaar-otp-generate", { "aadhaar_number": aadhar });
             if (res !== null && res.status === true) {
                 if (res?.data?.otp_sent) {
@@ -59,17 +58,14 @@ const UserKyc = forwardRef((props, ref) => {
                 }
             }
         } else if (buttonText === "Verify OTP") {
-            console.log("Otp", otp);
+            setIsLoading(true);
             const res = await ApiService.postWithToken("api/kyc/aadhaar-otp-verify", { "client_id": aadharDetail?.client_id, "otp": otp });
             if (res !== null) {
                 console.log("Verify", res)
                 if (res?.status === true) {
                     setIsLoading(false);
                     setIsOtpSent(false);
-
                     MessagesService.commonMessage(res.message);
-                    navigation.navigate("Profile")
-                    MessagesService.commonMessage("Your KYC has been completed.");
                 }
                 else {
                     setIsLoading(false);
@@ -84,7 +80,7 @@ const UserKyc = forwardRef((props, ref) => {
             <View style={{ flex: 1, backgroundColor: colors.background }}>
                 <View style={{}}>
                     <Header
-                        title={'User Kyc'}
+                        title={'Aadhar Kyc'}
                         leftIcon={'back'}
                         titleRight
                     />
@@ -92,7 +88,7 @@ const UserKyc = forwardRef((props, ref) => {
                         <View style={[GlobalStyleSheet.container, { padding: 0, paddingTop: 10 }]}>
                             <View style={{ marginTop: 20, }}>
                                 <View style={[GlobalStyleSheet.cardHeader, { borderBottomColor: COLORS.inputborder }]}>
-                                    <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, textAlign: 'center' }}>Your Aadhaar Card Number</Text>
+                                    <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, textAlign: 'center' }}>Your Aadhaar Card</Text>
                                 </View>
                                 <View style={{ marginTop: 20 }}>
                                     <View style={{ marginBottom: 10 }}>

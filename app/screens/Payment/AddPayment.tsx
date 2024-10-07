@@ -1,5 +1,5 @@
-import { useTheme } from '@react-navigation/native';
-import React, { useState, useEffect } from 'react';
+import { useTheme, useFocusEffect } from '@react-navigation/native';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import Header from '../../layout/Header';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
@@ -26,53 +26,76 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
 
     const [amount, setAmount] = useState<String>("");
     const [description, setDescription] = useState<String>("");
-    const [newDate, setNewDate] = useState<String>("");
+    const [otp, setOtp] = useState<String>("");
+    const [givenDate, setGivenDate] = useState<String>("");
+    const [takenDate, setTakenDate] = useState<String>("");
+    const [inputDateType, setInputDateType] = useState<String>("");
     const [isLoading, setIsLoading] = useState(false)
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
 
     const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
+    const [isOtpSent, setIsOtpSent] = useState(false);
+    const [buttonText, setButtonText] = useState("Continue");
+
+    useFocusEffect(
+        useCallback(() => {
+            setButtonText(transaction_type == "CREDIT" ? "Credit" : "Send OTP")
+        }, [])
+    )
 
     const onChange = (event: any, selectedDate: any) => {
         const currentDate = selectedDate || date;
         setShow(false);
-        setDate(currentDate);
-        setNewDate(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
+        setDate(new Date());
+
+        if (inputDateType == "Given Date") {
+            setGivenDate(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
+        } else {
+            setTakenDate(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
+        }
     };
 
-    const showDatepicker = () => {
+    const showDatepicker = (inputeDatetype: string) => {
+        setInputDateType(inputeDatetype);
         setShow(true);
     };
 
     useEffect(() => {
-        setNewDate(`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`);
+        setGivenDate(`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`);
     }, []);
 
     const fetchAddPaymentData = async () => {
         setIsLoading(true);
-        const data: any = { customer_id: item?.customer_id, amount: amount, transaction_type: transaction_type, description: description, transaction_date: newDate, image: image }
+        const data: any = { customer_id: item?.customer_id, amount: amount, transaction_type: transaction_type, description: description, transaction_date: takenDate, estimated_given_date: givenDate, image: image, otp: otp }
 
-        // if (image && image.uri) {
-        //     const base64Image = await fetch(image.uri).then(res => res.blob()).then(blob => {
-        //         return new Promise((resolve, reject) => {
-        //             const reader = new FileReader();
-        //             reader.onloadend = () => resolve(reader.result);
-        //             reader.onerror = reject;
-        //             reader.readAsDataURL(blob);
-        //         });
-        //     });
-
-
-        // }
-
-        ApiService.postWithToken("api/shopkeeper/transactions/add-transaction", data).then((res) => {
+        if (buttonText === "Send OTP") {
+            setIsLoading(true);
+            const res = await ApiService.postWithToken("api/shopkeeper/transactions/send-otp", { customer_id: item.customer_id });
+            if (res.status == true) {
+                setIsOtpSent(true);
+                setButtonText("Debit")
+                MessagesService.commonMessage(res.message);
+            }
             setIsLoading(false);
+            return;
+        }
+        if (buttonText === "Debit") {
+            if (otp.length !== 4) {
+                MessagesService.commonMessage('OTP must be 4 digits.');
+                return;
+            }
+        }
+        setIsLoading(true);
+        ApiService.postWithToken("api/shopkeeper/transactions/add-transaction", data).then((res) => {
             if (res.status == true) {
                 MessagesService.commonMessage(res.message);
                 navigation.goBack();
             }
         });
+        setIsLoading(false);
+
     };
 
     return (
@@ -100,13 +123,24 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
                                 onChangeText={description => setDescription(description)}
                             />
                         </View>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 12 }}>
+                        {
+                            isOtpSent &&
+                            <View style={{ marginBottom: 10 }}>
+                                <Input
+                                    multiline={true}
+                                    placeholder="Enter OTP"
+                                    onChangeText={otp => setOtp(otp)}
+                                />
+                            </View>
+                        }
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 12, flexWrap: 'wrap' }}>
                             <View>
+                                <Text>{transaction_type === 'CREDIT' ? 'Transaction Date' : 'Taken Date'}</Text>
                                 <ButtonIcon
-                                    onPress={showDatepicker}
+                                    onPress={() => showDatepicker('Taken Date')}
                                     size={'sm'}
-                                    title={newDate || date.toLocaleDateString()}
-                                    icon={<FontAwesome style={{ opacity: .6 }} name={'calendar'} size={20} color={colors.white} />}
+                                    title={takenDate || date.toLocaleDateString()}
+                                    icon={<FontAwesome style={{ opacity: 1 }} name={'calendar'} size={20} color={COLORS.white} />}
                                 />
                                 {show && (
                                     <DateTimePicker
@@ -117,35 +151,44 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
                                     />
                                 )}
                             </View>
-                            <View>
+                            {transaction_type === 'DEBIT' && <View>
+                                <Text>Given Date</Text>
+                                <ButtonIcon onPress={() => showDatepicker('Given Date')}
+                                    size={'sm'}
+                                    title={givenDate || date.toLocaleDateString()}
+                                    iconDirection='right'
+                                    icon={<FontAwesome style={{ opacity: 1 }} name={'calendar'} size={20} color={COLORS.white} />}
+                                />
+                            </View>}
+                            <View style={{ marginTop: 20 }}>
                                 <ButtonIcon onPress={pickImage}
                                     size={'sm'}
                                     title='Attach bills'
                                     iconDirection='left'
-                                    icon={<FontAwesome style={{ opacity: 1, color: COLORS.white, }} name={'camera'} size={20} color={colors.white} />}
+                                    icon={<FontAwesome style={{ opacity: 1, color: COLORS.white }} name={'camera'} size={20} color={colors.white} />}
                                 />
                             </View>
                         </View>
                     </View>
                 </View>
+                {image && (
+                    <Image
+                        source={{ uri: image }}
+                        style={{ width: 300, height: 500, alignSelf: 'center' }}
+                    />
+                )}
             </ScrollView>
 
-            {image && (
-                <Image
-                    source={{ uri: image }}
-                    style={{ width: 300, height: 300, marginHorizontal: 50, marginVertical: 20 }}
-                />
-            )}
 
             <View style={[GlobalStyleSheet.container]}>
                 {
                     isLoading === false ?
                         <Button
-                            title={transaction_type}
+                            title={buttonText}
                             color={COLORS.primary}
                             text={COLORS.card}
                             onPress={fetchAddPaymentData}
-                            style={{ borderRadius: 48 }}
+                            style={{ borderRadius: 12 }}
                         /> : <ActivityIndicator size={70} color={COLORS.primary} />
                 }
             </View>
