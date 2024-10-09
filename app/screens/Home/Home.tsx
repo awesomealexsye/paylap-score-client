@@ -32,18 +32,16 @@ interface Customer {
 type HomeScreenProps = StackScreenProps<RootStackParamList, 'Home'>
 
 export const Home = ({ navigation }: HomeScreenProps) => {
-    console.log(navigation);
 
     const [searchText, setSearchText] = useState('');
     const [customersData, setCustomersData] = useState<any>([]);
     const [homeBanner, setHomeBanner] = useState<any>({});
     const [filteredCustomers, setFilteredCustomers] = useState([]);
-    const [userDetail, setUserDetail] = useState({ name: "", profile_image: "" });
+    const [userDetail, setUserDetail] = useState({ name: "", profile_image: "", aadhar_card: "" });
 
     useEffect(() => {
         const handleBackPress = () => {
             if (navigation.isFocused() && navigation.getState().routes[navigation.getState().index].name === 'Home') {
-                console.log("calling back exit");
                 BackHandler.exitApp();
                 return true;
             }
@@ -61,6 +59,9 @@ export const Home = ({ navigation }: HomeScreenProps) => {
             fetchCustomerList();
             CommonService.currentUserDetail().then((res) => {
                 setUserDetail(res);
+                if (res.aadhar_card === '') {
+                    navigation.navigate("UserKyc");
+                }
             })
         }, [])
     );

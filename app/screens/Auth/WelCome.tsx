@@ -46,14 +46,24 @@ const WelCome = ({ navigation }: WelComeScreenProps) => {
                                 // border={COLORS.card}
                                 onPress={() => navigation.navigate('MobileSignIn')}
                             />
+
                             <ButtonIcon
                                 title={"sign up"}
                                 iconDirection="left"
                                 text={COLORS.background}
-                                color={COLORS.primary}
+                                color={COLORS.info}
                                 icon={<FontAwesome name='user-plus' size={22} color={COLORS.background} />}
                                 // border={COLORS.card}
                                 onPress={() => navigation.navigate('SignUp')}
+                            />
+                            <ButtonIcon
+                                title={"Contact Support"}
+                                iconDirection="left"
+                                text={COLORS.background}
+                                color={COLORS.warning}
+                                icon={<FontAwesome name='user-circle' size={22} color={COLORS.background} />}
+                                // border={COLORS.card}
+                                onPress={() => navigation.navigate('CustomerSupport')}
                             />
                         </View>
                         {/* <View style={{marginBottom:10}}>

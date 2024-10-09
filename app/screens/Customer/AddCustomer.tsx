@@ -54,6 +54,7 @@ export const AddCustomer = ({ navigation }: AddCustomerScreenProps) => {
             }
             setIsLoading(false);
         } else if (buttonText === "Verify And Add Customer") {
+            setIsLoading(true);
             const res = await ApiService.postWithToken("api/shopkeeper/verify-otp-customer", { "client_id": aadharDetail?.data.client_id, "customer_id": aadharDetail?.customer_id, "otp": customerDetail?.otp });
             if (res !== null) {
                 if (res?.status === true) {
@@ -62,6 +63,7 @@ export const AddCustomer = ({ navigation }: AddCustomerScreenProps) => {
                     navigation.navigate("Home");
                 }
             }
+            setIsLoading(false);
         }
     }
 

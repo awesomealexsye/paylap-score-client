@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList } from 'react-native';
+import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { IMAGES } from '../../constants/Images';
@@ -37,7 +37,6 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                 <View
                     style={[styles.header, {
                         backgroundColor: colors.card,
-                        //borderBlockColor:colors.border
                     }]}
                 >
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5, }}>
@@ -53,21 +52,12 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                                 backgroundColor: colors.background
                             }}
                         >
-                            {/* <Ionicons size={20} color={colors.title} name='chevron-back'/> */}
                             <Feather size={24} color={colors.title} name={'arrow-left'} />
                         </TouchableOpacity>
-                        {/* <Image
-                            style={{ height: 40, width: 40, borderRadius: 12, marginLeft: 10, marginRight: 15, resizeMode: 'contain' }}
-                            source={IMAGES.small6}
-                        /> */}
                         <View>
                             <Text style={{ ...FONTS.fontSemiBold, fontSize: 18, color: colors.title, }}>Transction Details</Text>
                         </View>
                     </View>
-                    {/* <TouchableOpacity
-                        onPress={() => navigation.navigate('Call')}
-                    >  <FontAwesome style={{ marginRight: 15, color: colors.white }} name={'ellipsis-v'} size={20} />
-                    </TouchableOpacity> */}
                 </View>
             </View>
 
@@ -91,7 +81,6 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                     },
                     shadowOpacity: 0.34,
                     shadowRadius: 31.27,
-                    // elevation: 8,
                     flexDirection: 'column'
                 }}>
 

@@ -25,39 +25,45 @@ const MenuItems = [
     //     navigate: "Components",
     // },
 
-    {
-        id: "2",
-        icon: IMAGES.chat,
-        name: "User Kyc",
-        navigate: 'UserKyc',
-    },
+    // {
+    //     id: "2",
+    //     icon: IMAGES.chat,
+    //     name: "User Kyc",
+    //     navigate: 'UserKyc',
+    // },
+    // {
+    //     id: "2",
+    //     icon: IMAGES.search,
+    //     name: "Find User",
+    //     navigate: 'FindUser',
+    // },
     {
         id: "3",
-        icon: IMAGES.search,
-        name: "Find User",
-        navigate: 'FindUser',
-    },
-    {
-        id: "4",
         icon: IMAGES.user3,
         name: "Profile",
         navigate: "Profile",
-    },
-    {
-        id: "5",
+    }, {
+        id: "4",
         icon: IMAGES.share,
         name: "Share",
         navigate: 'ShareApp',
     },
+    // {
+    //     id: "6",
+    //     icon: IMAGES.bolt,
+    //     name: "Ledger Book",
+    //     navigate: 'LedgerMain',
+    // },
+
     {
-        id: "6",
-        icon: IMAGES.bolt,
-        name: "Ledger Book",
-        navigate: 'LedgerMain',
+        id: "5",
+        icon: IMAGES.technicalsupport,
+        name: "Support",
+        navigate: 'CustomerSupport',
     },
 
     {
-        id: "7",
+        id: "6",
         icon: IMAGES.logout,
         name: "Logout",
         navigate: 'MobileSignIn',

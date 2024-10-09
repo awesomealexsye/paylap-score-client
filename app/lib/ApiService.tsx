@@ -36,7 +36,7 @@ const ApiService = {
         let authHeader = { Authorization: `Bearer ${jwt_token}` };
         data = { ...common_payload, ...data }
         headers = { ...authHeader, ...headers }
-        // console.log("consoleloo", api_url, data, headers);
+        console.log("consoleloo", api_url, data, headers);
         try {
             const res = await axios.post(api_url, data, { headers: headers });
             //console.log(res, "resresres")

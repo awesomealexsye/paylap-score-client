@@ -51,6 +51,7 @@ export type RootStackParamList = {
     CustomerTransations: { item: any };
     CustomerTransationsDetails: { customer: any };
     CustomerScore: { customer: any };
+    EditUserPaymentDetail: undefined;
     NotAvailable: undefined;
     Search: undefined;
     Components: undefined;
@@ -86,6 +87,7 @@ export type RootStackParamList = {
     TabStyle2: undefined;
     TabStyle3: undefined;
     TabStyle4: undefined;
+    CustomerSupport: undefined;
 
     // ledgerbook
     LedgerMain: undefined;
