@@ -53,7 +53,9 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         return () => {
             BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
         }
-    }, [navigation])
+    }, [navigation]);
+
+
     useFocusEffect(
         useCallback(() => {
             fetchCustomerList();
@@ -62,6 +64,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
             })
         }, [])
     );
+
+
     const handleSearch = (text: string) => {
         setSearchText(text);
         const filteredList = customersData.filter((customer: any) =>
@@ -69,6 +73,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         );
         setFilteredCustomers(filteredList);
     };
+
     const fetchCustomerList = async () => {
         const homeApiRes = await ApiService.postWithToken("api/shopkeeper/list-customer", {});
         if (homeApiRes?.status == true) {
@@ -130,10 +135,12 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                     source={{ uri: userDetail.profile_image }} />
                             </View>
                             <View style={{
-                                flexDirection: "column", alignItems: "center", marginLeft: 10
+                                flexDirection: "column", alignItems: "flex-start", marginLeft: 10, width: "65%"
                             }}>
-                                <Text style={{ ...FONTS.fontRegular, fontSize: 14, color: colors.title }}>Namaste</Text>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: 24, color: colors.title }}> {userDetail.name.split(' ')[0]}
+                                <Text style={{ ...FONTS.fontRegular, fontSize: 12, color: colors.title }}>Namaste</Text>
+                                <Text adjustsFontSizeToFit={true} style={{ ...FONTS.fontSemiBold, fontSize: 15, color: colors.title, }}>
+
+                                    {userDetail.name.split(' ')[0]}
 
                                 </Text>
                             </View>

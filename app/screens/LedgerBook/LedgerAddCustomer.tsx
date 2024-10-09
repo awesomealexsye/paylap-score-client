@@ -19,6 +19,7 @@ export const LedgerAddCustomer = ({ navigation }: LedgerAddCustomer) => {
 
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
+
     const [isLoading, setIsLoading] = useState(false);
     const [customerDetail, setCustomerDetail] = useState<any>({});
 

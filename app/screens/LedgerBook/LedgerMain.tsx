@@ -56,6 +56,9 @@ export const LedgerMain = ({ navigation }: LedgerMainProps) => {
             BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
         }
     }, [navigation])
+
+
+
     useFocusEffect(
         useCallback(() => {
             fetchCustomerList();
@@ -64,6 +67,8 @@ export const LedgerMain = ({ navigation }: LedgerMainProps) => {
             })
         }, [])
     );
+
+
     const handleSearch = (text: string) => {
         setSearchText(text);
         const filteredList = customersData.filter((customer: any) =>
@@ -71,6 +76,7 @@ export const LedgerMain = ({ navigation }: LedgerMainProps) => {
         );
         setFilteredCustomers(filteredList);
     };
+
     const fetchCustomerList = async () => {
         const homeApiRes = await ApiService.postWithToken("api/shopkeeper/list-customer", {});
         if (homeApiRes?.status == true) {
@@ -89,7 +95,7 @@ export const LedgerMain = ({ navigation }: LedgerMainProps) => {
 
 
     const renderCustomer = ({ item }: { item: Customer }) => (
-        <TouchableOpacity onPress={() => { navigation.navigate("CustomerTransations", { item: item }) }}>
+        <TouchableOpacity onPress={() => { navigation.navigate("LedgerCustomerDetails", { customer: item }) }}>
 
             <View style={[styles.customerItem, { backgroundColor: colors.card }]}>
                 <View style={{}}>
@@ -102,32 +108,24 @@ export const LedgerMain = ({ navigation }: LedgerMainProps) => {
                             <Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{item.name}</Text>
                             <Text style={styles.lastInteraction}>{item.latest_updated_at}</Text>
                         </View>
-
                     </View>
-
                 </View>
-
                 <View style={{ flexDirection: "column", alignItems: "center", position: "relative" }}>
                     <Text style={{ color: item.transaction_type === "CREDIT" ? COLORS.primary : COLORS.danger, fontSize: 18, fontWeight: "900" }}>₹ {item.amount}</Text>
                     <Text style={[styles.type, { color: colors.title }]}>{item.transaction_type}</Text>
                 </View>
-
             </View>
         </TouchableOpacity>
     );
 
     return (
         <View style={{ backgroundColor: colors.card, flex: 1 }}>
-            {/* AppBar Start */}
+
             <Header
                 title={'Ledger Book'}
                 leftIcon={'back'}
                 titleRight
             />
-
-
-            {/* AppBar End */}
-
 
             < ScrollView showsVerticalScrollIndicator={false} >
 
