@@ -1,6 +1,6 @@
 import { useTheme, useFocusEffect } from '@react-navigation/native';
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, StyleSheet, Platform, KeyboardAvoidingView } from 'react-native';
 import Header from '../../layout/Header';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { COLORS, FONTS } from '../../constants/theme';
@@ -20,7 +20,6 @@ type AddPaymentScreenProps = StackScreenProps<RootStackParamList, 'AddPayment'>;
 
 const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
     const { item, transaction_type }: any = route.params;
-    // console.log("itemss::",route.params,item?.customer_id,typeof(item),transaction_type);
 
     const { image, pickImage, takePhoto }: any = useImagePicker();
 
@@ -67,9 +66,12 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
     }, []);
 
     const fetchAddPaymentData = async () => {
-        setIsLoading(true);
         const data: any = { customer_id: item?.customer_id, amount: amount, transaction_type: transaction_type, description: description, transaction_date: takenDate, estimated_given_date: givenDate, image: image, otp: otp }
 
+        if (amount.length == 0) {
+            MessagesService.commonMessage(`Please enter amount that you want to ${transaction_type}`);
+            return;
+        }
         if (buttonText === "Send OTP") {
             setIsLoading(true);
             const res = await ApiService.postWithToken("api/shopkeeper/transactions/send-otp", { customer_id: item.customer_id });
@@ -98,100 +100,104 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
     };
 
     return (
+
         <View style={{ backgroundColor: colors.background, flex: 1, }}>
             <Header
                 title={"Payment"}
                 leftIcon='back'
                 titleRight
             />
-            <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 15 }}>
-                <View style={[GlobalStyleSheet.card, { backgroundColor: colors.card }]}>
-                    <View style={GlobalStyleSheet.cardBody}>
-                        <View style={{ marginBottom: 10 }}>
-                            <Input
-                                keyboardType='numeric'
-                                icon={<FontAwesome style={{ opacity: .6 }} name={'rupee'} size={20} color={colors.text} />}
-                                placeholder="Enter amount"
-                                onChangeText={amount => setAmount(amount)}
-                            />
-                        </View>
-                        <View style={{ marginBottom: 10 }}>
-                            <Input
-                                multiline={true}
-                                placeholder="Enter Details (Item Name, Bill no)"
-                                onChangeText={description => setDescription(description)}
-                            />
-                        </View>
-                        {
-                            isOtpSent &&
+            <KeyboardAvoidingView>
+                <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 15 }}>
+                    <View style={[GlobalStyleSheet.card, { backgroundColor: colors.card }]}>
+                        <View style={GlobalStyleSheet.cardBody}>
+                            <View style={{ marginBottom: 10 }}>
+                                <Input
+                                    keyboardType='numeric'
+                                    icon={<FontAwesome style={{ opacity: .6 }} name={'rupee'} size={20} color={colors.text} />}
+                                    placeholder="Enter amount"
+                                    onChangeText={amount => setAmount(amount)}
+                                />
+                            </View>
                             <View style={{ marginBottom: 10 }}>
                                 <Input
                                     multiline={true}
-                                    placeholder="Enter OTP"
-                                    onChangeText={otp => setOtp(otp)}
+                                    placeholder="Enter Details (Item Name, Bill no)"
+                                    onChangeText={description => setDescription(description)}
                                 />
                             </View>
-                        }
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 12, flexWrap: 'wrap' }}>
-                            <View>
-                                <Text>{transaction_type === 'CREDIT' ? 'Transaction Date' : 'Taken Date'}</Text>
-                                <ButtonIcon
-                                    onPress={() => showDatepicker('Taken Date')}
-                                    size={'sm'}
-                                    title={takenDate || date.toLocaleDateString()}
-                                    icon={<FontAwesome style={{ opacity: 1 }} name={'calendar'} size={20} color={COLORS.white} />}
-                                />
-                                {show && (
-                                    <DateTimePicker
-                                        value={date}
-                                        mode="date"
-                                        display="default"
-                                        onChange={onChange}
+                            {
+                                isOtpSent &&
+                                <View style={{ marginBottom: 10 }}>
+                                    <Input
+                                        keyboardType='numeric'
+                                        multiline={true}
+                                        placeholder="Enter OTP"
+                                        onChangeText={otp => setOtp(otp)}
                                     />
-                                )}
-                            </View>
-                            {transaction_type === 'DEBIT' && <View>
-                                <Text>Given Date</Text>
-                                <ButtonIcon onPress={() => showDatepicker('Given Date')}
-                                    size={'sm'}
-                                    title={givenDate || date.toLocaleDateString()}
-                                    iconDirection='right'
-                                    icon={<FontAwesome style={{ opacity: 1 }} name={'calendar'} size={20} color={COLORS.white} />}
-                                />
-                            </View>}
-                            <View style={{ marginTop: 20 }}>
-                                <ButtonIcon onPress={pickImage}
-                                    size={'sm'}
-                                    title='Attach bills'
-                                    iconDirection='left'
-                                    icon={<FontAwesome style={{ opacity: 1, color: COLORS.white }} name={'camera'} size={20} color={colors.white} />}
-                                />
+                                </View>
+                            }
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 12, flexWrap: 'wrap' }}>
+                                <View>
+                                    <Text>{transaction_type === 'CREDIT' ? 'Transaction Date' : 'Taken Date'}</Text>
+                                    <ButtonIcon
+                                        onPress={() => showDatepicker('Taken Date')}
+                                        size={'sm'}
+                                        title={takenDate || date.toLocaleDateString()}
+                                        icon={<FontAwesome style={{ opacity: 1 }} name={'calendar'} size={20} color={COLORS.white} />}
+                                    />
+                                    {show && (
+                                        <DateTimePicker
+                                            value={date}
+                                            mode="date"
+                                            display="default"
+                                            onChange={onChange}
+                                        />
+                                    )}
+                                </View>
+                                {transaction_type === 'DEBIT' && <View>
+                                    <Text>Given Date</Text>
+                                    <ButtonIcon onPress={() => showDatepicker('Given Date')}
+                                        size={'sm'}
+                                        title={givenDate || date.toLocaleDateString()}
+                                        iconDirection='right'
+                                        icon={<FontAwesome style={{ opacity: 1 }} name={'calendar'} size={20} color={COLORS.white} />}
+                                    />
+                                </View>}
+                                <View style={{ marginTop: 20 }}>
+                                    <ButtonIcon onPress={pickImage}
+                                        size={'sm'}
+                                        title='Attach bills'
+                                        iconDirection='left'
+                                        icon={<FontAwesome style={{ opacity: 1, color: COLORS.white }} name={'camera'} size={20} color={colors.white} />}
+                                    />
+                                </View>
                             </View>
                         </View>
                     </View>
+                    {image && (
+                        <Image
+                            source={{ uri: image }}
+                            style={{ width: 300, height: 500, alignSelf: 'center' }}
+                        />
+                    )}
+                </ScrollView>
+                <View style={[GlobalStyleSheet.container]}>
+                    {
+                        isLoading === false ?
+                            <Button
+                                title={buttonText}
+                                color={COLORS.primary}
+                                text={COLORS.card}
+                                onPress={fetchAddPaymentData}
+                                style={{ borderRadius: 12 }}
+                            /> : <ActivityIndicator size={70} color={COLORS.primary} />
+                    }
                 </View>
-                {image && (
-                    <Image
-                        source={{ uri: image }}
-                        style={{ width: 300, height: 500, alignSelf: 'center' }}
-                    />
-                )}
-            </ScrollView>
+            </KeyboardAvoidingView>
 
-
-            <View style={[GlobalStyleSheet.container]}>
-                {
-                    isLoading === false ?
-                        <Button
-                            title={buttonText}
-                            color={COLORS.primary}
-                            text={COLORS.card}
-                            onPress={fetchAddPaymentData}
-                            style={{ borderRadius: 12 }}
-                        /> : <ActivityIndicator size={70} color={COLORS.primary} />
-                }
-            </View>
         </View>
+
     )
 }
 
