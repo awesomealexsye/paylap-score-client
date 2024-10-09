@@ -15,6 +15,7 @@ export const IMAGES = {
     Home: require('../assets/images/icons/home.png'),
     Home4: require('../assets/images/icons/home4.png'),
     heart: require('../assets/images/icons/heart.png'),
+    help: require('../assets/images/icons/help.png'),
     mycart: require('../assets/images/icons/shopping2.png'),
     Category: require('../assets/images/icons/document.png'),
     user2: require('../assets/images/icons/user.png'),
@@ -114,7 +115,7 @@ export const IMAGES = {
     Pinduotone: require('../assets/images/icons/Pin_duotone.png'),
     hamburger: require('../assets/images/icons/hamburger.png'),
     cup: require('../assets/images/icons/cup.png'),
-    share: require('../assets/images/icons/share1.png'),
+    share: require('../assets/images/icons/share.png'),
     information: require('../assets/images/icons/information.png'),
 
     // welcome2: require('../assets/images/onbording/welcome.png'),

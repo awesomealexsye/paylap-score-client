@@ -11,6 +11,7 @@ import Button from '../../components/Button/Button'
 import { ApiService } from '../../lib/ApiService';
 import { MessagesService } from '../../lib/MessagesService';
 import StorageService from '../../lib/StorageService';
+import Header from '../../layout/Header';
 
 
 type SingInScreenProps = StackScreenProps<RootStackParamList, 'MobileSignIn'>;
@@ -55,6 +56,11 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.card, }}>
+
+            <Header
+                leftIcon='back'
+            />
+
             <View style={[GlobalStyleSheet.container, { justifyContent: 'center', alignItems: 'center', paddingVertical: 15 }]}>
                 <Image
                     style={{ resizeMode: 'contain', height: 130, width: 150 }}

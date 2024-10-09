@@ -57,7 +57,7 @@ const MenuItems = [
 
     {
         id: "5",
-        icon: IMAGES.technicalsupport,
+        icon: IMAGES.help,
         name: "Support",
         navigate: 'CustomerSupport',
     },
@@ -109,7 +109,7 @@ const DrawerMenu = () => {
                     }}
                 >
                     <Image
-                        style={{ height: 35, width: 114 }}
+                        style={{ height: 50, width: 124 }}
                         source={theme.dark ? IMAGES.appnamedark : IMAGES.appname}
                     />
                 </View>
@@ -131,7 +131,7 @@ const DrawerMenu = () => {
                     {MenuItems.map((data: any, index: any) => {
                         return (
                             <TouchableOpacity
-                                activeOpacity={0.8}
+                                activeOpacity={0.7}
                                 onPress={() => {
                                     data.navigate === "DrawerNavigation" ? dispatch(closeDrawer()) : dispatch(closeDrawer());
                                     if (data.name == "Logout") {
@@ -154,13 +154,12 @@ const DrawerMenu = () => {
                                             style={{
                                                 height: 24,
                                                 width: 24,
-                                                tintColor: data.id == '9' ? '#FF8484' : data.id === '0' ? COLORS.primary : '#BDBDBD',
-                                                //marginRight:14,
+                                                tintColor: colors.title,
                                                 resizeMode: 'contain'
                                             }}
                                         />
                                     </View>
-                                    <Text style={[FONTS.fontRegular, { color: colors.title, fontSize: 16, opacity: .6 }, data.id === '0' && { ...FONTS.fontSemiBold, fontSize: 16, color: COLORS.primary }]}>{data.name}</Text>
+                                    <Text style={[FONTS.fontRegular, { color: colors.title, fontSize: 16, },]}>{data.name}</Text>
                                 </View>
                             </TouchableOpacity>
                         )
@@ -170,8 +169,8 @@ const DrawerMenu = () => {
                     <ThemeBtn />
                 </View>
                 <View style={{ paddingVertical: 15, paddingHorizontal: 10 }}>
-                    <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: '#868686' }}>Paylap Score</Text>
-                    <Text style={{ ...FONTS.fontMedium, fontSize: 12, color: '#B1B1C3' }}>App Version 1.0.0</Text>
+                    <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title }}>Paylap Score</Text>
+                    <Text style={{ ...FONTS.fontMedium, fontSize: 12, color: colors.title }}>App Version 1.0.0</Text>
                 </View>
             </View>
         </ScrollView>
