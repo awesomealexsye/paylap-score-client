@@ -1,5 +1,5 @@
 const CONFIG = {
-    APP_URL: "https://paylapscore.com",
+    APP_URL: "https://paynest.co.in",
 
     HARDCODE_VALUES: {
         USER_ID: 'user_id',
