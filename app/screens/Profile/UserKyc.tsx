@@ -77,6 +77,7 @@ const UserKyc = forwardRef((props, ref) => {
                     setIsLoading(false);
                     setIsOtpSent(false);
                     MessagesService.commonMessage(res.message);
+                    navigation.navigate("Profile");
                 }
                 else {
                     setIsLoading(false);
