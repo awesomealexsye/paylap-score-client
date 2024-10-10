@@ -48,12 +48,7 @@ const MenuItems = [
         name: "Share",
         navigate: 'ShareApp',
     },
-    // {
-    //     id: "6",
-    //     icon: IMAGES.bolt,
-    //     name: "Ledger Book",
-    //     navigate: 'LedgerMain',
-    // },
+
 
     {
         id: "5",
@@ -61,9 +56,15 @@ const MenuItems = [
         name: "Support",
         navigate: 'CustomerSupport',
     },
-
     {
         id: "6",
+        icon: IMAGES.termandCondition,
+        name: "Terms & Conditions",
+        navigate: 'TermsAndConditionsScreen',
+    },
+
+    {
+        id: "7",
         icon: IMAGES.logout,
         name: "Logout",
         navigate: 'MobileSignIn',
