@@ -69,11 +69,8 @@ import ShareApp from '../screens/ShareApp';
 import FindUser from '../screens/Profile/FindUser';
 import LedgerMain from '../screens/LedgerBook/LedgerMain';
 import { LedgerAddCustomer } from '../screens/LedgerBook/LedgerAddCustomer';
-<<<<<<< HEAD
 import LedgerCustomerDetails from '../screens/LedgerBook/LedgerCustomerDetails';
-=======
 import CustomerSupport from '../screens/Auth/CustomerSupport';
->>>>>>> 7c015158f7d54c56248a49160a0bcdc09608c92a
 
 
 const Stack = createStackNavigator<RootStackParamList>();
