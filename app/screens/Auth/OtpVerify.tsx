@@ -13,6 +13,7 @@ import { MessagesService } from '../../lib/MessagesService';
 import StorageService from '../../lib/StorageService';
 import CONFIG from '../../constants/config';
 import Header from '../../layout/Header';
+import { LinearGradient } from 'expo-linear-gradient';
 
 
 
@@ -65,7 +66,6 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
             setIsDisabled(false);
             return;
         };
-
         const timerId = setInterval(() => {
             setTimeLeft((prevTime) => prevTime - 1);
         }, 1000);
@@ -87,11 +87,8 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
             }
         } else {
             MessagesService.commonMessage("Invalid Mobile Number")
-
-
         }
         setIsLoading(false);
-        // if (onResend) onResend();
     };
 
     const formatTime = (seconds: any) => {
@@ -102,27 +99,73 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
 
 
     return (
+
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.card, }}>
             <Header
                 leftIcon='back'
+                transparent
             />
-            <View style={[GlobalStyleSheet.container, { justifyContent: 'center', alignItems: 'center', paddingVertical: 15 }]}>
-                <Image
-                    style={{ resizeMode: 'contain', height: 120, width: 150 }}
-                    source={theme.dark ? IMAGES.appnamedark : IMAGES.appname}
-                />
-            </View>
-            <ScrollView style={{ flexGrow: 1, }} showsVerticalScrollIndicator={false}>
-                <View style={[GlobalStyleSheet.container, { flexGrow: 1, paddingBottom: 0, paddingHorizontal: 30, paddingTop: 0 }]}>
-                    <View style={{}}>
-                        <View style={{ marginBottom: 30 }}>
-                            <Text style={[styles.title1, { color: colors.title }]}>Verify OTP</Text>
-                            <Text style={[styles.title2, { color: colors.title }]}>Log In With Mobile Number {mobile}</Text>
+            <View style={{ flexDirection: "column", height: "100%" }}>
+                <LinearGradient
+                    colors={[COLORS.primary, 'white']}
+                    style={{
+                        height: "100%",
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    locations={[0.2, 0.9]}
+                >
+                    <View style={{ flexDirection: 'row' }}>
+                        <View style={{ backgroundColor: 'red' }}>
                         </View>
+                        <View style={{ backgroundColor: 'white' }}>
+                        </View>
+                    </View>
+
+                    <View style={{
+                        flex: 1.4,
+                        backgroundColor: COLORS.primary,
+                        // borderBottomLeftRadius: -150,
+                        borderBottomRightRadius: 70,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: "100%"
+                    }}>
+
+                        <Image
+                            source={IMAGES.appname}
+                            style={{
+                                height: 140,
+                                width: 190,
+                                objectFit: "contain",
+                            }}
+                        />
+                        <Text style={{
+                            ...FONTS.fontSemiBold,
+                            fontSize: 14,
+                            color: COLORS.background,
+                            marginTop: 10,
+                        }}>{`OTP sent to this Mobile Number ${mobile}`}</Text>
+                    </View>
+
+                    {/* Form Section */}
+                    <View style={{
+                        flex: 1,
+                        paddingHorizontal: 30,
+                        paddingTop: 40,
+                        backgroundColor: 'white',
+                        borderTopLeftRadius: 70,
+                        width: "100%"
+                    }}>
                         <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
-                            <Text style={[styles.title3, { color: '#8A8A8A' }]}>Enter OTP</Text>
+                            <Text style={{
+                                color: colors.title, ...FONTS.fontMedium,
+                                fontSize: 14,
+                            }}>Enter OTP</Text>
                         </View>
-                        <View style={{ marginBottom: 20, marginTop: 10 }}>
+                        <View style={{ marginVertical: 10, }}>
                             <Input
                                 keyboardType="numeric"
                                 onFocus={() => setisFocused(true)}
@@ -138,48 +181,42 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
                                 defaultValue=''
                             />
                         </View>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                            < Text style={{ textAlign: "right", color: isDisabled ? COLORS.warning : COLORS.primary, }}>
+                                {isDisabled ? `Time remaining : ${formatTime(timeLeft)}` : "Now You Can Resend OTP ->"}
+                            </Text>
+                            <TouchableOpacity onPress={handleResend} disabled={isDisabled}>
+                                <View style={{ backgroundColor: isDisabled ? "grey" : COLORS.primary, borderRadius: 50, padding: 8 }} >
+                                    < Text style={{ ...FONTS.fontSm, textAlign: "right", color: COLORS.backgroundColor, }}>
+                                        Resend OTP
+                                    </Text>
+
+                                </View>
+
+                            </TouchableOpacity>
+                        </View>
+
+                        {/* Login Button */}
+                        <View style={{ marginTop: 100 }}>
+                            {
+                                isLoading === false ?
+                                    <Button
+                                        disabled={isBtnDisabled}
+                                        title={"Verify"}
+                                        onPress={verifyOtp}
+                                        style={{ borderRadius: 52 }}
+                                        color={isBtnDisabled ? "grey" : COLORS.primary}
+                                    /> : <ActivityIndicator color={COLORS.primary} size={70} />
+                            }
+                        </View>
                     </View>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                        < Text style={{ textAlign: "right", color: isDisabled ? COLORS.warning : COLORS.primary, }}>
-                            {isDisabled ? `Time remaining : ${formatTime(timeLeft)}` : "Now You Can Resend OTP ->"}
-                        </Text>
-                        <TouchableOpacity onPress={handleResend} disabled={isDisabled}>
-                            <View style={{ backgroundColor: isDisabled ? "grey" : COLORS.primary, borderRadius: 50, padding: 8 }} >
-                                < Text style={{ ...FONTS.fontSm, textAlign: "right", color: COLORS.backgroundColor, }}>
-                                    Resend OTP
-                                </Text>
-
-                            </View>
-
-                        </TouchableOpacity>
-                    </View>
-
-
-                    <View style={{ marginTop: 30 }}>
-                        {
-                            isLoading === false ?
-                                <Button
-                                    disabled={isBtnDisabled}
-                                    title={"Verify"}
-                                    onPress={verifyOtp}
-                                    style={{ borderRadius: 52 }}
-                                    color={isBtnDisabled ? "grey" : COLORS.primary}
-                                /> : <ActivityIndicator color={COLORS.primary} size={70} />
-                        }
-
-                    </View>
-                </View>
-            </ScrollView>
-        </SafeAreaView>
+                </LinearGradient>
+            </View>
+        </SafeAreaView >
     )
 }
 
 const styles = StyleSheet.create({
-    text: {
-        ...FONTS.fontRegular,
-        fontSize: 14,
-        color: COLORS.title,
-    },
     title1: {
         ...FONTS.fontSemiBold,
         fontSize: 24,

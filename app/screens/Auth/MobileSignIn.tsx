@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, StyleSheet, ActivityIndicator } from 'react-native'
+import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, StyleSheet, ActivityIndicator, TextInput } from 'react-native'
 import React, { useState } from 'react';
 import { COLORS, FONTS } from '../../constants/theme'
 import { GlobalStyleSheet } from '../../constants/StyleSheet'
@@ -12,6 +12,7 @@ import { ApiService } from '../../lib/ApiService';
 import { MessagesService } from '../../lib/MessagesService';
 import StorageService from '../../lib/StorageService';
 import Header from '../../layout/Header';
+import { LinearGradient } from 'expo-linear-gradient';
 
 
 type SingInScreenProps = StackScreenProps<RootStackParamList, 'MobileSignIn'>;
@@ -47,8 +48,6 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
             }
         } else {
             MessagesService.commonMessage("Invalid Mobile Number")
-
-
         }
         setIsLoading(false);
 
@@ -57,27 +56,70 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.card, }}>
 
-            <Header
+            {/* <Header
                 leftIcon='back'
-            />
+            /> */}
 
-            <View style={[GlobalStyleSheet.container, { justifyContent: 'center', alignItems: 'center', paddingVertical: 15 }]}>
-                <Image
-                    style={{ resizeMode: 'contain', height: 130, width: 150 }}
-                    source={theme.dark ? IMAGES.appnamedark : IMAGES.appname}
-                />
-            </View>
-            <ScrollView style={{ flexGrow: 1, }} showsVerticalScrollIndicator={false}>
-                <View style={[GlobalStyleSheet.container, { flexGrow: 1, paddingBottom: 0, paddingHorizontal: 30, paddingTop: 0 }]}>
-                    <View style={{}}>
-                        <View style={{ marginBottom: 30 }}>
-                            <Text style={[styles.title1, { color: colors.title }]}>Sign In</Text>
-                            <Text style={[styles.title2, { color: colors.title }]}>Welcome back! Enter your mobile number to receive an OTP for secure access</Text>
+            <View style={{ flexDirection: "column", height: "100%" }}>
+                <LinearGradient
+                    colors={[COLORS.primary, 'white']}
+                    style={{
+                        height: "100%",
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    locations={[0.2, 0.9]}
+                >
+                    <View style={{ flexDirection: 'row' }}>
+                        <View style={{ backgroundColor: 'red' }}>
                         </View>
+                        <View style={{ backgroundColor: 'white' }}>
+                        </View>
+                    </View>
+
+                    <View style={{
+                        flex: 1.5,
+                        backgroundColor: COLORS.primary,
+                        borderBottomLeftRadius: -150,
+                        borderBottomRightRadius: 70,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: "100%"
+                    }}>
+                        <Image
+                            source={IMAGES.appname}
+                            style={{
+                                height: 140,
+                                width: 190,
+                                objectFit: "contain",
+                            }}
+                        />
+                        <Text style={{
+                            ...FONTS.fontBold,
+                            fontSize: 24,
+                            color: COLORS.background,
+                            marginTop: 10,
+                        }}>Welcome Back!</Text>
+                    </View>
+
+                    {/* Form Section */}
+                    <View style={{
+                        flex: 1,
+                        paddingHorizontal: 30,
+                        paddingTop: 40,
+                        backgroundColor: 'white',
+                        borderTopLeftRadius: 70,
+                        width: "100%"
+                    }}>
                         <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
-                            <Text style={[styles.title3, { color: '#8A8A8A' }]}>Mobile Number</Text>
+                            <Text style={{
+                                color: colors.title, ...FONTS.fontMedium,
+                                fontSize: 14,
+                            }}>Mobile Number</Text>
                         </View>
-                        <View style={{ marginBottom: 20, marginTop: 10 }}>
+                        <View style={{ marginBottom: 0, }}>
                             <Input
                                 keyboardType="numeric"
                                 onFocus={() => setisFocused(true)}
@@ -88,56 +130,30 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
                                 defaultValue=''
                             />
                         </View>
-                    </View>
 
-                    <View style={{ marginTop: 30 }}>
-                        {
-                            isLoading === false ?
-                                <Button
-                                    title={"Send OTP"}
-                                    onPress={sentOtp}
-                                    style={{ borderRadius: 52 }}
-                                /> : <ActivityIndicator color={COLORS.primary} size={70} />
-                        }
-                        <View style={{ marginBottom: 15, marginTop: 60 }}>
-                            <Text style={[styles.title2, { color: colors.title, textAlign: 'center', opacity: .5 }]}>Don’t have an account?</Text>
+                        {/* Login Button */}
+                        <View style={{ marginTop: 30 }}>
+                            {
+                                isLoading === false ?
+                                    <Button
+                                        title={"Send OTP"}
+                                        onPress={sentOtp}
+                                        style={{ borderRadius: 52 }}
+                                    /> : <ActivityIndicator color={COLORS.primary} size={70} />
+                            }
                         </View>
-                        <Button
-                            title={"Create an account"}
-                            onPress={() => navigation.navigate('SignUp')}
-                            text={COLORS.title}
-                            color={COLORS.secondary}
-                            style={{ borderRadius: 52 }}
-                        />
+                        <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", margin: 40 }}><Text style={{ ...FONTS.fontMedium }}>Don't have an account? </Text>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('SignUp')}
+                            >
+                                <Text style={{ ...FONTS.fontBold, color: COLORS.primary }}> SIGN UP </Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                </View>
-            </ScrollView>
-        </SafeAreaView>
+                </LinearGradient>
+            </View>
+        </SafeAreaView >
     )
 }
-
-const styles = StyleSheet.create({
-    text: {
-        ...FONTS.fontRegular,
-        fontSize: 14,
-        color: COLORS.title,
-    },
-    title1: {
-        ...FONTS.fontSemiBold,
-        fontSize: 24,
-        color: COLORS.title,
-        marginBottom: 5
-    },
-    title2: {
-        ...FONTS.fontRegular,
-        fontSize: 14,
-        color: COLORS.title,
-    },
-    title3: {
-        ...FONTS.fontMedium,
-        fontSize: 14,
-        color: '#8A8A8A'
-    }
-})
 
 export default MobileSignIn
