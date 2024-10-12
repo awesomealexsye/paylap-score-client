@@ -137,7 +137,19 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
                                     />
                                 </View>
                             }
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 12, flexWrap: 'wrap' }}>
+                            <View style={{ display: 'flex', justifyContent: 'center' }}>
+                                {show && (
+                                    <View style={{ alignSelf: 'center' }}>
+                                        <DateTimePicker
+                                            value={date}
+                                            mode="date"
+                                            display="default"
+                                            onChange={onChange}
+                                        />
+                                    </View>
+                                )}
+                            </View>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: "center", marginTop: 12, flexWrap: 'wrap' }}>
                                 <View>
                                     <Text>{transaction_type === 'CREDIT' ? 'Transaction Date' : 'Taken Date'}</Text>
                                     <ButtonIcon
@@ -146,15 +158,9 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
                                         title={takenDate || date.toLocaleDateString()}
                                         icon={<FontAwesome style={{ opacity: 1 }} name={'calendar'} size={20} color={COLORS.white} />}
                                     />
-                                    {show && (
-                                        <DateTimePicker
-                                            value={date}
-                                            mode="date"
-                                            display="default"
-                                            onChange={onChange}
-                                        />
-                                    )}
+
                                 </View>
+
                                 {transaction_type === 'DEBIT' && <View>
                                     <Text>Given Date</Text>
                                     <ButtonIcon onPress={() => showDatepicker('Given Date')}
@@ -164,6 +170,7 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
                                         icon={<FontAwesome style={{ opacity: 1 }} name={'calendar'} size={20} color={COLORS.white} />}
                                     />
                                 </View>}
+
                                 <View style={{ marginTop: 20 }}>
                                     <ButtonIcon onPress={pickImage}
                                         size={'sm'}
@@ -178,22 +185,23 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
                     {image && (
                         <Image
                             source={{ uri: image }}
-                            style={{ width: 300, height: 500, alignSelf: 'center' }}
+                            style={{ width: 300, height: 300, alignSelf: 'center' }}
                         />
                     )}
+                    <View style={[GlobalStyleSheet.container,]}>
+                        {
+                            isLoading === false ?
+                                <Button
+                                    title={buttonText}
+                                    color={COLORS.primary}
+                                    text={COLORS.card}
+                                    onPress={fetchAddPaymentData}
+                                    style={{ borderRadius: 12 }}
+                                /> : <ActivityIndicator size={70} color={COLORS.primary} />
+                        }
+                    </View>
                 </ScrollView>
-                <View style={[GlobalStyleSheet.container]}>
-                    {
-                        isLoading === false ?
-                            <Button
-                                title={buttonText}
-                                color={COLORS.primary}
-                                text={COLORS.card}
-                                onPress={fetchAddPaymentData}
-                                style={{ borderRadius: 12 }}
-                            /> : <ActivityIndicator size={70} color={COLORS.primary} />
-                    }
-                </View>
+
             </KeyboardAvoidingView>
 
         </View>

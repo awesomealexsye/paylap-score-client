@@ -93,11 +93,11 @@ const UserKyc = forwardRef((props, ref) => {
                 <View style={{}}>
                     <Header
                         title={'Aadhar Kyc'}
-                        leftIcon={'back'}
+                        rightIcon6={'logout'}
                         titleRight
                     />
                     <ScrollView>
-                        <View style={styles.container}>
+                        {/* <View style={styles.container}>
                             <ButtonIcon
                                 title={"Logout"}
                                 iconDirection="left"
@@ -107,14 +107,14 @@ const UserKyc = forwardRef((props, ref) => {
                                 // border={COLORS.card}
                                 onPress={logOut}
                             />
-                        </View>
+                        </View> */}
                         <View style={[GlobalStyleSheet.container, { padding: 0, paddingTop: 10 }]}>
                             <View style={{ marginTop: 20, }}>
                                 <View style={[GlobalStyleSheet.cardHeader, { borderBottomColor: COLORS.inputborder }]}>
                                     <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, textAlign: 'center' }}>Your Aadhaar Card</Text>
                                 </View>
-                                <View style={{ marginTop: 20 }}>
-                                    <View style={{ marginBottom: 10 }}>
+                                <View style={{ marginTop: 10 }}>
+                                    <View style={{ margin: 10, }}>
                                         <Input
                                             inputRounded
                                             icon={<FontAwesome style={{ opacity: .6 }} name={'address-card'} size={20} color={colors.text} />}

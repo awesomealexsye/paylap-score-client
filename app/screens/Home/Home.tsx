@@ -11,7 +11,7 @@ import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { openDrawer } from '../../redux/actions/drawerAction';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { ApiService } from '../../lib/ApiService';
-import { MessagesService } from '../../lib/MessagesService';
+// import { MessagesService } from '../../lib/MessagesService';
 import CommonService from '../../lib/CommonService';
 
 
@@ -95,7 +95,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const renderCustomer = ({ item }: { item: Customer }) => (
         <TouchableOpacity onPress={() => { navigation.navigate("CustomerTransations", { item: item }) }}>
 
-            <View style={[styles.customerItem, { backgroundColor: colors.card }]}>
+            <View style={[styles.customerItem, { backgroundColor: colors.card, marginBottom: 10 }]}>
                 <View style={{}}>
                     <View style={{ flexDirection: 'row' }}>
                         <Image
@@ -248,7 +248,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                     <View>
                         <TextInput
                             placeholder='Search Customer'
-                            style={[styles.TextInput, { color: colors.title, backgroundColor: colors.card, ...FONTS.fontSemiBold }]}
+                            style={[styles.TextInput, { color: colors.title, backgroundColor: colors.card, ...FONTS.fontSemiBold, borderColor: colors.borderColor, borderWidth: 0.2 }]}
                             placeholderTextColor={'#929292'}
                             value={searchText}
                             onChangeText={handleSearch} />

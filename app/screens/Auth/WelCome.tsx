@@ -51,7 +51,7 @@ const WelCome = ({ navigation }: WelComeScreenProps) => {
                                 title={"sign up"}
                                 iconDirection="left"
                                 text={COLORS.background}
-                                color={COLORS.info}
+                                color={COLORS.primary}
                                 icon={<FontAwesome name='user-plus' size={22} color={COLORS.background} />}
                                 // border={COLORS.card}
                                 onPress={() => navigation.navigate('SignUp')}
@@ -60,7 +60,7 @@ const WelCome = ({ navigation }: WelComeScreenProps) => {
                                 title={"Contact Support"}
                                 iconDirection="left"
                                 text={COLORS.background}
-                                color={COLORS.warning}
+                                color={COLORS.primary}
                                 icon={<FontAwesome name='user-circle' size={22} color={COLORS.background} />}
                                 // border={COLORS.card}
                                 onPress={() => navigation.navigate('CustomerSupport')}

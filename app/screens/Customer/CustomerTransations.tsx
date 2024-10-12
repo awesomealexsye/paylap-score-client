@@ -136,7 +136,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                     }}>
 
 
-                        <View style={{ width: 400, flexDirection: 'row', justifyContent: "space-evenly", paddingTop: 20, alignItems: "center", alignContent: "center" }}>
+                        <View style={{ width: 380, flexDirection: 'row', justifyContent: "space-evenly", paddingTop: 20, alignItems: "center", alignContent: "center" }}>
                             <View style={{ alignItems: 'center', justifyContent: 'center', borderRightColor: colors.dark }}>
                                 <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h4, color: COLORS.primaryLight, textAlign: "center" }}>{item.transaction_type} </Text>
                             </View>
@@ -190,7 +190,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                 />
 
             </ScrollView>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 30, backgroundColor: colors.dark }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', paddingTop: 10, backgroundColor: colors.dark }}>
                 <TouchableOpacity style={[styles.removeBtn]} onPress={() => navigation.navigate("AddPayment", { item: item, transaction_type: "DEBIT" })}>
 
                     <Text style={styles.addButtonText}>
