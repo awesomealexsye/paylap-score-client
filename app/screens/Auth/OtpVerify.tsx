@@ -107,7 +107,7 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
             />
             <View style={{ flexDirection: "column", height: "100%" }}>
                 <LinearGradient
-                    colors={[COLORS.primary, 'white']}
+                    colors={[COLORS.primary, colors.backgroundColor]}
                     style={{
                         height: "100%",
                         justifyContent: 'center',
@@ -155,7 +155,7 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
                         flex: 1,
                         paddingHorizontal: 30,
                         paddingTop: 40,
-                        backgroundColor: 'white',
+                        backgroundColor: colors.background,
                         borderTopLeftRadius: 70,
                         width: "100%"
                     }}>
