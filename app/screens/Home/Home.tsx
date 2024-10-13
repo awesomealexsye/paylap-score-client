@@ -132,8 +132,9 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                             flexDirection: "row", alignItems: "center",
                         }}>
                             < View >
-                                <Image style={{ height: 45, width: 45, borderRadius: 50 }}
-                                    source={{ uri: userDetail.profile_image }} />
+                                {userDetail.profile_image && <Image style={{ height: 45, width: 45, borderRadius: 50 }}
+                                    source={{ uri: userDetail.profile_image }} />}
+
                             </View>
                             <View style={{
                                 flexDirection: "column", alignItems: "flex-start", marginLeft: 10, width: "65%"

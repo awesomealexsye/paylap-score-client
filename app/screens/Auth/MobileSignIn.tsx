@@ -62,7 +62,7 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
 
             <View style={{ flexDirection: "column", height: "100%" }}>
                 <LinearGradient
-                    colors={[COLORS.primary, colors.backgroundColor]}
+                    colors={[COLORS.primary, 'white']}
                     style={{
                         height: "100%",
                         justifyContent: 'center',
@@ -75,7 +75,7 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
                     <View style={{ flexDirection: 'row' }}>
                         <View style={{ backgroundColor: 'red' }}>
                         </View>
-                        <View style={{ backgroundColor: colors.backgroundColor }}>
+                        <View style={{ backgroundColor: 'white' }}>
                         </View>
                     </View>
 
@@ -109,7 +109,7 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
                         flex: 1,
                         paddingHorizontal: 30,
                         paddingTop: 40,
-                        backgroundColor: colors.backgroundColor,
+                        backgroundColor: 'white',
                         borderTopLeftRadius: 70,
                         width: "100%"
                     }}>
@@ -142,7 +142,7 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
                                     /> : <ActivityIndicator color={COLORS.primary} size={70} />
                             }
                         </View>
-                        <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", margin: 40 }}><Text style={{ ...FONTS.fontMedium, color: colors.title }}>Don't have an account? </Text>
+                        <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", margin: 40 }}><Text style={{ ...FONTS.fontMedium }}>Don't have an account? </Text>
                             <TouchableOpacity
                                 onPress={() => navigation.navigate('SignUp')}
                             >
