@@ -12,38 +12,59 @@ import StorageService from '../lib/StorageService';
 
 const MenuItems = [
     {
-        id: "0",
+        id: "1",
         icon: IMAGES.home,
         name: "Home",
         navigate: "Home",
     },
-    {
-        id: "1",
-        icon: IMAGES.user3,
-        name: "User Kyc",
-        navigate: 'UserKyc',
-    },
 
-    {
-        id: "2",
-        icon: IMAGES.components,
-        name: "Components",
-        navigate: "Components",
-    },
+    // {
+    //     id: "2",
+    //     icon: IMAGES.components,
+    //     name: "Components",
+    //     navigate: "Components",
+    // },
+
+    // {
+    //     id: "2",
+    //     icon: IMAGES.chat,
+    //     name: "User Kyc",
+    //     navigate: 'UserKyc',
+    // },
+    // {
+    //     id: "2",
+    //     icon: IMAGES.search,
+    //     name: "Find User",
+    //     navigate: 'FindUser',
+    // },
     {
         id: "3",
-        icon: IMAGES.chat,
-        name: "Chat List",
-        navigate: 'Chat',
-    },
-    {
-        id: "4",
         icon: IMAGES.user3,
         name: "Profile",
         navigate: "Profile",
+    }, {
+        id: "4",
+        icon: IMAGES.share,
+        name: "Share",
+        navigate: 'ShareApp',
     },
+
+
     {
         id: "5",
+        icon: IMAGES.help,
+        name: "Support",
+        navigate: 'CustomerSupport',
+    },
+    {
+        id: "6",
+        icon: IMAGES.termandCondition,
+        name: "Terms & Conditions",
+        navigate: 'TermsAndConditionsScreen',
+    },
+
+    {
+        id: "7",
         icon: IMAGES.logout,
         name: "Logout",
         navigate: 'MobileSignIn',
@@ -89,7 +110,7 @@ const DrawerMenu = () => {
                     }}
                 >
                     <Image
-                        style={{ height: 35, width: 114 }}
+                        style={{ height: 50, width: 124 }}
                         source={theme.dark ? IMAGES.appnamedark : IMAGES.appname}
                     />
                 </View>
@@ -111,7 +132,7 @@ const DrawerMenu = () => {
                     {MenuItems.map((data: any, index: any) => {
                         return (
                             <TouchableOpacity
-                                activeOpacity={0.8}
+                                activeOpacity={0.7}
                                 onPress={() => {
                                     data.navigate === "DrawerNavigation" ? dispatch(closeDrawer()) : dispatch(closeDrawer());
                                     if (data.name == "Logout") {
@@ -134,13 +155,12 @@ const DrawerMenu = () => {
                                             style={{
                                                 height: 24,
                                                 width: 24,
-                                                tintColor: data.id == '9' ? '#FF8484' : data.id === '0' ? COLORS.primary : '#BDBDBD',
-                                                //marginRight:14,
+                                                tintColor: colors.title,
                                                 resizeMode: 'contain'
                                             }}
                                         />
                                     </View>
-                                    <Text style={[FONTS.fontRegular, { color: colors.title, fontSize: 16, opacity: .6 }, data.id === '0' && { ...FONTS.fontSemiBold, fontSize: 16, color: COLORS.primary }]}>{data.name}</Text>
+                                    <Text style={[FONTS.fontRegular, { color: colors.title, fontSize: 16, },]}>{data.name}</Text>
                                 </View>
                             </TouchableOpacity>
                         )
@@ -150,8 +170,8 @@ const DrawerMenu = () => {
                     <ThemeBtn />
                 </View>
                 <View style={{ paddingVertical: 15, paddingHorizontal: 10 }}>
-                    <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: '#868686' }}>Ombe Coffee App</Text>
-                    <Text style={{ ...FONTS.fontMedium, fontSize: 12, color: '#B1B1C3' }}>App Version 1.0.0</Text>
+                    <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title }}>Paylap Score</Text>
+                    <Text style={{ ...FONTS.fontMedium, fontSize: 12, color: colors.title }}>App Version 1.0.0</Text>
                 </View>
             </View>
         </ScrollView>

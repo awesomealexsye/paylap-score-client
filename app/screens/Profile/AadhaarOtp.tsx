@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
@@ -7,21 +7,28 @@ import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import Button from '../../components/Button/Button';
 import Input from '../../components/Input/Input';
 import { MessagesService } from '../../lib/MessagesService';
+import { ApiService } from '../../lib/ApiService';
 
 type Props = {
     sheetRef: any;
-    value: string;
+    client_id?: string;
+    customer_id?: string;
 }
 
-const AadhaarOtp = ({ sheetRef, value }: Props) => {
+const AadhaarOtp = ({ sheetRef, client_id, customer_id }: Props) => {
 
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
     const [otp, setOtp] = useState("");
 
+    const [addharVarificationDetail, setAddharVarificationDetail] = useState<any>({});
+
     const verifyOtp = () => {
-        if (otp.length >= 4) {
-            console.log("verify otp", otp)
+        if (otp.length == 6) {
+            ApiService.postWithToken("api/shopkeeper/verify-otp-customer", { "client_id": client_id, "customer_id": customer_id, "otp": otp }).then((res: any) => {
+                setAddharVarificationDetail(res);
+                console.log("verify otp", res)
+            });
         } else {
             MessagesService.commonMessage("Invalid OTP");
         }

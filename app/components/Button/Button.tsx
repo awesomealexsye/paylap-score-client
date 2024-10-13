@@ -9,6 +9,7 @@ type Props = {
     style?: object,
     size?: any,
     text?: any,
+    disabled?: any
 }
 
 const Button = ({
@@ -18,11 +19,13 @@ const Button = ({
     style,
     size,
     text,
+    disabled = false
 }: Props) => {
     return (
         <TouchableOpacity
             activeOpacity={0.8}
             onPress={onPress}
+            disabled={disabled}
         >
             <View
                 style={[styles.button, color && {

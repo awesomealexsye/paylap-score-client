@@ -59,7 +59,19 @@ import AddPayment from '../screens/Payment/AddPayment';
 import MobileSignIn from '../screens/Auth/MobileSignIn';
 import OtpVerify from '../screens/Auth/OtpVerify';
 import UserKyc from '../screens/Profile/UserKyc';
-
+import AddCustomer from '../screens/Customer/AddCustomer';
+import CustomerTransations from '../screens/Customer/CustomerTransations';
+import CustomerTransationsDetails from '../screens/Customer/CustomerTransactionDetail';
+import CustomerScore from '../screens/Profile/CustomerScore';
+import NotAvailable from '../screens/NotAvailable';
+import EditUserPaymentDetail from '../screens/Payment/EditUserPaymentDetail';
+import ShareApp from '../screens/ShareApp';
+import FindUser from '../screens/Profile/FindUser';
+import LedgerMain from '../screens/LedgerBook/LedgerMain';
+import LedgerAddCustomer from '../screens/LedgerBook/LedgerAddCustomer';
+import LedgerCustomerDetails from '../screens/LedgerBook/LedgerCustomerDetails';
+import CustomerSupport from '../screens/Auth/CustomerSupport';
+import TermsAndConditionsScreen from '../screens/TermAndConditions';
 
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -109,8 +121,13 @@ const StackNavigator = () => {
 				<Stack.Screen name="Call" component={Call} />
 				<Stack.Screen name="EditProfile" component={EditProfile} />
 				<Stack.Screen name="UserKyc" component={UserKyc} />
-
-
+				<Stack.Screen name="FindUser" component={FindUser} />
+				<Stack.Screen name="AddCustomer" component={AddCustomer} />
+				<Stack.Screen name="CustomerTransations" component={CustomerTransations} />
+				<Stack.Screen name="CustomerScore" component={CustomerScore} />
+				<Stack.Screen name="CustomerTransationsDetails" component={CustomerTransationsDetails} />
+				<Stack.Screen name="NotAvailable" component={NotAvailable} />
+				<Stack.Screen name="EditUserPaymentDetail" component={EditUserPaymentDetail} />
 				<Stack.Screen name="Components" component={Components} />
 				<Stack.Screen name="Accordion" component={AccordionScreen} />
 				<Stack.Screen name="BottomSheet" component={BottomSheet} />
@@ -134,6 +151,16 @@ const StackNavigator = () => {
 				<Stack.Screen name="Tabs" component={Tabs} />
 				<Stack.Screen name="Tables" component={Tables} />
 				<Stack.Screen name="Toggles" component={Toggles} />
+				<Stack.Screen name="ShareApp" component={ShareApp} />
+				<Stack.Screen name="CustomerSupport" component={CustomerSupport} />
+
+				<Stack.Screen name="TermsAndConditionsScreen" component={TermsAndConditionsScreen} />
+
+				{/* ledger book logic */}
+				<Stack.Screen name="LedgerMain" component={LedgerMain} />
+				<Stack.Screen name="LedgerAddCustomer" component={LedgerAddCustomer} />
+				<Stack.Screen name="LedgerCustomerDetails" component={LedgerCustomerDetails} />
+
 			</Stack.Navigator>
 		</View>
 	)

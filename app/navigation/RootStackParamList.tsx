@@ -3,7 +3,7 @@ import { BottomTabParamList } from "./BottomTabParamList";
 
 export type RootStackParamList = {
     DrawerNavigation: NavigatorScreenParams<BottomTabParamList>;
-    openDrawer:undefined;
+    openDrawer: undefined;
     Demo: undefined;
     ChooseLanguage: undefined;
     QrCodeScanner: undefined;
@@ -11,7 +11,7 @@ export type RootStackParamList = {
     SignUp: undefined;
     SingIn: undefined;
     MobileSignIn: undefined;
-    OtpVerify: {mobile:string};
+    OtpVerify: { mobile: string };
     Onboarding: undefined;
     Login: undefined;
     Register: undefined;
@@ -27,6 +27,7 @@ export type RootStackParamList = {
     BottomNavigation: undefined;
     Singlechat: undefined;
     Chat: undefined;
+    ShareApp: undefined;
     Support: undefined;
     History: undefined;
     Verification: undefined;
@@ -36,14 +37,22 @@ export type RootStackParamList = {
     Products: undefined;
     Language: undefined;
     MyCart: undefined;
+    Score: undefined;
     Category: undefined;
     Notifications: undefined;
     Questions: undefined;
     ProductsDetails: undefined;
     Writereview: undefined;
     Profile: undefined;
-    UserKyc:undefined;
     Wishlist: undefined;
+    UserKyc: undefined;
+    FindUser: undefined;
+    AddCustomer: undefined;
+    CustomerTransations: { item: any };
+    CustomerTransationsDetails: { customer: any };
+    CustomerScore: { customer: any };
+    EditUserPaymentDetail: undefined;
+    NotAvailable: undefined;
     Search: undefined;
     Components: undefined;
     Coupons: undefined;
@@ -51,7 +60,7 @@ export type RootStackParamList = {
     Checkout: undefined;
     Addcard: undefined;
     Payment: undefined;
-    AddPayment:undefined;
+    AddPayment: object | undefined;
     AddDeliveryAddress: undefined;
     Myorder: undefined;
     Notification: undefined;
@@ -78,4 +87,13 @@ export type RootStackParamList = {
     TabStyle2: undefined;
     TabStyle3: undefined;
     TabStyle4: undefined;
+    CustomerSupport: undefined;
+    TermsAndConditionsScreen: undefined;
+
+    // ledgerbook
+    LedgerMain: undefined;
+    LedgerAddCustomer: undefined;
+    LedgerCustomerDetails: { customer: any };
+
+
 };
