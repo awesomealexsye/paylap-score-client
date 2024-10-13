@@ -103,9 +103,9 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.card, }}>
             <Header
                 leftIcon='back'
-                transparent
+            // transparent
             />
-            <View style={{ flexDirection: "column", height: "100%" }}>
+            <ScrollView style={{ flexDirection: "column", height: "100%" }}>
                 <LinearGradient
                     colors={[COLORS.primary, 'white']}
                     style={{
@@ -117,15 +117,16 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
                     end={{ x: 1, y: 0 }}
                     locations={[0.2, 0.9]}
                 >
-                    <View style={{ flexDirection: 'row' }}>
+                    {/* <View style={{ flexDirection: 'row' }}>
                         <View style={{ backgroundColor: 'red' }}>
                         </View>
                         <View style={{ backgroundColor: 'white' }}>
                         </View>
-                    </View>
+                    </View> */}
 
                     <View style={{
-                        flex: 1.4,
+                        flex: 2.5,
+                        // padding: 50,
                         backgroundColor: COLORS.primary,
                         // borderBottomLeftRadius: -150,
                         borderBottomRightRadius: 70,
@@ -142,23 +143,26 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
                                 objectFit: "contain",
                             }}
                         />
-                        <Text style={{
-                            ...FONTS.fontSemiBold,
-                            fontSize: 14,
-                            color: COLORS.background,
-                            marginTop: 10,
-                        }}>{`OTP sent to this Mobile Number ${mobile}`}</Text>
+
                     </View>
 
                     {/* Form Section */}
                     <View style={{
-                        flex: 1,
+                        flex: 3,
                         paddingHorizontal: 30,
                         paddingTop: 40,
                         backgroundColor: 'white',
                         borderTopLeftRadius: 70,
                         width: "100%"
                     }}>
+
+                        <Text style={{
+                            ...FONTS.fontMedium,
+                            fontSize: 18,
+                            color: colors.title,
+                            marginVertical: 10,
+                        }}>{`OTP sent to this Mobile Number ${mobile}`}</Text>
+
                         <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
                             <Text style={{
                                 color: colors.title, ...FONTS.fontMedium,
@@ -177,7 +181,7 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
                                 }
                                 }
                                 isFocused={isFocused}
-                                inputBorder
+                                //inputBorder
                                 defaultValue=''
                             />
                         </View>
@@ -211,7 +215,7 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
                         </View>
                     </View>
                 </LinearGradient>
-            </View>
+            </ScrollView>
         </SafeAreaView >
     )
 }

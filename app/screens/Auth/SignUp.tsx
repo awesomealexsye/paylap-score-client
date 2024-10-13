@@ -63,9 +63,9 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                 leftIcon='back'
                 transparent
             /> */}
-            <View style={{ flexDirection: "column", height: "100%" }}>
+            <ScrollView style={{ flexDirection: "column", height: "100%" }}>
                 <LinearGradient
-                    colors={[COLORS.primary, 'white']}
+                    colors={[COLORS.primary, colors.background]}
                     style={{
                         height: "100%",
                         justifyContent: 'center',
@@ -75,15 +75,8 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                     end={{ x: 1, y: 0 }}
                     locations={[0.2, 0.9]}
                 >
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={{ backgroundColor: 'red' }}>
-                        </View>
-                        <View style={{ backgroundColor: 'white' }}>
-                        </View>
-                    </View>
-
                     <View style={{
-                        flex: 0.3,
+                        flex: 0.6,
                         backgroundColor: COLORS.primary,
                         // borderBottomLeftRadius: -150,
                         borderBottomRightRadius: 70,
@@ -100,84 +93,86 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                                 objectFit: "contain",
                             }}
                         />
-                        <Text style={{
+                        {/* <Text style={{
                             ...FONTS.fontSemiBold,
                             fontSize: 16,
                             color: COLORS.background,
-                            marginBottom: 20,
-                        }}>{`Create an account`}</Text>
+                            paddingBottom: 20,
+                        }}>{`Create an account`}</Text> */}
                     </View>
 
                     {/* Form Section */}
                     <View style={{
-                        flex: 1,
+                        flex: 2,
                         paddingHorizontal: 30,
-                        paddingTop: 40,
-                        backgroundColor: 'white',
+                        paddingTop: 20,
+                        backgroundColor: colors.background,
                         borderTopLeftRadius: 70,
                         width: "100%"
                     }}>
+
+
                         <View style={[GlobalStyleSheet.container, { flexGrow: 1, paddingBottom: 0, paddingHorizontal: 10, paddingTop: 0 }]}>
                             <View style={{}}>
-                                {/* <View style={{ marginBottom: 30 }}>
+                                <View style={{ marginBottom: 30 }}>
                                     <Text style={[styles.title1, { color: colors.title }]}>Create an account</Text>
-                                    <Text style={[styles.title2, { color: colors.title }]}>Join us! Enter your mobile number to get an OTP and create your account</Text>
-                                </View> */}
+                                    {/* <Text style={[styles.title2, { color: colors.title }]}>Join us! Enter your mobile number to get an OTP and create your account</Text> */}
+                                </View>
                                 <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
-                                    <Text style={[styles.title3, { color: '#8A8A8A' }]}>Your Name / Business Name
+                                    <Text style={[styles.title3, { color: colors.title }]}>Your Name / Business Name
                                     </Text>
                                 </View>
-                                <View style={{ marginBottom: 10, }}>
+                                <View style={{ marginVertical: 10, }}>
                                     <Input
                                         onFocus={() => setisFocused(true)}
                                         onBlur={() => setisFocused(false)}
                                         onChangeText={(value) => setName(value)}
                                         isFocused={isFocused}
-                                        inputBorder
+                                        //inputBorder
                                         defaultValue=''
                                     />
                                 </View>
                                 <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
-                                    <Text style={[styles.title3, { color: '#8A8A8A' }]}>Your Email</Text>
+                                    <Text style={[styles.title3, { color: colors.title }]}>Your Email</Text>
                                 </View>
-                                <View style={{ marginTop: 10 }}>
+                                <View style={{ marginVertical: 10 }}>
                                     <Input
                                         onFocus={() => setisFocused2(true)}
                                         onBlur={() => setisFocused2(false)}
-                                        backround={colors.card}
+                                        // backround={colors.background}
                                         onChangeText={(value) => setEmail(value)}
                                         isFocused={isFocused2}
-                                        inputBorder
+                                        //inputBorder
                                         defaultValue=''
                                     />
                                 </View>
                                 <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
-                                    <Text style={[styles.title3, { color: '#8A8A8A' }]}>Phone Number</Text>
+                                    <Text style={[styles.title3, { color: colors.title }]}>Phone Number</Text>
                                 </View>
-                                <View style={{ marginBottom: 10, marginTop: 10 }}>
+                                <View style={{ marginVertical: 10, }}>
                                     <Input
                                         keyboardType="numeric"
                                         onFocus={() => setisFocused3(true)}
                                         onBlur={() => setisFocused3(false)}
-                                        backround={colors.card}
+                                        //backround={colors.background}
                                         onChangeText={(value) => setMobile(value)}
                                         isFocused={isFocused3}
-                                        inputBorder
+                                        // inputBorder
                                         defaultValue=''
                                     />
                                 </View>
                                 <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
-                                    <Text style={[styles.title3, { color: '#8A8A8A' }]}>Referral Code (Optional)</Text>
+                                    <Text style={[styles.title3, { color: colors.title }]}>Referral Code (Optional)</Text>
                                 </View>
                                 <View style={{ marginBottom: 10, marginTop: 10 }}>
                                     <Input
                                         // keyboardType="numeric"
                                         onFocus={() => setisFocused4(true)}
                                         onBlur={() => setisFocused4(false)}
-                                        backround={colors.card}
+                                        //backround={colors.background}
                                         onChangeText={(value) => setReferralCode(value)}
                                         isFocused={isFocused4}
-                                        inputBorder
+                                        //inputBorder
                                         defaultValue=''
                                     />
                                 </View>
@@ -201,10 +196,9 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                                 </View>
                             </View>
                         </View>
-
                     </View>
                 </LinearGradient>
-            </View>
+            </ScrollView>
         </SafeAreaView >
     )
 }

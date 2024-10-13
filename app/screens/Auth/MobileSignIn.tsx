@@ -119,14 +119,14 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
                                 fontSize: 14,
                             }}>Mobile Number</Text>
                         </View>
-                        <View style={{ marginBottom: 0, }}>
+                        <View style={{ marginVertical: 10, }}>
                             <Input
                                 keyboardType="numeric"
                                 onFocus={() => setisFocused(true)}
                                 onBlur={() => setisFocused(false)}
                                 onChangeText={(e) => setMobile(e)}
                                 isFocused={isFocused}
-                                inputBorder
+                                // inputBorder
                                 defaultValue=''
                             />
                         </View>
