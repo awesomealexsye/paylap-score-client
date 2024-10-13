@@ -59,7 +59,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                     onPress: () => {
                         CommonService.currentUserDetail().then((res) => {
                             const defaultMessage = `Dear Sir / Madam, Your payment of ₹ ${item.amount} is pending at ${res.name}(${res.mobile}).Open Paylapscore app for view the details and make the payment.`;
-                            ApiService.postWithToken("api/add-notification", { receiver_id: item.id, title: "Payment Reminder", description: defaultMessage }).then((resNotification) => {
+                            ApiService.postWithToken("api/add-notification", { receiver_id: item.customer_id, title: "Payment Reminder", description: defaultMessage }).then((resNotification) => {
                                 if (!resNotification.status) {
                                     MessagesService.commonMessage(resNotification.message);
                                 }

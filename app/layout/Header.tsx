@@ -31,10 +31,11 @@ type Props = {
     rightIcon5?: any,
     rightIcon6?: any,
     rightIcon5Callback?: any,
+    backgroundColor?: string
 }
 
 
-const Header = ({ title, leftIcon, leftAction, transparent, productId, titleLeft, titleLeft2, titleRight, rightIcon1, rightIcon4, rightIcon2, rightIcon3, rightIcon5, rightIcon6, rightIcon5Callback }: Props) => {
+const Header = ({ title, leftIcon, leftAction, transparent, productId, titleLeft, titleLeft2, titleRight, rightIcon1, rightIcon4, rightIcon2, rightIcon3, rightIcon5, rightIcon6, rightIcon5Callback, backgroundColor }: Props) => {
 
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
@@ -53,7 +54,7 @@ const Header = ({ title, leftIcon, leftAction, transparent, productId, titleLeft
         <View
             style={[{
                 height: 65,
-                backgroundColor: colors.card,
+                backgroundColor: backgroundColor || colors.card,
                 alignItems: 'center',
                 justifyContent: 'center',
                 zIndex: 99

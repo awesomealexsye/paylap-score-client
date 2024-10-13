@@ -103,6 +103,7 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.card, }}>
             <Header
                 leftIcon='back'
+                backgroundColor={COLORS.primary}
             // transparent
             />
             <ScrollView style={{ flexDirection: "column", height: "100%" }}>
