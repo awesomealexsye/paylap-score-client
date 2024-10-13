@@ -11,7 +11,7 @@ import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { openDrawer } from '../../redux/actions/drawerAction';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { ApiService } from '../../lib/ApiService';
-import { MessagesService } from '../../lib/MessagesService';
+// import { MessagesService } from '../../lib/MessagesService';
 import CommonService from '../../lib/CommonService';
 
 

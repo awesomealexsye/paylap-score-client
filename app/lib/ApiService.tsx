@@ -39,7 +39,7 @@ const ApiService = {
         console.log("consoleloo", api_url, data, headers);
         try {
             const res = await axios.post(api_url, data, { headers: headers });
-            //console.log(res, "resresres")
+            // console.log(res, "resresres")
             // console.log("api pay and res", api_url, data, headers, res.data, res.status);
 
             if (res.status == 200) {

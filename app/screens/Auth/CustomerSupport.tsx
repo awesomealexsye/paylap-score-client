@@ -12,10 +12,10 @@ import MaterialCommunityIcons from '@expo/vector-icons/build/MaterialCommunityIc
 type CustomerSupportScreenProps = StackScreenProps<RootStackParamList, 'CustomerSupport'>;
 
 type SupportObject = {
-    PHONE_NUMBER: string | null;
-    WHATSAPP_NUMBER: string | null;
-    EMAIL: string | null;
-    WEBSITE: string | null;
+    PHONE_NUMBER: string;
+    WHATSAPP_NUMBER: string;
+    EMAIL: string;
+    WEBSITE: string;
 };
 
 const CustomerSupport = ({ navigation }: CustomerSupportScreenProps) => {
@@ -27,10 +27,10 @@ const CustomerSupport = ({ navigation }: CustomerSupportScreenProps) => {
 
 
     const [supportObject, setSupportObject] = useState<SupportObject>({
-        PHONE_NUMBER: null,
-        WHATSAPP_NUMBER: null,
-        EMAIL: null,
-        WEBSITE: null,
+        PHONE_NUMBER: "",
+        WHATSAPP_NUMBER: "",
+        EMAIL: "",
+        WEBSITE: "",
     });
 
     useEffect(() => {
@@ -62,18 +62,15 @@ const CustomerSupport = ({ navigation }: CustomerSupportScreenProps) => {
     };
 
     const handleWebsitePress = (url: string) => {
-        if (!url.startsWith('http')) {
-            url = `https://${url}`;
-        }
         Linking.openURL(url);
     };
 
     const supportOptions = [
-        { type: 'mobile', icon: 'phone', iconColor: '#007bff', label: 'Mobile Number', value: `+91 ${supportObject?.PHONE_NUMBER || "8228822825"}` },
-        { type: 'whatsapp', icon: 'whatsapp', iconColor: '#25D366', label: 'WhatsApp Number', value: `+91 ${supportObject?.WHATSAPP_NUMBER || "8228822825"}` },
+        { type: 'mobile', icon: 'phone', iconColor: '#007bff', label: 'Mobile Number', value: `${supportObject?.PHONE_NUMBER || "8228822825"}` },
+        { type: 'whatsapp', icon: 'whatsapp', iconColor: '#25D366', label: 'WhatsApp Number', value: `${supportObject?.WHATSAPP_NUMBER || "8228822825"}` },
         { type: 'supportMail', icon: 'email', iconColor: '#007bff', label: 'Support Mail', value: `${supportObject?.EMAIL || "paylapscore.com"}` },
 
-        { type: 'website', icon: 'web', iconColor: '#007bff', label: 'Website', value: `https://${supportObject?.WEBSITE || "paylapscore.com"}` },
+        { type: 'website', icon: 'web', iconColor: '#007bff', label: 'Website', value: `${supportObject?.WEBSITE || "paylapscore.com"}` },
     ];
 
 
@@ -106,12 +103,6 @@ const CustomerSupport = ({ navigation }: CustomerSupportScreenProps) => {
         }
     };
 
-
-
-
-
-
-
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.card }}>
             <Header
@@ -119,43 +110,6 @@ const CustomerSupport = ({ navigation }: CustomerSupportScreenProps) => {
                 leftIcon='back'
                 titleRight
             />
-            {/* <ScrollView style={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
-                <View style={[styles.companyDetailsContainer]}>
-                    <View style={{ marginBottom: 30 }}>
-                        <Text style={[styles.title2, { color: colors.title, textAlign: 'center', marginBottom: 20 }]}>We're here to help you! Contact us using the details below.</Text>
-                    </View>
-                    <View>
-                        <Text style={[styles.titleKey, { color: colors.title }]}>Phone Number</Text>
-                        <TouchableOpacity style={styles.button} onPress={() => handlePhonePress(supportObject?.PHONE_NUMBER || "8228822825")}>
-                            <Icon name="phone" size={20} color="#fff" style={styles.buttonIcon} />
-                            <Text style={styles.buttonText}>
-                                {supportObject?.PHONE_NUMBER || "8228822825"}
-                            </Text>
-                        </TouchableOpacity>
-                        <Text style={[styles.titleKey, { color: colors.title }]}>WhatsApp Number</Text>
-                        <TouchableOpacity style={styles.button} onPress={() => handleWhatsAppPress(supportObject?.WHATSAPP_NUMBER || "8228822825")}>
-                            <Icon name="whatsapp" size={20} color="#fff" style={styles.buttonIcon} />
-                            <Text style={styles.buttonText}>
-                                {supportObject?.WHATSAPP_NUMBER || "8228822825"}
-                            </Text>
-                        </TouchableOpacity>
-                        <Text style={[styles.titleKey, { color: colors.title }]}>Support Email</Text>
-                        <TouchableOpacity style={styles.button} onPress={() => handleEmailPress(supportObject?.EMAIL || "support@paylapscore.com")}>
-                            <Icon name="envelope" size={20} color="#fff" style={styles.buttonIcon} />
-                            <Text style={styles.buttonText}>
-                                {supportObject?.EMAIL || "support@paylapscore.com"}
-                            </Text>
-                        </TouchableOpacity>
-                        <Text style={[styles.titleKey, { color: colors.title }]}>Website</Text>
-                        <TouchableOpacity style={styles.button} onPress={() => handleWebsitePress(supportObject?.WEBSITE || "paylapscore.com")}>
-                            <Icon name="globe" size={20} color="#fff" style={styles.buttonIcon} />
-                            <Text style={styles.buttonText}>
-                                {supportObject?.WEBSITE || "paylapscore.com"}
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </ScrollView> */}
             <ScrollView style={{
                 flex: 1,
                 padding: 20,
@@ -173,7 +127,20 @@ const CustomerSupport = ({ navigation }: CustomerSupportScreenProps) => {
                         shadowOpacity: 0.1,
                         shadowRadius: 5,
                         elevation: 3,
-                    }} onPress={() => handlePress(option.type)}>
+                    }} onPress={() => {
+                        if (option.type == "mobile") {
+                            handlePhonePress(supportObject.PHONE_NUMBER)
+                        } else if (option.type == "supportMail") {
+                            handleEmailPress(supportObject.EMAIL)
+                        } else if (option.type == "whatsapp") {
+                            handleWhatsAppPress(supportObject.WHATSAPP_NUMBER)
+                        } else if (option.type == "website") {
+                            handleWebsitePress(supportObject.WEBSITE)
+                        } else {
+                            handleWebsitePress(supportObject.WEBSITE)
+                        }
+                    }
+                    }>
                         <View style={{
                             flexDirection: 'row',
                             alignItems: 'center',

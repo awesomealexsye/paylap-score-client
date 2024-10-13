@@ -187,7 +187,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                                         /> : <ActivityIndicator size={70} color={COLORS.primary} />
 
                                 }
-                                <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", margin: 40 }}><Text style={{ ...FONTS.fontMedium }}>If You have an Already account ?   </Text>
+                                <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", margin: 40 }}><Text style={{ ...FONTS.fontMedium, color: colors.title }}>If You have an Already account ?   </Text>
                                     <TouchableOpacity
                                         onPress={() => navigation.navigate('MobileSignIn')}
                                     >
