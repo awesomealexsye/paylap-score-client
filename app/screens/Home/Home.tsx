@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList, BackHandler } from 'react-native';
+import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList, BackHandler, ActivityIndicator } from 'react-native';
 import { useTheme, useFocusEffect } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { IMAGES } from '../../constants/Images';
@@ -11,7 +11,7 @@ import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { openDrawer } from '../../redux/actions/drawerAction';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { ApiService } from '../../lib/ApiService';
-import { MessagesService } from '../../lib/MessagesService';
+// import { MessagesService } from '../../lib/MessagesService';
 import CommonService from '../../lib/CommonService';
 
 
@@ -38,7 +38,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const [homeBanner, setHomeBanner] = useState<any>({});
     const [filteredCustomers, setFilteredCustomers] = useState([]);
     const [userDetail, setUserDetail] = useState({ name: "", profile_image: "", aadhar_card: "" });
-
+    const [isLoading, setIsLoading] = useState<any>(false);
     useEffect(() => {
         const handleBackPress = () => {
             if (navigation.isFocused() && navigation.getState().routes[navigation.getState().index].name === 'Home') {
@@ -76,13 +76,17 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     };
 
     const fetchCustomerList = async () => {
+        setIsLoading(true);
         const homeApiRes = await ApiService.postWithToken("api/shopkeeper/list-customer", {});
+        console.log(homeApiRes)
         if (homeApiRes?.status == true) {
+
             let homeBanner = homeApiRes?.data?.shopkeeper_transaction_sum;
             setHomeBanner(homeBanner);
             setCustomersData(homeApiRes?.data?.records);
             setFilteredCustomers(homeApiRes?.data?.records);
         }
+        setIsLoading(false);
     }
 
 
@@ -132,8 +136,9 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                             flexDirection: "row", alignItems: "center",
                         }}>
                             < View >
-                                <Image style={{ height: 45, width: 45, borderRadius: 50 }}
-                                    source={{ uri: userDetail.profile_image }} />
+                                {userDetail.profile_image && <Image style={{ height: 45, width: 45, borderRadius: 50 }}
+                                    source={{ uri: userDetail.profile_image }} />}
+
                             </View>
                             <View style={{
                                 flexDirection: "column", alignItems: "flex-start", marginLeft: 10, width: "65%"
@@ -202,7 +207,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 <View style={{ flex: 1, alignItems: 'center' }} >
                     <View style={{
                         height: 140,
-                        width: 380,
+                        width: "95%",
                         top: 20,
                         backgroundColor: COLORS.primary,
                         borderRadius: 31,
@@ -260,14 +265,14 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
                 {/* Search box ends */}
 
+                {isLoading === false ?
+                    <FlatList scrollEnabled={false}
+                        data={filteredCustomers}
+                        renderItem={renderCustomer}
+                        keyExtractor={(item, index) => index.toString()}
+                        contentContainerStyle={{}} /> : <ActivityIndicator color={colors.title} size={100}></ActivityIndicator>
 
-                <FlatList scrollEnabled={false}
-                    data={filteredCustomers}
-                    renderItem={renderCustomer}
-                    keyExtractor={(item, index) => index.toString()}
-                    contentContainerStyle={{}}
-
-                />
+                }
 
             </ScrollView >
             <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("AddCustomer")}>

@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList, } from 'react-native';
+import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList, Linking, Alert, ActivityIndicator } from 'react-native';
 import { useTheme, useFocusEffect } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { IMAGES } from '../../constants/Images';
@@ -11,6 +11,8 @@ import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import CustomerActivityBtn from './CustomerActivityBtn';
 import { ApiService } from '../../lib/ApiService';
+import CommonService from '../../lib/CommonService';
+import { MessagesService } from '../../lib/MessagesService';
 
 
 interface Customer {
@@ -22,6 +24,8 @@ interface Customer {
     transaction_date: Date;
     description: string;
     image: any;
+    customer_mobile: string;
+
 }
 
 type CustomerTransationsScreenProps = StackScreenProps<RootStackParamList, 'CustomerTransations'>
@@ -30,16 +34,56 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
     const { item } = route.params;
 
     const [customerData, setCustomersData] = useState<any>({});
+    const [isLoading, setIsLoading] = useState<any>(false);
+
 
     useFocusEffect(
         useCallback(() => {
-            fetchCustomerList();
+
+            fetchCustomerTransactionList();
+
         }, [])
     );
 
-    const fetchCustomerList = async () => {
+    const fetchCustomerTransactionList = async () => {
+        setIsLoading(true);
         const res = await ApiService.postWithToken("api/shopkeeper/transactions/list-shopkeeper-customer-transaction", { "customer_id": item.customer_id });
+        // const data = JSON.stringify(res);
         setCustomersData(res);
+        setIsLoading(false);
+        console.log("####################", res.data?.shopkeeper_transaction_sum.transaction_type);
+    }
+    const reminder = () => {
+        Alert.alert(
+            'Send Reminder',
+            'Are you sure you want to send a payment reminder to the customer?',
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Yes',
+                    onPress: () => {
+                        CommonService.currentUserDetail().then((res) => {
+                            const defaultMessage = `Dear Sir / Madam, Your payment of ₹ ${item.amount} is pending at ${res.name}(${res.mobile}).Open Paylapscore app for view the details and make the payment.`;
+                            ApiService.postWithToken("api/add-notification", { receiver_id: item.customer_id, title: "Payment Reminder", description: defaultMessage }).then((resNotification) => {
+                                if (!resNotification.status) {
+                                    MessagesService.commonMessage(resNotification.message);
+                                }
+                            })
+                        })
+                    },
+                },
+            ],
+        );
+    }
+    const send_sms = () => {
+        CommonService.currentUserDetail().then((res) => {
+            const defaultMessage = `Dear Sir / Madam, Your payment of ₹ ${item.amount} is pending at ${res.name}(${res.mobile}).Open Paylapscore app for view the details and make the payment.`;
+            const sms = `sms:${item.customer.mobile}?body=${defaultMessage}`;
+            Linking.openURL(sms);
+        })
     }
     const theme = useTheme();
     const { colors }: { colors: any; } = theme;
@@ -48,7 +92,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
     const renderCustomer = ({ item }: { item: Customer }) => (
         <TouchableOpacity onPress={() => navigation.navigate("CustomerTransationsDetails", { customer: item })
         }>
-            <View style={[styles.customerItem, { backgroundColor: colors.card }]}>
+            <View style={[styles.customerItem, { backgroundColor: colors.card, marginVertical: 10 }]}>
                 <View style={{}}>
                     <View style={{ flexDirection: 'row' }}>
                         {/* <Image
@@ -58,9 +102,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                         <View style={{ marginLeft: 14 }}>
                             <Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{item.customer_name}</Text>
                             <Text style={styles.lastInteraction}>{item.last_updated_date}</Text>
-                            <Text style={styles.lastInteraction}>{
-                                item.transaction_date.toLocaleString()
-                            }
+                            <Text style={styles.lastInteraction}>{item.transaction_date.toLocaleString()}
 
                             </Text>
                             <Text style={styles.lastInteraction}>{item.description}</Text>
@@ -103,7 +145,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                             <Feather size={24} color={colors.title} name={'arrow-left'} />
                         </TouchableOpacity>
                         <Image
-                            style={{ height: 40, width: 40, borderRadius: 50, marginLeft: 10, marginRight: 15, resizeMode: 'contain' }}
+                            style={{ height: 45, width: 45, borderRadius: 50, marginHorizontal: 15, resizeMode: 'contain' }}
                             src={item.profile_image}
                         />
 
@@ -120,9 +162,9 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                 <View style={{ flex: 1, alignItems: 'center' }} >
                     <View style={{
                         height: 80,
-                        width: 380,
+                        width: "95%",
                         top: 15,
-                        backgroundColor: COLORS.primary,
+                        backgroundColor: customerData.data?.shopkeeper_transaction_sum?.transaction_type === "DEBIT" ? COLORS.danger : COLORS.primary,
                         borderRadius: 31,
                         shadowColor: "#025135",
                         shadowOffset: {
@@ -138,10 +180,10 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
 
                         <View style={{ width: 380, flexDirection: 'row', justifyContent: "space-evenly", paddingTop: 20, alignItems: "center", alignContent: "center" }}>
                             <View style={{ alignItems: 'center', justifyContent: 'center', borderRightColor: colors.dark }}>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h4, color: COLORS.primaryLight, textAlign: "center" }}>{item.transaction_type} </Text>
+                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h4, color: COLORS.primaryLight, textAlign: "center" }}>{customerData.data?.shopkeeper_transaction_sum?.transaction_type} </Text>
                             </View>
                             <View style={{ alignItems: 'center', justifyContent: "center" }}>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.primaryLight }}>₹ {item.amount}</Text>
+                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.primaryLight }}>₹ {customerData.data?.shopkeeper_transaction_sum?.total_amount}</Text>
                             </View>
                         </View>
                     </View>
@@ -150,8 +192,8 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                     <View style={{}}>
                         <View style={[{ flexDirection: "row", justifyContent: "space-evenly", alignItems: "center", marginBottom: 10 }]}>
                             <CustomerActivityBtn
-
                                 gap
+                                isDisabled={false}
                                 icon={<Image source={IMAGES.tachometerfast} style={{ height: 20, width: 20, resizeMode: 'contain' }}></Image>}
                                 color={colors.card}
                                 text='Score'
@@ -159,35 +201,40 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                             />
                             <CustomerActivityBtn
                                 gap
+                                isDisabled={false}
                                 icon={<FontAwesome style={{ color: colors.title }} name={'rupee'} size={20} />}
                                 color={colors.card}
                                 text='Payments'
                                 onpress={() => navigation.navigate('NotAvailable')}
                             /><CustomerActivityBtn
                                 gap
+                                isDisabled={item.transaction_type == "DEBIT" ? item.amount > 0 ? false : true : true}
                                 icon={<FontAwesome style={{ color: colors.title }} name={'bell'} size={20} />}
                                 color={colors.card}
                                 text='Reminder'
-                                onpress={() => navigation.navigate('NotAvailable')}
+                                onpress={() => reminder()}
                             /><CustomerActivityBtn
                                 gap
+                                isDisabled={item.transaction_type == "DEBIT" ? item.amount > 0 ? false : true : true}
                                 icon={<FontAwesome style={{ color: colors.title }} name={'envelope'} size={20} />}
                                 color={colors.card}
                                 text='SMS'
-                                onpress={() => navigation.navigate('NotAvailable')}
+                                onpress={() => send_sms()}
                             />
                         </View>
 
                     </View>
                 </View>
+                {
+                    isLoading === false ?
+                        <FlatList scrollEnabled={false}
+                            data={customerData.data?.records}
+                            renderItem={renderCustomer}
+                            keyExtractor={(item) => item.id}
+                            contentContainerStyle={{}}
 
-                <FlatList scrollEnabled={false}
-                    data={customerData.data?.records}
-                    renderItem={renderCustomer}
-                    keyExtractor={(item) => item.id}
-                    contentContainerStyle={{}}
-
-                />
+                        /> : <ActivityIndicator color={colors.title} size={100}></ActivityIndicator>
+                }
 
             </ScrollView>
             <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', paddingTop: 10, backgroundColor: colors.dark }}>

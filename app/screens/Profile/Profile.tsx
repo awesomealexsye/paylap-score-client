@@ -105,7 +105,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                             </View>
                             <View>
                                 <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>Email Address</Text>
-                                <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>{profile?.email}</Text>
+                                <Text style={{ ...FONTS.fontMedium, fontSize: profile?.email?.length > 15 ? 12 : 16, color: colors.title, marginTop: 5 }}>{profile?.email}</Text>
                             </View>
                         </View>
                         {profile?.aadhar_card && <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 25, alignItems: 'flex-start' }]} >

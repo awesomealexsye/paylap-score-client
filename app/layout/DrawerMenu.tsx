@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, ScrollView, TouchableOpacity, Modal, StyleSheet, Linking } from 'react-native';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import { IMAGES } from '../constants/Images';
 import { COLORS, FONTS } from '../constants/theme';
@@ -9,6 +9,9 @@ import { useDispatch } from 'react-redux';
 import { closeDrawer } from '../redux/actions/drawerAction';
 import { GlobalStyleSheet } from '../constants/StyleSheet';
 import StorageService from '../lib/StorageService';
+import CommonService from '../lib/CommonService';
+import ButtonIcon from '../components/Button/ButtonIcon';
+import Constants from 'expo-constants';
 
 const MenuItems = [
     {
@@ -17,39 +20,18 @@ const MenuItems = [
         name: "Home",
         navigate: "Home",
     },
-
-    // {
-    //     id: "2",
-    //     icon: IMAGES.components,
-    //     name: "Components",
-    //     navigate: "Components",
-    // },
-
-    // {
-    //     id: "2",
-    //     icon: IMAGES.chat,
-    //     name: "User Kyc",
-    //     navigate: 'UserKyc',
-    // },
-    // {
-    //     id: "2",
-    //     icon: IMAGES.search,
-    //     name: "Find User",
-    //     navigate: 'FindUser',
-    // },
     {
         id: "3",
         icon: IMAGES.user3,
         name: "Profile",
         navigate: "Profile",
-    }, {
+    },
+    {
         id: "4",
         icon: IMAGES.share,
         name: "Share",
         navigate: 'ShareApp',
     },
-
-
     {
         id: "5",
         icon: IMAGES.help,
@@ -62,42 +44,80 @@ const MenuItems = [
         name: "Terms & Conditions",
         navigate: 'TermsAndConditionsScreen',
     },
-
     {
         id: "7",
         icon: IMAGES.logout,
         name: "Logout",
         navigate: 'MobileSignIn',
     },
+];
 
-]
+type AppConfig = {
+    ANDROID: {
+        IS_MANDATORY: boolean;
+        VERSION_CODE: number;
+        VERSION_NAME: string;
+        VERSION_MESSAGE: string
+    }
+};
 
 const DrawerMenu = () => {
+    const theme = useTheme();
+    const dispatch = useDispatch();
+    const navigation = useNavigation<any>();
+
+    const [active, setactive] = useState(MenuItems[0]);
+    const [appInfo, setAppInfo] = useState<AppConfig>({
+        ANDROID: {
+            IS_MANDATORY: false,
+            VERSION_CODE: 0,
+            VERSION_NAME: '1.0.0',
+            VERSION_MESSAGE: 'A Default Update Message'
+        }
+    });
+    const APP_URL: string = "https://play.google.com/store/apps/details?id=com.paylap.paylapscore";
+    const [modalVisible, setModalVisible] = useState(false);
+    const installedAndroidVersionCode: any = Constants?.expoConfig?.android?.versionCode; // Version code (e.g., "10")
+    const installedAndroidVersionName: any = Constants?.expoConfig?.android?.versionName; // Version code (e.g., "10")
+
+    useEffect(() => {
+        getAppversion();
+    }, []);
+
+    useEffect(() => {
+        if (appInfo.ANDROID.VERSION_CODE > installedAndroidVersionCode) {
+            setModalVisible(true);
+        } else {
+            setModalVisible(false);
+
+        }
+    }, [appInfo]);
+
     const handleLogout = async () => {
         const is_logout = await StorageService.logOut();
         if (is_logout) {
             navigation.navigate("MobileSignIn");
         }
+    };
+
+    const getAppversion = () => {
+        CommonService.getAppUploadDetail().then((res) => {
+            if (res?.ANDROID) {
+                setAppInfo(res);
+                // console.log(res?.ANDROID);
+            }
+        });
+    };
+    const openAppUrl = () => {
+        Linking.openURL(APP_URL).catch((err) => console.error("An error occurred", err));
     }
-
-
-    const theme = useTheme();
-    const dispatch = useDispatch();
-
-
-
-    const { colors }: { colors: any } = theme;
-
-    const [active, setactive] = useState(MenuItems[0]);
-
-    const navigation = useNavigation<any>();
 
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <View
                 style={{
                     flex: 1,
-                    backgroundColor: colors.background,
+                    backgroundColor: theme.colors.background,
                     paddingHorizontal: 15,
                     paddingVertical: 15,
                 }}
@@ -120,12 +140,12 @@ const DrawerMenu = () => {
                         paddingBottom: 20
                     }]}
                 >
-                    <Text style={{ ...FONTS.fontSemiBold, fontSize: 20, color: colors.title }}>Main Menus</Text>
+                    <Text style={{ ...FONTS.fontSemiBold, fontSize: 20, color: theme.colors.title }}>Main Menus</Text>
                     <TouchableOpacity
                         onPress={() => dispatch(closeDrawer())}
                         activeOpacity={0.5}
                     >
-                        <Feather size={24} color={colors.title} name='x' />
+                        <Feather size={24} color={theme.colors.title} name='x' />
                     </TouchableOpacity>
                 </View>
                 <View style={{ paddingBottom: 10 }}>
@@ -138,10 +158,9 @@ const DrawerMenu = () => {
                                     if (data.name == "Logout") {
                                         handleLogout();
                                     } else {
-                                        navigation.navigate(data.navigate)
+                                        navigation.navigate(data.navigate);
                                     }
-                                }
-                                }
+                                }}
                                 key={index}
                                 style={[GlobalStyleSheet.flex, {
                                     paddingVertical: 5,
@@ -155,12 +174,12 @@ const DrawerMenu = () => {
                                             style={{
                                                 height: 24,
                                                 width: 24,
-                                                tintColor: colors.title,
+                                                tintColor: theme.colors.title,
                                                 resizeMode: 'contain'
                                             }}
                                         />
                                     </View>
-                                    <Text style={[FONTS.fontRegular, { color: colors.title, fontSize: 16, },]}>{data.name}</Text>
+                                    <Text style={[FONTS.fontRegular, { color: theme.colors.title, fontSize: 16, },]}>{data.name}</Text>
                                 </View>
                             </TouchableOpacity>
                         )
@@ -170,12 +189,88 @@ const DrawerMenu = () => {
                     <ThemeBtn />
                 </View>
                 <View style={{ paddingVertical: 15, paddingHorizontal: 10 }}>
-                    <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title }}>Paylap Score</Text>
-                    <Text style={{ ...FONTS.fontMedium, fontSize: 12, color: colors.title }}>App Version 1.0.0</Text>
+                    <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: theme.colors.title }}>Paylap Score</Text>
+                    <Text style={{ ...FONTS.fontMedium, fontSize: 12, color: theme.colors.title }}>App Version {installedAndroidVersionName}</Text>
                 </View>
             </View>
+
+            {/* Modal Component */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(false)}
+            >
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>Update Available!</Text>
+                        <Text style={styles.modalMessage}>
+                            {appInfo.ANDROID.VERSION_MESSAGE}
+                        </Text>
+
+                        <TouchableOpacity
+                            style={styles.closeButton}
+                            onPress={() => setModalVisible(false)}
+                        >
+                            {appInfo?.ANDROID.VERSION_CODE > installedAndroidVersionCode &&
+                                <>
+                                    {
+                                        appInfo?.ANDROID?.IS_MANDATORY
+                                            ?
+                                            <ButtonIcon icon={<Feather name='upload' size={20} color={COLORS.background}
+                                            />} size={'sm'} title={"Update"} onPress={() => { openAppUrl() }} ></ButtonIcon>
+                                            :
+                                            <Text style={styles.closeButtonText}>Close</Text>
+                                    }
+                                </>
+                            }
+
+
+                        </TouchableOpacity>
+
+
+
+                    </View>
+                </View>
+            </Modal>
         </ScrollView>
-    )
+    );
 }
 
-export default DrawerMenu
+const styles = StyleSheet.create({
+    modalOverlay: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // semi-transparent background
+    },
+    modalContent: {
+        width: '80%',
+        padding: 20,
+        borderRadius: 10,
+        backgroundColor: 'white',
+        alignItems: 'center',
+        elevation: 5, // Android shadow
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    modalMessage: {
+        fontSize: 16,
+        textAlign: 'center',
+        marginBottom: 20,
+    },
+    closeButton: {
+        backgroundColor: COLORS.primary, // Use existing color theme if needed
+        padding: 10,
+        borderRadius: 5,
+    },
+    closeButtonText: {
+        color: 'white',
+        fontWeight: 'bold',
+    },
+});
+
+export default DrawerMenu;

@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Linking, Platform } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { IMAGES } from '../../constants/Images';
@@ -12,6 +12,7 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { ApiService } from '../../lib/ApiService';
 import ButtonIcon from '../../components/Button/ButtonIcon';
 import FilePreviewModal from '../../components/Modal/FilePreviewModal';
+import CommonService from '../../lib/CommonService';
 
 
 
@@ -28,7 +29,17 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
         setModalVisible(true);
     }
 
+    const send_sms = () => {
 
+        CommonService.currentUserDetail().then((res) => {
+            const defaultMessage = `Dear Sir / Madam, Your payment of ₹ ${customer.amount} is pending at ${res.name}(${res.mobile}).Open Paylapscore app for view the details and make the payment.`;
+
+            const separator = Platform.OS === 'ios' ? '&' : '?'
+
+            const sms = `sms:${customer.customer_mobile}${separator}body=${defaultMessage}`;
+            Linking.openURL(sms);
+        })
+    }
 
     return (
         <View style={{ backgroundColor: colors.card, flex: 1 }}>
@@ -70,7 +81,7 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
             <View style={{ flex: 1, alignItems: 'center' }} >
                 <View style={{
                     height: 220,
-                    width: 380,
+                    width: "95%",
                     top: 20,
                     backgroundColor: colors.card,
                     borderRadius: 31,
@@ -123,7 +134,7 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                 </View>
                 <View style={{
                     height: 140,
-                    width: 380,
+                    width: "95%",
                     top: 40,
                     backgroundColor: colors.card,
                     borderRadius: 31,
@@ -151,7 +162,7 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
 
                 {customer?.image !== "" && <View style={{
                     height: 180,
-                    width: 380,
+                    width: "95%",
                     top: 40,
                     marginTop: 20,
                     backgroundColor: colors.card,
@@ -185,7 +196,15 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                 </View>}
             </View>
             <View style={{ paddingHorizontal: 20, marginBottom: 30 }}>
-                <ButtonIcon title='Share' iconDirection='right' icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'share'} size={18} />}>
+                <ButtonIcon
+                    onPress={send_sms}
+                    title='Share'
+                    iconDirection='right'
+                    icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }}
+                        name={'share'}
+                        size={18}
+
+                    />}>
                 </ButtonIcon>
             </View>
         </View>

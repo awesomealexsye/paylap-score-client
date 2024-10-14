@@ -12,8 +12,8 @@ import StorageService from '../../lib/StorageService';
 
 const DATA = [
     {
-    title: "Welcome to PaylapScore",
-    subtitle: "Discover an efficient way to track your customer’s credit behavior, manage lent items, and streamline your business with smart analytics."
+        title: "Welcome to PaylapScore",
+        subtitle: "Discover an efficient way to track your customer’s credit behavior, manage lent items, and streamline your business with smart analytics."
     },
     {
         title: "Find Customer Credit Score",
@@ -128,8 +128,8 @@ const Onboarding = ({ navigation }: OnboardingScreenProps) => {
                 <View style={[GlobalStyleSheet.container, { padding: 0, paddingHorizontal: 30, paddingBottom: 30 }]}>
                     <Button
                         style={{ borderRadius: 52 }}
-                        title="GET STARTED"
-                        onPress={() => navigation.navigate('WelCome')}
+                        title="Sign In"
+                        onPress={() => navigation.navigate('MobileSignIn')}
                     />
                 </View>
             </ScrollView>

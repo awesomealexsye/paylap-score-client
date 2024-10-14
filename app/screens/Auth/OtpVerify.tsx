@@ -103,11 +103,12 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.card, }}>
             <Header
                 leftIcon='back'
-            // transparent
+                backgroundColor={COLORS.primary}
+                transparent
             />
             <ScrollView style={{ flexDirection: "column", height: "100%" }}>
                 <LinearGradient
-                    colors={[COLORS.primary, 'white']}
+                    colors={[COLORS.primary, colors.background]}
                     style={{
                         height: "100%",
                         justifyContent: 'center',
@@ -117,16 +118,11 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
                     end={{ x: 1, y: 0 }}
                     locations={[0.2, 0.9]}
                 >
-                    {/* <View style={{ flexDirection: 'row' }}>
-                        <View style={{ backgroundColor: 'red' }}>
-                        </View>
-                        <View style={{ backgroundColor: 'white' }}>
-                        </View>
-                    </View> */}
+
 
                     <View style={{
                         flex: 2.5,
-                        // padding: 50,
+                        padding: 50,
                         backgroundColor: COLORS.primary,
                         // borderBottomLeftRadius: -150,
                         borderBottomRightRadius: 70,
@@ -148,10 +144,10 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
 
                     {/* Form Section */}
                     <View style={{
-                        flex: 3,
+                        flex: 1,
                         paddingHorizontal: 30,
                         paddingTop: 40,
-                        backgroundColor: 'white',
+                        backgroundColor: colors.background,
                         borderTopLeftRadius: 70,
                         width: "100%"
                     }}>
@@ -201,7 +197,7 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
                         </View>
 
                         {/* Login Button */}
-                        <View style={{ marginTop: 100 }}>
+                        <View style={{ marginVertical: 100 }}>
                             {
                                 isLoading === false ?
                                     <Button
