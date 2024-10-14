@@ -103,7 +103,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                             <Feather size={24} color={colors.title} name={'arrow-left'} />
                         </TouchableOpacity>
                         <Image
-                            style={{ height: 40, width: 40, borderRadius: 12, marginLeft: 10, marginRight: 15, resizeMode: 'contain' }}
+                            style={{ height: 40, width: 40, borderRadius: 50, marginLeft: 10, marginRight: 15, resizeMode: 'contain' }}
                             src={item.profile_image}
                         />
 

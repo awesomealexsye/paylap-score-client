@@ -55,7 +55,7 @@ const Notification = () => {
                                     style={{ marginBottom: 5, marginHorizontal: -15, paddingHorizontal: 15 }}
                                     key={index}
                                 >
-                                    <SwipeBox data={data} colors={colors} handleDelete={() => deleteItem(data?.id)} />
+                                    <SwipeBox data={{ ...data, image: IMAGES.email }} colors={colors} handleDelete={() => deleteItem(data?.id)} />
                                 </View>
                             )
                         })}
