@@ -2,17 +2,27 @@ import axios from 'axios';
 import CONFIG from "../constants/config";
 import { MessagesService } from './MessagesService';
 import StorageService from './StorageService';
+import CommonService from './CommonService';
+import { useNavigation } from '@react-navigation/native';
 
 
 
 const ApiService = {
+
     async postWithoutToken(uri: string, data: object) {
         let api_url = `${CONFIG.APP_URL}/${uri}`;
         // console.log(api_url, data);
         try {
-            const res = await axios.post(api_url, data); // Sending POST request
+            const res: any = await axios.post(api_url, data); // Sending POST request
             // console.log(api_url, data, res, "ress");
-
+            const navigation = useNavigation<any>();
+            if (res?.logout_user === true) {
+                const is_logout = await StorageService.logOut();
+                if (is_logout) {
+                    navigation.navigate("MobileSignIn");
+                    return;
+                }
+            }
             if (res.status == 200) {
                 if (res.data.status == false) {
                     MessagesService.commonMessage(res.data.message);
@@ -38,10 +48,16 @@ const ApiService = {
         headers = { ...authHeader, ...headers }
         // console.log("consoleloo  ", api_url, data, headers);
         try {
-            const res = await axios.post(api_url, data, { headers: headers });
+            const res: any = await axios.post(api_url, data, { headers: headers });
             // console.log(res, "resresres")
             // console.log("api pay and res", api_url, data, headers, res.data, res.status);
-
+            const navigation = useNavigation<any>();
+            if (res?.logout_user === true) {
+                const is_logout = await StorageService.logOut();
+                if (is_logout) {
+                    navigation.navigate("MobileSignIn");
+                }
+            }
             if (res.status == 200) {
                 if (res.data.status == false) {
                     if (res.data.message && typeof res.data.message === 'object') {
