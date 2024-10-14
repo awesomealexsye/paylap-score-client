@@ -35,8 +35,6 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
 
     useFocusEffect(
         useCallback(() => {
-            console.log(item, "item");
-
             fetchCustomerList();
         }, [])
     );
