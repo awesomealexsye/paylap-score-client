@@ -38,12 +38,13 @@ export default class SwipeBox extends Component {
     );
   };
 
-  updateRef = ref => {
+  updateRef = (ref: any) => {
     this._swipeableRow = ref;
   };
   close = () => {
     this._swipeableRow.close();
   };
+  _swipeableRow: any;
 
   render() {
 
@@ -56,7 +57,7 @@ export default class SwipeBox extends Component {
           style={{
             flexDirection: 'row',
             alignItems: 'center',
-            gap: 10,
+            gap: 20,
             paddingHorizontal: 10,
             paddingVertical: 10,
             backgroundColor: this.props.colors.card,
@@ -64,13 +65,14 @@ export default class SwipeBox extends Component {
           }}
         >
           {<Image
-            style={{ height: 45, width: 45, borderRadius: 10 }}
-            source={{ uri: this.props.data.image }}
+            style={{ height: 30, width: 30, resizeMode: 'contain', tintColor: this.props.colors.title }}
+            source={IMAGES.Notification}
+
           />}
           <View>
-            <Text style={{ ...FONTS.fontRegular, fontSize: 14, color: '#003366' }}>{this.props.data?.title}</Text>
-            <Text style={{ ...FONTS.fontRegular, fontSize: 14, color: '#CCCCCC' }}>{this.props.data?.description}</Text>
-            <Text style={{ ...FONTS.fontRegular, fontSize: 11, color: '#666666' }}>{this.props.data?.date}</Text>
+            <Text style={{ ...FONTS.fontSemiBold, fontSize: 14, color: this.props.colors.title }}>{this.props.data?.title}</Text>
+            <Text style={{ ...FONTS.fontRegular, fontSize: 14, color: this.props.colors.title }}>{this.props.data?.description}</Text>
+            <Text style={{ ...FONTS.fontRegular, fontSize: 11, color: this.props.colors.title }}>{this.props.data?.date}</Text>
           </View>
         </View>
       </Swipeable>

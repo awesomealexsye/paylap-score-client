@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList, Linking, Alert, } from 'react-native';
+import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList, Linking, Alert, ActivityIndicator } from 'react-native';
 import { useTheme, useFocusEffect } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { IMAGES } from '../../constants/Images';
@@ -24,6 +24,8 @@ interface Customer {
     transaction_date: Date;
     description: string;
     image: any;
+    customer_mobile: string;
+
 }
 
 type CustomerTransationsScreenProps = StackScreenProps<RootStackParamList, 'CustomerTransations'>
@@ -32,16 +34,24 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
     const { item } = route.params;
 
     const [customerData, setCustomersData] = useState<any>({});
+    const [isLoading, setIsLoading] = useState<any>(false);
+
 
     useFocusEffect(
         useCallback(() => {
-            fetchCustomerList();
+
+            fetchCustomerTransactionList();
+
         }, [])
     );
 
-    const fetchCustomerList = async () => {
+    const fetchCustomerTransactionList = async () => {
+        setIsLoading(true);
         const res = await ApiService.postWithToken("api/shopkeeper/transactions/list-shopkeeper-customer-transaction", { "customer_id": item.customer_id });
+        // const data = JSON.stringify(res);
         setCustomersData(res);
+        setIsLoading(false);
+        console.log("####################", res.data?.shopkeeper_transaction_sum.transaction_type);
     }
     const reminder = () => {
         Alert.alert(
@@ -82,7 +92,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
     const renderCustomer = ({ item }: { item: Customer }) => (
         <TouchableOpacity onPress={() => navigation.navigate("CustomerTransationsDetails", { customer: item })
         }>
-            <View style={[styles.customerItem, { backgroundColor: colors.card }]}>
+            <View style={[styles.customerItem, { backgroundColor: colors.card, marginVertical: 10 }]}>
                 <View style={{}}>
                     <View style={{ flexDirection: 'row' }}>
                         {/* <Image
@@ -92,9 +102,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                         <View style={{ marginLeft: 14 }}>
                             <Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{item.customer_name}</Text>
                             <Text style={styles.lastInteraction}>{item.last_updated_date}</Text>
-                            <Text style={styles.lastInteraction}>{
-                                item.transaction_date.toLocaleString()
-                            }
+                            <Text style={styles.lastInteraction}>{item.transaction_date.toLocaleString()}
 
                             </Text>
                             <Text style={styles.lastInteraction}>{item.description}</Text>
@@ -137,7 +145,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                             <Feather size={24} color={colors.title} name={'arrow-left'} />
                         </TouchableOpacity>
                         <Image
-                            style={{ height: 40, width: 40, borderRadius: 12, marginLeft: 10, marginRight: 15, resizeMode: 'contain' }}
+                            style={{ height: 45, width: 45, borderRadius: 50, marginHorizontal: 15, resizeMode: 'contain' }}
                             src={item.profile_image}
                         />
 
@@ -154,9 +162,9 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                 <View style={{ flex: 1, alignItems: 'center' }} >
                     <View style={{
                         height: 80,
-                        width: 380,
+                        width: "95%",
                         top: 15,
-                        backgroundColor: COLORS.primary,
+                        backgroundColor: customerData.data?.shopkeeper_transaction_sum?.transaction_type === "DEBIT" ? COLORS.danger : COLORS.primary,
                         borderRadius: 31,
                         shadowColor: "#025135",
                         shadowOffset: {
@@ -172,10 +180,10 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
 
                         <View style={{ width: 380, flexDirection: 'row', justifyContent: "space-evenly", paddingTop: 20, alignItems: "center", alignContent: "center" }}>
                             <View style={{ alignItems: 'center', justifyContent: 'center', borderRightColor: colors.dark }}>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h4, color: COLORS.primaryLight, textAlign: "center" }}>{item.transaction_type} </Text>
+                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h4, color: COLORS.primaryLight, textAlign: "center" }}>{customerData.data?.shopkeeper_transaction_sum?.transaction_type} </Text>
                             </View>
                             <View style={{ alignItems: 'center', justifyContent: "center" }}>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.primaryLight }}>₹ {item.amount}</Text>
+                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.primaryLight }}>₹ {customerData.data?.shopkeeper_transaction_sum?.total_amount}</Text>
                             </View>
                         </View>
                     </View>
@@ -217,14 +225,16 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
 
                     </View>
                 </View>
+                {
+                    isLoading === false ?
+                        <FlatList scrollEnabled={false}
+                            data={customerData.data?.records}
+                            renderItem={renderCustomer}
+                            keyExtractor={(item) => item.id}
+                            contentContainerStyle={{}}
 
-                <FlatList scrollEnabled={false}
-                    data={customerData.data?.records}
-                    renderItem={renderCustomer}
-                    keyExtractor={(item) => item.id}
-                    contentContainerStyle={{}}
-
-                />
+                        /> : <ActivityIndicator color={colors.title} size={100}></ActivityIndicator>
+                }
 
             </ScrollView>
             <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', paddingTop: 10, backgroundColor: colors.dark }}>
