@@ -17,6 +17,7 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import StorageService from '../lib/StorageService';
 
 type Props = {
     state: any,
@@ -50,7 +51,12 @@ const BottomMenu = ({ state, navigation, descriptors }: Props) => {
     }, [state.index, tabWidth])
 
 
-    const onTabPress = (index: any) => {
+    const onTabPress = async (index: any) => {
+        const isLogedIn = await StorageService.isLoggedIn();
+        if (isLogedIn === false) {
+            navigation.navigate("MobileSignIn");
+            return;
+        }
         const tabW =
             tabWidth < SIZES.container ? tabWidth / 4 : SIZES.container / 4; // Adjust this according to your tab width
 

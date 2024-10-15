@@ -3,7 +3,6 @@ import CONFIG from "../constants/config";
 import { MessagesService } from './MessagesService';
 import StorageService from './StorageService';
 import CommonService from './CommonService';
-import { useNavigation } from '@react-navigation/native';
 
 
 
@@ -14,12 +13,10 @@ const ApiService = {
         // console.log(api_url, data);
         try {
             const res: any = await axios.post(api_url, data); // Sending POST request
-            // console.log(api_url, data, res, "ress");
-            const navigation = useNavigation<any>();
+            // console.log(res.json(), "ress");
             if (res?.logout_user === true) {
                 const is_logout = await StorageService.logOut();
                 if (is_logout) {
-                    navigation.navigate("MobileSignIn");
                     return;
                 }
             }
@@ -40,6 +37,7 @@ const ApiService = {
     async postWithToken(uri: string, data: object, headers: object = {}) {
         let api_url = `${CONFIG.APP_URL}/${uri}`;
         let user_id = await StorageService.getStorage(CONFIG.HARDCODE_VALUES.USER_ID);
+        // let user_id = "1";
         let auth_key = await StorageService.getStorage(CONFIG.HARDCODE_VALUES.AUTH_KEY)
         let jwt_token = await StorageService.getStorage(CONFIG.HARDCODE_VALUES.JWT_TOKEN)
         let common_payload = { user_id: Number(user_id), auth_key: auth_key };
@@ -49,13 +47,11 @@ const ApiService = {
         // console.log("consoleloo  ", api_url, data, headers);
         try {
             const res: any = await axios.post(api_url, data, { headers: headers });
-            // console.log(res, "resresres")
-            // console.log("api pay and res", api_url, data, headers, res.data, res.status);
-            const navigation = useNavigation<any>();
-            if (res?.logout_user === true) {
+            // console.log("response", res.data);
+            if (res.data.logout_user === true) {
                 const is_logout = await StorageService.logOut();
                 if (is_logout) {
-                    navigation.navigate("MobileSignIn");
+                    return;
                 }
             }
             if (res.status == 200) {

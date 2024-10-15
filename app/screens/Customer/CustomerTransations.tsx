@@ -51,7 +51,6 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
         // const data = JSON.stringify(res);
         setCustomersData(res);
         setIsLoading(false);
-        console.log("####################", res.data?.shopkeeper_transaction_sum.transaction_type);
     }
     const reminder = () => {
         Alert.alert(
@@ -233,7 +232,9 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                             keyExtractor={(item) => item.id}
                             contentContainerStyle={{}}
 
-                        /> : <ActivityIndicator color={colors.title} size={100}></ActivityIndicator>
+                        /> : <View style={{ flex: 1, justifyContent: 'center' }} >
+                            <ActivityIndicator color={colors.title} size={'large'}></ActivityIndicator>
+                        </View>
                 }
 
             </ScrollView>

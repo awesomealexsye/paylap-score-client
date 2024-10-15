@@ -89,7 +89,6 @@ const DrawerMenu = () => {
             setModalVisible(true);
         } else {
             setModalVisible(false);
-
         }
     }, [appInfo]);
 

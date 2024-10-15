@@ -13,6 +13,7 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { ApiService } from '../../lib/ApiService';
 // import { MessagesService } from '../../lib/MessagesService';
 import CommonService from '../../lib/CommonService';
+import StorageService from '../../lib/StorageService';
 
 
 
@@ -57,6 +58,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     useFocusEffect(
         useCallback(() => {
             fetchCustomerList();
+            StorageService.isLoggedIn().then(res => { res === false ? navigation.navigate("MobileSignIn") : null; });
             CommonService.currentUserDetail().then((res) => {
                 setUserDetail(res);
                 if (res.aadhar_card === '') {
@@ -78,7 +80,6 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const fetchCustomerList = async () => {
         setIsLoading(true);
         const homeApiRes = await ApiService.postWithToken("api/shopkeeper/list-customer", {});
-        console.log(homeApiRes)
         if (homeApiRes?.status == true) {
 
             let homeBanner = homeApiRes?.data?.shopkeeper_transaction_sum;
@@ -146,7 +147,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                 <Text style={{ ...FONTS.fontRegular, fontSize: 12, color: colors.title }}>Namaste</Text>
                                 <Text adjustsFontSizeToFit={true} style={{ ...FONTS.fontSemiBold, fontSize: 15, color: colors.title, }}>
 
-                                    {userDetail.name.split(' ')[0]}
+                                    {/* {userDetail.name.split(' ')[0]} */}
 
                                 </Text>
                             </View>
@@ -270,8 +271,9 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                         data={filteredCustomers}
                         renderItem={renderCustomer}
                         keyExtractor={(item, index) => index.toString()}
-                        contentContainerStyle={{}} /> : <ActivityIndicator color={colors.title} size={100}></ActivityIndicator>
-
+                        contentContainerStyle={{}} /> : <View style={{ flex: 1, justifyContent: 'center' }} >
+                        <ActivityIndicator color={colors.title} size={'large'}></ActivityIndicator>
+                    </View>
                 }
 
             </ScrollView >

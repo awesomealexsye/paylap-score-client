@@ -22,8 +22,6 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
     const { customer } = route.params;
     const theme = useTheme();
     const { colors }: { colors: any; } = theme;
-
-
     const [modalVisible, setModalVisible] = useState(false)
     const handlePreview = () => {
         setModalVisible(true);
@@ -103,9 +101,7 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                                 <View style={{ marginLeft: 18 }}>
                                     <Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{customer.customer_name}</Text>
                                     <Text style={[styles.lastInteraction, { color: colors.title }]}>{customer.last_updated_date}</Text>
-
                                 </View>
-
                             </View>
 
                         </View>
@@ -116,18 +112,26 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                         </View>
 
                     </View>
+                    <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: "space-around", paddingHorizontal: 40 }}>
+                        <View style={{ flexDirection: "column", alignItems: 'center', justifyContent: "center" }} >
+                            <Text style={{ color: colors.title, ...FONTS.fontBold, marginRight: 5, fontSize: 12 }}>Given Date</Text>
+                            <Text style={{ color: colors.title, ...FONTS.fontBold, fontSize: 12 }}>
+                                {customer.estimated_given_date}
+                            </Text>
+                        </View>
+                        <View style={{ flexDirection: "column", alignItems: 'center', justifyContent: "center" }} >
+                            <Text style={{ color: colors.title, ...FONTS.fontBold, marginRight: 5, fontSize: 12 }}>Taken Date</Text>
+                            <Text style={{ color: colors.title, ...FONTS.fontBold, fontSize: 12 }}>
+                                {customer.transaction_date}
+                            </Text>
+                        </View>
+
+                    </View>
                     <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: "center", marginTop: 20 }}>
 
-                        <Text style={{
-                            color: colors.title, ...FONTS.fontBold, marginRight: 5, fontSize
-                                : 16
-                        }}>
-                            Transaction ID :
-                            {/* <Feather name='arrow-right' size={16} color={COLORS.white} /> */}
-                        </Text>
+                        <Text style={{ color: colors.title, ...FONTS.fontBold, marginRight: 5, fontSize: 16 }}>Transaction ID :</Text>
                         <Text style={{ color: colors.title, ...FONTS.fontBold, fontSize: 16 }}>
                             {customer.transaction_id}
-                            {/* <Feather name='arrow-right' size={16} color={COLORS.white} /> */}
                         </Text>
 
                     </View>

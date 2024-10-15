@@ -16,6 +16,14 @@ const CONFIG = {
         MIN: 0,
         MAX: 100
     },
+    APP_BUILD: {
+        ANDROID: {
+            APP_VERSION: 17
+        },
+        IOS: {
+            APP_VERSION: 17
+        }
+    },
 
     CREDIT_SCORE_LABEL: [
         {
