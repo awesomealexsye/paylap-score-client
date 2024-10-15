@@ -38,7 +38,7 @@ const ShareApp = (
 			const result = await Share.share({
 				message:
 					'Hey! Try out the PayLap app for great deals and rewards, Download it from https://play.google.com/store/apps/details?id=com.paylap.paylapscore Don’t forget to use my referral code: .' + userRefferal,
-				url: "https://play.google.com/store/apps/details?id=com.paylap.paylapscore"
+				url: `https://play.google.com/store/apps/details?id=com.paylap.paylapscore&referrer=${userRefferal}`
 			});
 			if (result.action === Share.sharedAction) {
 				if (result.activityType) {

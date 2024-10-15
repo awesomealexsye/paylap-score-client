@@ -1,3 +1,5 @@
+// ./adb shell am start -W -a android.intent.action.VIEW -d "com.paylap.paylapscore:/ / referral ? code = XYZ123" com.paylap.paylapscore
+
 const CONFIG = {
     APP_URL: "https://paynest.co.in",
 

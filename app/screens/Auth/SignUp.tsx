@@ -1,5 +1,5 @@
-import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, StyleSheet, ActivityIndicator } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, StyleSheet, ActivityIndicator, Linking } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { COLORS, FONTS } from '../../constants/theme'
 import { GlobalStyleSheet } from '../../constants/StyleSheet'
 import { useTheme } from '@react-navigation/native'
@@ -27,10 +27,30 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
     const [isFocused3, setisFocused3] = useState(false);
     const [isFocused4, setisFocused4] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+
+
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [mobile, setMobile] = useState("");
     const [referralCode, setReferralCode] = useState("");
+
+
+
+
+
+
+    useEffect(() => {
+        const handleInitialLink = async () => {
+            const initialUrl = await Linking.getInitialURL();
+            if (initialUrl && initialUrl.includes('referral=')) {
+                const referral_Code = initialUrl.split('referral=')[1];
+                // Set this referral code in the sign-up form
+                setReferralCode(referral_Code);
+            }
+        };
+
+        handleInitialLink();
+    }, []);
 
     const sentOtp = async () => {
         if (name == '' || name.length < 2) {
@@ -172,8 +192,10 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                                         //backround={colors.background}
                                         onChangeText={(value) => setReferralCode(value)}
                                         isFocused={isFocused4}
-                                        //inputBorder
                                         defaultValue=''
+                                        value={referralCode}
+                                        placeholder={referralCode}
+
                                     />
                                 </View>
                             </View>
