@@ -72,6 +72,7 @@ import LedgerAddCustomer from '../screens/LedgerBook/LedgerAddCustomer';
 import LedgerCustomerDetails from '../screens/LedgerBook/LedgerCustomerDetails';
 import CustomerSupport from '../screens/Auth/CustomerSupport';
 import TermsAndConditionsScreen from '../screens/TermAndConditions';
+import Report from '../screens/Customer/Report';
 
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -123,6 +124,7 @@ const StackNavigator = () => {
 				<Stack.Screen name="UserKyc" component={UserKyc} />
 				<Stack.Screen name="FindUser" component={FindUser} />
 				<Stack.Screen name="AddCustomer" component={AddCustomer} />
+				<Stack.Screen name="Report" component={Report} />
 				<Stack.Screen name="CustomerTransations" component={CustomerTransations} />
 				<Stack.Screen name="CustomerScore" component={CustomerScore} />
 				<Stack.Screen name="CustomerTransationsDetails" component={CustomerTransationsDetails} />

@@ -147,7 +147,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                 <Text style={{ ...FONTS.fontRegular, fontSize: 12, color: colors.title }}>Namaste</Text>
                                 <Text adjustsFontSizeToFit={true} style={{ ...FONTS.fontSemiBold, fontSize: 15, color: colors.title, }}>
 
-                                    {/* {userDetail.name.split(' ')[0]} */}
+                                    {userDetail.name.split(' ')[0]}
 
                                 </Text>
                             </View>
@@ -235,7 +235,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                         </View>
                         <View style={{ flex: 1, alignItems: 'center', justifyContent: "center" }}>
                             <TouchableOpacity style={{}}>
-                                <TouchableOpacity onPress={() => navigation.navigate("NotAvailable")}>
+                                <TouchableOpacity onPress={() => navigation.navigate("Report")}>
                                     <Text style={{ color: COLORS.white, ...FONTS.fontBold, }}>
                                         VIEW REPORT
                                         <Feather name='arrow-right' size={16} color={COLORS.white} />

@@ -48,6 +48,7 @@ export type RootStackParamList = {
     UserKyc: undefined;
     FindUser: undefined;
     AddCustomer: undefined;
+    Report: undefined;
     CustomerTransations: { item: any };
     CustomerTransationsDetails: { customer: any };
     CustomerScore: { customer: any };
