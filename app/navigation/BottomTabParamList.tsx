@@ -4,4 +4,5 @@ export type BottomTabParamList = {
     NotAvailable: undefined;
     Category: undefined;
     Profile: undefined;
+    UserReferralList: undefined;
 };

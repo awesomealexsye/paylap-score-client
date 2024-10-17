@@ -91,7 +91,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
     const renderCustomer = ({ item }: { item: Customer }) => (
         <TouchableOpacity onPress={() => navigation.navigate("CustomerTransationsDetails", { customer: item })
         }>
-            <View style={[styles.customerItem, { backgroundColor: colors.card, marginVertical: 10 }]}>
+            <View style={[styles.customerItem, { backgroundColor: colors.card, borderBottomWidth: 1.5, borderBottomColor: colors.border }]}>
                 <View style={{}}>
                     <View style={{ flexDirection: 'row' }}>
                         {/* <Image
@@ -201,21 +201,21 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                             <CustomerActivityBtn
                                 gap
                                 isDisabled={false}
-                                icon={<FontAwesome style={{ color: colors.title }} name={'rupee'} size={20} />}
+                                icon={<FontAwesome style={{ color: '#8fc11e' }} name={'rupee'} size={20} />}
                                 color={colors.card}
                                 text='Payments'
                                 onpress={() => navigation.navigate('NotAvailable')}
                             /><CustomerActivityBtn
                                 gap
                                 isDisabled={item.transaction_type == "DEBIT" ? item.amount > 0 ? false : true : true}
-                                icon={<FontAwesome style={{ color: colors.title }} name={'bell'} size={20} />}
+                                icon={<FontAwesome style={{ color: '#8fc11e' }} name={'bell'} size={20} />}
                                 color={colors.card}
                                 text='Reminder'
                                 onpress={() => reminder()}
                             /><CustomerActivityBtn
                                 gap
                                 isDisabled={item.transaction_type == "DEBIT" ? item.amount > 0 ? false : true : true}
-                                icon={<FontAwesome style={{ color: colors.title }} name={'envelope'} size={20} />}
+                                icon={<FontAwesome style={{ color: '#8fc11e' }} name={'envelope'} size={20} />}
                                 color={colors.card}
                                 text='SMS'
                                 onpress={() => send_sms()}
@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
     customerItem: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        padding: 15,
+        padding: 10,
 
         backgroundColor: Colors.white,
         borderRadius: 18,
@@ -291,7 +291,6 @@ const styles = StyleSheet.create({
         shadowRadius: 31.27,
         marginHorizontal: 10,
         marginVertical: 4,
-
         top: 4
     },
     customerName: {

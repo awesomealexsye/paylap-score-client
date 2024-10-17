@@ -7,13 +7,14 @@ import {
     TouchableOpacity,
     TextInput,
     SafeAreaView,
-    StatusBar,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { useTheme } from '@react-navigation/native';
 import { COLORS } from '../../constants/theme';
+import Header from '../../layout/Header';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 
 type ReportDetailsScreenProps = StackScreenProps<RootStackParamList, 'Report'>
@@ -24,6 +25,27 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
 
     const [searchQuery, setSearchQuery] = useState('');
     const [timeRange, setTimeRange] = useState('This Month');
+    const [inputDateType, setInputDateType] = useState('To Date');
+    const [showCalender, setCalenderShow] = useState(false);
+    const [calenderDate, setCalenderDate] = useState(new Date());
+    const [toDate, setToDate] = useState('');
+    const [fromDate, setFromDate] = useState('');
+
+    const showDatepicker = (inputeDatetype: string) => {
+        setInputDateType(inputeDatetype);
+        setCalenderShow(true);
+    };
+    const onChange = (event: any, selectedDate: any) => {
+        const currentDate = selectedDate || calenderDate;
+        setCalenderShow(false);
+        setCalenderDate(new Date());
+
+        if (inputDateType == "To Date") {
+            setToDate(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
+        } else {
+            setFromDate(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
+        }
+    };
 
     const transactions = [
         { id: 1, name: 'Ajay Colleage', date: '15 Oct 24 • 01:15 PM', amount: 5450, type: 'credit' },
@@ -33,48 +55,60 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
     ];
 
     return (
-        <SafeAreaView style={{ ...styles.container, backgroundColor: COLORS.primary }}>
-            <StatusBar barStyle="light-content" backgroundColor="#1e40af" />
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => { navigation.goBack(); }}>
-                    <Ionicons name="arrow-back" size={24} color={colors.title} />
-                </TouchableOpacity>
-                <Text style={{ ...styles.headerTitle, color: colors.title }}>View Report</Text>
-            </View>
-
-            <ScrollView style={{ ...styles.content, backgroundColor: COLORS.card }}>
-                <View style={{ ...styles.dateRange, backgroundColor: COLORS.primary }}>
-                    <View style={styles.dateItem}>
-                        <Ionicons name="calendar-outline" size={20} color={colors.title} />
-                        <Text style={{ ...styles.dateText, color: colors.title }}>Tue, 01 Oct 24</Text>
-                    </View>
-                    <View style={styles.dateItem}>
-                        <Ionicons name="calendar-outline" size={20} color={colors.title} />
-                        <Text style={{ ...styles.dateText, color: colors.title }}>Tue, 15 Oct 24</Text>
-                    </View>
+        <SafeAreaView style={{ ...styles.container }}>
+            <Header
+                title={'View Report'}
+                leftIcon={'back'}
+                titleRight
+            />
+            <ScrollView style={{ ...styles.content, backgroundColor: colors.card }}>
+                <View style={{ ...styles.dateRange, backgroundColor: !theme.dark ? COLORS.primary : colors.card }}>
+                    <TouchableOpacity onPress={() => showDatepicker('To Date')}>
+                        <View style={styles.dateItem}>
+                            <Ionicons name="calendar-outline" size={20} color={!theme.dark ? 'white' : colors.title} />
+                            <Text style={{ ...styles.dateText, color: !theme.dark ? 'white' : colors.title }}>{toDate || calenderDate.toLocaleString()}</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => showDatepicker('From Date')} >
+                        <View style={styles.dateItem}>
+                            <Ionicons name="calendar-outline" size={20} color={!theme.dark ? 'white' : colors.title} />
+                            <Text style={{ ...styles.dateText, color: !theme.dark ? 'white' : colors.title }}>{fromDate || calenderDate.toLocaleString()}</Text>
+                        </View>
+                    </TouchableOpacity>
                 </View>
-
+                <View style={{ display: 'flex', justifyContent: 'center' }}>
+                    {showCalender && (
+                        <View style={{ alignSelf: 'center' }}>
+                            <DateTimePicker
+                                value={calenderDate}
+                                mode="date"
+                                display="default"
+                                onChange={onChange}
+                            />
+                        </View>
+                    )}
+                </View>
                 <View style={styles.searchContainer}>
-                    <View style={{ ...styles.searchInputContainer, backgroundColor: COLORS.primary }}>
-                        <Ionicons name="search" size={20} color={colors.title} style={styles.searchIcon} />
+                    <View style={{ ...styles.searchInputContainer, backgroundColor: !theme.dark ? COLORS.primary : colors.card }}>
+                        <Ionicons name="search" size={20} color={!theme.dark ? 'white' : colors.title} style={styles.searchIcon} />
                         <TextInput
-                            style={{ ...styles.searchInput, color: colors.title, }}
+                            style={{ ...styles.searchInput, color: !theme.dark ? 'white' : colors.title }}
                             placeholder="Search Entries"
                             value={searchQuery}
-                            placeholderTextColor={colors.title}
+                            placeholderTextColor={!theme.dark ? 'white' : colors.title}
                             onChangeText={setSearchQuery}
 
                         />
                     </View>
-                    <TouchableOpacity style={{ ...styles.dropdown, backgroundColor: COLORS.primary }}>
-                        <Text style={{ ...styles.dropdownText, color: colors.title }}>{timeRange}</Text>
-                        <Ionicons name="chevron-down" size={20} color={colors.title} />
+                    <TouchableOpacity style={{ ...styles.dropdown, backgroundColor: !theme.dark ? COLORS.primary : colors.card }}>
+                        <Text style={{ ...styles.dropdownText, color: !theme.dark ? 'white' : colors.title }}>{timeRange}</Text>
+                        <Ionicons name="chevron-down" size={20} color={!theme.dark ? 'white' : colors.title} />
                     </TouchableOpacity>
                 </View>
 
-                <View style={{ ...styles.balanceCard, backgroundColor: colors.card }}>
-                    <Text style={styles.balanceTitle}>Net Balance</Text>
-                    <Text style={{ ...styles.balanceAmount, color: COLORS.primary, }}>₹ 63,500</Text>
+                <View style={{ ...styles.balanceCard, backgroundColor: !theme.dark ? COLORS.primary : colors.card }}>
+                    <Text style={{ ...styles.balanceTitle, color: !theme.dark ? 'white' : colors.title }}>Net Balance</Text>
+                    <Text style={{ ...styles.balanceAmount, color: !theme.dark ? COLORS.primaryLight : COLORS.primary, }}>₹ 63,500</Text>
                 </View>
 
                 <View style={{ ...styles.entriesCard, backgroundColor: colors.card }}>
@@ -95,7 +129,7 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
                     {transactions.map((transaction) => (
                         <View key={transaction.id} style={styles.transactionItem}>
                             <View>
-                                <Text style={styles.transactionName}>{transaction.name}</Text>
+                                <Text style={{ ...styles.transactionName, color: colors.title }}>{transaction.name}</Text>
                                 <Text style={styles.transactionDate}>{transaction.date}</Text>
                                 {transaction.description && (
                                     <Text style={styles.transactionDescription}>{transaction.description}</Text>
@@ -112,7 +146,7 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
                 </View>
             </ScrollView>
 
-            <View style={styles.footer}>
+            <View style={{ ...styles.footer, backgroundColor: colors.card }}>
                 <TouchableOpacity style={[styles.footerButton, styles.downloadButton]}>
                     <Ionicons name="download-outline" size={20} color="white" />
                     <Text style={styles.footerButtonText}>Download</Text>
@@ -130,11 +164,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        padding: 16,
-    },
     headerTitle: {
         fontSize: 20,
         fontWeight: 'bold',
@@ -142,8 +171,6 @@ const styles = StyleSheet.create({
     },
     content: {
         flex: 1,
-        borderTopLeftRadius: 24,
-        borderTopRightRadius: 24,
         padding: 16,
     },
     dateRange: {
@@ -258,8 +285,7 @@ const styles = StyleSheet.create({
     },
     footer: {
         flexDirection: 'row',
-        padding: 16,
-        backgroundColor: '#f3f4f6',
+        padding: 16
     },
     footerButton: {
         flex: 1,
