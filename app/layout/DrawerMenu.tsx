@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity, Modal, StyleSheet, Linking } from 'react-native';
+import { View, Text, Image, ScrollView, TouchableOpacity, Modal, StyleSheet, Linking, Platform } from 'react-native';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import { IMAGES } from '../constants/Images';
 import { COLORS, FONTS } from '../constants/theme';
@@ -12,6 +12,7 @@ import StorageService from '../lib/StorageService';
 import CommonService from '../lib/CommonService';
 import ButtonIcon from '../components/Button/ButtonIcon';
 import Constants from 'expo-constants';
+import CONFIG from '../constants/config';
 
 const MenuItems = [
     {
@@ -52,8 +53,15 @@ const MenuItems = [
     },
 ];
 
+const { OS } = Platform;
 type AppConfig = {
     ANDROID: {
+        IS_MANDATORY: boolean;
+        VERSION_CODE: number;
+        VERSION_NAME: string;
+        VERSION_MESSAGE: string
+    },
+    IOS: {
         IS_MANDATORY: boolean;
         VERSION_CODE: number;
         VERSION_NAME: string;
@@ -61,6 +69,10 @@ type AppConfig = {
     }
 };
 
+interface InstalledAppBuild {
+    APP_VERSION: number;
+    APP_VERSION_NAME: string;
+}
 const DrawerMenu = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
@@ -73,24 +85,22 @@ const DrawerMenu = () => {
             VERSION_CODE: 0,
             VERSION_NAME: '1.0.0',
             VERSION_MESSAGE: 'A Default Update Message'
+        },
+        IOS: {
+            IS_MANDATORY: false,
+            VERSION_CODE: 0,
+            VERSION_NAME: '1.0.0',
+            VERSION_MESSAGE: 'A Default Update Message'
         }
     });
-    const APP_URL: string = "https://play.google.com/store/apps/details?id=com.paylap.paylapscore";
+    const APP_URL: string = OS == 'ios' ? CONFIG.APP_BUILD.IOS.APP_URL : CONFIG.APP_BUILD.ANDROID.APP_URL;
     const [modalVisible, setModalVisible] = useState(false);
-    const installedAndroidVersionCode: any = Constants?.expoConfig?.android?.versionCode; // Version code (e.g., "10")
-    const installedAndroidVersionName: any = Constants?.expoConfig?.android?.versionName; // Version code (e.g., "10")
-
+    // const installedAndroidVersionCode: any = Constants?.expoConfig?.android?.versionCode; // Version code (e.g., "10")
+    // const installedAndroidVersionName: any = Constants?.expoConfig?.android?.versionName; // Version code (e.g., "10")
+    const [installedAppBuild, setInstalledAppBuild] = useState<InstalledAppBuild>({ APP_VERSION: 0, APP_VERSION_NAME: '' });
     useEffect(() => {
         getAppversion();
     }, []);
-
-    useEffect(() => {
-        if (appInfo.ANDROID.VERSION_CODE > installedAndroidVersionCode) {
-            setModalVisible(true);
-        } else {
-            setModalVisible(false);
-        }
-    }, [appInfo]);
 
     const handleLogout = async () => {
         const is_logout = await StorageService.logOut();
@@ -101,10 +111,21 @@ const DrawerMenu = () => {
 
     const getAppversion = () => {
         CommonService.getAppUploadDetail().then((res) => {
-            if (res?.ANDROID) {
-                setAppInfo(res);
-                // console.log(res?.ANDROID);
+            // console.log(res, typeof (res), res.ANDROID.VERSION_CODE)
+            let app_build: InstalledAppBuild;
+            if (OS === 'ios') {
+                app_build = CONFIG.APP_BUILD.IOS;
+            } else {
+                app_build = CONFIG.APP_BUILD.ANDROID
             }
+
+            if (OS == 'ios' && res.IOS.VERSION_CODE > app_build.APP_VERSION || OS == 'android' && res.ANDROID.VERSION_CODE > app_build.APP_VERSION) {
+                setModalVisible(true);
+            } else {
+                setModalVisible(false);
+            }
+            setInstalledAppBuild(app_build);
+            setAppInfo(res);
         });
     };
     const openAppUrl = () => {
@@ -189,7 +210,7 @@ const DrawerMenu = () => {
                 </View>
                 <View style={{ paddingVertical: 15, paddingHorizontal: 10 }}>
                     <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: theme.colors.title }}>Paylap Score</Text>
-                    <Text style={{ ...FONTS.fontMedium, fontSize: 12, color: theme.colors.title }}>App Version {installedAndroidVersionName}</Text>
+                    <Text style={{ ...FONTS.fontMedium, fontSize: 12, color: theme.colors.title }}>App Version {installedAppBuild.APP_VERSION_NAME}</Text>
                 </View>
             </View>
 
@@ -204,14 +225,14 @@ const DrawerMenu = () => {
                     <View style={styles.modalContent}>
                         <Text style={styles.modalTitle}>Update Available!</Text>
                         <Text style={styles.modalMessage}>
-                            {appInfo.ANDROID.VERSION_MESSAGE}
+                            {OS === 'ios' ? appInfo.IOS.VERSION_MESSAGE : appInfo.ANDROID.VERSION_MESSAGE}
                         </Text>
 
                         <TouchableOpacity
                             style={styles.closeButton}
                             onPress={() => setModalVisible(false)}
                         >
-                            {appInfo?.ANDROID.VERSION_CODE > installedAndroidVersionCode &&
+                            {OS == 'android' && appInfo?.ANDROID.VERSION_CODE > installedAppBuild.APP_VERSION &&
                                 <>
                                     {
                                         appInfo?.ANDROID?.IS_MANDATORY
@@ -223,7 +244,19 @@ const DrawerMenu = () => {
                                     }
                                 </>
                             }
-
+                            {
+                                OS == "ios" && appInfo?.IOS.VERSION_CODE > installedAppBuild.APP_VERSION &&
+                                <>
+                                    {
+                                        appInfo?.IOS?.IS_MANDATORY
+                                            ?
+                                            <ButtonIcon icon={<Feather name='upload' size={20} color={COLORS.background}
+                                            />} size={'sm'} title={"Update"} onPress={() => { openAppUrl() }} ></ButtonIcon>
+                                            :
+                                            <Text style={styles.closeButtonText}>Close</Text>
+                                    }
+                                </>
+                            }
 
                         </TouchableOpacity>
 
