@@ -18,6 +18,8 @@ import {
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import StorageService from '../lib/StorageService';
+import FontAwesome from '@expo/vector-icons/build/FontAwesome';
+import { Ionicons } from '@expo/vector-icons';
 
 type Props = {
     state: any,
@@ -164,23 +166,15 @@ const BottomMenu = ({ state, navigation, descriptors }: Props) => {
                                     {/* <Animated.View
                                         style={{
                                             transform: [{translateY: iconTranslateY}],
-                                    }}> */}
-                                    <Image
-                                        style={{
-                                            height: 20,
-                                            width: 20,
-                                            resizeMode: 'contain',
-                                            tintColor: isFocused ? theme.dark ? COLORS.card : colors.card : COLORS.primary,
-                                        }}
-                                        source={
-                                            label === 'Home' ? IMAGES.Home :
-                                                label === 'FindUser' ? IMAGES.search :
-                                                    label === 'UserReferralList' ? IMAGES.list :
-                                                        label === 'Profile' ? IMAGES.user3 : IMAGES.tachometerfast
-                                        }
-                                    />
+                                    }}> ,*/}
+                                    {
+                                        label === 'Home' ? <FontAwesome name={'home'} size={20} color={isFocused ? theme.dark ? COLORS.card : colors.card : COLORS.primary} /> :
+                                            label === 'FindUser' ? <Ionicons name={'speedometer'} size={20} color={isFocused ? theme.dark ? COLORS.card : colors.card : COLORS.primary} /> :
+                                                label === 'UserReferralList' ? <FontAwesome name={'users'} size={20} color={isFocused ? theme.dark ? COLORS.card : colors.card : COLORS.primary} /> :
+                                                    label === 'Profile' ? <FontAwesome name={'user'} size={20} color={isFocused ? theme.dark ? COLORS.card : colors.card : COLORS.primary} /> : IMAGES.tachometerfast
+                                    }
                                     {/* </Animated.View> */}
-                                    {/* <Text style={[styles.navText,{color:isFocused ? COLORS.primary : colors.title}]}>{label}</Text> */}
+                                    {/* <Text style={[styles.navText, { color: isFocused ? COLORS.primary : colors.title }]}>{label}</Text> */}
                                 </TouchableOpacity>
                             </View>
                         )

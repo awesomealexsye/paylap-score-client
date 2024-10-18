@@ -91,7 +91,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
     const renderCustomer = ({ item }: { item: Customer }) => (
         <TouchableOpacity onPress={() => navigation.navigate("CustomerTransationsDetails", { customer: item })
         }>
-            <View style={[styles.customerItem, { backgroundColor: colors.card, borderBottomWidth: 1.5, borderBottomColor: colors.border }]}>
+            <View style={[styles.customerItem, { backgroundColor: colors.card, borderBottomWidth: 1.5, borderBottomColor: colors.border }, !theme.dark && { elevation: 2 }]}>
                 <View style={{}}>
                     <View style={{ flexDirection: 'row' }}>
                         {/* <Image
@@ -99,20 +99,20 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                             source={item.image}
                         /> */}
                         <View style={{ marginLeft: 14 }}>
-                            <Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{item.customer_name}</Text>
-                            <Text style={styles.lastInteraction}>{item.last_updated_date}</Text>
-                            <Text style={styles.lastInteraction}>{item.transaction_date.toLocaleString()}
+                            {/*<Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{item.customer_name}</Text>*/}
+                            <Text style={{ ...styles.lastInteraction, color: !theme.dark ? "black" : 'white' }}>{item.last_updated_date}</Text>
+                            <Text style={{ color: colors.text, fontSize: 12 }}>{item.transaction_date.toLocaleString()}
 
                             </Text>
-                            <Text style={styles.lastInteraction}>{item.description}</Text>
+                            <Text style={{ fontSize: 13, color: !theme.dark ? "black" : 'white' }}>{item.description}</Text>
                         </View>
 
                     </View>
 
                 </View>
 
-                <View style={{ flexDirection: "column", alignItems: "center", position: "relative" }}>
-                    <Text style={{ color: item.transaction_type === "CREDIT" ? COLORS.primary : COLORS.danger, fontSize: 18, fontWeight: "900" }}>₹ {item.amount}</Text>
+                <View style={{ flexDirection: "column", alignItems: "flex-end", position: "relative", justifyContent: 'center' }}>
+                    <Text style={{ color: item.transaction_type === "CREDIT" ? COLORS.primaryLight : COLORS.danger, fontSize: 15, fontWeight: "900" }}>₹ {parseInt(item.amount).toLocaleString()}</Text>
                     <Text style={[styles.type, { color: colors.title }]}>{item.transaction_type}</Text>
                 </View>
             </View>
@@ -179,10 +179,10 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
 
                         <View style={{ width: 380, flexDirection: 'row', justifyContent: "space-evenly", paddingTop: 20, alignItems: "center", alignContent: "center" }}>
                             <View style={{ alignItems: 'center', justifyContent: 'center', borderRightColor: colors.dark }}>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h4, color: COLORS.primaryLight, textAlign: "center" }}>{customerData.data?.shopkeeper_transaction_sum?.transaction_type} </Text>
+                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h4, color: 'white', textAlign: "center" }}>{customerData.data?.shopkeeper_transaction_sum?.transaction_type} </Text>
                             </View>
                             <View style={{ alignItems: 'center', justifyContent: "center" }}>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.primaryLight }}>₹ {customerData.data?.shopkeeper_transaction_sum?.total_amount}</Text>
+                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: 'white' }}>₹ {customerData.data?.shopkeeper_transaction_sum?.total_amount}</Text>
                             </View>
                         </View>
                     </View>
@@ -281,8 +281,7 @@ const styles = StyleSheet.create({
         padding: 10,
 
         backgroundColor: Colors.white,
-        borderRadius: 18,
-        shadowColor: "#025135",
+        // shadowColor: "#025135",
         shadowOffset: {
             width: 0,
             height: 15,
@@ -298,12 +297,12 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     lastInteraction: {
-        color: '#888',
-        fontSize: 14,
+        fontSize: 15,
+        fontWeight: 'bold'
     },
     type: {
         color: COLORS.title,
-        fontSize: 14,
+        fontSize: 12,
         ...FONTS.fontMedium,
 
 

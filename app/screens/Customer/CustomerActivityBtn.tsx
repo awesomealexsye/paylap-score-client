@@ -24,7 +24,7 @@ const CustomerActivityBtn = ({ color, rounded, icon, text, onpress, gap, textcol
             disabled={isDisabled}
             style={[{
                 borderRadius: 16,
-                backgroundColor: isDisabled ? COLORS.borderColor : color,
+                backgroundColor: color,
                 paddingVertical: 18,
                 overflow: 'hidden',
                 // paddingHorizontal: gap ? 25 : 30,
@@ -38,7 +38,7 @@ const CustomerActivityBtn = ({ color, rounded, icon, text, onpress, gap, textcol
                 borderColor: border ? border : COLORS.borderColor
             }, rounded && {
                 borderRadius: 50,
-            }]}
+            }, isDisabled && { opacity: .5 }]}
             onPress={onpress}
         >
             <View

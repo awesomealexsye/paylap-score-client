@@ -50,6 +50,12 @@ const MenuItems = [
         name: "Logout",
         navigate: 'MobileSignIn',
     },
+    {
+        id: "8",
+        icon: IMAGES.logout,
+        name: "UserKyc",
+        navigate: 'UserKyc',
+    },
 ];
 
 type AppConfig = {
