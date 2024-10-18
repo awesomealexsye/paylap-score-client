@@ -27,7 +27,6 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
             })
             ApiService.postWithToken("api/user/payment/fetch", {}).then((res: any) => {
                 setPaymentDetail(res.data);
-                console.log("paymentDetail", res.data)
             });
         }, [])
     );

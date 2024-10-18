@@ -100,15 +100,15 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const renderCustomer = ({ item }: { item: Customer }) => (
         <TouchableOpacity onPress={() => { navigation.navigate("CustomerTransations", { item: item }) }}>
 
-            <View style={[styles.customerItem, { backgroundColor: colors.card, marginBottom: 10 }]}>
+            <View style={[styles.customerItem, { backgroundColor: colors.card }]}>
                 <View style={{}}>
                     <View style={{ flexDirection: 'row' }}>
                         <Image
-                            style={{ height: 50, width: 50, borderRadius: 50 }}
+                            style={{ height: 40, width: 40, borderRadius: 50 }}
                             src={item.profile_image}
                         />
                         <View style={{ marginLeft: 14 }}>
-                            <Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{item.name}</Text>
+                            <Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{item.name.split(' ').slice(0, 2).join(' ')}</Text>
                             <Text style={styles.lastInteraction}>{item.latest_updated_at}</Text>
                         </View>
 
@@ -116,8 +116,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
                 </View>
 
-                <View style={{ flexDirection: "column", alignItems: "center", position: "relative" }}>
-                    <Text style={{ color: item.transaction_type === "CREDIT" ? COLORS.primary : COLORS.danger, fontSize: 18, fontWeight: "900" }}>₹ {item.amount}</Text>
+                <View style={{ flexDirection: "column", alignItems: "flex-end", position: "relative" }}>
+                    <Text style={{ color: item.transaction_type === "CREDIT" ? COLORS.primaryLight : COLORS.danger, fontSize: 18, fontWeight: "900" }}>₹ {parseInt(item.amount).toLocaleString()}</Text>
                     <Text style={[styles.type, { color: colors.title }]}>{item.transaction_type}</Text>
                 </View>
 
@@ -331,7 +331,8 @@ const styles = StyleSheet.create({
     customerItem: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        padding: 15,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
 
         backgroundColor: Colors.white,
         borderRadius: 18,
@@ -347,11 +348,11 @@ const styles = StyleSheet.create({
     },
     customerName: {
         color: COLORS.title,
-        fontSize: 18,
+        fontSize: 15,
     },
     lastInteraction: {
         color: '#888',
-        fontSize: 14,
+        fontSize: 12,
     },
     type: {
         color: COLORS.title,
