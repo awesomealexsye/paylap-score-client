@@ -100,7 +100,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const renderCustomer = ({ item }: { item: Customer }) => (
         <TouchableOpacity onPress={() => { navigation.navigate("CustomerTransations", { item: item }) }}>
 
-            <View style={[styles.customerItem, { backgroundColor: colors.card }]}>
+            <View style={[styles.customerItem, { backgroundColor: colors.card }, { borderBottomColor: colors.border, borderBottomWidth: 1 }]}>
                 <View style={{}}>
                     <View style={{ flexDirection: 'row' }}>
                         <Image
@@ -111,13 +111,12 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                             <Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{item.name.split(' ').slice(0, 2).join(' ')}</Text>
                             <Text style={styles.lastInteraction}>{item.latest_updated_at}</Text>
                         </View>
-
                     </View>
 
                 </View>
 
                 <View style={{ flexDirection: "column", alignItems: "flex-end", position: "relative" }}>
-                    <Text style={{ color: item.transaction_type === "CREDIT" ? COLORS.primaryLight : COLORS.danger, fontSize: 18, fontWeight: "900" }}>₹ {parseInt(item.amount).toLocaleString()}</Text>
+                    <Text style={{ color: item.transaction_type === "CREDIT" ? COLORS.primaryLight : COLORS.danger, fontSize: 15, fontWeight: "900" }}>₹ {parseInt(item.amount).toLocaleString()}</Text>
                     <Text style={[styles.type, { color: colors.title }]}>{item.transaction_type}</Text>
                 </View>
 
@@ -225,11 +224,11 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
                         <View style={{ width: 380, flexDirection: 'row', marginTop: 22, rowGap: 4, justifyContent: 'center', borderBlockColor: COLORS.white, borderBottomWidth: 1, padding: 10 }}>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderRightColor: COLORS.white }}>
-                                <Text style={{ ...FONTS.fontBold, fontSize: SIZES.h6, color: COLORS.primaryLight }}>Credit Amt.</Text>
+                                <Text style={{ ...FONTS.fontBold, fontSize: SIZES.h6, color: COLORS.primaryLight, textTransform: 'uppercase' }}>Credit</Text>
                                 <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.secondary }}>₹ {homeBanner?.credit}</Text>
                             </View>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: "center" }}>
-                                <Text style={{ ...FONTS.fontBold, fontSize: SIZES.h6, color: COLORS.primaryLight }}>Debit Amt.</Text>
+                                <Text style={{ ...FONTS.fontBold, fontSize: SIZES.h6, color: COLORS.primaryLight, textTransform: 'uppercase' }}>Debit</Text>
                                 <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.danger }}>₹ {homeBanner?.debit}</Text>
                             </View>
                         </View>
@@ -356,10 +355,8 @@ const styles = StyleSheet.create({
     },
     type: {
         color: COLORS.title,
-        fontSize: 14,
+        fontSize: 12,
         ...FONTS.fontMedium,
-
-
     },
     amount: {
         color: 'red',

@@ -66,13 +66,13 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
                     <TouchableOpacity onPress={() => showDatepicker('To Date')}>
                         <View style={styles.dateItem}>
                             <Ionicons name="calendar-outline" size={20} color={!theme.dark ? 'white' : colors.title} />
-                            <Text style={{ ...styles.dateText, color: !theme.dark ? 'white' : colors.title }}>{toDate || calenderDate.toLocaleString()}</Text>
+                            <Text style={{ ...styles.dateText, color: !theme.dark ? 'white' : colors.title }}>{toDate || `${calenderDate.getFullYear()}-${calenderDate.getMonth() + 1}-${calenderDate.getDate()}`}</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => showDatepicker('From Date')} >
                         <View style={styles.dateItem}>
                             <Ionicons name="calendar-outline" size={20} color={!theme.dark ? 'white' : colors.title} />
-                            <Text style={{ ...styles.dateText, color: !theme.dark ? 'white' : colors.title }}>{fromDate || calenderDate.toLocaleString()}</Text>
+                            <Text style={{ ...styles.dateText, color: !theme.dark ? 'white' : colors.title }}>{fromDate || `${calenderDate.getFullYear()}-${calenderDate.getMonth() + 1}-${calenderDate.getDate()}`}</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
