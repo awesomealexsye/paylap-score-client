@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { ScrollView, View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import { ScrollView, View, Text, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import LoginSheet from '../../components/BottomSheet/LoginSheet';
@@ -31,6 +31,13 @@ const UserKyc = forwardRef((props, ref) => {
     const [aadharDetail, setAadharDetail] = useState({ client_id: "" });
     const [isLoading, setIsLoading] = useState(false);
     const [aadhar, setAadhar] = useState("");
+    const [isDisabled, setIsDisabled] = useState(true);
+
+    const formatTime = (seconds: any) => {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+    };
     useEffect(() => {
         CommonService.currentUserDetail().then((res) => {
             if (res !== null) {
@@ -42,12 +49,46 @@ const UserKyc = forwardRef((props, ref) => {
         });
     }, []);
 
+    const INITIAL_TIME = 60;
+    const [timeLeft, setTimeLeft] = useState(INITIAL_TIME);
+
+    useEffect(() => {
+        if (timeLeft === 0) {
+            setIsDisabled(false);
+            return;
+        };
+        const timerId = setInterval(() => {
+            setTimeLeft((prevTime) => prevTime - 1);
+        }, 1000);
+
+        return () => clearInterval(timerId);
+    }, [timeLeft]);
+
     const logOut = async () => {
         const is_logout = await StorageService.logOut();
         if (is_logout) {
             navigation.navigate("MobileSignIn");
         }
     }
+    const handleResend = async () => {
+        setIsDisabled(true);
+        setTimeLeft(INITIAL_TIME);
+        if (aadhar?.length != 12) {
+            MessagesService.commonMessage("Invalid Aadhar Number");
+            return;
+        }
+        const res = await ApiService.postWithToken("api/kyc/aadhaar-otp-generate", { "aadhaar_number": aadhar });
+        if (res !== null && res.status === true) {
+            if (res?.data?.otp_sent) {
+                setAadharDetail(res.data);
+                setIsOtpSent(true);
+                setIsLoading(false);
+                setButtonText("Verify OTP");
+            } else {
+                MessagesService.commonMessage(res?.message);
+            }
+        }
+    };
     const sendOtp = async () => {
         if (buttonText === "Send OTP") {
             if (aadhar?.length != 12) {
@@ -69,10 +110,13 @@ const UserKyc = forwardRef((props, ref) => {
                 setIsLoading(false);
             }
         } else if (buttonText === "Verify OTP") {
+            if (otp?.length != 6) {
+                MessagesService.commonMessage("Invalid OTP");
+                return;
+            }
             setIsLoading(true);
             const res = await ApiService.postWithToken("api/kyc/aadhaar-otp-verify", { "client_id": aadharDetail?.client_id, "otp": otp });
             if (res !== null) {
-                console.log("Verify", res)
                 if (res?.status === true) {
                     setIsLoading(false);
                     setIsOtpSent(false);
@@ -124,15 +168,32 @@ const UserKyc = forwardRef((props, ref) => {
                                     </View>
 
                                     {isOtpSent &&
-                                        <View style={{ marginBottom: 10 }}>
-                                            <Input
-                                                keyboardType="numeric"
-                                                inputRounded
-                                                icon={<FontAwesome style={{ opacity: .6 }} name={'address-card'} size={20} color={colors.text} />}
-                                                placeholder="Your Aadhaar OTP"
-                                                onChangeText={(value) => setOtp(value)}
-                                            />
-                                        </View>
+                                        <>
+                                            <View style={{ margin: 10 }}>
+                                                <Input
+                                                    keyboardType="numeric"
+                                                    inputRounded
+                                                    icon={<FontAwesome style={{ opacity: .6 }} name={'address-card'} size={20} color={colors.text} />}
+                                                    placeholder="Your Aadhaar OTP"
+                                                    onChangeText={(value) => setOtp(value)}
+                                                />
+                                                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 10 }} >
+                                                    < Text style={{ textAlign: "right", color: isDisabled ? COLORS.warning : COLORS.primary, }}>
+                                                        {isDisabled ? `Time remaining : ${formatTime(timeLeft)}` : null}
+                                                    </Text>
+                                                    <TouchableOpacity onPress={handleResend} disabled={isDisabled}>
+                                                        <View style={{ backgroundColor: isDisabled ? "grey" : COLORS.primary, borderRadius: 50, padding: 8 }} >
+                                                            < Text style={{ ...FONTS.fontSm, textAlign: "right", color: COLORS.backgroundColor, }}>
+                                                                Resend OTP
+                                                            </Text>
+
+                                                        </View>
+
+                                                    </TouchableOpacity>
+                                                </View>
+                                            </View>
+                                        </>
+
                                     }
 
                                     <View style={GlobalStyleSheet.cardBody}>
