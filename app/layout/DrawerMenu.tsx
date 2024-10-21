@@ -86,7 +86,7 @@ const DrawerMenu = () => {
 
     useEffect(() => {
         if (appInfo.ANDROID.VERSION_CODE > installedAndroidVersionCode) {
-            setModalVisible(true);
+            //setModalVisible(true);
         } else {
             setModalVisible(false);
         }

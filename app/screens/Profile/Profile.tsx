@@ -59,7 +59,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                 rightIcon2={'Edit'}
             />
 
-            <FilePreviewModal close={setModalVisible} modalVisible={modalVisible} title="Preview" previewImage={modalImageSource} />
+            <FilePreviewModal close={setModalVisible} modalVisible={modalVisible} title=" Profile Image " previewImage={modalImageSource} />
             <ScrollView showsHorizontalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1, paddingBottom: 50 }}>
 
 

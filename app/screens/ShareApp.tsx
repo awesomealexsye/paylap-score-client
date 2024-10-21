@@ -4,7 +4,6 @@ import React, { useEffect, useCallback, useState } from 'react'
 import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, Share, Alert } from 'react-native'
 import { RootStackParamList } from '../navigation/RootStackParamList';
 import Header from '../layout/Header';
-
 import { GlobalStyleSheet } from '../constants/StyleSheet';
 import { IMAGES } from '../constants/Images';
 import { COLORS, FONTS } from '../constants/theme';

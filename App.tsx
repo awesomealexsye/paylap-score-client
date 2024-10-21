@@ -38,7 +38,7 @@ export default function App() {
         <StatusBar style="dark" />
         <Provider store={store}>
           <Route />
-          <ToastManager />
+          {/*     <ToastManager/> */}
         </Provider>
       </SafeAreaView>
     </SafeAreaProvider>
