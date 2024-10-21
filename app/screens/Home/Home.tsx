@@ -100,7 +100,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const renderCustomer = ({ item }: { item: Customer }) => (
         <TouchableOpacity onPress={() => { navigation.navigate("CustomerTransations", { item: item }) }}>
 
-            <View style={[styles.customerItem, { backgroundColor: colors.card }]}>
+            <View style={[styles.customerItem, { backgroundColor: colors.card, marginBottom: 10 }]}>
                 <View style={{}}>
                     <View style={{ flexDirection: 'row' }}>
                         <Image
@@ -118,7 +118,9 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
                 <View style={{ flexDirection: "column", alignItems: "flex-end", position: "relative" }}>
                     <Text style={{ color: item.transaction_type === "CREDIT" ? COLORS.primaryLight : COLORS.danger, fontSize: 18, fontWeight: "900" }}>₹ {parseInt(item.amount).toLocaleString()}</Text>
-                    <Text style={[styles.type, { color: colors.title }]}>{item.transaction_type}</Text>
+                    <Text style={{
+                        color: colors.title, fontSize: 12, ...FONTS.fontSemiBold,
+                    }}>{item.transaction_type}</Text>
                 </View>
 
             </View>
@@ -208,7 +210,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 <View style={{ flex: 1, alignItems: 'center' }} >
                     <View style={{
                         height: 140,
-                        width: "95%",
+                        width: "90%",
                         top: 20,
                         backgroundColor: COLORS.primary,
                         borderRadius: 31,
@@ -219,26 +221,29 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                         },
                         shadowOpacity: 0.34,
                         shadowRadius: 31.27,
-                        elevation: 8, flexDirection: 'column'
+                        // elevation: 8,
+                        flexDirection: 'column',
+                        alignItems: "center"
+
                     }}>
 
 
-                        <View style={{ width: 380, flexDirection: 'row', marginTop: 22, rowGap: 4, justifyContent: 'center', borderBlockColor: COLORS.white, borderBottomWidth: 1, padding: 10 }}>
+                        <View style={{ width: "90%", flexDirection: 'row', marginTop: 22, rowGap: 4, justifyContent: 'center', alignItems: "center", borderBlockColor: COLORS.white, borderBottomWidth: 1, padding: 10, }}>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderRightColor: COLORS.white }}>
-                                <Text style={{ ...FONTS.fontBold, fontSize: SIZES.h6, color: COLORS.primaryLight }}>Credit Amt.</Text>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.secondary }}>₹ {homeBanner?.credit}</Text>
+                                <Text style={{ ...FONTS.fontBold, fontSize: SIZES.fontSm, color: COLORS.primaryLight }}>Credit Amt.</Text>
+                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.fontLg, color: COLORS.secondary }}>₹ {homeBanner?.credit}</Text>
                             </View>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: "center" }}>
-                                <Text style={{ ...FONTS.fontBold, fontSize: SIZES.h6, color: COLORS.primaryLight }}>Debit Amt.</Text>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.danger }}>₹ {homeBanner?.debit}</Text>
+                                <Text style={{ ...FONTS.fontBold, fontSize: SIZES.fontSm, color: COLORS.primaryLight }}>Debit Amt.</Text>
+                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.fontLg, color: COLORS.danger }}>₹ {homeBanner?.debit}</Text>
                             </View>
                         </View>
                         <View style={{ flex: 1, alignItems: 'center', justifyContent: "center" }}>
                             <TouchableOpacity style={{}}>
                                 <TouchableOpacity onPress={() => navigation.navigate("Report")}>
-                                    <Text style={{ color: COLORS.white, ...FONTS.fontBold, }}>
+                                    <Text style={{ color: COLORS.white, ...FONTS.fontBold, fontSize: SIZES.fontSm }}>
                                         VIEW REPORT
-                                        <Feather name='arrow-right' size={16} color={COLORS.white} />
+                                        <Feather name='arrow-right' size={15} color={COLORS.white} />
                                     </Text>
                                 </TouchableOpacity>
                             </TouchableOpacity>
@@ -354,13 +359,7 @@ const styles = StyleSheet.create({
         color: '#888',
         fontSize: 12,
     },
-    type: {
-        color: COLORS.title,
-        fontSize: 14,
-        ...FONTS.fontMedium,
 
-
-    },
     amount: {
         color: 'red',
         fontSize: 18,

@@ -108,13 +108,13 @@ const DrawerMenu = () => {
         getAppversion();
     }, []);
 
-    useEffect(() => {
-        if (appInfo.ANDROID.VERSION_CODE > installedAndroidVersionCode) {
-            setModalVisible(true);
-        } else {
-            setModalVisible(false);
-        }
-    }, [appInfo]);
+    // useEffect(() => {
+    //     if (appInfo.ANDROID.VERSION_CODE > installedAndroidVersionCode) {
+    //         setModalVisible(true);
+    //     } else {
+    //         setModalVisible(false);
+    //     }
+    // }, [appInfo]);
 
     const handleLogout = async () => {
         const is_logout = await StorageService.logOut();
