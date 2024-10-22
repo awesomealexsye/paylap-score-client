@@ -38,7 +38,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const [customersData, setCustomersData] = useState<any>([]);
     const [homeBanner, setHomeBanner] = useState<any>({});
     const [filteredCustomers, setFilteredCustomers] = useState([]);
-    const [userDetail, setUserDetail] = useState({ name: "", profile_image: "", aadhar_card: "" });
+    const [userDetail, setUserDetail] = useState({ name: "", profile_image: "", aadhar_card: "", notification_count: 0 });
     const [isLoading, setIsLoading] = useState<any>(false);
     useEffect(() => {
         const handleBackPress = () => {
@@ -60,6 +60,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
             fetchCustomerList();
             StorageService.isLoggedIn().then(res => { res === false ? navigation.navigate("MobileSignIn") : null; });
             CommonService.currentUserDetail().then((res) => {
+                // console.log("resdetail::", );
+
                 setUserDetail(res);
                 if (res.aadhar_card === '') {
                     navigation.navigate("UserKyc");
@@ -165,17 +167,17 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                     source={IMAGES.Notification}
                                 />
                                 <View
-                                    style={[styles.notifactioncricle, {
+                                    style={[userDetail?.notification_count > 0 ? styles.notifactioncricle : {}, {
                                         backgroundColor: colors.card,
                                     }]}
                                 >
                                     <View
-                                        style={{
+                                        style={userDetail?.notification_count > 0 ? {
                                             height: 13,
                                             width: 13,
                                             borderRadius: 13,
                                             backgroundColor: colors.primary
-                                        }}
+                                        } : {}}
                                     />
                                 </View>
                             </TouchableOpacity>

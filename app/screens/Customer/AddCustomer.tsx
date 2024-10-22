@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { ScrollView, View, Text, ActivityIndicator } from 'react-native';
+import { ScrollView, View, Text, ActivityIndicator, Image } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import Header from '../../layout/Header';
@@ -11,6 +11,7 @@ import { COLORS, FONTS } from '../../constants/theme';
 import { ApiService } from '../../lib/ApiService';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { StackScreenProps } from '@react-navigation/stack';
+import { IMAGES } from '../../constants/Images';
 
 type AddCustomerScreenProps = StackScreenProps<RootStackParamList, 'AddCustomer'>;
 let aadharDetail: any = {};
@@ -77,6 +78,20 @@ export const AddCustomer = ({ navigation }: AddCustomerScreenProps) => {
                         titleRight
                     />
                     <ScrollView>
+                        <View style={{
+                            flex: 1.5,
+                            alignItems: 'center',
+                        }}>
+                            <Image
+                                source={IMAGES.appname}
+                                style={{
+                                    height: 110,
+                                    width: 190,
+                                    objectFit: "contain",
+                                }}
+                            />
+                        </View>
+
                         <View style={[GlobalStyleSheet.container, { flex: 1, padding: 0, paddingTop: 10 }]}>
                             <View style={{ marginTop: 20, }}>
                                 <View style={{ marginTop: 20 }}>
