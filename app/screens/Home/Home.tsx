@@ -111,7 +111,6 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                             <Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{item.name.split(' ').slice(0, 2).join(' ')}</Text>
                             <Text style={styles.lastInteraction}>{item.latest_updated_at}</Text>
                         </View>
-
                     </View>
 
                 </View>
@@ -232,12 +231,12 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderRightColor: COLORS.white }}>
                                 <Text style={{ ...FONTS.fontBold, fontSize: SIZES.fontSm, color: COLORS.primaryLight }}>Credit Amt.</Text>
                                 <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.fontLg, color: COLORS.secondary }}>₹ {homeBanner?.credit}</Text>
-                            </View>
+                            </View >
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: "center" }}>
                                 <Text style={{ ...FONTS.fontBold, fontSize: SIZES.fontSm, color: COLORS.primaryLight }}>Debit Amt.</Text>
                                 <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.fontLg, color: COLORS.danger }}>₹ {homeBanner?.debit}</Text>
                             </View>
-                        </View>
+                        </View >
                         <View style={{ flex: 1, alignItems: 'center', justifyContent: "center" }}>
                             <TouchableOpacity style={{}}>
                                 <TouchableOpacity onPress={() => navigation.navigate("Report")}>
@@ -249,13 +248,13 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                             </TouchableOpacity>
 
                         </View>
-                    </View>
-                </View>
+                    </View >
+                </View >
 
 
                 {/* search Box Start */}
 
-                <View style={[GlobalStyleSheet.container, { padding: 0, paddingHorizontal: 30, paddingTop: 35 }]}>
+                < View style={[GlobalStyleSheet.container, { padding: 0, paddingHorizontal: 30, paddingTop: 35 }]} >
                     <View>
                         <TextInput
                             placeholder='Search Customer'
@@ -267,18 +266,19 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                             <Feather name='search' size={24} color={'#C9C9C9'} />
                         </View>
                     </View>
-                </View>
+                </View >
 
                 {/* Search box ends */}
 
-                {isLoading === false ?
-                    <FlatList scrollEnabled={false}
-                        data={filteredCustomers}
-                        renderItem={renderCustomer}
-                        keyExtractor={(item, index) => index.toString()}
-                        contentContainerStyle={{}} /> : <View style={{ flex: 1, justifyContent: 'center' }} >
-                        <ActivityIndicator color={colors.title} size={'large'}></ActivityIndicator>
-                    </View>
+                {
+                    isLoading === false ?
+                        <FlatList scrollEnabled={false}
+                            data={filteredCustomers}
+                            renderItem={renderCustomer}
+                            keyExtractor={(item, index) => index.toString()}
+                            contentContainerStyle={{}} /> : <View style={{ flex: 1, justifyContent: 'center' }} >
+                            <ActivityIndicator color={colors.title} size={'large'}></ActivityIndicator>
+                        </View>
                 }
 
             </ScrollView >
@@ -359,7 +359,6 @@ const styles = StyleSheet.create({
         color: '#888',
         fontSize: 12,
     },
-
     amount: {
         color: 'red',
         fontSize: 18,
