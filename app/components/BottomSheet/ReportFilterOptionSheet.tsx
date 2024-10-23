@@ -11,10 +11,12 @@ const ReportFilterOptionSheet = ({ handleSelectedValue: handlePress }: ReportFil
     const theme = useTheme();
     const { colors }: { colors: any; } = theme;
     const options = [
-        { label: 'This Week', value: 'This Week' },
+        { label: 'Today', value: 'Today' },
+        { label: 'Yesterday', value: 'Yesterday' },
         { label: 'Last Week', value: 'Last Week' },
+        { label: 'This Month', value: 'This Month' },
         { label: 'Last Month', value: 'Last Month' },
-        { label: 'Date Range', value: 'Date Range' },
+        { label: 'Custom Date', value: 'Custom Date' },
     ];
 
     return (
