@@ -38,7 +38,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const [customersData, setCustomersData] = useState<any>([]);
     const [homeBanner, setHomeBanner] = useState<any>({});
     const [filteredCustomers, setFilteredCustomers] = useState([]);
-    const [userDetail, setUserDetail] = useState({ name: "", profile_image: "", aadhar_card: "", notification_count: 0 });
+    const [userDetail, setUserDetail] = useState({ name: "", profile_image: "", aadhar_card: "" });
     const [isLoading, setIsLoading] = useState<any>(false);
     useEffect(() => {
         const handleBackPress = () => {
@@ -60,8 +60,6 @@ export const Home = ({ navigation }: HomeScreenProps) => {
             fetchCustomerList();
             StorageService.isLoggedIn().then(res => { res === false ? navigation.navigate("MobileSignIn") : null; });
             CommonService.currentUserDetail().then((res) => {
-                // console.log("resdetail::", );
-
                 setUserDetail(res);
                 if (res.aadhar_card === '') {
                     navigation.navigate("UserKyc");
@@ -116,6 +114,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                             }}>{item.name.split(' ').slice(0, 2).join(' ')}</Text>
                             <Text style={{ color: colors.title, fontSize: SIZES.fontSm }}>{item.latest_updated_at}</Text>
                         </View>
+
                     </View>
 
                 </View>
@@ -170,17 +169,17 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                     source={IMAGES.Notification}
                                 />
                                 <View
-                                    style={[userDetail?.notification_count > 0 ? styles.notifactioncricle : {}, {
+                                    style={[styles.notifactioncricle, {
                                         backgroundColor: colors.card,
                                     }]}
                                 >
                                     <View
-                                        style={userDetail?.notification_count > 0 ? {
+                                        style={{
                                             height: 13,
                                             width: 13,
                                             borderRadius: 13,
                                             backgroundColor: colors.primary
-                                        } : {}}
+                                        }}
                                     />
                                 </View>
                             </TouchableOpacity>
@@ -252,12 +251,12 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                             }}>
                                 <Text style={{ ...FONTS.fontBold, fontSize: SIZES.fontSm, color: COLORS.primaryLight }}>Credit Amt.</Text>
                                 <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.fontLg, color: COLORS.secondary }}>₹ {homeBanner?.credit}</Text>
-                            </View >
+                            </View>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: "center" }}>
                                 <Text style={{ ...FONTS.fontBold, fontSize: SIZES.fontSm, color: COLORS.primaryLight }}>Debit Amt.</Text>
                                 <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.fontLg, color: COLORS.danger }}>₹ {homeBanner?.debit}</Text>
                             </View>
-                        </View >
+                        </View>
                         <View style={{ flex: 1, alignItems: 'center', justifyContent: "center" }}>
                             <TouchableOpacity style={{}}>
                                 <TouchableOpacity onPress={() => navigation.navigate("Report")}>
@@ -269,17 +268,13 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                             </TouchableOpacity>
 
                         </View>
-                    </View >
-                </View >
+                    </View>
+                </View>
 
 
                 {/* search Box Start */}
 
-<<<<<<< HEAD
                 <View style={[GlobalStyleSheet.container, { paddingHorizontal: 30, paddingTop: 35 }]}>
-=======
-                < View style={[GlobalStyleSheet.container, { padding: 0, paddingHorizontal: 30, paddingTop: 35 }]} >
->>>>>>> 9ebba2f71c916bafb1538b17865b03fa1c5cf158
                     <View>
                         <TextInput
                             placeholder='Search Customer'
@@ -291,19 +286,18 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                             <Feather name='search' size={24} color={'#C9C9C9'} />
                         </View>
                     </View>
-                </View >
+                </View>
 
                 {/* Search box ends */}
 
-                {
-                    isLoading === false ?
-                        <FlatList scrollEnabled={false}
-                            data={filteredCustomers}
-                            renderItem={renderCustomer}
-                            keyExtractor={(item, index) => index.toString()}
-                            contentContainerStyle={{}} /> : <View style={{ flex: 1, justifyContent: 'center' }} >
-                            <ActivityIndicator color={colors.title} size={'large'}></ActivityIndicator>
-                        </View>
+                {isLoading === false ?
+                    <FlatList scrollEnabled={false}
+                        data={filteredCustomers}
+                        renderItem={renderCustomer}
+                        keyExtractor={(item, index) => index.toString()}
+                        contentContainerStyle={{}} /> : <View style={{ flex: 1, justifyContent: 'center' }} >
+                        <ActivityIndicator color={colors.title} size={'large'}></ActivityIndicator>
+                    </View>
                 }
 
             </ScrollView >
@@ -360,28 +354,6 @@ const styles = StyleSheet.create({
         borderBottomColor: "black",
         borderBottomWidth: 0.2
     },
-<<<<<<< HEAD
-=======
-    customerName: {
-        color: COLORS.title,
-        fontSize: 15,
-    },
-    lastInteraction: {
-        color: '#888',
-        fontSize: 12,
-    },
-    amount: {
-        color: 'red',
-        fontSize: 18,
-        textAlign: "center"
-    },
-    amountZero: {
-        color: '#121221',
-        fontSize: 18,
-    },
-
-
->>>>>>> 9ebba2f71c916bafb1538b17865b03fa1c5cf158
 
     addButton: {
         position: 'absolute', // Fixes the button at a particular position

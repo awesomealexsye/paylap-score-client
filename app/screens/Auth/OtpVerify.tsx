@@ -131,14 +131,19 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
                         width: "100%"
                     }}>
 
-                        <Image
-                            source={IMAGES.appname}
-                            style={{
-                                height: 140,
-                                width: 190,
-                                objectFit: "contain",
-                            }}
-                        />
+                        <View style={{
+                            flex: 1.5,
+                            alignItems: 'center',
+                        }}>
+                            <Image
+                                source={theme.dark ? IMAGES.appnamedark : IMAGES.appname}
+                                style={{
+                                    height: 110,
+                                    width: 150,
+                                    objectFit: "contain",
+                                }}
+                            />
+                        </View>
 
                     </View>
 

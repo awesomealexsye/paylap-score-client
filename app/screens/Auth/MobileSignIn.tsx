@@ -81,17 +81,22 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
                         justifyContent: 'center',
                         width: "100%"
                     }}>
-                        <Image
-                            source={IMAGES.appnamedark}
-                            style={{
-                                height: 140,
-                                width: 190,
-                                objectFit: "contain",
-                            }}
-                        />
+                        <View style={{
+                            flex: 1.5,
+                            alignItems: 'center',
+                        }}>
+                            <Image
+                                source={theme.dark ? IMAGES.appnamedark : IMAGES.appname}
+                                style={{
+                                    height: 110,
+                                    width: 150,
+                                    objectFit: "contain",
+                                }}
+                            />
+                        </View>
                         <Text style={{
                             ...FONTS.fontBold,
-                            fontSize: SIZES.fontLg,
+                            fontSize: SIZES.font,
                             color: COLORS.background,
                             marginTop: 10,
                         }}>Welcome Back!</Text>

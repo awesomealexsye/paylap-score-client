@@ -21,18 +21,18 @@ const MenuItems = [
         name: "Home",
         navigate: "Home",
     },
-    {
-        id: "3",
-        icon: IMAGES.user3,
-        name: "Profile",
-        navigate: "Profile",
-    },
-    {
-        id: "4",
-        icon: IMAGES.share,
-        name: "Share",
-        navigate: 'ShareApp',
-    },
+    // {
+    //     id: "3",
+    //     icon: IMAGES.user3,
+    //     name: "Profile",
+    //     navigate: "Profile",
+    // },
+    // {
+    //     id: "4",
+    //     icon: IMAGES.share,
+    //     name: "Share",
+    //     navigate: 'ShareApp',
+    // },
     {
         id: "5",
         icon: IMAGES.help,

@@ -83,10 +83,10 @@ export const AddCustomer = ({ navigation }: AddCustomerScreenProps) => {
                             alignItems: 'center',
                         }}>
                             <Image
-                                source={IMAGES.appname}
+                                source={theme.dark ? IMAGES.appnamedark : IMAGES.appname}
                                 style={{
                                     height: 110,
-                                    width: 190,
+                                    width: 150,
                                     objectFit: "contain",
                                 }}
                             />

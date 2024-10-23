@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
-import { COLORS, FONTS } from '../../constants/theme';
+import { COLORS, FONTS, SIZES } from '../../constants/theme';
 import { useTheme } from '@react-navigation/native';
 
 type Props = {
@@ -25,17 +25,17 @@ const CustomerActivityBtn = ({ color, rounded, icon, text, onpress, gap, textcol
             style={[{
                 borderRadius: 16,
                 backgroundColor: color,
-                paddingVertical: 18,
+                paddingVertical: 16,
                 overflow: 'hidden',
                 // paddingHorizontal: gap ? 25 : 30,
                 height: 80,
                 width: 80,
                 alignItems: 'center',
                 flexDirection: 'column',
-                gap: gap ? 5 : 10,
+                gap: gap ? 2 : 10,
                 justifyContent: 'center',
                 borderWidth: 1,
-                borderColor: border ? border : COLORS.borderColor
+                borderColor: border ? border : colors.borderColor
             }, rounded && {
                 borderRadius: 50,
             }, isDisabled && { opacity: .5 }]}
@@ -53,7 +53,7 @@ const CustomerActivityBtn = ({ color, rounded, icon, text, onpress, gap, textcol
                 {icon}
             </View>
             <View style={{ flex: 1, justifyContent: 'center' }}>
-                <Text style={{ ...FONTS.fontSemiBold, color: textcolor ? textcolor : colors.title, fontSize: 12, textAlign: 'center' }}>{text}</Text>
+                <Text style={{ ...FONTS.fontSemiBold, color: textcolor ? textcolor : colors.title, fontSize: SIZES.fontSm, textAlign: 'center' }}>{text}</Text>
             </View>
         </TouchableOpacity>
     );

@@ -99,8 +99,8 @@ const FindUser = forwardRef((props, ref) => {
                                         <View style={[GlobalStyleSheet.container, { borderBottomColor: COLORS.inputborder, justifyContent: "center", alignItems: "center" }]}>
                                             <Image source={theme.dark ? IMAGES.appnamedark : IMAGES.appname}
                                                 style={{
-                                                    height: 140,
-                                                    width: 190,
+                                                    height: 110,
+                                                    width: 150,
                                                     objectFit: "contain",
                                                 }} />
                                             {/* <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, textAlign: 'center' }}>Search Aadhaar Card</Text> */}
