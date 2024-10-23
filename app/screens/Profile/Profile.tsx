@@ -1,6 +1,6 @@
 import { useTheme, useFocusEffect } from '@react-navigation/native';
 import React, { useEffect, useCallback, useState } from 'react'
-import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, ImageBackground } from 'react-native'
+import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, ImageBackground, Alert } from 'react-native'
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { IMAGES } from '../../constants/Images';
 import { COLORS, FONTS } from '../../constants/theme';
@@ -11,6 +11,10 @@ import CommonService from '../../lib/CommonService';
 import FilePreviewModal from '../../components/Modal/FilePreviewModal';
 import FontAwesome from '@expo/vector-icons/build/FontAwesome';
 import { ApiService } from '../../lib/ApiService';
+import ButtonIcon from '../../components/Button/ButtonIcon';
+import { Feather } from '@expo/vector-icons';
+import { MessagesService } from '../../lib/MessagesService';
+import StorageService from '../../lib/StorageService';
 
 
 type ProfileScreenProps = StackScreenProps<RootStackParamList, 'Profile'>;
@@ -49,6 +53,41 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
         setModalVisible(true);
     }
 
+    const deleteAccount = () => {
+        Alert.alert(
+            'Delete Account',
+            'Are you sure you want to remove your account? This action is permanent and cannot be undone. All your information will be erased and you will not be able to recover your account.',
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Delete',
+                    onPress: () => {
+                        // Add code to delete the user's account here
+                        console.log('Account deleted');
+                        ApiService.postWithToken("api/user/delete", {}).then((res: any) => {
+                            MessagesService.commonMessage(res?.message);
+                            if (res?.status == true) {
+                                console.log('Account deleted success');
+
+                                StorageService.logOut().then((is_logout) => {
+                                    if (is_logout) {
+                                        console.log('Account logout success');
+
+                                        navigation.navigate("MobileSignIn");
+                                    }
+                                })
+
+
+                            }
+                        });
+                    },
+                },
+            ],
+        );
+    }
 
     return (
         <View style={{ backgroundColor: colors.card, flex: 1 }}>
@@ -134,7 +173,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
 
                         </View>}
                     </View>
-                    <View style={[GlobalStyleSheet.card, { backgroundColor: colors.card }]}>
+                    {/* <View style={[GlobalStyleSheet.card, { backgroundColor: colors.card }]}>
                         <View style={[GlobalStyleSheet.cardHeader, { borderBottomColor: COLORS.inputborder, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]} >
                             <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title }}>Payment Details</Text>
                             <TouchableOpacity
@@ -168,6 +207,21 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                                         </ImageBackground>
                                     </View>
                                 </TouchableOpacity >}
+                        </View>
+                    </View> */}
+                    <View >
+                        <View style={{ paddingHorizontal: 30, marginTop: 50 }}>
+                            <ButtonIcon
+                                color={'red'}
+                                onPress={deleteAccount}
+                                title='Delete Account'
+                                iconDirection='right'
+                                icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }}
+                                    name={'trash'}
+                                    size={18}
+
+                                />}>
+                            </ButtonIcon>
                         </View>
                     </View>
                 </View>
