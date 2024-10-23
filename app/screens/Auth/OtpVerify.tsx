@@ -1,6 +1,6 @@
 import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, StyleSheet, ActivityIndicator } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react';
-import { COLORS, FONTS } from '../../constants/theme'
+import { COLORS, FONTS, SIZES } from '../../constants/theme'
 import { GlobalStyleSheet } from '../../constants/StyleSheet'
 import { useTheme } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
@@ -100,7 +100,7 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
 
     return (
 
-        <SafeAreaView style={{ flex: 1, backgroundColor: colors.card, }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: colors.background, }}>
             <Header
                 leftIcon='back'
                 backgroundColor={COLORS.primary}
@@ -154,15 +154,16 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
 
                         <Text style={{
                             ...FONTS.fontMedium,
-                            fontSize: 18,
+                            fontSize: SIZES.font,
                             color: colors.title,
                             marginVertical: 10,
                         }}>{`OTP sent to this Mobile Number ${mobile}`}</Text>
 
                         <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
                             <Text style={{
-                                color: colors.title, ...FONTS.fontMedium,
-                                fontSize: 14,
+                                color: colors.title,
+                                ...FONTS.fontMedium,
+                                fontSize: SIZES.fontSm,
                             }}>Enter OTP</Text>
                         </View>
                         <View style={{ marginVertical: 10, }}>
@@ -182,11 +183,11 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
                             />
                         </View>
                         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                            < Text style={{ textAlign: "right", color: isDisabled ? COLORS.warning : COLORS.primary, }}>
-                                {isDisabled ? `Time remaining : ${formatTime(timeLeft)}` : "Now You Can Resend OTP ->"}
+                            < Text style={{ ...FONTS.fontSemiBold, textAlign: "right", color: isDisabled ? COLORS.warning : COLORS.primary, }}>
+                                {isDisabled ? `Time remaining : ${formatTime(timeLeft)}` : "Now Resend OTP"}
                             </Text>
                             <TouchableOpacity onPress={handleResend} disabled={isDisabled}>
-                                <View style={{ backgroundColor: isDisabled ? "grey" : COLORS.primary, borderRadius: 50, padding: 8 }} >
+                                <View style={{ backgroundColor: isDisabled ? "grey" : COLORS.primary, borderRadius: 10, padding: 8 }} >
                                     < Text style={{ ...FONTS.fontSm, textAlign: "right", color: COLORS.backgroundColor, }}>
                                         Resend OTP
                                     </Text>
@@ -204,7 +205,7 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
                                         disabled={isBtnDisabled}
                                         title={"Verify"}
                                         onPress={verifyOtp}
-                                        style={{ borderRadius: 52 }}
+                                        style={{ borderRadius: 15 }}
                                         color={isBtnDisabled ? "grey" : COLORS.primary}
                                     /> : <ActivityIndicator color={COLORS.primary} size={70} />
                             }
@@ -216,23 +217,23 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
     )
 }
 
-const styles = StyleSheet.create({
-    title1: {
-        ...FONTS.fontSemiBold,
-        fontSize: 24,
-        color: COLORS.title,
-        marginBottom: 5
-    },
-    title2: {
-        ...FONTS.fontRegular,
-        fontSize: 14,
-        color: COLORS.title,
-    },
-    title3: {
-        ...FONTS.fontMedium,
-        fontSize: 14,
-        color: '#8A8A8A'
-    }
-})
+// const styles = StyleSheet.create({
+//     // title1: {
+//     //     ...FONTS.fontSemiBold,
+//     //     fontSize: 24,
+//     //     color: COLORS.title,
+//     //     marginBottom: 5
+//     // },
+//     // title2: {
+//     //     ...FONTS.fontRegular,
+//     //     fontSize: 14,
+//     //     color: COLORS.title,
+//     // },
+//     // title3: {
+//     //     ...FONTS.fontMedium,
+//     //     fontSize: 14,
+//     //     color: '#8A8A8A'
+//     // }
+// })
 
 export default OtpVerify

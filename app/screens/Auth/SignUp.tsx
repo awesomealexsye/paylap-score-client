@@ -1,6 +1,6 @@
 import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, StyleSheet, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
-import { COLORS, FONTS } from '../../constants/theme'
+import { COLORS, FONTS, SIZES } from '../../constants/theme'
 import { GlobalStyleSheet } from '../../constants/StyleSheet'
 import { useTheme } from '@react-navigation/native'
 import { Feather } from '@expo/vector-icons';
@@ -183,7 +183,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                                         <Button
                                             title={"Send OTP"}
                                             onPress={sentOtp}
-                                            style={{ borderRadius: 52 }}
+                                            style={{ borderRadius: 15 }}
                                         /> : <ActivityIndicator size={70} color={COLORS.primary} />
 
                                 }
@@ -207,28 +207,28 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
 const styles = StyleSheet.create({
     title1: {
         ...FONTS.fontSemiBold,
-        fontSize: 24,
-        color: COLORS.title,
+        fontSize: SIZES.h4,
+        // color: COLORS.title,
         marginBottom: 5
     },
     title2: {
         ...FONTS.fontRegular,
-        fontSize: 14,
-        color: COLORS.title,
+        fontSize: SIZES.font,
+        // color: COLORS.title,
     },
     title3: {
         ...FONTS.fontMedium,
-        fontSize: 14,
-        color: '#8A8A8A'
+        fontSize: SIZES.font,
+        // color: '#8A8A8A'
     },
-    imagebackground: {
-        height: 46,
-        width: 46,
-        borderRadius: 50,
-        backgroundColor: '#F6F6F6',
-        alignItems: 'center',
-        justifyContent: 'center',
-    }
+    // imagebackground: {
+    //     height: 46,
+    //     width: 46,
+    //     borderRadius: 50,
+    //     backgroundColor: '#F6F6F6',
+    //     alignItems: 'center',
+    //     justifyContent: 'center',
+    // }
 })
 
 export default SignUp

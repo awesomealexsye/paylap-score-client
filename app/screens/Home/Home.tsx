@@ -108,8 +108,11 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                             src={item.profile_image}
                         />
                         <View style={{ marginLeft: 14 }}>
-                            <Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{item.name.split(' ').slice(0, 2).join(' ')}</Text>
-                            <Text style={styles.lastInteraction}>{item.latest_updated_at}</Text>
+                            <Text style={{
+                                color: colors.title, ...FONTS.fontSemiBold,
+                                fontSize: SIZES.font,
+                            }}>{item.name.split(' ').slice(0, 2).join(' ')}</Text>
+                            <Text style={{ color: colors.title, fontSize: SIZES.fontSm }}>{item.latest_updated_at}</Text>
                         </View>
 
                     </View>
@@ -117,9 +120,9 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 </View>
 
                 <View style={{ flexDirection: "column", alignItems: "flex-end", position: "relative" }}>
-                    <Text style={{ color: item.transaction_type === "CREDIT" ? COLORS.primaryLight : COLORS.danger, fontSize: 18, fontWeight: "900" }}>₹ {parseInt(item.amount).toLocaleString()}</Text>
+                    <Text style={{ color: item.transaction_type === "CREDIT" ? COLORS.primaryLight : COLORS.danger, fontSize: SIZES.font, ...FONTS.fontBold, }}>₹ {parseInt(item.amount).toLocaleString()}</Text>
                     <Text style={{
-                        color: colors.title, fontSize: 12, ...FONTS.fontSemiBold,
+                        color: colors.title, fontSize: SIZES.fontXs, ...FONTS.fontSemiBold,
                     }}>{item.transaction_type}</Text>
                 </View>
 
@@ -146,8 +149,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                             <View style={{
                                 flexDirection: "column", alignItems: "flex-start", marginLeft: 10, width: "65%"
                             }}>
-                                <Text style={{ ...FONTS.fontRegular, fontSize: 12, color: colors.title }}>Namaste</Text>
-                                <Text adjustsFontSizeToFit={true} style={{ ...FONTS.fontSemiBold, fontSize: 15, color: colors.title, }}>
+                                <Text style={{ ...FONTS.fontRegular, fontSize: SIZES.fontXs, color: colors.title }}>Namaste</Text>
+                                <Text adjustsFontSizeToFit={true} style={{ ...FONTS.fontSemiBold, fontSize: SIZES.font, color: colors.title, }}>
 
                                     {userDetail.name.split(' ')[0]}
 
@@ -213,7 +216,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                         width: "90%",
                         top: 20,
                         backgroundColor: COLORS.primary,
-                        borderRadius: 31,
+                        borderRadius: 15,
                         shadowColor: "#025135",
                         shadowOffset: {
                             width: 0,
@@ -228,8 +231,24 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                     }}>
 
 
-                        <View style={{ width: "90%", flexDirection: 'row', marginTop: 22, rowGap: 4, justifyContent: 'center', alignItems: "center", borderBlockColor: COLORS.white, borderBottomWidth: 1, padding: 10, }}>
-                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderRightColor: COLORS.white }}>
+                        <View style={{
+                            width: "90%",
+                            flexDirection: 'row',
+                            marginTop: 22,
+                            rowGap: 4,
+                            justifyContent: 'center',
+                            alignItems: "center",
+                            borderBlockColor: COLORS.white,
+                            borderBottomWidth: 1,
+                            padding: 10,
+                        }}>
+                            <View style={{
+                                flex: 1,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderRightWidth: 1,
+                                borderRightColor: COLORS.white
+                            }}>
                                 <Text style={{ ...FONTS.fontBold, fontSize: SIZES.fontSm, color: COLORS.primaryLight }}>Credit Amt.</Text>
                                 <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.fontLg, color: COLORS.secondary }}>₹ {homeBanner?.credit}</Text>
                             </View>
@@ -255,7 +274,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
                 {/* search Box Start */}
 
-                <View style={[GlobalStyleSheet.container, { padding: 0, paddingHorizontal: 30, paddingTop: 35 }]}>
+                <View style={[GlobalStyleSheet.container, { paddingHorizontal: 30, paddingTop: 35 }]}>
                     <View>
                         <TextInput
                             placeholder='Search Customer'
@@ -296,7 +315,7 @@ const styles = StyleSheet.create({
     notifactioncricle: {
         height: 16,
         width: 16,
-        borderRadius: 16,
+        borderRadius: 15,
         backgroundColor: COLORS.card,
         alignItems: 'center',
         justifyContent: 'center',
@@ -307,70 +326,34 @@ const styles = StyleSheet.create({
 
     TextInput: {
         ...FONTS.fontRegular,
-        fontSize: 16,
+        fontSize: SIZES.font,
         color: COLORS.title,
         height: 60,
-        borderRadius: 61,
+        borderRadius: 15,
         paddingHorizontal: 10,
         paddingLeft: 30,
         marginBottom: 10
 
     },
-    brandsubtitle2: {
-        ...FONTS.fontSemiBold,
-        fontSize: 12,
-        color: COLORS.card
-    },
-    brandsubtitle3: {
-        ...FONTS.fontMedium,
-        fontSize: 12,
-        color: COLORS.title
-    },
-
-
-    customerList: {
-        marginBottom: 100, // Leave space for the floating button
-    },
-
 
     customerItem: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingHorizontal: 12,
         paddingVertical: 8,
-
-        backgroundColor: Colors.white,
-        borderRadius: 18,
-        shadowOffset: {
-            width: 0,
-            height: 15,
-        },
-        shadowOpacity: 0.34,
+        borderRadius: 15,
+        // shadowOffset: {
+        //     width: 0,
+        //     height: 15,
+        // },
+        // shadowOpacity: 0.34,
         shadowRadius: 31.27,
         marginHorizontal: 10,
-        marginVertical: 4,
-        top: 4
+        // marginVertical: 4,
+        top: 4,
+        borderBottomColor: "black",
+        borderBottomWidth: 0.2
     },
-    customerName: {
-        color: COLORS.title,
-        fontSize: 15,
-    },
-    lastInteraction: {
-        color: '#888',
-        fontSize: 12,
-    },
-
-    amount: {
-        color: 'red',
-        fontSize: 18,
-        textAlign: "center"
-    },
-    amountZero: {
-        color: '#121221',
-        fontSize: 18,
-    },
-
-
 
     addButton: {
         position: 'absolute', // Fixes the button at a particular position
@@ -392,7 +375,7 @@ const styles = StyleSheet.create({
     },
     addButtonText: {
         color: COLORS.white,
-        fontSize: 16,
+        fontSize: SIZES.font,
         fontWeight: 'bold',
     },
 })
