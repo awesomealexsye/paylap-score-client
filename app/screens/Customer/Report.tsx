@@ -19,6 +19,10 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 import ReportFilterOptionSheet from '../../components/BottomSheet/ReportFilterOptionSheet';
 
 
+
+
+
+
 type ReportDetailsScreenProps = StackScreenProps<RootStackParamList, 'Report'>
 const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
 
@@ -49,9 +53,26 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
             setFromDate(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
         }
     };
-
     const handlePress = async (value: string) => {
         setTimeRange(value);
+
+        switch (value) {
+            case "Today":
+                break;
+            case "Yesterday":
+                break;
+            case "This Week":
+                break;
+            case "Last Week":
+                break;
+            case "This Month":
+                break;
+            case "Last Month":
+                break;
+            case "Custom Date":
+                break;
+        }
+
         await refRBSheet.current.close();
     }
 
