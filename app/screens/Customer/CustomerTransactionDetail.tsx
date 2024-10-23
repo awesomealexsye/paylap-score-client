@@ -72,7 +72,7 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
 
             {/* AppBar End */}
 
-            <FilePreviewModal close={setModalVisible} modalVisible={modalVisible} title="Preview" previewImage={customer?.image} />
+            <FilePreviewModal close={setModalVisible} modalVisible={modalVisible} title="Bill Reciept" previewImage={customer?.image} />
 
 
 

@@ -83,7 +83,7 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
                         width: "100%"
                     }}>
                         <Image
-                            source={IMAGES.appname}
+                            source={IMAGES.appnamedark}
                             style={{
                                 height: 140,
                                 width: 190,

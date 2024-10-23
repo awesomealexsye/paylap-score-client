@@ -38,7 +38,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const [customersData, setCustomersData] = useState<any>([]);
     const [homeBanner, setHomeBanner] = useState<any>({});
     const [filteredCustomers, setFilteredCustomers] = useState([]);
-    const [userDetail, setUserDetail] = useState({ name: "", profile_image: "", aadhar_card: "" });
+    const [userDetail, setUserDetail] = useState({ name: "", profile_image: "", aadhar_card: "", notification_count: 0 });
     const [isLoading, setIsLoading] = useState<any>(false);
     useEffect(() => {
         const handleBackPress = () => {
@@ -60,6 +60,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
             fetchCustomerList();
             StorageService.isLoggedIn().then(res => { res === false ? navigation.navigate("MobileSignIn") : null; });
             CommonService.currentUserDetail().then((res) => {
+                // console.log("resdetail::", );
+
                 setUserDetail(res);
                 if (res.aadhar_card === '') {
                     navigation.navigate("UserKyc");
@@ -100,7 +102,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const renderCustomer = ({ item }: { item: Customer }) => (
         <TouchableOpacity onPress={() => { navigation.navigate("CustomerTransations", { item: item }) }}>
 
-            <View style={[styles.customerItem, { backgroundColor: colors.card }, { borderBottomColor: colors.border, borderBottomWidth: 1 }]}>
+            <View style={[styles.customerItem, { backgroundColor: colors.card, marginBottom: 10 }]}>
                 <View style={{}}>
                     <View style={{ flexDirection: 'row' }}>
                         <Image
@@ -116,8 +118,10 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 </View>
 
                 <View style={{ flexDirection: "column", alignItems: "flex-end", position: "relative" }}>
-                    <Text style={{ color: item.transaction_type === "CREDIT" ? COLORS.primaryLight : COLORS.danger, fontSize: 15, fontWeight: "900" }}>₹ {parseInt(item.amount).toLocaleString()}</Text>
-                    <Text style={[styles.type, { color: colors.title }]}>{item.transaction_type}</Text>
+                    <Text style={{ color: item.transaction_type === "CREDIT" ? COLORS.primaryLight : COLORS.danger, fontSize: 18, fontWeight: "900" }}>₹ {parseInt(item.amount).toLocaleString()}</Text>
+                    <Text style={{
+                        color: colors.title, fontSize: 12, ...FONTS.fontSemiBold,
+                    }}>{item.transaction_type}</Text>
                 </View>
 
             </View>
@@ -163,17 +167,17 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                     source={IMAGES.Notification}
                                 />
                                 <View
-                                    style={[styles.notifactioncricle, {
+                                    style={[userDetail?.notification_count > 0 ? styles.notifactioncricle : {}, {
                                         backgroundColor: colors.card,
                                     }]}
                                 >
                                     <View
-                                        style={{
+                                        style={userDetail?.notification_count > 0 ? {
                                             height: 13,
                                             width: 13,
                                             borderRadius: 13,
                                             backgroundColor: colors.primary
-                                        }}
+                                        } : {}}
                                     />
                                 </View>
                             </TouchableOpacity>
@@ -207,7 +211,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 <View style={{ flex: 1, alignItems: 'center' }} >
                     <View style={{
                         height: 140,
-                        width: "95%",
+                        width: "90%",
                         top: 20,
                         backgroundColor: COLORS.primary,
                         borderRadius: 31,
@@ -218,38 +222,41 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                         },
                         shadowOpacity: 0.34,
                         shadowRadius: 31.27,
-                        elevation: 8, flexDirection: 'column'
+                        // elevation: 8,
+                        flexDirection: 'column',
+                        alignItems: "center"
+
                     }}>
 
 
-                        <View style={{ width: 380, flexDirection: 'row', marginTop: 22, rowGap: 4, justifyContent: 'center', borderBlockColor: COLORS.white, borderBottomWidth: 1, padding: 10 }}>
+                        <View style={{ width: "90%", flexDirection: 'row', marginTop: 22, rowGap: 4, justifyContent: 'center', alignItems: "center", borderBlockColor: COLORS.white, borderBottomWidth: 1, padding: 10, }}>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderRightColor: COLORS.white }}>
-                                <Text style={{ ...FONTS.fontBold, fontSize: SIZES.h6, color: COLORS.primaryLight, textTransform: 'uppercase' }}>Credit</Text>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.secondary }}>₹ {homeBanner?.credit}</Text>
-                            </View>
+                                <Text style={{ ...FONTS.fontBold, fontSize: SIZES.fontSm, color: COLORS.primaryLight }}>Credit Amt.</Text>
+                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.fontLg, color: COLORS.secondary }}>₹ {homeBanner?.credit}</Text>
+                            </View >
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: "center" }}>
-                                <Text style={{ ...FONTS.fontBold, fontSize: SIZES.h6, color: COLORS.primaryLight, textTransform: 'uppercase' }}>Debit</Text>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.danger }}>₹ {homeBanner?.debit}</Text>
+                                <Text style={{ ...FONTS.fontBold, fontSize: SIZES.fontSm, color: COLORS.primaryLight }}>Debit Amt.</Text>
+                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.fontLg, color: COLORS.danger }}>₹ {homeBanner?.debit}</Text>
                             </View>
-                        </View>
+                        </View >
                         <View style={{ flex: 1, alignItems: 'center', justifyContent: "center" }}>
                             <TouchableOpacity style={{}}>
                                 <TouchableOpacity onPress={() => navigation.navigate("Report")}>
-                                    <Text style={{ color: COLORS.white, ...FONTS.fontBold, }}>
+                                    <Text style={{ color: COLORS.white, ...FONTS.fontBold, fontSize: SIZES.fontSm }}>
                                         VIEW REPORT
-                                        <Feather name='arrow-right' size={16} color={COLORS.white} />
+                                        <Feather name='arrow-right' size={15} color={COLORS.white} />
                                     </Text>
                                 </TouchableOpacity>
                             </TouchableOpacity>
 
                         </View>
-                    </View>
-                </View>
+                    </View >
+                </View >
 
 
                 {/* search Box Start */}
 
-                <View style={[GlobalStyleSheet.container, { padding: 0, paddingHorizontal: 30, paddingTop: 35 }]}>
+                < View style={[GlobalStyleSheet.container, { padding: 0, paddingHorizontal: 30, paddingTop: 35 }]} >
                     <View>
                         <TextInput
                             placeholder='Search Customer'
@@ -261,18 +268,19 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                             <Feather name='search' size={24} color={'#C9C9C9'} />
                         </View>
                     </View>
-                </View>
+                </View >
 
                 {/* Search box ends */}
 
-                {isLoading === false ?
-                    <FlatList scrollEnabled={false}
-                        data={filteredCustomers}
-                        renderItem={renderCustomer}
-                        keyExtractor={(item, index) => index.toString()}
-                        contentContainerStyle={{}} /> : <View style={{ flex: 1, justifyContent: 'center' }} >
-                        <ActivityIndicator color={colors.title} size={'large'}></ActivityIndicator>
-                    </View>
+                {
+                    isLoading === false ?
+                        <FlatList scrollEnabled={false}
+                            data={filteredCustomers}
+                            renderItem={renderCustomer}
+                            keyExtractor={(item, index) => index.toString()}
+                            contentContainerStyle={{}} /> : <View style={{ flex: 1, justifyContent: 'center' }} >
+                            <ActivityIndicator color={colors.title} size={'large'}></ActivityIndicator>
+                        </View>
                 }
 
             </ScrollView >
@@ -352,11 +360,6 @@ const styles = StyleSheet.create({
     lastInteraction: {
         color: '#888',
         fontSize: 12,
-    },
-    type: {
-        color: COLORS.title,
-        fontSize: 12,
-        ...FONTS.fontMedium,
     },
     amount: {
         color: 'red',

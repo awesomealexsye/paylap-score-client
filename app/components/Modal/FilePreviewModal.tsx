@@ -47,7 +47,7 @@ const FilePreviewModal = ({ close, modalVisible, title, previewImage }: Props) =
 
 				}}>
 					<Header
-						title=' Profile Preview'
+						title={title}
 						rightIcon5='close'
 						rightIcon5Callback={() => { close(false) }}
 						titleRight

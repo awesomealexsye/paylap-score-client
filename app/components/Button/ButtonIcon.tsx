@@ -21,7 +21,7 @@ const ButtonIcon = ({
     size = "lg",
     text,
     icon,
-    iconDirection = "right"
+    iconDirection = "top"
 }: Props) => {
     return (
         <TouchableOpacity
@@ -40,7 +40,10 @@ const ButtonIcon = ({
                     height: 55,
                     // paddingHorizontal: 30,
                 }, iconDirection === "left" && { flexDirection: 'row' },
-                iconDirection === "right" && { flexDirection: 'row-reverse' }, style && { ...style }]}
+                iconDirection === "right" && { flexDirection: 'row-reverse' },
+                iconDirection === "top" && { flexDirection: 'column' },
+                iconDirection === "bottom" && { flexDirection: 'row-column  ' },
+                style && { ...style }]}
             >
                 {icon &&
                     <View
@@ -55,10 +58,10 @@ const ButtonIcon = ({
                     </View>
                 }
                 <Text style={[styles.buttnTitle, size === 'sm' && {
-                    fontSize: 14,
+                    fontSize: 12,
                 }, size === 'lg' && {
                     fontSize: 18,
-                }, color && { color: COLORS.white }, text && { color: (text) }]}>{title}</Text>
+                }, color && { color: COLORS.white }, text && { color: text }]}>{title}</Text>
             </View>
         </TouchableOpacity>
     )
@@ -76,10 +79,10 @@ const styles = StyleSheet.create({
     },
     buttnTitle: {
         ...FONTS.fontSemiBold,
-        fontSize: 16,
+        fontSize: 12,
         color: '#fff',
         lineHeight: 24,
-        textTransform: 'uppercase'
+        // textTransform: 'uppercase'
     }
 });
 

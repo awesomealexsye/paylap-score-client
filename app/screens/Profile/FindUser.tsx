@@ -96,15 +96,21 @@ const FindUser = forwardRef((props, ref) => {
                                 {
                                     !showDetail &&
                                     <>
-                                        <View style={[GlobalStyleSheet.cardHeader, { borderBottomColor: COLORS.inputborder }]}>
-                                            <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, textAlign: 'center' }}>Search Aadhaar Card</Text>
+                                        <View style={[GlobalStyleSheet.container, { borderBottomColor: COLORS.inputborder, justifyContent: "center", alignItems: "center" }]}>
+                                            <Image source={theme.dark ? IMAGES.appnamedark : IMAGES.appname}
+                                                style={{
+                                                    height: 140,
+                                                    width: 190,
+                                                    objectFit: "contain",
+                                                }} />
+                                            {/* <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, textAlign: 'center' }}>Search Aadhaar Card</Text> */}
                                         </View>
                                         <View style={{ marginTop: 0 }}>
-                                            <View style={{ marginBottom: 10 }}>
+                                            <View style={{ marginBottom: 10, marginHorizontal: 15 }}>
                                                 <Input
                                                     inputRounded
                                                     icon={<FontAwesome style={{ opacity: .6 }} name={'address-card'} size={20} color={colors.text} />}
-                                                    placeholder="Aadhaar Card Number"
+                                                    placeholder="Enter Aadhaar Card Number"
                                                     onChangeText={(value) => setAadhar(value)}
                                                 />
                                             </View>

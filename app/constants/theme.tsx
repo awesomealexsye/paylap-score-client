@@ -36,6 +36,7 @@ export const COLORS = {
 }
 
 export const SIZES = {
+	fontXl: 20,
 	fontLg: 16,
 	font: 14,
 	fontSm: 13,
