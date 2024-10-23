@@ -39,6 +39,7 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 	const [userReferral, setUserReferral] = useState("");
 	const selector = Platform.OS === "ios" ? "& " : "?";
 
+	const play_store_url = "https://play.google.com/store/apps/details?id=com.paylap.paylapscore";
 	useEffect(() => {
 		CommonService.currentUserDetail().then((res) => {
 			setUserReferral(res?.refferal);
@@ -47,10 +48,15 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 
 	const shareApp = async () => {
 		try {
+			// const result = await Share.share({
+			// 	message:
+			// 		'Hey! Try out the PayLap app for great deals and rewards, Download it from '+play_store_url+' Don’t forget to use my referral code: .' + userReferral,
+			// 	url: play_store_url
+			// });
 			const result = await Share.share({
 				message:
-					'Hey! Try out the PayLap app for great deals and rewards, Download it from https://play.google.com/store/apps/details?id=com.paylap.paylapscore Don’t forget to use my referral code: .' + userReferral,
-				url: "https://play.google.com/store/apps/details?id=com.paylap.paylapscore"
+					'Hey! Try out the PayLap app for great deals and rewards, Don’t forget to use my referral code: .' + userReferral,
+				url: "https://paylapscore.com/"
 			});
 			if (result.action === Share.sharedAction) {
 				if (result.activityType) {
@@ -70,7 +76,7 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 
 
 	const shareAppOnWhatsApp = () => {
-		const message = "Hey! Check out this amazing app: https://play.google.com/store/apps/details?id=com.paylap.paylapscore"; // Your app's link
+		const message = "Hey! Check out this amazing app: " + play_store_url; // Your app's link
 		const url = `whatsapp://send${selector}text=${encodeURIComponent(message)}`;
 
 		Linking.canOpenURL(url)
@@ -85,7 +91,7 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 	};
 
 	const shareAppViaSMS = () => {
-		const message = `Join me on PayLap Score! Use my referral code: ${userReferral} https://play.google.com/store/apps/details?id=com.paylap.paylapscore`;
+		const message = `Join me on PayLap Score! Use my referral code: ${userReferral} ${play_store_url}`;
 		const phoneNumber = ""; // You can pre-fill the number if needed, or leave it blank for the user to enter
 		const url = `sms:${phoneNumber}${selector}body=${encodeURIComponent(message)}`;
 
@@ -102,7 +108,7 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 
 	const shareAppOnMail = () => {
 
-		const body = `Join me on PayLap Score! Use my referral code: ${userReferral} https://play.google.com/store/apps/details?id=com.paylap.paylapscore`;
+		const body = `Join me on PayLap Score! Use my referral code: ${userReferral} ${play_store_url}`;
 		const subject = "Check out this amazing app!";
 		const email = `mailto:${selector}subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
