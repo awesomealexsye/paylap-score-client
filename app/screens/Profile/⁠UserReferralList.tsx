@@ -1,5 +1,5 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { Ionicons } from '@expo/vector-icons';
 import {
@@ -7,20 +7,23 @@ import {
     Text,
     StyleSheet,
     FlatList,
+    Image,
     TouchableOpacity,
     SafeAreaView,
     StatusBar,
     Share,
 } from 'react-native';
 import Header from '../../layout/Header';
-import { useTheme } from '@react-navigation/native';
+import { useFocusEffect, useTheme } from '@react-navigation/native';
 import { COLORS } from '../../constants/theme';
+import { ApiService } from '../../lib/ApiService';
 
 interface User {
-    id: string;
     name: string;
-    email: string;
-    dateReferred: string;
+    mobile: string;
+    joined_at: string
+    profile_image: string
+    created_at: string;
 }
 
 type UserReferralListScreenProps = StackScreenProps<RootStackParamList, 'UserReferralList'>
@@ -29,40 +32,32 @@ export const UserReferralList = ({ navigation, route }: UserReferralListScreenPr
 
     const theme = useTheme();
     const { colors } = theme;
-    const [users, setUsers] = useState<User[]>([
-        { id: '1', name: 'John Doe', email: 'john@example.com', dateReferred: '2023-05-15' },
-        { id: '2', name: 'Jane Smith', email: 'jane@example.com', dateReferred: '2023-05-16' },
-        { id: '3', name: 'Bob Johnson', email: 'bob@example.com', dateReferred: '2023-05-17' },
-    ]);
+    const [users, setUsers] = useState<User[]>();
 
     const referralCode = 'REF123456';
-
-    const sendReferral = async () => {
-        try {
-            const result = await Share.share({
-                message: `Join me on this amazing app! Use my referral code: ${referralCode}`,
-            });
-            if (result.action === Share.sharedAction) {
-                if (result.activityType) {
-                    console.log('shared with activity type of', result.activityType);
-                } else {
-                    console.log('shared');
+    useFocusEffect(
+        useCallback(() => {
+            ApiService.postWithToken('api/user/refferal-list', {}).then(res => {
+                if (res.status) {
+                    setUsers(res.data);
                 }
-            } else if (result.action === Share.dismissedAction) {
-                console.log('dismissed');
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    };
+            })
+        }, [])
+    );
 
     const renderItem = ({ item }: { item: User }) => (
         <View style={[{ ...styles.userItem, backgroundColor: colors.card }, !theme.dark && { elevation: 2 }]}>
-            <View>
-                <Text style={{ ...styles.userName, color: colors.text }}>{item.name}</Text>
-                <Text style={{ ...styles.userEmail, color: colors.text }}>{item.email}</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', flex: 1 }}>
+                <Image
+                    style={{ height: 30, width: 30, borderRadius: 50, marginRight: 15, resizeMode: 'contain' }}
+                    src={item.profile_image}
+                />
+                <View style={{ flexDirection: 'column' }}>
+                    <Text style={{ ...styles.userName, color: colors.text }}>{item.name}</Text>
+                    <Text style={{ ...styles.userEmail, color: colors.text }}>{item.mobile}</Text>
+                </View>
             </View>
-            <Text style={{ ...styles.dateReferred, color: colors.text }}>{item.dateReferred}</Text>
+            <Text style={{ ...styles.dateReferred, color: colors.text }}>{item.joined_at}</Text>
         </View>
     );
 
@@ -76,13 +71,13 @@ export const UserReferralList = ({ navigation, route }: UserReferralListScreenPr
             />
             <View style={styles.content}>
                 <View style={[{ ...styles.referralInfo, backgroundColor: colors.card }, !theme.dark && { elevation: 3 }]}>
-                    <Text style={{ ...styles.referralCode, color: colors.text }}>Your Referral Code: {referralCode}</Text>
-                    <Text style={{ ...styles.totalCountText, color: colors.text }}>Total Referred: {users.length}</Text>
+                    {/* <Text style={{ ...styles.referralCode, color: colors.text }}>Your Referral Code: {referralCode}</Text> */}
+                    <Text style={{ ...styles.totalCountText, color: colors.text }}>Total Referred: {users?.length}</Text>
                 </View>
                 <FlatList
                     data={users}
                     renderItem={renderItem}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item) => item.mobile}
                     style={styles.list}
                 />
             </View>

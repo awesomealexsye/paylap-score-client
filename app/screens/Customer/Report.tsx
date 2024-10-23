@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
     View,
     Text,
@@ -15,6 +15,8 @@ import { useTheme } from '@react-navigation/native';
 import { COLORS } from '../../constants/theme';
 import Header from '../../layout/Header';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import ReportFilterOptionSheet from '../../components/BottomSheet/ReportFilterOptionSheet';
 
 
 type ReportDetailsScreenProps = StackScreenProps<RootStackParamList, 'Report'>
@@ -24,12 +26,13 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
     const { colors }: { colors: any; } = theme;
 
     const [searchQuery, setSearchQuery] = useState('');
-    const [timeRange, setTimeRange] = useState('This Month');
+    const [timeRange, setTimeRange] = useState('This Week');
     const [inputDateType, setInputDateType] = useState('To Date');
     const [showCalender, setCalenderShow] = useState(false);
     const [calenderDate, setCalenderDate] = useState(new Date());
     const [toDate, setToDate] = useState('');
     const [fromDate, setFromDate] = useState('');
+    const refRBSheet = useRef<any>(null);
 
     const showDatepicker = (inputeDatetype: string) => {
         setInputDateType(inputeDatetype);
@@ -47,6 +50,11 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
         }
     };
 
+    const handlePress = async (value: string) => {
+        setTimeRange(value);
+        await refRBSheet.current.close();
+    }
+
     const transactions = [
         { id: 1, name: 'Ajay Colleage', date: '15 Oct 24 • 01:15 PM', amount: 5450, type: 'credit' },
         { id: 2, name: 'Ajay Colleage', date: '09 Oct 24 • 09:41 AM', amount: 2550, type: 'credit', description: 'Office rent' },
@@ -56,6 +64,30 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
 
     return (
         <SafeAreaView style={{ ...styles.container }}>
+            <RBSheet
+                ref={refRBSheet}
+                closeOnDragDown={true}
+                height={240}
+                openDuration={100}
+                customStyles={{
+
+                    container: {
+                        backgroundColor: theme.dark ? colors.background : colors.cardBg,
+                    },
+                    draggableIcon: {
+                        marginTop: 10,
+                        marginBottom: 5,
+                        height: 5,
+                        width: 80,
+                        backgroundColor: colors.border,
+                    }
+                }}
+            >
+                {
+                    <ReportFilterOptionSheet handleSelectedValue={handlePress} />
+                }
+
+            </RBSheet>
             <Header
                 title={'View Report'}
                 leftIcon={'back'}
@@ -63,16 +95,18 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
             />
             <ScrollView style={{ ...styles.content, backgroundColor: colors.card }}>
                 <View style={{ ...styles.dateRange, backgroundColor: !theme.dark ? COLORS.primary : colors.card }}>
-                    <TouchableOpacity onPress={() => showDatepicker('To Date')}>
+                    <TouchableOpacity onPress={() => showDatepicker('To Date')} style={{ borderRightWidth: 1, borderRightColor: 'white', flex: 1 }} >
+                        <Text style={{ fontSize: 12, marginBottom: 5, color: !theme.dark ? 'white' : colors.title }}>From Date</Text>
                         <View style={styles.dateItem}>
                             <Ionicons name="calendar-outline" size={20} color={!theme.dark ? 'white' : colors.title} />
-                            <Text style={{ ...styles.dateText, color: !theme.dark ? 'white' : colors.title }}>{toDate || calenderDate.toLocaleString()}</Text>
+                            <Text style={{ ...styles.dateText, color: !theme.dark ? 'white' : colors.title }}>{toDate || `${calenderDate.getFullYear()}-${calenderDate.getMonth() + 1}-${calenderDate.getDate()}`}</Text>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => showDatepicker('From Date')} >
+                    <TouchableOpacity onPress={() => showDatepicker('From Date')} style={{ flex: 1, alignItems: 'flex-end' }} >
+                        <Text style={{ fontSize: 12, marginBottom: 5, color: !theme.dark ? 'white' : colors.title }}>To Date</Text>
                         <View style={styles.dateItem}>
                             <Ionicons name="calendar-outline" size={20} color={!theme.dark ? 'white' : colors.title} />
-                            <Text style={{ ...styles.dateText, color: !theme.dark ? 'white' : colors.title }}>{fromDate || calenderDate.toLocaleString()}</Text>
+                            <Text style={{ ...styles.dateText, color: !theme.dark ? 'white' : colors.title }}>{fromDate || `${calenderDate.getFullYear()}-${calenderDate.getMonth() + 1}-${calenderDate.getDate()}`}</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
@@ -100,7 +134,7 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
 
                         />
                     </View>
-                    <TouchableOpacity style={{ ...styles.dropdown, backgroundColor: !theme.dark ? COLORS.primary : colors.card }}>
+                    <TouchableOpacity style={{ ...styles.dropdown, backgroundColor: !theme.dark ? COLORS.primary : colors.card }} onPress={async () => { await refRBSheet.current.open(); }}>
                         <Text style={{ ...styles.dropdownText, color: !theme.dark ? 'white' : colors.title }}>{timeRange}</Text>
                         <Ionicons name="chevron-down" size={20} color={!theme.dark ? 'white' : colors.title} />
                     </TouchableOpacity>
@@ -115,17 +149,17 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
                     <View style={styles.entriesSummary}>
                         <Text style={styles.summaryLabel}>ENTRIES</Text>
                         <View style={styles.summaryAmounts}>
-                            <Text style={styles.summaryLabel}>YOU GAVE</Text>
-                            <Text style={styles.summaryLabel}>YOU GOT</Text>
+                            <Text style={styles.summaryLabel}>DEBIT</Text>
+                            <Text style={styles.summaryLabel}>CREDIT</Text>
                         </View>
                     </View>
-                    <View style={styles.entriesSummary}>
+                    {/* <View style={styles.entriesSummary}>
                         <Text style={{ ...styles.summaryText, color: colors.title }}>4 Entries</Text>
                         <View style={styles.summaryAmounts}>
                             <Text style={[styles.summaryText, styles.negativeAmount]}>₹ 4,500</Text>
                             <Text style={[styles.summaryText, styles.positiveAmount]}>₹ 68,000</Text>
                         </View>
-                    </View>
+                    </View> */}
                     {transactions.map((transaction) => (
                         <View key={transaction.id} style={styles.transactionItem}>
                             <View>
