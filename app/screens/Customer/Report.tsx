@@ -7,6 +7,7 @@ import {
     TouchableOpacity,
     TextInput,
     SafeAreaView,
+    ActivityIndicator
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { StackScreenProps } from '@react-navigation/stack';
@@ -55,6 +56,9 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
     const [toDate, setToDate] = useState('');
     const [fromDate, setFromDate] = useState('');
     const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [debounceTimer, setDebounceTimer] = useState<any>(null);
+    const [isLoading, setIsLoading] = useState(false);
+
     const refRBSheet = useRef<any>(null);
 
 
@@ -66,12 +70,19 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
         }, [])
     );
     const FatechApiData = () => {
-
-        ApiService.postWithToken('api/shopkeeper/transactions/view-report', { from_date: fromDate, to_date: toDate, search: searchQuery }).then(res => {
-            if (res.status) {
-                setTransactions(res.data);
-            }
-        });
+        setIsLoading(true);
+        if (debounceTimer) {
+            clearTimeout(debounceTimer);
+        }
+        const timer = setTimeout(async () => {
+            ApiService.postWithToken('api/shopkeeper/transactions/view-report', { from_date: fromDate, to_date: toDate, search: searchQuery }).then(res => {
+                if (res.status) {
+                    setTransactions(res.data);
+                }
+                setIsLoading(false);
+            });
+        }, 1000);
+        setDebounceTimer(timer);
     }
     const showDatepicker = (inputeDatetype: string) => {
         setInputDateType(inputeDatetype);
@@ -92,10 +103,12 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
         } else {
             setFromDate(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
         }
+        FatechApiData();
     };
 
 
     const setFromAndToDate = (value: string) => {
+        FatechApiData();
         switch (value) {
             case "Today":
                 const currentDate = new Date();
@@ -184,14 +197,14 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
             />
             <ScrollView style={{ ...styles.content, backgroundColor: colors.card }}>
                 <View style={{ ...styles.dateRange, backgroundColor: !theme.dark ? COLORS.primary : colors.card }}>
-                    <TouchableOpacity onPress={() => showDatepicker('To Date')} style={{ borderRightWidth: 1, borderRightColor: 'white', flex: 1 }} >
+                    <TouchableOpacity onPress={() => showDatepicker('From Date')} style={{ borderRightWidth: 1, borderRightColor: 'white', flex: 1 }} >
                         <Text style={{ fontSize: 12, marginBottom: 5, color: !theme.dark ? 'white' : colors.title }}>From Date</Text>
                         <View style={styles.dateItem}>
                             <Ionicons name="calendar-outline" size={20} color={!theme.dark ? 'white' : colors.title} />
                             <Text style={{ ...styles.dateText, color: !theme.dark ? 'white' : colors.title }}>{fromDate || `${calenderDate.getFullYear()}-${calenderDate.getMonth() + 1}-${calenderDate.getDate()}`}</Text>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => showDatepicker('From Date')} style={{ flex: 1, alignItems: 'flex-end' }} >
+                    <TouchableOpacity onPress={() => showDatepicker('To Date')} style={{ flex: 1, alignItems: 'flex-end' }} >
                         <Text style={{ fontSize: 12, marginBottom: 5, color: !theme.dark ? 'white' : colors.title }}>To Date</Text>
                         <View style={styles.dateItem}>
                             <Ionicons name="calendar-outline" size={20} color={!theme.dark ? 'white' : colors.title} />
@@ -219,7 +232,7 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
                             placeholder="Search Entries"
                             value={searchQuery}
                             placeholderTextColor={!theme.dark ? 'white' : colors.title}
-                            onChangeText={setSearchQuery}
+                            onChangeText={(value) => { setSearchQuery(value); FatechApiData(); }}
                         />
                     </View>
                     <TouchableOpacity style={{ ...styles.dropdown, backgroundColor: !theme.dark ? COLORS.primary : colors.card }} onPress={async () => { await refRBSheet.current.open(); }}>
@@ -248,23 +261,28 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
                             <Text style={[styles.summaryText, styles.positiveAmount]}>₹ 68,000</Text>
                         </View>
                     </View> */}
-                    {transactions.map((transaction, index) => (
-                        <View key={index} style={styles.transactionItem}>
-                            <View>
-                                <Text style={{ ...styles.transactionName, color: colors.title }}>{transaction.customer_info.name}</Text>
-                                <Text style={styles.transactionDate}>{transaction.transaction_date}</Text>
-                                {transaction.description && (
-                                    <Text style={styles.transactionDescription}>{transaction.description}</Text>
-                                )}
-                            </View>
-                            <Text style={[
-                                styles.transactionAmount,
-                                transaction.transaction_type === 'CREDIT' ? styles.positiveAmount : styles.negativeAmount
-                            ]}>
-                                ₹ {parseInt(transaction.amount).toLocaleString()}
-                            </Text>
-                        </View>
-                    ))}
+                    {
+                        isLoading == true ? <ActivityIndicator size="large" color={colors.title} />
+                            : transactions.length == 0 ?
+                                <Text style={{ ...styles.summaryText, color: colors.title, textAlign: 'center' }}>No Data Found</Text> :
+
+                                transactions.map((transaction, index) => (
+                                    <View key={index} style={styles.transactionItem}>
+                                        <View>
+                                            <Text style={{ ...styles.transactionName, color: colors.title }}>{transaction.customer_info.name}</Text>
+                                            <Text style={styles.transactionDate}>{transaction.transaction_date}</Text>
+                                            {transaction.description && (
+                                                <Text style={styles.transactionDescription}>{transaction.description}</Text>
+                                            )}
+                                        </View>
+                                        <Text style={[
+                                            styles.transactionAmount,
+                                            transaction.transaction_type === 'CREDIT' ? styles.positiveAmount : styles.negativeAmount
+                                        ]}>
+                                            ₹ {parseInt(transaction.amount).toLocaleString()}
+                                        </Text>
+                                    </View>
+                                ))}
                 </View>
             </ScrollView>
 
