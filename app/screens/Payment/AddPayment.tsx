@@ -93,7 +93,7 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
         setIsLoading(true);
         ApiService.postWithToken("api/shopkeeper/transactions/add-transaction", data).then((res) => {
             if (res.status == true) {
-                MessagesService.commonMessage(res.message);
+                MessagesService.commonMessage(res.message, "SUCCESS");
                 navigation.goBack();
             }
             setIsLoading(false);

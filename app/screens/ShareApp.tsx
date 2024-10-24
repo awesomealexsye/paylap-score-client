@@ -276,44 +276,7 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 						</View>
 					</View>
 
-					<Text style={{
-						...FONTS.fontBold,
-						fontSize: SIZES.font,
-						color: colors.title,
 
-					}}>Invite</Text>
-
-					<View style={{
-						flexDirection: "row",
-						justifyContent: "space-evenly",
-						alignItems: "center",
-						marginVertical: 20
-					}}>
-						<CustomerActivityBtn
-							gap
-							icon={<MaterialCommunityIcons name={'whatsapp'} color={colors.title} size={23} />}
-							color={colors.card}
-							text='WhatsApp'
-							onpress={shareAppOnWhatsApp}
-						/>
-						<CustomerActivityBtn
-
-							gap
-							icon={<MaterialIcons name="sms" size={23} color={colors.title} />} color={colors.card}
-							text='SMS'
-							onpress={shareAppViaSMS}
-						/><CustomerActivityBtn
-							gap
-							icon={<MaterialIcons name="email" size={23} color={colors.title} />} color={colors.card}
-							text='Email'
-							onpress={shareAppOnMail}
-						/><CustomerActivityBtn
-							gap
-							icon={<MaterialIcons name="more-horiz" size={25} color={colors.title} />} color={colors.card}
-							text='More'
-							onpress={shareApp}
-						/>
-					</View>
 					<View style={{ flexDirection: 'row', alignItems: "center", justifyContent: "space-between" }}>
 						<Text style={{
 							...FONTS.fontBold,
