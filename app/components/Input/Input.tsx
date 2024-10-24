@@ -129,6 +129,7 @@ const Input = ({
                 keyboardType={keyboardType}
                 onBlur={onBlur}
                 numberOfLines={numberOfLines}
+                returnKeyType="done"
                 placeholderTextColor={inputBorder ? COLORS.text : theme.dark ? 'rgba(255,255,255,.5)' : '#666666'}
             />
             {text &&

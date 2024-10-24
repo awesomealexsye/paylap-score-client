@@ -101,11 +101,11 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
     return (
 
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.background, }}>
-            <Header
+            {/* <Header
                 leftIcon='back'
-                backgroundColor={COLORS.primary}
+                backgroundColor={COLORS.background}
                 transparent
-            />
+            /> */}
             <ScrollView style={{ flexDirection: "column", height: "100%" }}>
                 <LinearGradient
                     colors={[COLORS.primary, colors.background]}
