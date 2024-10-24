@@ -170,7 +170,7 @@ const BottomMenu = ({ state, navigation, descriptors }: Props) => {
                                     {
                                         label === 'Home' ? <FontAwesome name={'home'} size={20} color={isFocused ? theme.dark ? COLORS.card : colors.card : COLORS.primary} /> :
                                             label === 'FindUser' ? <Ionicons name={'speedometer'} size={20} color={isFocused ? theme.dark ? COLORS.card : colors.card : COLORS.primary} /> :
-                                                label === 'UserReferralList' ? <FontAwesome name={'users'} size={20} color={isFocused ? theme.dark ? COLORS.card : colors.card : COLORS.primary} /> :
+                                                label === 'Share' ? <FontAwesome name={'users'} size={20} color={isFocused ? theme.dark ? COLORS.card : colors.card : COLORS.primary} /> :
                                                     label === 'Profile' ? <FontAwesome name={'user'} size={20} color={isFocused ? theme.dark ? COLORS.card : colors.card : COLORS.primary} /> : IMAGES.tachometerfast
                                     }
                                     {/* </Animated.View> */}

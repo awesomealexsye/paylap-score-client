@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import {
     View,
     Text,
@@ -11,13 +11,35 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
-import { useTheme } from '@react-navigation/native';
+import { useTheme, useFocusEffect } from '@react-navigation/native';
 import { COLORS } from '../../constants/theme';
 import Header from '../../layout/Header';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import ReportFilterOptionSheet from '../../components/BottomSheet/ReportFilterOptionSheet';
+import { ApiService } from '../../lib/ApiService';
 
+
+
+
+let toDateObj = new Date();
+let fromDateObj = new Date();
+
+type Transaction = {
+    customer_id: string,
+    amount: string,
+    transaction_type: string,
+    description: string,
+    transaction_date: string,
+    estimated_given_date: string,
+    customer_info: {
+        id: number,
+        name: string,
+        mobile: string
+    },
+    transaction_casual_date: string
+
+}
 
 type ReportDetailsScreenProps = StackScreenProps<RootStackParamList, 'Report'>
 const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
@@ -26,48 +48,116 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
     const { colors }: { colors: any; } = theme;
 
     const [searchQuery, setSearchQuery] = useState('');
-    const [timeRange, setTimeRange] = useState('This Week');
+    const [timeRange, setTimeRange] = useState('Today');
     const [inputDateType, setInputDateType] = useState('To Date');
     const [showCalender, setCalenderShow] = useState(false);
     const [calenderDate, setCalenderDate] = useState(new Date());
     const [toDate, setToDate] = useState('');
     const [fromDate, setFromDate] = useState('');
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
     const refRBSheet = useRef<any>(null);
 
+
+    useFocusEffect(
+        useCallback(() => {
+            setFromAndToDate(timeRange);
+            FatechApiData();
+
+        }, [])
+    );
+    const FatechApiData = () => {
+
+        ApiService.postWithToken('api/shopkeeper/transactions/view-report', { from_date: fromDate, to_date: toDate, search: searchQuery }).then(res => {
+            if (res.status) {
+                setTransactions(res.data);
+            }
+        });
+    }
     const showDatepicker = (inputeDatetype: string) => {
         setInputDateType(inputeDatetype);
         setCalenderShow(true);
     };
     const onChange = (event: any, selectedDate: any) => {
-        const currentDate = selectedDate || calenderDate;
+        let currentDate = selectedDate || calenderDate;
+        currentDate = currentDate > new Date() ? new Date() : currentDate;
+
         setCalenderShow(false);
         setCalenderDate(new Date());
 
         if (inputDateType == "To Date") {
             setToDate(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
+            if (timeRange === "Custom Date") {
+                showDatepicker("From Date")
+            }
         } else {
             setFromDate(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
         }
     };
 
-    const handlePress = async (value: string) => {
-        setTimeRange(value);
-        await refRBSheet.current.close();
+
+    const setFromAndToDate = (value: string) => {
+        switch (value) {
+            case "Today":
+                const currentDate = new Date();
+                setToDate(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
+                setFromDate(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
+                break;
+            case "Yesterday":
+                fromDateObj = new Date();
+                fromDateObj.setDate(fromDateObj.getDate() - 1)
+                toDateObj = new Date();
+                setToDate(`${toDateObj.getFullYear()}-${toDateObj.getMonth() + 1}-${toDateObj.getDate()}`);
+                setFromDate(`${fromDateObj.getFullYear()}-${fromDateObj.getMonth() + 1}-${fromDateObj.getDate()}`);
+                break;
+            case "This Week":
+                fromDateObj = new Date();
+                fromDateObj.setDate(fromDateObj.getDate() - fromDateObj.getDay());
+                toDateObj = new Date();
+                setToDate(`${toDateObj.getFullYear()}-${toDateObj.getMonth() + 1}-${toDateObj.getDate()}`);
+                setFromDate(`${fromDateObj.getFullYear()}-${fromDateObj.getMonth() + 1}-${fromDateObj.getDate()}`);
+                break;
+            case "Last Week":
+                fromDateObj = new Date();
+                fromDateObj.setDate(fromDateObj.getDate() - fromDateObj.getDay() - 7);
+                toDateObj = new Date();
+                toDateObj.setDate(toDateObj.getDate() - toDateObj.getDay() - 1);
+                setToDate(`${toDateObj.getFullYear()}-${toDateObj.getMonth() + 1}-${toDateObj.getDate()}`);
+                setFromDate(`${fromDateObj.getFullYear()}-${fromDateObj.getMonth() + 1}-${fromDateObj.getDate()}`);
+                break;
+            case "This Month":
+                fromDateObj = new Date();
+                fromDateObj.setDate(1);
+                toDateObj = new Date();
+                setToDate(`${toDateObj.getFullYear()}-${toDateObj.getMonth() + 1}-${toDateObj.getDate()}`);
+                setFromDate(`${fromDateObj.getFullYear()}-${fromDateObj.getMonth() + 1}-${fromDateObj.getDate()}`);
+                break;
+            case "Last Month":
+                fromDateObj = new Date();
+                fromDateObj.setMonth(fromDateObj.getMonth() - 1);
+                fromDateObj.setDate(1);
+                toDateObj = new Date();
+                toDateObj.setDate(0);
+                setToDate(`${toDateObj.getFullYear()}-${toDateObj.getMonth() + 1}-${toDateObj.getDate()}`);
+                setFromDate(`${fromDateObj.getFullYear()}-${fromDateObj.getMonth() + 1}-${fromDateObj.getDate()}`);
+                break;
+            case "Custom Date":
+                showDatepicker("To Date")
+                break;
+        }
     }
 
-    const transactions = [
-        { id: 1, name: 'Ajay Colleage', date: '15 Oct 24 • 01:15 PM', amount: 5450, type: 'credit' },
-        { id: 2, name: 'Ajay Colleage', date: '09 Oct 24 • 09:41 AM', amount: 2550, type: 'credit', description: 'Office rent' },
-        { id: 3, name: 'Sunil Sir', date: '02 Oct 24 • 06:35 PM', amount: 60000, type: 'credit' },
-        { id: 4, name: 'Ajay Colleage', date: '02 Oct 24 • 09:40 AM', amount: 4500, type: 'debit', description: 'Office rent' },
-    ];
+    const handleBottomSheet = async (value: string) => {
+        setTimeRange(value);
+        setFromAndToDate(value);
+        await refRBSheet.current.close();
+    }
 
     return (
         <SafeAreaView style={{ ...styles.container }}>
             <RBSheet
                 ref={refRBSheet}
                 closeOnDragDown={true}
-                height={240}
+                height={320}
                 openDuration={100}
                 customStyles={{
 
@@ -84,9 +174,8 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
                 }}
             >
                 {
-                    <ReportFilterOptionSheet handleSelectedValue={handlePress} />
+                    <ReportFilterOptionSheet handleSelectedValue={handleBottomSheet} />
                 }
-
             </RBSheet>
             <Header
                 title={'View Report'}
@@ -99,14 +188,14 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
                         <Text style={{ fontSize: 12, marginBottom: 5, color: !theme.dark ? 'white' : colors.title }}>From Date</Text>
                         <View style={styles.dateItem}>
                             <Ionicons name="calendar-outline" size={20} color={!theme.dark ? 'white' : colors.title} />
-                            <Text style={{ ...styles.dateText, color: !theme.dark ? 'white' : colors.title }}>{toDate || `${calenderDate.getFullYear()}-${calenderDate.getMonth() + 1}-${calenderDate.getDate()}`}</Text>
+                            <Text style={{ ...styles.dateText, color: !theme.dark ? 'white' : colors.title }}>{fromDate || `${calenderDate.getFullYear()}-${calenderDate.getMonth() + 1}-${calenderDate.getDate()}`}</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => showDatepicker('From Date')} style={{ flex: 1, alignItems: 'flex-end' }} >
                         <Text style={{ fontSize: 12, marginBottom: 5, color: !theme.dark ? 'white' : colors.title }}>To Date</Text>
                         <View style={styles.dateItem}>
                             <Ionicons name="calendar-outline" size={20} color={!theme.dark ? 'white' : colors.title} />
-                            <Text style={{ ...styles.dateText, color: !theme.dark ? 'white' : colors.title }}>{fromDate || `${calenderDate.getFullYear()}-${calenderDate.getMonth() + 1}-${calenderDate.getDate()}`}</Text>
+                            <Text style={{ ...styles.dateText, color: !theme.dark ? 'white' : colors.title }}>{toDate || `${calenderDate.getFullYear()}-${calenderDate.getMonth() + 1}-${calenderDate.getDate()}`}</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
@@ -131,7 +220,6 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
                             value={searchQuery}
                             placeholderTextColor={!theme.dark ? 'white' : colors.title}
                             onChangeText={setSearchQuery}
-
                         />
                     </View>
                     <TouchableOpacity style={{ ...styles.dropdown, backgroundColor: !theme.dark ? COLORS.primary : colors.card }} onPress={async () => { await refRBSheet.current.open(); }}>
@@ -160,20 +248,20 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
                             <Text style={[styles.summaryText, styles.positiveAmount]}>₹ 68,000</Text>
                         </View>
                     </View> */}
-                    {transactions.map((transaction) => (
-                        <View key={transaction.id} style={styles.transactionItem}>
+                    {transactions.map((transaction, index) => (
+                        <View key={index} style={styles.transactionItem}>
                             <View>
-                                <Text style={{ ...styles.transactionName, color: colors.title }}>{transaction.name}</Text>
-                                <Text style={styles.transactionDate}>{transaction.date}</Text>
+                                <Text style={{ ...styles.transactionName, color: colors.title }}>{transaction.customer_info.name}</Text>
+                                <Text style={styles.transactionDate}>{transaction.transaction_date}</Text>
                                 {transaction.description && (
                                     <Text style={styles.transactionDescription}>{transaction.description}</Text>
                                 )}
                             </View>
                             <Text style={[
                                 styles.transactionAmount,
-                                transaction.type === 'credit' ? styles.positiveAmount : styles.negativeAmount
+                                transaction.transaction_type === 'CREDIT' ? styles.positiveAmount : styles.negativeAmount
                             ]}>
-                                ₹ {transaction.amount.toLocaleString()}
+                                ₹ {parseInt(transaction.amount).toLocaleString()}
                             </Text>
                         </View>
                     ))}

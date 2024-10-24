@@ -11,6 +11,7 @@ import CustomerScore from '../screens/Profile/CustomerScore';
 import NotAvailable from '../screens/NotAvailable';
 import FindUser from '../screens/Profile/FindUser';
 import UserReferralList from '../screens/Profile/⁠UserReferralList';
+import ShareApp from '../screens/ShareApp';
 
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
@@ -38,8 +39,8 @@ const BottomNavigation = () => {
                 component={FindUser}
             />
             <Tab.Screen
-                name='UserReferralList'
-                component={UserReferralList}
+                name='Share'
+                component={ShareApp}
             />
             <Tab.Screen
                 name='Profile'

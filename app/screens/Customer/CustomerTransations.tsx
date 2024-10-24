@@ -161,10 +161,10 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                 <View style={{ flex: 1, alignItems: 'center' }} >
                     <View style={{
                         height: 80,
-                        width: "95%",
+                        width: "90%",
                         top: 15,
                         backgroundColor: customerData.data?.shopkeeper_transaction_sum?.transaction_type === "DEBIT" ? COLORS.danger : COLORS.primary,
-                        borderRadius: 31,
+                        borderRadius: 15,
                         shadowColor: "#025135",
                         shadowOffset: {
                             width: 0,
@@ -238,7 +238,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                 }
 
             </ScrollView>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', paddingTop: 10, backgroundColor: colors.dark }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', paddingVertical: 20, backgroundColor: colors.dark }}>
                 <TouchableOpacity style={[styles.removeBtn]} onPress={() => navigation.navigate("AddPayment", { item: item, transaction_type: "DEBIT" })}>
 
                     <Text style={styles.addButtonText}>
@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
     addAmmount: {
         backgroundColor: COLORS.primary,
         padding: 15, // 15px padding around the button content
-        borderRadius: 12, // Circular button
+        borderRadius: 10, // Circular button
         elevation: 5,  // Shadow for Android
         shadowColor: '#000',  // Shadow for iOS
         shadowOffset: { width: 0, height: 4 },  // Shadow offset for iOS
@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
     removeBtn: {
         backgroundColor: 'red', // Matches the button's background color from CSS
         padding: 15, // 15px padding around the button content
-        borderRadius: 12, // Circular button
+        borderRadius: 10, // Circular button
         elevation: 5,  // Shadow for Android
         shadowColor: '#000',  // Shadow for iOS
         shadowOffset: { width: 0, height: 4 },  // Shadow offset for iOS

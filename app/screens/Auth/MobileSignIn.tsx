@@ -1,6 +1,6 @@
-import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, StyleSheet, ActivityIndicator, TextInput } from 'react-native'
+import { View, Text, SafeAreaView, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react';
-import { COLORS, FONTS } from '../../constants/theme'
+import { COLORS, FONTS, SIZES } from '../../constants/theme'
 import { GlobalStyleSheet } from '../../constants/StyleSheet'
 import { useTheme } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
@@ -11,7 +11,6 @@ import Button from '../../components/Button/Button'
 import { ApiService } from '../../lib/ApiService';
 import { MessagesService } from '../../lib/MessagesService';
 import StorageService from '../../lib/StorageService';
-import Header from '../../layout/Header';
 import { LinearGradient } from 'expo-linear-gradient';
 
 
@@ -82,17 +81,22 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
                         justifyContent: 'center',
                         width: "100%"
                     }}>
-                        <Image
-                            source={IMAGES.appnamedark}
-                            style={{
-                                height: 140,
-                                width: 190,
-                                objectFit: "contain",
-                            }}
-                        />
+                        <View style={{
+                            flex: 1.5,
+                            alignItems: 'center',
+                        }}>
+                            <Image
+                                source={theme.dark ? IMAGES.appnamedark : IMAGES.appname}
+                                style={{
+                                    height: 110,
+                                    width: 150,
+                                    objectFit: "contain",
+                                }}
+                            />
+                        </View>
                         <Text style={{
                             ...FONTS.fontBold,
-                            fontSize: 24,
+                            fontSize: SIZES.font,
                             color: COLORS.background,
                             marginTop: 10,
                         }}>Welcome Back!</Text>
@@ -110,7 +114,7 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
                         <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
                             <Text style={{
                                 color: colors.title, ...FONTS.fontMedium,
-                                fontSize: 14,
+                                fontSize: SIZES.font,
                             }}>Mobile Number</Text>
                         </View>
                         <View style={{ marginVertical: 10, }}>
@@ -133,7 +137,7 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
                                     <Button
                                         title={"Send OTP"}
                                         onPress={sentOtp}
-                                        style={{ borderRadius: 52 }}
+                                        style={{ borderRadius: 15 }}
                                     /> : <ActivityIndicator color={COLORS.primary} size={70} />
                             }
                         </View>

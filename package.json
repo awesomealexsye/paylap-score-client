@@ -52,7 +52,7 @@
     "react-native-drawer-layout": "^3.2.2",
     "react-native-drop-shadow": "^1.0.0",
     "react-native-gesture-handler": "~2.14.0",
-    "react-native-image-crop-picker": "^0.41.1",
+    "react-native-image-crop-picker": "^0.41.2",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-maps": "1.10.0",
     "react-native-maps-directions": "^1.9.0",

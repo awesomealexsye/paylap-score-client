@@ -1,6 +1,6 @@
-import { useTheme } from '@react-navigation/native';
+import { useTheme, useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useEffect, useState, } from 'react'
+import React, { useCallback, useEffect, useState, } from 'react'
 import {
 	View,
 	Text,
@@ -21,6 +21,12 @@ import { COLORS, FONTS, SIZES } from '../constants/theme';
 import CommonService from '../lib/CommonService';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import CustomerActivityBtn from './Customer/CustomerActivityBtn';
+import { ApiService } from '../lib/ApiService';
+
+
+
+
+
 
 type ShareAppProps = StackScreenProps<RootStackParamList, 'ShareApp'>;
 
@@ -33,6 +39,7 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 	const [userReferral, setUserReferral] = useState("");
 	const selector = Platform.OS === "ios" ? "& " : "?";
 
+	const play_store_url = "https://play.google.com/store/apps/details?id=com.paylap.paylapscore";
 	useEffect(() => {
 		CommonService.currentUserDetail().then((res) => {
 			setUserReferral(res?.refferal);
@@ -41,10 +48,15 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 
 	const shareApp = async () => {
 		try {
+			// const result = await Share.share({
+			// 	message:
+			// 		'Hey! Try out the PayLap app for great deals and rewards, Download it from '+play_store_url+' Don’t forget to use my referral code: .' + userReferral,
+			// 	url: play_store_url
+			// });
 			const result = await Share.share({
 				message:
-					'Hey! Try out the PayLap app for great deals and rewards, Download it from https://play.google.com/store/apps/details?id=com.paylap.paylapscore Don’t forget to use my referral code: .' + userReferral,
-				url: "https://play.google.com/store/apps/details?id=com.paylap.paylapscore"
+					'Hey! Try out the PayLap app for great deals and rewards, Don’t forget to use my referral code: .' + userReferral,
+				url: "https://paylapscore.com/"
 			});
 			if (result.action === Share.sharedAction) {
 				if (result.activityType) {
@@ -64,7 +76,7 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 
 
 	const shareAppOnWhatsApp = () => {
-		const message = "Hey! Check out this amazing app: https://play.google.com/store/apps/details?id=com.paylap.paylapscore"; // Your app's link
+		const message = "Hey! Check out this amazing app: " + play_store_url; // Your app's link
 		const url = `whatsapp://send${selector}text=${encodeURIComponent(message)}`;
 
 		Linking.canOpenURL(url)
@@ -79,9 +91,8 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 	};
 
 	const shareAppViaSMS = () => {
-		const message = `Join me on PayLap Score! Use my referral code: ${userReferral} https://play.google.com/store/apps/details?id=com.paylap.paylapscore`;
+		const message = `Join me on PayLap Score! Use my referral code: ${userReferral} ${play_store_url}`;
 		const phoneNumber = ""; // You can pre-fill the number if needed, or leave it blank for the user to enter
-
 		const url = `sms:${phoneNumber}${selector}body=${encodeURIComponent(message)}`;
 
 		Linking.canOpenURL(url)
@@ -97,7 +108,7 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 
 	const shareAppOnMail = () => {
 
-		const body = `Join me on PayLap Score! Use my referral code: ${userReferral} https://play.google.com/store/apps/details?id=com.paylap.paylapscore`;
+		const body = `Join me on PayLap Score! Use my referral code: ${userReferral} ${play_store_url}`;
 		const subject = "Check out this amazing app!";
 		const email = `mailto:${selector}subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
@@ -112,8 +123,6 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 			.catch((err) => console.error("An error occurred", err));
 	};
 
-
-
 	const handleShareCode = async () => {
 		try {
 			await Share.share({
@@ -125,30 +134,33 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 		}
 	};
 
-	const referredPeople = [
-		{ name: 'Rahul', image: IMAGES.small1, status: 'Joined • Earned ₹50' },
-		{ name: 'Priya', image: IMAGES.small1, status: 'Invited 2 days ago' },
-		{ name: 'Amit', image: IMAGES.small1, status: 'Joined • Earned ₹50' },
-		{ name: 'Sneha', image: IMAGES.small1, status: 'Invited 5 days ago' },
-	];
+	const [referredPeople, setReferredPeople] = useState([]);
 
+	useFocusEffect(
+		useCallback(() => {
+			ApiService.postWithToken('api/user/refferal-list', {}).then(res => {
+				if (res.status) {
+					setReferredPeople(res.data);
+				}
+
+			})
+		}, [])
+	);
 
 	const ReferredPersonListTile = (referredPeople: any) => (
 		<TouchableOpacity style={{
 			flexDirection: 'row',
 			alignItems: 'center',
 			padding: 12,
-
-			// borderWidth: 0.2,
-			borderBottomColor: COLORS.primary,
+			// borderBottomColor: COLORS.primary,
 		}} onPress={() => { }}>
-			{/* <Image src={referredPeople.image} style={{
+			<Image source={{ uri: referredPeople.image }} style={{
 				width: 48,
 				height: 48,
-				borderRadius: 24,
+				borderRadius: 23,
 				marginRight: 16,
 				backgroundColor: COLORS.primary
-			}} /> */}
+			}} />
 			<View style={{ flex: 1, }}>
 				<Text style={{
 					...FONTS.fontSemiBold,
@@ -157,20 +169,20 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 
 				}}>{referredPeople.name}</Text>
 				<Text style={{
-					...FONTS.fontSemiBold,
+					...FONTS.fontRegular,
 					color: colors.title,
-					fontSize: SIZES.fontXs,
+					fontSize: SIZES.fontSm,
 					marginTop: 4,
 				}}>{referredPeople.status}</Text>
 			</View>
-			<MaterialIcons name="check" size={24} color={colors.title} />
+			<MaterialIcons name="check" size={24} color={COLORS.primary} />
 		</TouchableOpacity>
 	);
 
 
 	return (
-		<View style={{ backgroundColor: colors.card, flex: 1 }}>
-			<View style={[GlobalStyleSheet.card, { backgroundColor: colors.card, }]}>
+		<View style={{ backgroundColor: colors.background, flex: 1 }}>
+			<View style={[GlobalStyleSheet.card, { backgroundColor: colors.background, }]}>
 
 				<Header
 					title='Share'
@@ -182,29 +194,20 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 
 				<StatusBar barStyle="light-content" backgroundColor="#4C1D95" />
 
-				{/* <View style={styles.header}>
-					<TouchableOpacity onPress={() => navigation.goBack()}>
-						<MaterialIcons name="arrow-back" size={24} color="white" />
-					</TouchableOpacity>
-					<TouchableOpacity onPress={() => { }}>
-						<MaterialIcons name="help-outline" size={24} color="white" />
-					</TouchableOpacity>
-				</View> */}
-
 				<ScrollView contentContainerStyle={{ padding: 16, }}>
 					<Text style={{
 						...FONTS.fontBold,
 						fontSize: 36,
 						color: colors.title,
 						marginBottom: 8,
-					}}>Earn ₹50!</Text>
+					}}>Invite PayLap Score !</Text>
 					<Text style={{
 						fontSize: 16,
 						color: colors.title,
 						marginBottom: 24,
 						// lineHeight: 24,
 					}}>
-						Invite your Indian contacts and NRI friends & family to PayLap Score. Earn on their 1st  payment.
+						Invite your Indian contacts and NRI friends & family to PayLap Score.
 					</Text>
 
 					<View style={{
@@ -259,7 +262,8 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 							<Text style={{
 								...FONTS.fontBold,
 								color: COLORS.white,
-								fontSize: SIZES.fontXl,
+								fontSize: SIZES.h4,
+								paddingHorizontal: 15
 
 							}}>{userReferral}</Text>
 							<TouchableOpacity onPress={handleShareCode} style={{
@@ -287,45 +291,55 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 					}}>
 						<CustomerActivityBtn
 							gap
-							icon={<MaterialCommunityIcons name={'whatsapp'} color={colors.title} size={22} />}
+							icon={<MaterialCommunityIcons name={'whatsapp'} color={colors.title} size={23} />}
 							color={colors.card}
 							text='WhatsApp'
 							onpress={shareAppOnWhatsApp}
 						/>
 						<CustomerActivityBtn
+
 							gap
-							icon={<MaterialIcons name="sms" size={24} color={colors.title} />} color={colors.card}
+							icon={<MaterialIcons name="sms" size={23} color={colors.title} />} color={colors.card}
 							text='SMS'
 							onpress={shareAppViaSMS}
 						/><CustomerActivityBtn
 							gap
-							icon={<MaterialIcons name="email" size={24} color={colors.title} />} color={colors.card}
+							icon={<MaterialIcons name="email" size={23} color={colors.title} />} color={colors.card}
 							text='Email'
 							onpress={shareAppOnMail}
 						/><CustomerActivityBtn
 							gap
-							icon={<MaterialIcons name="more-horiz" size={24} color={colors.title} />} color={colors.card}
+							icon={<MaterialIcons name="more-horiz" size={25} color={colors.title} />} color={colors.card}
 							text='More'
 							onpress={shareApp}
 						/>
 					</View>
-					<Text style={{
-						...FONTS.fontBold,
-						fontSize: SIZES.font,
-						color: colors.title,
+					<View style={{ flexDirection: 'row', alignItems: "center", justifyContent: "space-between" }}>
+						<Text style={{
+							...FONTS.fontBold,
+							fontSize: SIZES.font,
+							color: colors.title,
 
-					}}>People you've referred</Text>
+						}}>People you've referred</Text>
+						<Text style={{
+							...FONTS.fontBold,
+							fontSize: SIZES.font,
+							color: colors.title,
+
+						}}>( {referredPeople.length} )</Text>
+					</View>
+
 					<View style={{
 						backgroundColor: colors.card,
 						borderRadius: 12,
 						marginVertical: 20
 					}}>
-						{referredPeople.map((person, index) => (
+						{referredPeople.map((person: any, index) => (
 							<ReferredPersonListTile
 								key={index}
 								name={person.name}
-								image={person.image}
-								status={person.status}
+								image={person.profile_image}
+								status={person.joined_at}
 								onPress={{}}
 							/>
 						))}

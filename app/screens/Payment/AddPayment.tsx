@@ -15,6 +15,7 @@ import useImagePicker from '../../customHooks/ImagePickerHook';
 import { ApiService } from '../../lib/ApiService';
 import { MessagesService } from '../../lib/MessagesService';
 import { ActivityIndicator } from 'react-native-paper';
+import { IMAGES } from '../../constants/Images';
 
 type AddPaymentScreenProps = StackScreenProps<RootStackParamList, 'AddPayment'>;
 
@@ -110,6 +111,19 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
             />
             <KeyboardAvoidingView>
                 <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 15 }}>
+                    <View style={{
+                        flex: 1,
+                        alignItems: 'center',
+                    }}>
+                        <Image
+                            source={theme.dark ? IMAGES.appnamedark : IMAGES.appname}
+                            style={{
+                                height: 110,
+                                width: 150,
+                                objectFit: "contain",
+                            }}
+                        />
+                    </View>
                     <View style={[GlobalStyleSheet.card, { backgroundColor: colors.card }]}>
                         <View style={GlobalStyleSheet.cardBody}>
                             <View style={{ marginBottom: 10 }}>
