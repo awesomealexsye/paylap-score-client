@@ -18,7 +18,7 @@ export const IMAGES = {
     help: require('../assets/images/icons/help.png'),
     mycart: require('../assets/images/icons/shopping2.png'),
     Category: require('../assets/images/icons/document.png'),
-    termandCondition: require('../assets/images/icons/term&condition.png'),
+    termandCondition: require('../assets/images/icons/term-condition.png'),
     user2: require('../assets/images/icons/user.png'),
     user3: require('../assets/images/icons/user4.png'),
     grid3: require('../assets/images/icons/grid3.png'),

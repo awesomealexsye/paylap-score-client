@@ -136,7 +136,7 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
                             alignItems: 'center',
                         }}>
                             <Image
-                                source={theme.dark ? IMAGES.appnamedark : IMAGES.appname}
+                                source={IMAGES.appnamedark}
                                 style={{
                                     height: 110,
                                     width: 150,

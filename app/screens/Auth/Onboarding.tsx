@@ -128,7 +128,7 @@ const Onboarding = ({ navigation }: OnboardingScreenProps) => {
                 <View style={[GlobalStyleSheet.container, { padding: 0, paddingHorizontal: 30, paddingBottom: 30 }]}>
                     <Button
                         style={{ borderRadius: 52 }}
-                        title="Sign In"
+                        title="Log In"
                         onPress={() => navigation.navigate('MobileSignIn')}
                     />
                 </View>

@@ -42,7 +42,7 @@ const MenuItems = [
     {
         id: "6",
         icon: IMAGES.termandCondition,
-        name: "Terms & Conditions",
+        name: "Our Policy",
         navigate: 'TermsAndConditionsScreen',
     },
     {

@@ -142,7 +142,7 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
                                 <TouchableOpacity
                                     onPress={() => navigation.navigate('SignUp')}
                                 >
-                                    <Text style={{ ...FONTS.fontBold, color: COLORS.primary }}> SIGN UP </Text>
+                                    <Text style={{ ...FONTS.fontBold, color: COLORS.primary }}> Register </Text>
                                 </TouchableOpacity>
                             </View>
                         </View>

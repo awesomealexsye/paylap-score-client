@@ -1,137 +1,60 @@
-import { useTheme, useFocusEffect } from '@react-navigation/native';
+import { MaterialIcons } from '@expo/vector-icons';
+import { useFocusEffect, useTheme } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useEffect, useState, } from 'react'
+import React, { useCallback, useEffect, useState } from 'react';
 import {
-	View,
-	Text,
-	TouchableOpacity,
+	Alert,
 	Image,
+	Platform,
 	ScrollView,
 	Share,
-	Alert,
 	StatusBar,
-	Linking,
-	Platform,
-} from 'react-native'
-import { RootStackParamList } from '../navigation/RootStackParamList';
-import Header from '../layout/Header';
+	Text,
+	TouchableOpacity,
+	View
+} from 'react-native';
 import { GlobalStyleSheet } from '../constants/StyleSheet';
-import { IMAGES } from '../constants/Images';
 import { COLORS, FONTS, SIZES } from '../constants/theme';
-import CommonService from '../lib/CommonService';
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
-import CustomerActivityBtn from './Customer/CustomerActivityBtn';
+import Header from '../layout/Header';
 import { ApiService } from '../lib/ApiService';
-
-
-
-
-
+import CommonService from '../lib/CommonService';
+import { RootStackParamList } from '../navigation/RootStackParamList';
+import CONFIG from '../constants/config';
+import * as Clipboard from 'expo-clipboard';  // Import Clipboard API
+import { MessagesService } from '../lib/MessagesService';
 
 type ShareAppProps = StackScreenProps<RootStackParamList, 'ShareApp'>;
 
 const ShareApp = ({ navigation }: ShareAppProps) => {
-
-
 	const theme = useTheme();
 	const { colors }: { colors: any } = theme;
 
 	const [userReferral, setUserReferral] = useState("");
 	const selector = Platform.OS === "ios" ? "& " : "?";
 
-	const play_store_url = "https://play.google.com/store/apps/details?id=com.paylap.paylapscore";
+	const PLAY_STORE_URL = CONFIG.APP_BUILD.ANDROID.APP_URL;
+	const APP_STORE_URL = CONFIG.APP_BUILD.IOS.APP_URL;
+
 	useEffect(() => {
 		CommonService.currentUserDetail().then((res) => {
 			setUserReferral(res?.refferal);
-		})
+		});
 	}, []);
-
-	const shareApp = async () => {
-		try {
-			// const result = await Share.share({
-			// 	message:
-			// 		'Hey! Try out the PayLap app for great deals and rewards, Download it from '+play_store_url+' Don’t forget to use my referral code: .' + userReferral,
-			// 	url: play_store_url
-			// });
-			const result = await Share.share({
-				message:
-					'Hey! Try out the PayLap app for great deals and rewards, Don’t forget to use my referral code: .' + userReferral,
-				url: "https://paylapscore.com/"
-			});
-			if (result.action === Share.sharedAction) {
-				if (result.activityType) {
-					// shared with activity type of result.activityType
-				} else {
-					// shared
-				}
-			} else if (result.action === Share.dismissedAction) {
-				// dismissed
-			}
-		} catch (error: any) {
-			Alert.alert(error.message);
-		}
-	}
-
-
-
-
-	const shareAppOnWhatsApp = () => {
-		const message = "Hey! Check out this amazing app: " + play_store_url; // Your app's link
-		const url = `whatsapp://send${selector}text=${encodeURIComponent(message)}`;
-
-		Linking.canOpenURL(url)
-			.then((supported) => {
-				if (supported) {
-					Linking.openURL(url);
-				} else {
-					Alert.alert("WhatsApp is not installed on this device");
-				}
-			})
-			.catch((err) => console.error("An error occurred", err));
-	};
-
-	const shareAppViaSMS = () => {
-		const message = `Join me on PayLap Score! Use my referral code: ${userReferral} ${play_store_url}`;
-		const phoneNumber = ""; // You can pre-fill the number if needed, or leave it blank for the user to enter
-		const url = `sms:${phoneNumber}${selector}body=${encodeURIComponent(message)}`;
-
-		Linking.canOpenURL(url)
-			.then((supported) => {
-				if (supported) {
-					return Linking.openURL(url);
-				} else {
-					alert("SMS client is not available");
-				}
-			})
-			.catch((err) => console.error("An error occurred", err));
-	};
-
-	const shareAppOnMail = () => {
-
-		const body = `Join me on PayLap Score! Use my referral code: ${userReferral} ${play_store_url}`;
-		const subject = "Check out this amazing app!";
-		const email = `mailto:${selector}subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-		Linking.canOpenURL(email)
-			.then((supported) => {
-				if (supported) {
-					return Linking.openURL(email);
-				} else {
-					alert("Email client is not available");
-				}
-			})
-			.catch((err) => console.error("An error occurred", err));
-	};
 
 	const handleShareCode = async () => {
 		try {
 			await Share.share({
-				message: `Join me on PayLap Score! Use my referral code: ${userReferral}`,
+				message: `🚀 Join PAYLAP Score Today! 🚀\n\nHey there! 📲 I’m using PAYLAP Score to manage finances easily, and it’s been a game-changer! You should try it too. Download the app and start managing your business effortlessly with just a few taps!\n\n💥 Use my referral code: **${userReferral}** to get started and unlock exciting features! 💥\n\n\n\n📱📱🔗 Download on Play Store: ${PLAY_STORE_URL}\n\n🔗 Download on Apple App Store: ${APP_STORE_URL}\n\nManage your business finances smarter and faster with PAYLAP Score! 📊`,
 			});
 		} catch (error) {
-			Alert.alert("SomeThing Went Wrong")
+			Alert.alert("SomeThing Went Wrong");
 			console.error('Error sharing referral code:', error);
 		}
+	};
+
+	const copyToClipboard = () => {
+		Clipboard.setString(userReferral); // Copy the referral code to the clipboard
+		MessagesService.commonMessage("Refferal Code has Copied", "SUCCESS")
 	};
 
 	const [referredPeople, setReferredPeople] = useState([]);
@@ -142,8 +65,7 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 				if (res.status) {
 					setReferredPeople(res.data);
 				}
-
-			})
+			});
 		}, [])
 	);
 
@@ -152,7 +74,6 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 			flexDirection: 'row',
 			alignItems: 'center',
 			padding: 12,
-			// borderBottomColor: COLORS.primary,
 		}} onPress={() => { }}>
 			<Image source={{ uri: referredPeople.image }} style={{
 				width: 48,
@@ -161,12 +82,11 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 				marginRight: 16,
 				backgroundColor: COLORS.primary
 			}} />
-			<View style={{ flex: 1, }}>
+			<View style={{ flex: 1 }}>
 				<Text style={{
 					...FONTS.fontSemiBold,
 					color: colors.title,
 					fontSize: SIZES.font,
-
 				}}>{referredPeople.name}</Text>
 				<Text style={{
 					...FONTS.fontRegular,
@@ -179,33 +99,26 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 		</TouchableOpacity>
 	);
 
-
 	return (
 		<View style={{ backgroundColor: colors.background, flex: 1 }}>
-			<View style={[GlobalStyleSheet.card, { backgroundColor: colors.background, }]}>
-
+			<View style={[GlobalStyleSheet.card, { backgroundColor: colors.background }]}>
 				<Header
 					title='Share'
 					leftIcon={'back'}
 					titleRight
 				/>
-
-
-
 				<StatusBar barStyle="light-content" backgroundColor="#4C1D95" />
-
-				<ScrollView contentContainerStyle={{ padding: 16, }}>
+				<ScrollView contentContainerStyle={{ padding: 16 }}>
 					<Text style={{
 						...FONTS.fontBold,
 						fontSize: 36,
 						color: colors.title,
 						marginBottom: 8,
-					}}>Invite PayLap Score !</Text>
+					}}>Invite PayLap Score!</Text>
 					<Text style={{
 						fontSize: 16,
 						color: colors.title,
 						marginBottom: 24,
-						// lineHeight: 24,
 					}}>
 						Invite your Indian contacts and NRI friends & family to PayLap Score.
 					</Text>
@@ -244,7 +157,7 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 						</View>
 					</View>
 
-					<View style={{ marginBottom: 24, }}>
+					<View style={{ marginBottom: 24 }}>
 						<Text style={{
 							...FONTS.fontBold,
 							fontSize: SIZES.font,
@@ -263,9 +176,19 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 								...FONTS.fontBold,
 								color: COLORS.white,
 								fontSize: SIZES.h4,
-								paddingHorizontal: 15
-
+								paddingHorizontal: 15,
 							}}>{userReferral}</Text>
+
+							{/* Copy to clipboard button */}
+							<TouchableOpacity onPress={copyToClipboard} style={{
+								backgroundColor: colors.primaryLight,
+								borderRadius: 20,
+								padding: 8,
+								marginLeft: 10,
+							}}>
+								<MaterialIcons name="content-copy" size={24} color={COLORS.white} />
+							</TouchableOpacity>
+							{/* Share button */}
 							<TouchableOpacity onPress={handleShareCode} style={{
 								backgroundColor: colors.primaryLight,
 								borderRadius: 20,
@@ -273,22 +196,21 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 							}}>
 								<MaterialIcons name="share" size={24} color={COLORS.white} />
 							</TouchableOpacity>
+
+
 						</View>
 					</View>
-
 
 					<View style={{ flexDirection: 'row', alignItems: "center", justifyContent: "space-between" }}>
 						<Text style={{
 							...FONTS.fontBold,
 							fontSize: SIZES.font,
 							color: colors.title,
-
 						}}>People you've referred</Text>
 						<Text style={{
 							...FONTS.fontBold,
 							fontSize: SIZES.font,
 							color: colors.title,
-
 						}}>( {referredPeople.length} )</Text>
 					</View>
 
@@ -307,21 +229,12 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 							/>
 						))}
 					</View>
-					<View style={{
-						paddingBottom: 50,
-					}}
-					>
 
-					</View>
+					<View style={{ paddingBottom: 50 }}></View>
 				</ScrollView>
-
-
 			</View>
 		</View>
-	)
-}
+	);
+};
 
-
-export default ShareApp
-
-
+export default ShareApp;

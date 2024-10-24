@@ -38,7 +38,7 @@ const WelCome = ({ navigation }: WelComeScreenProps) => {
                         {/* <Text style={[styles.title, { color: COLORS.background }]}>Open Your Account</Text> */}
                         <View style={{ flexDirection: "column", gap: 10 }}>
                             <ButtonIcon
-                                title={"Sign In"}
+                                title={"Log In"}
                                 iconDirection="left"
                                 text={COLORS.background}
                                 color={COLORS.primary}
@@ -48,7 +48,7 @@ const WelCome = ({ navigation }: WelComeScreenProps) => {
                             />
 
                             <ButtonIcon
-                                title={"sign up"}
+                                title={"Register"}
                                 iconDirection="left"
                                 text={COLORS.background}
                                 color={COLORS.primary}

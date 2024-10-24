@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Linking, Platform, ActivityIndicator, Modal } from 'react-native';
+import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Share, Platform, ActivityIndicator, Modal, Alert } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { COLORS, FONTS } from '../../constants/theme';
 import { Feather, FontAwesome } from '@expo/vector-icons';
@@ -7,6 +7,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import ButtonIcon from '../../components/Button/ButtonIcon';
 import CommonService from '../../lib/CommonService';
+import CONFIG from '../../constants/config';
 
 type CustomerTransationsDetailsScreenProps = StackScreenProps<RootStackParamList, 'CustomerTransationsDetails'>;
 
@@ -21,14 +22,49 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
         setModalVisible(true);
     };
 
-    const send_sms = () => {
-        CommonService.currentUserDetail().then((res) => {
-            const defaultMessage = `Dear Sir / Madam, Your payment of ₹ ${customer.amount} is pending at ${res.name}(${res.mobile}). Open Paylapscore app for viewing the details and make the payment.`;
-            const separator = Platform.OS === 'ios' ? '&' : '?';
-            const sms = `sms:${customer.customer_mobile}${separator}body=${defaultMessage}`;
-            Linking.openURL(sms);
-        });
+    const shareTransaction = async () => {
+        const PLAY_STORE_URL = CONFIG.APP_BUILD.ANDROID.APP_URL;
+        const APP_STORE_URL = CONFIG.APP_BUILD.IOS.APP_URL;
+        let message = `✨✨ *Transaction Details* ✨✨
+        
+        ━━━━━━━━━━━━━━━━━━━━━━━
+        👤 *Customer Name*: ${customer.customer_name}
+        📞 *Mobile*: ${customer.customer_mobile}
+        ━━━━━━━━━━━━━━━━━━━━━━━
+
+        💳 *Transaction Type*: ${customer.transaction_type === "CREDIT" ? "🟢 Credit" : "🔴 Debit"}
+        💰 *Amount*: ₹ ${customer.amount}
+        ━━━━━━━━━━━━━━━━━━━━━━━
+
+        📅 *Transaction Date*: ${customer.transaction_date}
+        ⏳ *Estimated Given Date*: ${customer.estimated_given_date}
+        ━━━━━━━━━━━━━━━━━━━━━━━
+
+        🆔 *Transaction ID*: 
+        ${customer.transaction_id}
+        ━━━━━━━━━━━━━━━━━━━━━━━
+
+        📝 *Description*:
+        ${customer.description}
+
+        ━━━━━━━━━━━━━━━━━━━━━━━
+        🔗 *Shared via PayLap App* 🚀
+
+        📲 *Download the PayLap app now*:
+
+        ▶️ [*Play Store*](${PLAY_STORE_URL})
+        🍏 [*App Store*](${APP_STORE_URL})
+        ━━━━━━━━━━━━━━━━━━━━━━━`;
+
+        try {
+            await Share.share({
+                message: message
+            });
+        } catch (error) {
+            Alert.alert("Something Went Wrong");
+        }
     };
+
 
     return (
         <View style={{ backgroundColor: colors.card, flex: 1 }}>
@@ -108,7 +144,7 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
             {/* Share Button */}
             <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
                 <ButtonIcon
-                    onPress={send_sms}
+                    onPress={shareTransaction}
                     title='Share'
                     iconDirection='right'
                     icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'share'} size={18} />}

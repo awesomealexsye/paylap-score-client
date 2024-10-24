@@ -48,13 +48,13 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
     const theme = useTheme();
     const { colors }: { colors: any; } = theme;
 
-    const [searchQuery, setSearchQuery] = useState('');
     const [timeRange, setTimeRange] = useState('Today');
     const [inputDateType, setInputDateType] = useState('To Date');
     const [showCalender, setCalenderShow] = useState(false);
     const [calenderDate, setCalenderDate] = useState(new Date());
-    const [toDate, setToDate] = useState('');
-    const [fromDate, setFromDate] = useState('');
+    const todayDate = `${toDateObj.getFullYear()}-${toDateObj.getMonth() + 1}-${toDateObj.getDate()}`;
+    const [toDate, setToDate] = useState(todayDate);
+    const [fromDate, setFromDate] = useState(todayDate);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [debounceTimer, setDebounceTimer] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -75,7 +75,7 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
             clearTimeout(debounceTimer);
         }
         const timer = setTimeout(async () => {
-            ApiService.postWithToken('api/shopkeeper/transactions/view-report', { from_date: fromDate, to_date: toDate, search: searchQuery }).then(res => {
+            ApiService.postWithToken('api/shopkeeper/transactions/view-report', { from_date: fromDate, to_date: toDate }).then(res => {
                 if (res.status) {
                     setTransactions(res.data);
                 }
@@ -225,26 +225,16 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
                     )}
                 </View>
                 <View style={styles.searchContainer}>
-                    <View style={{ ...styles.searchInputContainer, backgroundColor: !theme.dark ? COLORS.primary : colors.card }}>
-                        <Ionicons name="search" size={20} color={!theme.dark ? 'white' : colors.title} style={styles.searchIcon} />
-                        <TextInput
-                            style={{ ...styles.searchInput, color: !theme.dark ? 'white' : colors.title }}
-                            placeholder="Search Entries"
-                            value={searchQuery}
-                            placeholderTextColor={!theme.dark ? 'white' : colors.title}
-                            onChangeText={(value) => { setSearchQuery(value); FatechApiData(); }}
-                        />
-                    </View>
                     <TouchableOpacity style={{ ...styles.dropdown, backgroundColor: !theme.dark ? COLORS.primary : colors.card }} onPress={async () => { await refRBSheet.current.open(); }}>
                         <Text style={{ ...styles.dropdownText, color: !theme.dark ? 'white' : colors.title }}>{timeRange}</Text>
                         <Ionicons name="chevron-down" size={20} color={!theme.dark ? 'white' : colors.title} />
                     </TouchableOpacity>
                 </View>
 
-                <View style={{ ...styles.balanceCard, backgroundColor: !theme.dark ? COLORS.primary : colors.card }}>
+                {/* <View style={{ ...styles.balanceCard, backgroundColor: !theme.dark ? COLORS.primary : colors.card }}>
                     <Text style={{ ...styles.balanceTitle, color: !theme.dark ? 'white' : colors.title }}>Net Balance</Text>
                     <Text style={{ ...styles.balanceAmount, color: !theme.dark ? COLORS.primaryLight : COLORS.primary, }}>₹ 63,500</Text>
-                </View>
+                </View> */}
 
                 <View style={{ ...styles.entriesCard, backgroundColor: colors.card }}>
                     <View style={styles.entriesSummary}>
@@ -277,10 +267,18 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
                                         </View>
                                         <Text style={[
                                             styles.transactionAmount,
-                                            transaction.transaction_type === 'CREDIT' ? styles.positiveAmount : styles.negativeAmount
+                                            styles.negativeAmount
                                         ]}>
-                                            ₹ {parseInt(transaction.amount).toLocaleString()}
+                                            {transaction.transaction_type === 'DEBIT' ? '₹' + parseInt(transaction.amount).toLocaleString() : ''}
                                         </Text>
+                                        <Text style={[
+                                            styles.transactionAmount,
+                                            styles.positiveAmount
+                                        ]}>
+                                            {transaction.transaction_type === 'CREDIT' ? '₹' + parseInt(transaction.amount).toLocaleString() : ''}
+                                        </Text>
+
+
                                     </View>
                                 ))}
                 </View>

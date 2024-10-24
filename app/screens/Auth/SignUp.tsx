@@ -35,8 +35,6 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
     const sentOtp = async () => {
         if (name == '' || name.length < 2) {
             MessagesService.commonMessage("Invalid Name")
-        } else if (email == '' || email.length < 2) {
-            MessagesService.commonMessage("Invalid Email")
         }
         else if (mobile.length != 10) {
             MessagesService.commonMessage("Invalid Mobile Number")
@@ -47,8 +45,11 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
             if (res != null) {
                 if (res.status) {
                     navigation.navigate("OtpVerify", { mobile: mobile })
+                    MessagesService.commonMessage(res.message, "SUCCESS")
+
+                } else {
+                    MessagesService.commonMessage(res.message)
                 }
-                MessagesService.commonMessage(res.message)
             }
             setIsLoading(false);
         }
@@ -90,7 +91,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                             alignItems: 'center',
                         }}>
                             <Image
-                                source={theme.dark ? IMAGES.appnamedark : IMAGES.appname}
+                                source={IMAGES.appnamedark}
                                 style={{
                                     height: 110,
                                     width: 150,
@@ -124,7 +125,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                                     {/* <Text style={[styles.title2, { color: colors.title }]}>Join us! Enter your mobile number to get an OTP and create your account</Text> */}
                                 </View>
                                 <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
-                                    <Text style={[styles.title3, { color: colors.title }]}>Your Name / Business Name
+                                    <Text style={[styles.title3, { color: colors.title }]}>Your Name / Business Name (*)
                                     </Text>
                                 </View>
                                 <View style={{ marginVertical: 10, }}>
@@ -138,21 +139,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                                     />
                                 </View>
                                 <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
-                                    <Text style={[styles.title3, { color: colors.title }]}>Your Email</Text>
-                                </View>
-                                <View style={{ marginVertical: 10 }}>
-                                    <Input
-                                        onFocus={() => setisFocused2(true)}
-                                        onBlur={() => setisFocused2(false)}
-                                        // backround={colors.background}
-                                        onChangeText={(value) => setEmail(value)}
-                                        isFocused={isFocused2}
-                                        //inputBorder
-                                        defaultValue=''
-                                    />
-                                </View>
-                                <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
-                                    <Text style={[styles.title3, { color: colors.title }]}>Phone Number</Text>
+                                    <Text style={[styles.title3, { color: colors.title }]}>Phone Number(*)</Text>
                                 </View>
                                 <View style={{ marginVertical: 10, }}>
                                     <Input
@@ -166,6 +153,21 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                                         defaultValue=''
                                     />
                                 </View>
+                                <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
+                                    <Text style={[styles.title3, { color: colors.title }]}>Your Email (Optional)</Text>
+                                </View>
+                                <View style={{ marginVertical: 10 }}>
+                                    <Input
+                                        onFocus={() => setisFocused2(true)}
+                                        onBlur={() => setisFocused2(false)}
+                                        // backround={colors.background}
+                                        onChangeText={(value) => setEmail(value)}
+                                        isFocused={isFocused2}
+                                        //inputBorder
+                                        defaultValue=''
+                                    />
+                                </View>
+
                                 <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
                                     <Text style={[styles.title3, { color: colors.title }]}>Referral Code (Optional)</Text>
                                 </View>
@@ -193,11 +195,11 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
 
                                 }
                                 <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", margin: 40 }}>
-                                    <Text style={{ ...FONTS.fontMedium, color: colors.title }}>If You have an Already account ?   </Text>
+                                    <Text style={{ ...FONTS.fontMedium, color: colors.title }}>Already account ?</Text>
                                     <TouchableOpacity
                                         onPress={() => navigation.navigate('MobileSignIn')}
                                     >
-                                        <Text style={{ ...FONTS.fontBold, color: COLORS.primary }}> SIGN IN </Text>
+                                        <Text style={{ ...FONTS.fontBold, color: COLORS.primary }}> Log IN </Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
