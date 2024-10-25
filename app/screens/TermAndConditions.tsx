@@ -36,13 +36,14 @@ const TermsAndConditionsScreen = ({ navigation, route }: TermsAndConditionsScree
 		<View style={{ backgroundColor: colors.background, flex: 1 }}>
 
 			<Header
-				title=' Terms and Conditions'
+				title=' Our Policy'
 				leftIcon='back'
 				titleRight
 			/>
 			<ScrollView style={{
 				flex: 1,
 				padding: 20,
+				marginHorizontal: 20,
 				backgroundColor: colors.background,
 			}}>
 				<View style={[GlobalStyleSheet.container, { borderBottomColor: COLORS.inputborder, justifyContent: "center", alignItems: "center" }]}>
@@ -64,7 +65,7 @@ const TermsAndConditionsScreen = ({ navigation, route }: TermsAndConditionsScree
 						}}>{item.heading}</Text>
 						<Text style={{
 							...FONTS.fontRegular,
-							marginBottom: 5, color: colors.title
+							marginBottom: 5, color: colors.title, fontSize: 11
 						}}>{item.description}</Text>
 					</View>
 				))}

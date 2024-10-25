@@ -59,7 +59,7 @@ const EditProfile = () => {
             { profile_image: image ?? profile?.image, name: profile?.name, address: addressInputValue },
         )
         if (res.status == true) {
-            MessagesService.commonMessage(res.message);
+            MessagesService.commonMessage(res.message, "SUCCESS");
             navigation.goBack();
         }
 
@@ -105,9 +105,6 @@ const EditProfile = () => {
                     </View>
                 </View>
                 <View style={[GlobalStyleSheet.container, { backgroundColor: theme.dark ? 'rgba(255,255,255,.1)' : colors.card, marginTop: 10, paddingVertical: 10, borderRadius: 15 }]}>
-                    <View style={[styles.cardBackground, { borderBottomColor: COLORS.inputborder, borderStyle: 'dashed' }]}>
-                        <Text style={{ ...FONTS.fontRegular, fontSize: 14, color: colors.title }}>Overall Rating</Text>
-                    </View>
                     <View style={{ marginBottom: 15, marginTop: 10 }}>
                         <Input
                             editable={false}

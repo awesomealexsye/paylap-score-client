@@ -114,7 +114,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                         </View>
                     </TouchableOpacity>
 
-                    <Text style={{ ...FONTS.fontSemiBold, fontSize: 28, color: colors.title }}>{profile?.name}</Text>
+                    <Text style={{ ...FONTS.fontSemiBold, fontSize: 18, color: colors.title }}>{profile?.name}</Text>
                 </View>
 
                 <View

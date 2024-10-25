@@ -118,12 +118,18 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 								objectFit: "contain",
 							}} />
 					</View>
-					{/* <Text style={{
+					<Text style={{
 						...FONTS.fontBold,
-						fontSize: SIZES.h3,
+						fontSize: SIZES.h4,
 						color: colors.title,
 						marginBottom: 8,
-					}}>Invite PayLap Score!</Text> */}
+					}} >Invite</Text>
+					<Text style={{
+						...FONTS.fontBold,
+						fontSize: SIZES.h4,
+						color: colors.title,
+						marginBottom: 8,
+					}} >PAYLAP Score!</Text>
 					<Text style={{
 						fontSize: SIZES.font,
 						color: colors.title,

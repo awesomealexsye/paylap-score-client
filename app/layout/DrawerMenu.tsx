@@ -21,32 +21,34 @@ const MenuItems = [
         name: "Home",
         navigate: "Home",
     },
-    // {
-    //     id: "3",
-    //     icon: IMAGES.user3,
-    //     name: "Profile",
-    //     navigate: "Profile",
-    // },
-    // {
-    //     id: "4",
-    //     icon: IMAGES.share,
-    //     name: "Share",
-    //     navigate: 'ShareApp',
-    // },
+
     {
-        id: "5",
+        id: "2",
+        icon: IMAGES.folder,
+        name: "View Report",
+        navigate: 'Report',
+    },
+    {
+        id: "3",
         icon: IMAGES.help,
         name: "Support",
         navigate: 'CustomerSupport',
     },
     {
-        id: "6",
+        id: "4",
         icon: IMAGES.termandCondition,
         name: "Our Policy",
         navigate: 'TermsAndConditionsScreen',
     },
+
     {
-        id: "7",
+        id: "5",
+        icon: IMAGES.share,
+        name: "Share",
+        navigate: "ShareApp",
+    },
+    {
+        id: "6",
         icon: IMAGES.logout,
         name: "Logout",
         navigate: 'MobileSignIn',
@@ -168,7 +170,7 @@ const DrawerMenu = () => {
                         paddingBottom: 20
                     }]}
                 >
-                    <Text style={{ ...FONTS.fontSemiBold, fontSize: 20, color: theme.colors.title }}>Main Menus</Text>
+                    <Text style={{ ...FONTS.fontSemiBold, fontSize: 20, color: theme.colors.title }}>Main Menu</Text>
                     <TouchableOpacity
                         onPress={() => dispatch(closeDrawer())}
                         activeOpacity={0.5}
@@ -231,7 +233,7 @@ const DrawerMenu = () => {
             >
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>Update Available!</Text>
+                        <Text style={styles.modalTitle}>{OS === 'ios' ? 'IOS' : 'Android'} Update Available!</Text>
                         <Text style={styles.modalMessage}>
                             {OS === 'ios' ? appInfo.IOS.VERSION_MESSAGE : appInfo.ANDROID.VERSION_MESSAGE}
                         </Text>

@@ -41,7 +41,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
         }
         else {
             setIsLoading(true);
-            const res: any = await ApiService.postWithoutToken("api/auth/register", { name, email, mobile })
+            const res: any = await ApiService.postWithoutToken("api/auth/register", { name, email, mobile, refferal: referralCode })
             if (res != null) {
                 if (res.status) {
                     navigation.navigate("OtpVerify", { mobile: mobile })

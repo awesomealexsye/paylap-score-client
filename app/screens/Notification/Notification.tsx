@@ -44,7 +44,7 @@ const Notification = () => {
             <Header
                 title='Notifications'
                 leftIcon='back'
-                rightIcon1={'search'}
+                titleRight
             />
             <ScrollView contentContainerStyle={{ paddingBottom: 50 }}>
                 <View style={[GlobalStyleSheet.container, { padding: 0, paddingTop: 15 }]}>

@@ -40,13 +40,13 @@ const CustomerScore = ({ navigation }: CustomerScoreScreenProps) => {
             <View style={[GlobalStyleSheet.container, { marginTop: 70, paddingHorizontal: 30 }]}>
                 <View style={{ marginTop: 10, flexDirection: 'row', gap: 80 }}>
                     <View>
-                        <Text style={{ ...FONTS.font, ...FONTS.fontMedium, ...FONTS.fontBold, color: colors.title }}>Color</Text>
+                        <Text style={{ ...FONTS.font, ...FONTS.fontMedium, ...FONTS.fontBold, color: colors.title, fontSize: 14 }}>Color</Text>
                     </View>
                     <View>
-                        <Text style={{ ...FONTS.font, ...FONTS.fontMedium, ...FONTS.fontBold, color: colors.title }}>Description</Text>
+                        <Text style={{ ...FONTS.font, ...FONTS.fontMedium, ...FONTS.fontBold, color: colors.title, fontSize: 14 }}>Description</Text>
                     </View>
                     <View>
-                        <Text style={{ ...FONTS.font, ...FONTS.fontMedium, ...FONTS.fontBold, color: colors.title }}>Range</Text>
+                        <Text style={{ ...FONTS.font, ...FONTS.fontMedium, ...FONTS.fontBold, color: colors.title, fontSize: 14 }}>Range</Text>
                     </View>
                 </View>
                 <View style={{ marginTop: 10, flexDirection: 'column', gap: 5 }}>
@@ -57,10 +57,10 @@ const CustomerScore = ({ navigation }: CustomerScoreScreenProps) => {
                                     <View style={{ width: 50, height: 20, backgroundColor: item.labelColor, flex: 1 }} key={index}>
                                     </View>
                                     <View style={{ flex: 1 }}>
-                                        <Text style={{ color: colors.title }}>{item.name}</Text>
+                                        <Text style={{ color: colors.title, fontSize: 10 }}>{item.name}</Text>
                                     </View>
                                     <View style={{ flex: 1 }}>
-                                        <Text style={{ color: colors.title }}>{`${((scoreVal.max / CONFIG.CREDIT_SCORE_LABEL.length) * index) + 1} - ${(scoreVal.max / CONFIG.CREDIT_SCORE_LABEL.length) * (index + 1)}`}</Text>
+                                        <Text style={{ color: colors.title, fontSize: 10 }}>{`${((scoreVal.max / CONFIG.CREDIT_SCORE_LABEL.length) * index) + 1} - ${(scoreVal.max / CONFIG.CREDIT_SCORE_LABEL.length) * (index + 1)}`}</Text>
                                     </View>
                                 </View>
                             )

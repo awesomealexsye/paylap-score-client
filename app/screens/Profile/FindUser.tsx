@@ -44,7 +44,7 @@ const FindUser = forwardRef((props, ref) => {
     const [isLoading, setIsLoading] = useState(false);
     const [showDetail, setShowDetail] = useState(false);
 
-    const [aadhar, setAadhar] = useState("");
+    const [aadhar, setAadhar] = useState("642546277815");
     // useEffect(() => {
 
     // }, []);
@@ -138,7 +138,7 @@ const FindUser = forwardRef((props, ref) => {
                                                     />
                                                 </View>
 
-                                                <Text style={{ ...FONTS.fontSemiBold, fontSize: 28, color: colors.title }}>{userDetail?.name}</Text>
+                                                <Text style={{ ...FONTS.fontSemiBold, fontSize: 18, color: colors.title }}>{userDetail?.name}</Text>
                                                 {/* <Text style={{ ...FONTS.fontRegular, fontSize: 16, color: COLORS.primary }}>London, England</Text> */}
                                             </View>
 
@@ -155,8 +155,8 @@ const FindUser = forwardRef((props, ref) => {
                                                             />
                                                         </View>
                                                         <View>
-                                                            <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>Mobile Number</Text>
-                                                            <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>{userDetail?.mobile}</Text>
+                                                            <Text style={[styles.brandsubtitle2, { color: '#7D7D7D', fontSize: 12 }]}>Mobile Number</Text>
+                                                            <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, marginTop: 5 }}>{userDetail?.mobile}</Text>
                                                         </View>
                                                     </View>
                                                     <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 25, alignItems: 'flex-start' }]} >
@@ -167,8 +167,8 @@ const FindUser = forwardRef((props, ref) => {
                                                             />
                                                         </View>
                                                         <View>
-                                                            <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>Email Address</Text>
-                                                            <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 0 }}>{userDetail?.email}</Text>
+                                                            <Text style={[styles.brandsubtitle2, { color: '#7D7D7D', fontSize: 12 }]}>Email Address</Text>
+                                                            <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, marginTop: 0 }}>{userDetail?.email}</Text>
                                                         </View>
                                                     </View>
                                                 </View>
