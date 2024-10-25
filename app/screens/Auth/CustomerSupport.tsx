@@ -8,6 +8,7 @@ import { RootStackParamList } from '../../navigation/RootStackParamList';
 import CommonService from '../../lib/CommonService';
 import Header from '../../layout/Header';
 import MaterialCommunityIcons from '@expo/vector-icons/build/MaterialCommunityIcons';
+import { IMAGES } from '../../constants/Images';
 
 type CustomerSupportScreenProps = StackScreenProps<RootStackParamList, 'CustomerSupport'>;
 
@@ -115,6 +116,15 @@ const CustomerSupport = ({ navigation }: CustomerSupportScreenProps) => {
                 padding: 20,
                 backgroundColor: colors.background,
             }}>
+                <View style={[GlobalStyleSheet.container, { borderBottomColor: COLORS.inputborder, justifyContent: "center", alignItems: "center" }]}>
+                    <Image source={theme.dark ? IMAGES.appnamedark : IMAGES.appname}
+                        style={{
+                            height: 110,
+                            width: 150,
+                            objectFit: "contain",
+                        }} />
+                    {/* <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, textAlign: 'center' }}>Search Aadhaar Card</Text> */}
+                </View>
 
                 {supportOptions.map((option, index) => (
                     <TouchableOpacity key={index} style={{

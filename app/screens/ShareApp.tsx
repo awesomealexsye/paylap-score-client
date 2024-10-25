@@ -22,6 +22,7 @@ import { RootStackParamList } from '../navigation/RootStackParamList';
 import CONFIG from '../constants/config';
 import * as Clipboard from 'expo-clipboard';  // Import Clipboard API
 import { MessagesService } from '../lib/MessagesService';
+import { IMAGES } from '../constants/Images';
 
 type ShareAppProps = StackScreenProps<RootStackParamList, 'ShareApp'>;
 
@@ -109,14 +110,22 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 				/>
 				<StatusBar barStyle="light-content" backgroundColor="#4C1D95" />
 				<ScrollView contentContainerStyle={{ padding: 16 }}>
-					<Text style={{
+					<View style={[GlobalStyleSheet.container, { borderBottomColor: COLORS.inputborder, justifyContent: "center", alignItems: "center" }]}>
+						<Image source={theme.dark ? IMAGES.appnamedark : IMAGES.appname}
+							style={{
+								height: 110,
+								width: 150,
+								objectFit: "contain",
+							}} />
+					</View>
+					{/* <Text style={{
 						...FONTS.fontBold,
-						fontSize: 36,
+						fontSize: SIZES.h3,
 						color: colors.title,
 						marginBottom: 8,
-					}}>Invite PayLap Score!</Text>
+					}}>Invite PayLap Score!</Text> */}
 					<Text style={{
-						fontSize: 16,
+						fontSize: SIZES.font,
 						color: colors.title,
 						marginBottom: 24,
 					}}>
@@ -130,14 +139,14 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 						marginBottom: 24,
 					}}>
 						<View style={{
-							width: 60,
-							height: 60,
+							width: 40,
+							height: 40,
 							borderRadius: 30,
 							backgroundColor: COLORS.primary,
 							justifyContent: 'center',
 							alignItems: 'center',
 						}}>
-							<MaterialIcons name="campaign" size={30} color={COLORS.white} />
+							<MaterialIcons name="campaign" size={22} color={COLORS.white} />
 						</View>
 						<View style={{
 							height: 2,
@@ -146,14 +155,14 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 							marginHorizontal: 10,
 						}} />
 						<View style={{
-							width: 60,
-							height: 60,
+							width: 40,
+							height: 40,
 							borderRadius: 30,
 							backgroundColor: COLORS.primary,
 							justifyContent: 'center',
 							alignItems: 'center',
 						}}>
-							<MaterialIcons name="smartphone" size={30} color={COLORS.white} />
+							<MaterialIcons name="smartphone" size={22} color={COLORS.white} />
 						</View>
 					</View>
 
@@ -166,7 +175,7 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 						}}>Your Referral Code</Text>
 						<View style={{
 							backgroundColor: COLORS.primary,
-							borderRadius: 12,
+							borderRadius: 10,
 							padding: 8,
 							flexDirection: 'row',
 							justifyContent: 'space-between',
@@ -186,7 +195,7 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 								padding: 8,
 								marginLeft: 10,
 							}}>
-								<MaterialIcons name="content-copy" size={24} color={COLORS.white} />
+								<MaterialIcons name="content-copy" size={22} color={COLORS.white} />
 							</TouchableOpacity>
 							{/* Share button */}
 							<TouchableOpacity onPress={handleShareCode} style={{
@@ -196,8 +205,6 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 							}}>
 								<MaterialIcons name="share" size={24} color={COLORS.white} />
 							</TouchableOpacity>
-
-
 						</View>
 					</View>
 

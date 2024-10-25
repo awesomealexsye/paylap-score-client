@@ -91,26 +91,21 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
     const renderCustomer = ({ item }: { item: Customer }) => (
         <TouchableOpacity onPress={() => navigation.navigate("CustomerTransationsDetails", { customer: item })
         }>
-            <View style={[styles.customerItem, { backgroundColor: colors.card, borderBottomWidth: 1.5, borderBottomColor: colors.border }, !theme.dark && { elevation: 2 }]}>
+            <View style={[styles.customerItem, { backgroundColor: colors.card, },
+                // !theme.dark && { elevation: 2 }
+
+            ]}>
                 <View style={{}}>
                     <View style={{ flexDirection: 'row' }}>
-                        {/* <Image
-                            style={{ height: 50, width: 50, borderRadius: 50 }}
-                            source={item.image}
-                        /> */}
                         <View style={{ marginLeft: 14 }}>
                             {/*<Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{item.customer_name}</Text>*/}
                             <Text style={{ ...styles.lastInteraction, color: !theme.dark ? "black" : 'white' }}>{item.last_updated_date}</Text>
                             <Text style={{ color: colors.text, fontSize: 12 }}>{item.transaction_date.toLocaleString()}
-
                             </Text>
                             <Text style={{ fontSize: 13, color: !theme.dark ? "black" : 'white' }}>{item.description}</Text>
                         </View>
-
                     </View>
-
                 </View>
-
                 <View style={{ flexDirection: "column", alignItems: "flex-end", position: "relative", justifyContent: 'center' }}>
                     <Text style={{ color: item.transaction_type === "CREDIT" ? COLORS.primaryLight : COLORS.danger, fontSize: 15, fontWeight: "900" }}>₹ {parseInt(item.amount).toLocaleString()}</Text>
                     <Text style={[styles.type, { color: colors.title }]}>{item.transaction_type}</Text>
@@ -119,6 +114,9 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
         </TouchableOpacity>
 
     );
+
+
+
     return (
         <View style={{ backgroundColor: colors.card, flex: 1 }}>
             {/* AppBar Start */}
@@ -160,7 +158,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
             <ScrollView showsVerticalScrollIndicator={true}>
                 <View style={{ flex: 1, alignItems: 'center' }} >
                     <View style={{
-                        height: 80,
+                        height: 70,
                         width: "90%",
                         top: 15,
                         backgroundColor: customerData.data?.shopkeeper_transaction_sum?.transaction_type === "DEBIT" ? COLORS.danger : COLORS.primary,
@@ -173,16 +171,33 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                         shadowOpacity: 0.34,
                         shadowRadius: 31.27,
                         elevation: 8,
-                        flexDirection: 'column'
+                        flexDirection: 'column',
+                        alignItems: "center"
                     }}>
 
 
-                        <View style={{ width: 380, flexDirection: 'row', justifyContent: "space-evenly", paddingTop: 20, alignItems: "center", alignContent: "center" }}>
-                            <View style={{ alignItems: 'center', justifyContent: 'center', borderRightColor: colors.dark }}>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h4, color: 'white', textAlign: "center" }}>{customerData.data?.shopkeeper_transaction_sum?.transaction_type} </Text>
+                        <View style={{
+                            width: "90%",
+                            flexDirection: 'row',
+                            justifyContent: "space-evenly",
+                            paddingTop: 20,
+                            alignItems: "center",
+                            alignContent: "center"
+                        }}>
+                            <View style={{
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderRightColor: colors.dark
+                            }}>
+                                <Text style={{
+                                    ...FONTS.fontSemiBold,
+                                    fontSize: SIZES.h5,
+                                    color: 'white',
+                                    textAlign: "center"
+                                }}>{customerData.data?.shopkeeper_transaction_sum?.transaction_type} </Text>
                             </View>
                             <View style={{ alignItems: 'center', justifyContent: "center" }}>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: 'white' }}>₹ {customerData.data?.shopkeeper_transaction_sum?.total_amount}</Text>
+                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h5, color: 'white' }}>₹ {customerData.data?.shopkeeper_transaction_sum?.total_amount}</Text>
                             </View>
                         </View>
                     </View>
@@ -278,40 +293,36 @@ const styles = StyleSheet.create({
     customerItem: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        padding: 10,
-
-        backgroundColor: Colors.white,
-        // shadowColor: "#025135",
-        shadowOffset: {
-            width: 0,
-            height: 15,
-        },
-        shadowOpacity: 0.34,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        borderRadius: 15,
         shadowRadius: 31.27,
         marginHorizontal: 10,
         marginVertical: 4,
-        top: 4
+        top: 4,
+        borderBottomColor: "black",
+        borderBottomWidth: 0.2
     },
     customerName: {
         color: COLORS.title,
-        fontSize: 18,
+        fontSize: SIZES.fontLg,
     },
     lastInteraction: {
-        fontSize: 15,
+        fontSize: SIZES.font,
         fontWeight: 'bold'
     },
     type: {
         color: COLORS.title,
-        fontSize: 12,
-        ...FONTS.fontMedium,
-
-
+        fontSize: SIZES.fontXs,
+        ...FONTS.fontSemiBold,
     },
+
     amount: {
         color: 'red',
-        fontSize: 18,
+        fontSize: SIZES.font,
         textAlign: "center"
     },
+
     amountZero: {
         color: '#121221',
         fontSize: 18,

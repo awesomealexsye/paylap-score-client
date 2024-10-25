@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Share, Platform, ActivityIndicator, Modal, Alert } from 'react-native';
 import { useTheme } from '@react-navigation/native';
-import { COLORS, FONTS } from '../../constants/theme';
+import { COLORS, FONTS, SIZES } from '../../constants/theme';
 import { Feather, FontAwesome } from '@expo/vector-icons';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import ButtonIcon from '../../components/Button/ButtonIcon';
 import CommonService from '../../lib/CommonService';
 import CONFIG from '../../constants/config';
+import HeaderStyle1 from '../../components/Headers/HeaderStyle1';
+import Header from '../../layout/Header';
 
 type CustomerTransationsDetailsScreenProps = StackScreenProps<RootStackParamList, 'CustomerTransationsDetails'>;
 
@@ -68,13 +70,24 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
 
     return (
         <View style={{ backgroundColor: colors.card, flex: 1 }}>
+
+
             {/* AppBar Start */}
-            <View style={[styles.headerContainer, { backgroundColor: colors.card }]}>
+
+            <Header
+                title='Transaction Details'
+                leftIcon={'back'}
+            // rightIcon2={'Edit'}
+            />
+
+
+            {/* <View style={[styles.headerContainer, { backgroundColor: colors.card }]}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <Feather size={24} color={colors.title} name={'arrow-left'} />
                 </TouchableOpacity>
                 <Text style={[styles.headerTitle, { color: colors.title }]}>Transaction Details</Text>
-            </View>
+            </View> */}
+
             {/* AppBar End */}
 
             {/* Modal to show image in full screen */}
@@ -84,7 +97,7 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                 image={customer?.image}
             />
 
-            <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: 'center', paddingBottom: 20 }}>
+            <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: 'center', paddingVertical: 20 }}>
                 {/* Customer Details Card */}
                 <View style={[styles.card, { backgroundColor: colors.card }]}>
                     <View style={styles.customerItem}>
@@ -93,24 +106,34 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                             <Text style={[styles.lastInteraction, { color: colors.text }]}>{customer.last_updated_date}</Text>
                         </View>
                         <View style={styles.transactionInfo}>
-                            <Text style={{ color: customer.transaction_type === "CREDIT" ? COLORS.primary : COLORS.danger, fontSize: 18, fontWeight: "900" }}>
+                            <Text style={{ color: customer.transaction_type === "CREDIT" ? COLORS.primary : COLORS.danger, fontSize: SIZES.font, fontWeight: "900" }}>
                                 ₹ {customer.amount}
                             </Text>
-                            <Text style={[styles.type, { color: colors.text }]}>{customer.transaction_type}</Text>
+                            <Text style={{
+                                color: colors.title, fontSize: SIZES.fontSm, ...FONTS.fontSemiBold,
+                            }}>{customer.transaction_type}</Text>
                         </View>
                     </View>
+                    <View style={{
+                        borderBottomColor: colors.text,
+                        borderBottomWidth: 0.4
+                    }} />
                     <View style={styles.dateContainer}>
                         <View style={styles.dateItem}>
-                            <Text style={[styles.label, { color: colors.text }]}>Given Date</Text>
+                            <Text style={[styles.label, { color: colors.text, }]}>Given Date</Text>
                             <Text style={[styles.value, { color: colors.title }]}>{customer.estimated_given_date}</Text>
                         </View>
                         <View style={styles.dateItem}>
-                            <Text style={[styles.label, { color: colors.text }]}>Taken Date</Text>
-                            <Text style={[styles.value, { color: colors.title }]}>{customer.transaction_date}</Text>
+                            <Text style={[styles.label, { color: colors.text, }]}>Taken Date</Text>
+                            <Text style={[styles.value, { color: colors.title, }]}>{customer.transaction_date}</Text>
                         </View>
                     </View>
-                    <View style={styles.transactionIDContainer}>
-                        <Text style={[styles.label, { color: colors.text }]}>Transaction ID:</Text>
+                    <View style={{
+                        borderBottomColor: colors.text,
+                        borderBottomWidth: 0.4
+                    }} />
+                    <View style={[styles.transactionIDContainer, { flexDirection: "row", justifyContent: "space-around", alignItems: "center" }]}>
+                        <Text style={[styles.label, { color: colors.text }]}>Transaction ID                       : </Text>
                         <Text style={[styles.value, { color: colors.title }]}>{customer.transaction_id}</Text>
                     </View>
                 </View>
@@ -161,10 +184,16 @@ const FilePreviewModal = ({ modalVisible, close, image }) => {
     const { colors } = theme;
 
     return (
-        <Modal visible={modalVisible} transparent={true} animationType="slide">
+        <Modal
+            visible={modalVisible}
+            transparent={true}
+            animationType="slide">
+
             <View style={styles.modalContainer}>
                 {/* Close button */}
-                <TouchableOpacity style={styles.closeButton} onPress={() => close(false)}>
+                <TouchableOpacity
+                    style={styles.closeButton}
+                    onPress={() => close(false)}>
                     <Feather name="x" size={30} color={colors.primary} />
                 </TouchableOpacity>
 
@@ -202,10 +231,10 @@ const styles = StyleSheet.create({
     },
     headerTitle: {
         ...FONTS.fontSemiBold,
-        fontSize: 18,
+        fontSize: SIZES.font,
     },
     card: {
-        width: "95%",
+        width: "90%",
         borderRadius: 15,
         padding: 15,
         shadowColor: "#000",
@@ -217,14 +246,15 @@ const styles = StyleSheet.create({
     customerItem: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 10,
+        marginVertical: 10,
+
     },
     customerName: {
         ...FONTS.fontSemiBold,
-        fontSize: 22,
+        fontSize: SIZES.fontLg,
     },
     lastInteraction: {
-        fontSize: 14,
+        fontSize: SIZES.fontSm,
         opacity: 0.6,
     },
     transactionInfo: {
@@ -233,18 +263,19 @@ const styles = StyleSheet.create({
     dateContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
-        marginTop: 10,
+        marginVertical: 10,
+
     },
     dateItem: {
         alignItems: 'center',
     },
     label: {
-        ...FONTS.fontBold,
-        fontSize: 12,
+        ...FONTS.fontRe,
+        fontSize: SIZES.fontSm,
     },
     value: {
         ...FONTS.fontBold,
-        fontSize: 14,
+        fontSize: SIZES.fontSm,
     },
     transactionIDContainer: {
         flexDirection: "row",
@@ -253,12 +284,12 @@ const styles = StyleSheet.create({
     },
     cardTitle: {
         ...FONTS.fontSemiBold,
-        fontSize: 18,
+        fontSize: SIZES.fontLg,
         marginBottom: 10,
     },
     cardText: {
         ...FONTS.fontRegular,
-        fontSize: 14,
+        fontSize: SIZES.fontSm,
         textAlign: "justify",
     },
     attachmentContainer: {
