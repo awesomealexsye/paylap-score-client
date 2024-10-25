@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, Image } from 'react-native';
 import { RootStackParamList } from '../navigation/RootStackParamList';
 import { StackScreenProps } from '@react-navigation/stack';
 import Button from '../components/Button/Button';
 import Header from '../layout/Header';
 import { useTheme } from '@react-navigation/native';
-import { FONTS } from '../constants/theme';
+import { COLORS, FONTS } from '../constants/theme';
 import { ApiService } from '../lib/ApiService';
+import { GlobalStyleSheet } from '../constants/StyleSheet';
+import { IMAGES } from '../constants/Images';
 
 type TermsDataItem = {
 	heading: string;
@@ -43,6 +45,15 @@ const TermsAndConditionsScreen = ({ navigation, route }: TermsAndConditionsScree
 				padding: 20,
 				backgroundColor: colors.background,
 			}}>
+				<View style={[GlobalStyleSheet.container, { borderBottomColor: COLORS.inputborder, justifyContent: "center", alignItems: "center" }]}>
+					<Image source={theme.dark ? IMAGES.appnamedark : IMAGES.appname}
+						style={{
+							height: 110,
+							width: 150,
+							objectFit: "contain",
+						}} />
+
+				</View>
 				{termsData.map((item: any, index: number) => (
 					<View key={index} style={
 						{ marginBottom: 20, }

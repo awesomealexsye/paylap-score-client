@@ -210,15 +210,25 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                         </View>
                     </View> */}
                     <View >
-                        <View style={{ paddingHorizontal: 30, marginTop: 50 }}>
+                        <View style={{
+                            paddingHorizontal: 1, marginTop: 50,
+
+                        }}>
                             <ButtonIcon
-                                color={'red'}
+                                color={colors.card}
+                                style={{
+                                    height: 50,
+                                    width: "100%",
+                                    elvation: 2,
+                                    shadowOpacity: 0.14,
+                                }}
                                 onPress={deleteAccount}
                                 title='Delete Account'
+                                text={COLORS.danger}
                                 iconDirection='right'
-                                icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }}
+                                icon={<FontAwesome style={{ color: COLORS.danger, marginLeft: 10 }}
                                     name={'trash'}
-                                    size={18}
+                                    size={25}
 
                                 />}>
                             </ButtonIcon>

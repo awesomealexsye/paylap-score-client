@@ -56,7 +56,7 @@ const EditProfile = () => {
 
         const res = await ApiService.postWithToken(
             "api/user/profile-update",
-            { profile_image: image, name: profile?.name, address: addressInputValue },
+            { profile_image: image ?? profile?.image, name: profile?.name, address: addressInputValue },
         )
         if (res.status == true) {
             MessagesService.commonMessage(res.message);
