@@ -7,7 +7,8 @@ import {
     TouchableOpacity,
     TextInput,
     SafeAreaView,
-    ActivityIndicator
+    ActivityIndicator,
+    Platform
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { StackScreenProps } from '@react-navigation/stack';
@@ -19,6 +20,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import ReportFilterOptionSheet from '../../components/BottomSheet/ReportFilterOptionSheet';
 import { ApiService } from '../../lib/ApiService';
+import { Button } from 'react-native-paper';
 
 
 
@@ -186,8 +188,27 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
                     }
                 }}
             >
+                <ReportFilterOptionSheet handleSelectedValue={handleBottomSheet} />
                 {
-                    <ReportFilterOptionSheet handleSelectedValue={handleBottomSheet} />
+                    Platform.OS === 'ios' &&
+                    <View>
+                        <View style={{ display: 'flex', justifyContent: 'center' }}>
+                            {showCalender && (
+                                <View style={{ alignSelf: 'center' }}>
+                                    <DateTimePicker
+                                        value={calenderDate}
+                                        mode="date"
+                                        display="default"
+                                        onChange={onChange}
+                                    />
+                                </View>
+                            )}
+                        </View>
+                        <View style={{ justifyContent: "space-between", flex: 1 }}>
+                            <Button style={{ backgroundColor: "red" }} onPress={async () => { await refRBSheet.current.close(); }}>Cancel</Button>
+                            <Button style={{ backgroundColor: "green" }} onPress={async () => { await refRBSheet.current.close(); }}>Done</Button>
+                        </View>
+                    </View>
                 }
             </RBSheet>
             <Header
@@ -212,18 +233,21 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
                         </View>
                     </TouchableOpacity>
                 </View>
-                <View style={{ display: 'flex', justifyContent: 'center' }}>
-                    {showCalender && (
-                        <View style={{ alignSelf: 'center' }}>
-                            <DateTimePicker
-                                value={calenderDate}
-                                mode="date"
-                                display="default"
-                                onChange={onChange}
-                            />
-                        </View>
-                    )}
-                </View>
+                {
+                    Platform.OS === 'android' &&
+                    <View style={{ display: 'flex', justifyContent: 'center' }}>
+                        {showCalender && (
+                            <View style={{ alignSelf: 'center' }}>
+                                <DateTimePicker
+                                    value={calenderDate}
+                                    mode="date"
+                                    display="default"
+                                    onChange={onChange}
+                                />
+                            </View>
+                        )}
+                    </View>
+                }
                 <View style={styles.searchContainer}>
                     <TouchableOpacity style={{ ...styles.dropdown, backgroundColor: !theme.dark ? COLORS.primary : colors.card }} onPress={async () => { await refRBSheet.current.open(); }}>
                         <Text style={{ ...styles.dropdownText, color: !theme.dark ? 'white' : colors.title }}>{timeRange}</Text>
@@ -277,8 +301,6 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
                                         ]}>
                                             {transaction.transaction_type === 'CREDIT' ? '₹' + parseInt(transaction.amount).toLocaleString() : ''}
                                         </Text>
-
-
                                     </View>
                                 ))}
                 </View>
