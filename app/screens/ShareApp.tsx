@@ -199,7 +199,7 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 								backgroundColor: colors.primaryLight,
 								borderRadius: 20,
 								padding: 8,
-								marginLeft: 10,
+								marginLeft: 55,
 							}}>
 								<MaterialIcons name="content-copy" size={22} color={COLORS.white} />
 							</TouchableOpacity>

@@ -24,7 +24,7 @@ const ImagePickerModal = ({ close, modalVisible, pickImageFromCamera, pickImageF
 	return (
 		<>
 			<Modal
-				animation="slide"
+				// animation="slide"
 				transparent={true}
 				visible={modalVisible}
 			>
@@ -47,9 +47,6 @@ const ImagePickerModal = ({ close, modalVisible, pickImageFromCamera, pickImageF
 					shadowRadius: 31.27,
 
 				}}>
-					<View style={{ borderTopWidth: 1, }}>
-
-					</View>
 					<View style={[{ flexDirection: "row", justifyContent: "space-around", alignItems: "center", paddingVertical: 10, }]}>
 						<CustomerActivityBtn
 							onpress={pickImageFromCamera}
