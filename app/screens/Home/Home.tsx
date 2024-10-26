@@ -212,7 +212,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
                 <View style={{ flex: 1, alignItems: 'center' }} >
                     <View style={{
-                        height: 140,
+                        paddingVertical: 10,
+                        // height: 140,
                         width: "90%",
                         top: 20,
                         backgroundColor: COLORS.primary,
@@ -224,7 +225,6 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                         },
                         shadowOpacity: 0.34,
                         shadowRadius: 31.27,
-                        // elevation: 8,
                         flexDirection: 'column',
                         alignItems: "center"
 
@@ -240,7 +240,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                             alignItems: "center",
                             borderBlockColor: COLORS.white,
                             borderBottomWidth: 1,
-                            padding: 10,
+                            padding: 5,
                         }}>
                             <View style={{
                                 flex: 1,
@@ -249,18 +249,40 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                 borderRightWidth: 1,
                                 borderRightColor: COLORS.white
                             }}>
-                                <Text style={{ ...FONTS.fontBold, fontSize: SIZES.fontSm, color: COLORS.primaryLight }}>Credit Amt.</Text>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.fontLg, color: COLORS.secondary }}>₹ {homeBanner?.credit}</Text>
+                                <Text style={{
+                                    ...FONTS.fontBold,
+                                    fontSize: SIZES.fontSm,
+                                    color: COLORS.primaryLight,
+
+                                }}>Credit Amt.</Text>
+                                <Text style={{
+                                    ...FONTS.fontSemiBold,
+                                    fontSize: homeBanner?.debit.length < 10 ? SIZES.fontLg : SIZES.fontSm,
+                                    color: COLORS.secondary
+                                }}>₹ {homeBanner?.credit}</Text>
                             </View>
-                            <View style={{ flex: 1, alignItems: 'center', justifyContent: "center" }}>
-                                <Text style={{ ...FONTS.fontBold, fontSize: SIZES.fontSm, color: COLORS.primaryLight }}>Debit Amt.</Text>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.fontLg, color: COLORS.danger }}>₹ {homeBanner?.debit}</Text>
+                            <View style={{
+                                flex: 1,
+                                alignItems: 'center', justifyContent: "center",
+                            }}>
+                                <Text style={{
+                                    ...FONTS.fontBold,
+                                    fontSize: SIZES.fontSm,
+                                    color: COLORS.primaryLight
+                                }}>Debit Amt.</Text>
+                                <Text style={{
+                                    ...FONTS.fontSemiBold, fontSize: homeBanner?.debit.length < 10 ? SIZES.fontLg : SIZES.fontSm,
+                                    color: COLORS.danger, left: 5
+                                }}>₹ {homeBanner?.debit}</Text>
                             </View>
                         </View>
                         <View style={{ flex: 1, alignItems: 'center', justifyContent: "center" }}>
-                            <TouchableOpacity style={{}}>
+                            <TouchableOpacity style={{ paddingVertical: 5 }}>
                                 <TouchableOpacity onPress={() => navigation.navigate("Report")}>
-                                    <Text style={{ color: COLORS.white, ...FONTS.fontBold, fontSize: SIZES.fontSm }}>
+                                    <Text style={{
+                                        color: COLORS.white, ...FONTS.fontBold, fontSize: SIZES.fontSm,
+
+                                    }}>
                                         VIEW REPORT
                                         <Feather name='arrow-right' size={15} color={COLORS.white} />
                                     </Text>
