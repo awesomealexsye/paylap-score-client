@@ -60,6 +60,7 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [debounceTimer, setDebounceTimer] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [sheettype, setSheetType] = useState('Date');
 
     const refRBSheet = useRef<any>(null);
 
@@ -160,7 +161,13 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
                 break;
         }
     }
-
+    const handelDateInput = async (value: string) => {
+        showDatepicker(value)
+        if (Platform.OS === 'ios') {
+            await refRBSheet.current.open();
+            setSheetType('Date');
+        }
+    }
     const handleBottomSheet = async (value: string) => {
         setTimeRange(value);
         setFromAndToDate(value);
@@ -188,27 +195,28 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
                     }
                 }}
             >
-                <ReportFilterOptionSheet handleSelectedValue={handleBottomSheet} />
                 {
-                    Platform.OS === 'ios' &&
-                    <View>
-                        <View style={{ display: 'flex', justifyContent: 'center' }}>
-                            {showCalender && (
-                                <View style={{ alignSelf: 'center' }}>
-                                    <DateTimePicker
-                                        value={calenderDate}
-                                        mode="date"
-                                        display="default"
-                                        onChange={onChange}
-                                    />
-                                </View>
-                            )}
+                    sheettype === "Radio" ?
+                        <ReportFilterOptionSheet handleSelectedValue={handleBottomSheet} /> :
+                        Platform.OS === 'ios' &&
+                        <View style={{ backgroundColor: colors.card, flex: 1 }}>
+                            <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+                                {showCalender && (
+                                    <View style={{ alignSelf: 'center' }}>
+                                        <DateTimePicker
+                                            value={calenderDate}
+                                            mode="date"
+                                            display="default"
+                                            onChange={onChange}
+                                        />
+                                    </View>
+                                )}
+                            </View>
+                            <View style={{ justifyContent: "space-between", flexDirection: 'row' }}>
+                                <Button style={{ backgroundColor: "red", padding: 3, paddingHorizontal: 30 }} onPress={async () => { await refRBSheet.current.close(); }}>Cancel</Button>
+                                <Button style={{ backgroundColor: "green", padding: 3, paddingHorizontal: 30 }} onPress={async () => { await refRBSheet.current.close(); }}>Done</Button>
+                            </View>
                         </View>
-                        <View style={{ justifyContent: "space-between", flex: 1 }}>
-                            <Button style={{ backgroundColor: "red" }} onPress={async () => { await refRBSheet.current.close(); }}>Cancel</Button>
-                            <Button style={{ backgroundColor: "green" }} onPress={async () => { await refRBSheet.current.close(); }}>Done</Button>
-                        </View>
-                    </View>
                 }
             </RBSheet>
             <Header
@@ -218,14 +226,14 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
             />
             <ScrollView style={{ ...styles.content, backgroundColor: colors.card }}>
                 <View style={{ ...styles.dateRange, backgroundColor: !theme.dark ? COLORS.primary : colors.card }}>
-                    <TouchableOpacity onPress={() => showDatepicker('From Date')} style={{ borderRightWidth: 1, borderRightColor: 'white', flex: 1 }} >
+                    <TouchableOpacity onPress={() => { handelDateInput('From Date'); }} style={{ borderRightWidth: 1, borderRightColor: 'white', flex: 1 }} >
                         <Text style={{ fontSize: 12, marginBottom: 5, color: !theme.dark ? 'white' : colors.title }}>From Date</Text>
                         <View style={styles.dateItem}>
                             <Ionicons name="calendar-outline" size={20} color={!theme.dark ? 'white' : colors.title} />
                             <Text style={{ ...styles.dateText, color: !theme.dark ? 'white' : colors.title }}>{fromDate || `${calenderDate.getFullYear()}-${calenderDate.getMonth() + 1}-${calenderDate.getDate()}`}</Text>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => showDatepicker('To Date')} style={{ flex: 1, alignItems: 'flex-end' }} >
+                    <TouchableOpacity onPress={() => { handelDateInput('To Date'); }} style={{ flex: 1, alignItems: 'flex-end' }} >
                         <Text style={{ fontSize: 12, marginBottom: 5, color: !theme.dark ? 'white' : colors.title }}>To Date</Text>
                         <View style={styles.dateItem}>
                             <Ionicons name="calendar-outline" size={20} color={!theme.dark ? 'white' : colors.title} />
@@ -249,7 +257,7 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
                     </View>
                 }
                 <View style={styles.searchContainer}>
-                    <TouchableOpacity style={{ ...styles.dropdown, backgroundColor: !theme.dark ? COLORS.primary : colors.card }} onPress={async () => { await refRBSheet.current.open(); }}>
+                    <TouchableOpacity style={{ ...styles.dropdown, backgroundColor: !theme.dark ? COLORS.primary : colors.card }} onPress={async () => { await refRBSheet.current.open(); setSheetType('Radio'); }}>
                         <Text style={{ ...styles.dropdownText, color: !theme.dark ? 'white' : colors.title }}>{timeRange}</Text>
                         <Ionicons name="chevron-down" size={20} color={!theme.dark ? 'white' : colors.title} />
                     </TouchableOpacity>
