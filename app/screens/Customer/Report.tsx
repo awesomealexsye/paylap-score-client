@@ -20,7 +20,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import ReportFilterOptionSheet from '../../components/BottomSheet/ReportFilterOptionSheet';
 import { ApiService } from '../../lib/ApiService';
-import { Button } from 'react-native-paper';
+import Button from '../../components/Button/Button';
+import { MessagesService } from '../../lib/MessagesService';
 
 
 
@@ -95,18 +96,37 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
         let currentDate = selectedDate || calenderDate;
         currentDate = currentDate > new Date() ? new Date() : currentDate;
 
-        setCalenderShow(false);
-        setCalenderDate(new Date());
-
-        if (inputDateType == "To Date") {
-            setToDate(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
-            if (timeRange === "Custom Date") {
-                showDatepicker("From Date")
+        if (event.type == 'set') {
+            if (Platform.OS === 'android') {
+                setCalenderShow(false);
+                setCalenderDate(new Date());
+            } else {
+                setCalenderShow(true);
             }
-        } else {
-            setFromDate(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
+            if (inputDateType == "To Date") {
+
+                toDateObj = currentDate;
+            } else {
+                fromDateObj = currentDate;
+            }
+            if (fromDateObj < toDateObj) {
+                if (inputDateType == "To Date") {
+                    setToDate(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
+                    if (timeRange === "Custom Date") {
+                        showDatepicker("From Date")
+                    }
+                    toDateObj = currentDate;
+                } else {
+                    setFromDate(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
+                    fromDateObj = currentDate;
+                }
+                FatechApiData();
+            } else {
+                MessagesService.commonMessage("To Date Should Not be less than From Date.");
+                // setToDate(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
+
+            }
         }
-        FatechApiData();
     };
 
 
@@ -208,13 +228,14 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
                                             mode="date"
                                             display="default"
                                             onChange={onChange}
+                                            textColor={colors.text}
                                         />
                                     </View>
                                 )}
                             </View>
-                            <View style={{ justifyContent: "space-between", flexDirection: 'row' }}>
-                                <Button style={{ backgroundColor: "red", padding: 3, paddingHorizontal: 30 }} onPress={async () => { await refRBSheet.current.close(); }}>Cancel</Button>
-                                <Button style={{ backgroundColor: "green", padding: 3, paddingHorizontal: 30 }} onPress={async () => { await refRBSheet.current.close(); }}>Done</Button>
+                            <View style={{ justifyContent: "space-between", flexDirection: 'row', padding: 10, paddingBottom: 20 }}>
+                                <Button style={[styles.footerButton, styles.downloadButton]} textColor={colors.white} textSize={'sm'} onPress={async () => { await refRBSheet.current.close(); }} title='Cancel' />
+                                <Button style={[styles.footerButton, styles.downloadButton]} textColor={colors.white} textSize={'sm'} onPress={async () => { await refRBSheet.current.close(); setCalenderShow(false); }} title='Done' />
                             </View>
                         </View>
                 }
@@ -226,18 +247,18 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
             />
             <ScrollView style={{ ...styles.content, backgroundColor: colors.card }}>
                 <View style={{ ...styles.dateRange, backgroundColor: !theme.dark ? COLORS.primary : colors.card }}>
-                    <TouchableOpacity onPress={() => { handelDateInput('From Date'); }} style={{ borderRightWidth: 1, borderRightColor: 'white', flex: 1 }} >
+                    <TouchableOpacity onPress={async () => { await handelDateInput('From Date'); }} style={{ borderRightWidth: 1, borderRightColor: 'white', flex: 1 }} >
                         <Text style={{ fontSize: 12, marginBottom: 5, color: !theme.dark ? 'white' : colors.title }}>From Date</Text>
                         <View style={styles.dateItem}>
                             <Ionicons name="calendar-outline" size={20} color={!theme.dark ? 'white' : colors.title} />
-                            <Text style={{ ...styles.dateText, color: !theme.dark ? 'white' : colors.title }}>{fromDate || `${calenderDate.getFullYear()}-${calenderDate.getMonth() + 1}-${calenderDate.getDate()}`}</Text>
+                            <Text style={{ ...styles.dateText, color: !theme.dark ? 'white' : colors.title }}>{fromDate}</Text>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => { handelDateInput('To Date'); }} style={{ flex: 1, alignItems: 'flex-end' }} >
+                    <TouchableOpacity onPress={async () => { await handelDateInput('To Date'); }} style={{ flex: 1, alignItems: 'flex-end' }} >
                         <Text style={{ fontSize: 12, marginBottom: 5, color: !theme.dark ? 'white' : colors.title }}>To Date</Text>
                         <View style={styles.dateItem}>
                             <Ionicons name="calendar-outline" size={20} color={!theme.dark ? 'white' : colors.title} />
-                            <Text style={{ ...styles.dateText, color: !theme.dark ? 'white' : colors.title }}>{toDate || `${calenderDate.getFullYear()}-${calenderDate.getMonth() + 1}-${calenderDate.getDate()}`}</Text>
+                            <Text style={{ ...styles.dateText, color: !theme.dark ? 'white' : colors.title }}>{toDate}</Text>
                         </View>
                     </TouchableOpacity>
                 </View>

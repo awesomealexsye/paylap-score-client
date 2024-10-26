@@ -117,7 +117,7 @@ const EditUserPaymentDetail = () => {
                         <Button
                             title='Update Payment details'
                             color={COLORS.primary}
-                            text={COLORS.card}
+                            textColor={COLORS.card}
                             onPress={updatePaymentDetails}
                             style={{ borderRadius: 50 }}
                         /> : <ActivityIndicator size={70} color={COLORS.primary} />

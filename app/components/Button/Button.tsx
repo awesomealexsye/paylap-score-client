@@ -7,8 +7,8 @@ type Props = {
     onPress?: (e: any) => void,
     color?: any,
     style?: object,
-    size?: any,
-    text?: any,
+    textSize?: any,
+    textColor?: any,
     disabled?: any
 }
 
@@ -17,8 +17,8 @@ const Button = ({
     onPress,
     color,
     style,
-    size,
-    text,
+    textSize: size,
+    textColor: text,
     disabled = false
 }: Props) => {
     return (

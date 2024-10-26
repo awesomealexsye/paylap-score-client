@@ -168,10 +168,10 @@ const BottomMenu = ({ state, navigation, descriptors }: Props) => {
                                             transform: [{translateY: iconTranslateY}],
                                     }}> ,*/}
                                     {
-                                        label === 'Home' ? <FontAwesome name={'home'} size={20} color={isFocused ? theme.dark ? COLORS.card : colors.card : COLORS.primary} /> :
-                                            label === 'FindUser' ? <Ionicons name={'speedometer'} size={20} color={isFocused ? theme.dark ? COLORS.card : colors.card : COLORS.primary} /> :
-                                                label === 'Share' ? <FontAwesome name={'users'} size={20} color={isFocused ? theme.dark ? COLORS.card : colors.card : COLORS.primary} /> :
-                                                    label === 'Profile' ? <FontAwesome name={'user'} size={20} color={isFocused ? theme.dark ? COLORS.card : colors.card : COLORS.primary} /> : IMAGES.tachometerfast
+                                        label === 'Home' ? <FontAwesome name={'home'} size={25} color={isFocused ? theme.dark ? COLORS.card : colors.card : COLORS.primary} /> :
+                                            label === 'FindUser' ? <Ionicons name={'speedometer'} size={25} color={isFocused ? theme.dark ? COLORS.card : colors.card : COLORS.primary} /> :
+                                                label === 'Share' ? <FontAwesome name={'users'} size={25} color={isFocused ? theme.dark ? COLORS.card : colors.card : COLORS.primary} /> :
+                                                    label === 'Profile' ? <FontAwesome name={'user'} size={25} color={isFocused ? theme.dark ? COLORS.card : colors.card : COLORS.primary} /> : IMAGES.tachometerfast
                                     }
                                     {/* </Animated.View> */}
                                     {/* <Text style={[styles.navText, { color: isFocused ? COLORS.primary : colors.title }]}>{label}</Text> */}

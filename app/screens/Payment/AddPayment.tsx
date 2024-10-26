@@ -209,7 +209,7 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
                                 <Button
                                     title={buttonText}
                                     color={COLORS.primary}
-                                    text={COLORS.card}
+                                    textColor={COLORS.card}
                                     onPress={fetchAddPaymentData}
                                     style={{ borderRadius: 12 }}
                                 /> : <ActivityIndicator size={70} color={COLORS.primary} />

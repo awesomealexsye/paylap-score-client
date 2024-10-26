@@ -22,12 +22,12 @@ const MenuItems = [
         navigate: "Home",
     },
 
-    {
-        id: "2",
-        icon: IMAGES.folder,
-        name: "View Report",
-        navigate: 'Report',
-    },
+    // {
+    //     id: "2",
+    //     icon: IMAGES.folder,
+    //     name: "View Report",
+    //     navigate: 'Report',
+    // },
     {
         id: "3",
         icon: IMAGES.help,

@@ -156,7 +156,7 @@ const EditProfile = () => {
                         <Button
                             title='Update Profile'
                             color={COLORS.primary}
-                            text={COLORS.card}
+                            textColor={COLORS.card}
                             onPress={updateProfileData}
                             style={{ borderRadius: 50 }}
                         /> : <ActivityIndicator size={70} color={COLORS.primary} />
