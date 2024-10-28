@@ -124,7 +124,7 @@ const ProductsDetails = ({ navigation }: ProductsDetailsScreenProps) => {
                         <Text style={{ ...FONTS.fontLight, fontSize: 12, color: theme.dark ? 'rgba(255,255,255,.7)' : '#4E4E4E', marginTop: 5 }}>*)Dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore</Text>
                     </View>
                 </View>
-            </ScrollView>
+            </ScrollView >
             <View style={[GlobalStyleSheet.container, { paddingTop: 0 }]}>
                 <Button
                     onPress={() => navigation.navigate('DeliveryAddress')}
@@ -134,7 +134,7 @@ const ProductsDetails = ({ navigation }: ProductsDetailsScreenProps) => {
                     style={{ borderRadius: 50 }}
                 />
             </View>
-        </View>
+        </View >
     )
 }
 
