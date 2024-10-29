@@ -13,11 +13,11 @@ const ImageSwiper = ({ data }: any) => {
 
 
   const [newData] = useState(
-    // [
-    // { key: 'space-left' },
-    data,
-    // { key: 'space-right' },
-    // ]
+    [
+      // { key: 'space-left' },
+      ...data,
+      // { key: 'space-right' },
+    ]
   );
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -112,7 +112,9 @@ const ImageSwiper = ({ data }: any) => {
                   <View style={{ alignItems: 'center', height: 150, width: "100%", }}>
                     <Image
                       style={{ height: 150, width: "100%", resizeMode: 'cover', marginVertical: -20, borderRadius: 10, backgroundColor: colors.card }}
-                      source={{ uri: item.image }}
+                      source={{
+                        uri: CONFIG.APP_URL + "/uploads/banner/" + item.image
+                      }}
                     />
                   </View>
                   {/* <View style={{ paddingHorizontal: 25 }}>
@@ -132,7 +134,7 @@ const ImageSwiper = ({ data }: any) => {
         })}
       </Animated.ScrollView>
       <View style={styles.indicatorContainer}>
-        {newData.slice(1, -1).map((_, index) => (
+        {newData.map((data: any, index: number) => (
           <View
             key={index}
             style={[

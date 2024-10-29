@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList, BackHandler, ActivityIndicator, Platform } from 'react-native';
+import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList, BackHandler, ActivityIndicator, Platform, Button } from 'react-native';
 import { useTheme, useFocusEffect } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { IMAGES } from '../../constants/Images';
@@ -15,6 +15,7 @@ import { ApiService } from '../../lib/ApiService';
 import CommonService from '../../lib/CommonService';
 import StorageService from '../../lib/StorageService';
 import ImageSwiper from '../../components/ImageSwiper';
+import SliderModal from '../../components/SliderModal';
 interface Customer {
     id: string;
     customer_id: string;
@@ -40,9 +41,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const [isLoading, setIsLoading] = useState<any>(false);
     const [imageData, setImageData] = useState<any>([]);
 
-
     useEffect(() => {
-        // fetchImageList();
         const handleBackPress = () => {
             if (navigation.isFocused() && navigation.getState().routes[navigation.getState().index].name === 'Home') {
                 BackHandler.exitApp();
@@ -60,7 +59,6 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     useFocusEffect(
         useCallback(() => {
             fetchCustomerList();
-            fetchImageList();
             StorageService.isLoggedIn().then(res => { res === false ? navigation.navigate("MobileSignIn") : null; });
             CommonService.currentUserDetail().then((res) => {
                 setUserDetail(res);
@@ -91,20 +89,6 @@ export const Home = ({ navigation }: HomeScreenProps) => {
             setFilteredCustomers(homeApiRes?.data?.records);
         }
         setIsLoading(false);
-    }
-
-    const fetchImageList = async () => {
-
-        const res = await ApiService.postWithToken("api/banner/all", { type: "Header" });
-
-        console.log(res.data, "rtestin");
-        // const data = JSON.stringify(res.json());
-        // https://paynest.co.in/uploads/banner
-
-        console.log("&&&&&&&&&&&&&&", res?.data[0]);
-        setImageData(res?.data);
-
-
     }
 
 
@@ -312,13 +296,10 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                     </View>
                 </View>
 
-                <ImageSwiper
-                    data={imageData}
-                />
-
+                <SliderModal data={imageData} />
                 {/* search Box Start */}
 
-                <View style={[GlobalStyleSheet.container, { paddingHorizontal: 30, paddingTop: 0 }]}>
+                <View style={[GlobalStyleSheet.container, { paddingHorizontal: 30, paddingTop: 30 }]}>
                     <View>
                         <TextInput
                             placeholder='Search Customer'

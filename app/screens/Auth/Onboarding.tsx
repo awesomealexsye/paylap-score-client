@@ -29,7 +29,6 @@ type OnboardingScreenProps = StackScreenProps<RootStackParamList, 'Onboarding'>;
 
 const Onboarding = ({ navigation }: OnboardingScreenProps) => {
     StorageService.isLoggedIn().then((is_login) => {
-        console.log("is_logged_in", is_login);
         if (is_login) {
             navigation.replace("DrawerNavigation", { screen: 'Home' });
         }
