@@ -40,6 +40,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const [filteredCustomers, setFilteredCustomers] = useState([]);
     const [userDetail, setUserDetail] = useState({ name: "", profile_image: "", aadhar_card: "", notification_count: 0 });
     const [isLoading, setIsLoading] = useState<any>(false);
+    const [isRefreshing, setIsRefreshing] = useState<any>(false);
     useEffect(() => {
         const handleBackPress = () => {
             if (navigation.isFocused() && navigation.getState().routes[navigation.getState().index].name === 'Home') {
@@ -90,6 +91,11 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         setIsLoading(false);
     }
 
+    const handelRefresh = async () => {
+        setIsRefreshing(true);
+        await fetchCustomerList();
+        setIsRefreshing(false);
+    };
 
     const dispatch = useDispatch();
 
@@ -313,10 +319,13 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
                 {isLoading === false ?
                     <FlatList scrollEnabled={false}
+                        refreshing={isRefreshing}
+                        onRefresh={handelRefresh}
                         data={filteredCustomers}
                         renderItem={renderCustomer}
                         keyExtractor={(item, index) => index.toString()}
-                        contentContainerStyle={{}} /> : <View style={{ flex: 1, justifyContent: 'center' }} >
+                        contentContainerStyle={{}} /> : <View style={{ flex: 1, justifyContent: 'center' }}
+                        >
                         <ActivityIndicator color={colors.title} size={'large'}></ActivityIndicator>
                     </View>
                 }

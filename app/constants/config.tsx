@@ -13,8 +13,8 @@ const CONFIG = {
         },
     },
     CREDIT_SCORE_RANGE: {
-        MIN: 0,
-        MAX: 100
+        MIN: 300,
+        MAX: 900
     },
     APP_BUILD: {
         ANDROID: {
