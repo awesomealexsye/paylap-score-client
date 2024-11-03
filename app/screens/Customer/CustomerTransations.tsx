@@ -13,6 +13,7 @@ import CustomerActivityBtn from './CustomerActivityBtn';
 import { ApiService } from '../../lib/ApiService';
 import CommonService from '../../lib/CommonService';
 import { MessagesService } from '../../lib/MessagesService';
+import CONFIG from '../../constants/config';
 
 
 interface Customer {
@@ -36,6 +37,9 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
     const [customerData, setCustomersData] = useState<any>({});
     const [isLoading, setIsLoading] = useState<any>(false);
 
+
+    const PLAY_STORE_URL = CONFIG.APP_BUILD.ANDROID.APP_URL;
+    const APP_STORE_URL = CONFIG.APP_BUILD.IOS.APP_URL;
 
     useFocusEffect(
         useCallback(() => {
@@ -79,7 +83,8 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
     }
     const send_sms = () => {
         CommonService.currentUserDetail().then((res) => {
-            const defaultMessage = `Dear Sir / Madam, Your payment of ₹ ${item.amount} is pending at ${res.name}(${res.mobile}).Open Paylapscore app for view the details and make the payment.`;
+            const defaultMessage = `Dear Sir / Madam, Your payment of ₹ ${item.amount} is pending at ${res.name}(${res.mobile}).Open Paylapscore app for view the details and make the payment.💥\n\n\n\n📱📱🔗 Download on Play Store: ${PLAY_STORE_URL}\n\n🔗 Download on Apple App Store: ${APP_STORE_URL}`;
+            console.log(defaultMessage);
             const sms = `sms:${item.customer.mobile}?body=${defaultMessage}`;
             Linking.openURL(sms);
         })
