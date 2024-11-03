@@ -44,11 +44,10 @@ const FindUser = forwardRef((props, ref) => {
     const [isLoading, setIsLoading] = useState(false);
     const [showDetail, setShowDetail] = useState(false);
 
-    const [aadhar, setAadhar] = useState("");
+    const [aadhar, setAadhar] = useState("936107513622");
     useFocusEffect(
         useCallback(() => {
-
-            setShowDetail(true);
+            setShowDetail(false);
         }, [])
     );
     const searchAadhaar = async () => {
@@ -135,36 +134,6 @@ const FindUser = forwardRef((props, ref) => {
                                                 <Text style={{ ...FONTS.fontSemiBold, fontSize: 18, color: colors.title }}>{userDetail?.name}</Text>
                                                 {/* <Text style={{ ...FONTS.fontRegular, fontSize: 16, color: COLORS.primary }}>London, England</Text> */}
                                             </View>
-
-                                            {/* <View style={[GlobalStyleSheet.container, { paddingHorizontal: 40, marginTop: 0 }]}>
-                                                <View>
-
-                                                    <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 25, alignItems: 'flex-start' }]} >
-                                                        <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
-                                                            <Image
-                                                                style={[GlobalStyleSheet.image3, { tintColor: COLORS.primary }]}
-                                                                source={IMAGES.call}
-                                                            />
-                                                        </View>
-                                                        <View>
-                                                            <Text style={[styles.brandsubtitle2, { color: '#7D7D7D', fontSize: 12 }]}>Mobile Number</Text>
-                                                            <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, marginTop: 5 }}>{userDetail?.mobile}</Text>
-                                                        </View>
-                                                    </View>
-                                                    <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 25, alignItems: 'flex-start' }]} >
-                                                        <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
-                                                            <Image
-                                                                style={[GlobalStyleSheet.image3, { tintColor: COLORS.primary }]}
-                                                                source={IMAGES.email}
-                                                            />
-                                                        </View>
-                                                        <View>
-                                                            <Text style={[styles.brandsubtitle2, { color: '#7D7D7D', fontSize: 12 }]}>Email Address</Text>
-                                                            <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, marginTop: 0 }}>{userDetail?.email}</Text>
-                                                        </View>
-                                                    </View>
-                                                </View>
-                                            </View> */}
                                         </View>
                                         <View style={{ marginBottom: 80 }}>
                                             <ProfileScore
@@ -176,6 +145,35 @@ const FindUser = forwardRef((props, ref) => {
                                                 size={300}
                                                 labelStyle={{ color: colors.title }}
                                             />
+                                        </View>
+                                        <View style={[GlobalStyleSheet.container, { paddingHorizontal: 40, marginTop: 0 }]}>
+                                            <View>
+
+                                                <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 25, alignItems: 'flex-start' }]} >
+                                                    <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
+                                                        <Image
+                                                            style={[GlobalStyleSheet.image3, { tintColor: COLORS.primary }]}
+                                                            source={IMAGES.call}
+                                                        />
+                                                    </View>
+                                                    <View>
+                                                        <Text style={[styles.brandsubtitle2, { color: '#7D7D7D', fontSize: 12 }]}>Mobile Number</Text>
+                                                        <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, marginTop: 5 }}>{userDetail?.mobile}</Text>
+                                                    </View>
+                                                </View>
+                                                <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 25, alignItems: 'flex-start' }]} >
+                                                    <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
+                                                        <Image
+                                                            style={[GlobalStyleSheet.image3, { tintColor: COLORS.primary }]}
+                                                            source={IMAGES.email}
+                                                        />
+                                                    </View>
+                                                    <View>
+                                                        <Text style={[styles.brandsubtitle2, { color: '#7D7D7D', fontSize: 12 }]}>Email Address</Text>
+                                                        <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, marginTop: 0 }}>{userDetail?.email}</Text>
+                                                    </View>
+                                                </View>
+                                            </View>
                                         </View>
                                         {/* Credit Profile Overview */}
                                         <View style={[styles.overviewSection]}>

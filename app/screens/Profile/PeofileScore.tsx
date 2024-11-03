@@ -269,6 +269,12 @@ class ProfileScore extends Component<ProfileScoreProps> {
                         {label.name}
                     </Text>
                 </View>
+                <Text style={{ position: 'absolute', bottom: -20, left: 0, fontWeight: 400, fontSize: 15, color: 'gray' }}>
+                    {minValue}
+                </Text>
+                <Text style={{ position: 'absolute', bottom: -20, right: 0, fontWeight: 400, fontSize: 15, color: 'gray' }}>
+                    {maxValue}
+                </Text>
             </View>
         );
     }
