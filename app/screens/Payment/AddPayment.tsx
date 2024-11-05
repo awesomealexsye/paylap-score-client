@@ -28,7 +28,7 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
     const [description, setDescription] = useState<String>("");
     const [otp, setOtp] = useState<String>("");
     const [givenDate, setGivenDate] = useState<String>("");
-    const [takenDate, setTakenDate] = useState<String>("");
+    const [takenDate, setTakenDate] = useState(`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')} ${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}:${String(new Date().getSeconds()).padStart(2, '0')}`);
     const [inputDateType, setInputDateType] = useState<String>("");
     const [isLoading, setIsLoading] = useState(false)
     const theme = useTheme();
@@ -79,7 +79,7 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
             if (res.status == true) {
                 setIsOtpSent(true);
                 setButtonText("Debit")
-                MessagesService.commonMessage(res.message);
+                MessagesService.commonMessage(res.message, "SUCCESS");
             }
             setIsLoading(false);
             return;
@@ -146,7 +146,7 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
                                 <View style={{ marginBottom: 10 }}>
                                     <Input
                                         keyboardType='numeric'
-                                        multiline={true}
+                                        multiline={false}
                                         placeholder="Enter OTP"
                                         onChangeText={otp => setOtp(otp)}
                                     />
@@ -165,7 +165,7 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
                                 )}
                             </View>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: "center", marginTop: 12, flexWrap: 'wrap' }}>
-                                <View>
+                                {/* <View>
                                     <Text>{transaction_type === 'CREDIT' ? 'Transaction Date' : 'Taken Date'}</Text>
                                     <ButtonIcon
                                         onPress={() => showDatepicker('Taken Date')}
@@ -174,7 +174,7 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
                                         icon={<FontAwesome style={{ opacity: 1 }} name={'calendar'} size={20} color={COLORS.white} />}
                                     />
 
-                                </View>
+                                </View> */}
 
                                 {transaction_type === 'DEBIT' && <View>
                                     <Text>Last Date</Text>

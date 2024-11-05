@@ -39,7 +39,7 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
         ━━━━━━━━━━━━━━━━━━━━━━━
 
         📅 *Transaction Date*: ${customer.transaction_date}
-        ⏳ *Estimated Given Date*: ${customer.estimated_given_date}
+        ⏳ *Estimated End Date*: ${customer.estimated_given_date}
         ━━━━━━━━━━━━━━━━━━━━━━━
 
         🆔 *Transaction ID*: 
@@ -119,13 +119,14 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                         borderBottomWidth: 0.4
                     }} />
                     <View style={styles.dateContainer}>
-                        <View style={styles.dateItem}>
-                            <Text style={[styles.label, { color: colors.text, }]}>Given Date</Text>
-                            <Text style={[styles.value, { color: colors.title }]}>{customer.estimated_given_date}</Text>
-                        </View>
+
                         <View style={styles.dateItem}>
                             <Text style={[styles.label, { color: colors.text, }]}>Taken Date</Text>
                             <Text style={[styles.value, { color: colors.title, }]}>{customer.transaction_date}</Text>
+                        </View>
+                        <View style={styles.dateItem}>
+                            <Text style={[styles.label, { color: colors.text, }]}>End Date</Text>
+                            <Text style={[styles.value, { color: colors.title }]}>{customer.estimated_given_date}</Text>
                         </View>
                     </View>
                     <View style={{
