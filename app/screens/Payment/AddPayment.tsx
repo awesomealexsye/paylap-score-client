@@ -177,7 +177,7 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
                                 </View>
 
                                 {transaction_type === 'DEBIT' && <View>
-                                    <Text>Given Date</Text>
+                                    <Text>Last Date</Text>
                                     <ButtonIcon onPress={() => showDatepicker('Given Date')}
                                         size={'sm'}
                                         title={givenDate || date.toLocaleDateString()}
