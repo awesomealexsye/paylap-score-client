@@ -176,10 +176,9 @@ const FindUser = forwardRef((props, ref) => {
                                             </View>
                                         </View>
                                         {/* Credit Profile Overview */}
-                                        <View style={[styles.overviewSection]}>
+                                        {/* <View style={[styles.overviewSection]}>
 
                                             <View style={styles.gridContainer}>
-                                                {/* Total Accounts */}
                                                 <TouchableOpacity style={[styles.gridItem, { borderLeftColor: '#8884d8', backgroundColor: colors.card }]} >
                                                     <View>
                                                         <Text style={[styles.gridLabel, { color: colors.title }]}>Total Accounts</Text>
@@ -187,7 +186,6 @@ const FindUser = forwardRef((props, ref) => {
                                                     </View>
                                                 </TouchableOpacity>
 
-                                                {/* Credit Enquiries */}
                                                 <TouchableOpacity style={[styles.gridItem, { borderLeftColor: '#82ca9d', backgroundColor: colors.card }]}>
                                                     <View>
                                                         <Text style={[styles.gridLabel, { color: colors.title }]}>Credit Enquiries</Text>
@@ -195,7 +193,6 @@ const FindUser = forwardRef((props, ref) => {
                                                     </View>
                                                 </TouchableOpacity>
 
-                                                {/* Credit Card Usage */}
                                                 <TouchableOpacity style={[styles.gridItem, { borderLeftColor: '#ff7675', backgroundColor: colors.card }]}>
                                                     <View>
                                                         <Text style={[styles.gridLabel, { color: colors.title }]}>Credit Card Usage</Text>
@@ -203,7 +200,6 @@ const FindUser = forwardRef((props, ref) => {
                                                     </View>
                                                 </TouchableOpacity>
 
-                                                {/* Age of Credit */}
                                                 <TouchableOpacity style={[styles.gridItem, { borderLeftColor: '#74b9ff', backgroundColor: colors.card }]}>
                                                     <View>
                                                         <Text style={[styles.gridLabel, { color: colors.title }]}>Age of Credit</Text>
@@ -211,7 +207,7 @@ const FindUser = forwardRef((props, ref) => {
                                                     </View>
                                                 </TouchableOpacity>
                                             </View>
-                                        </View>
+                                        </View> */}
                                     </View>)
                                 }
                             </View>
