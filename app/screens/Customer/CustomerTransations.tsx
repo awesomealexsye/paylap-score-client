@@ -259,16 +259,15 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
 
             </ScrollView>
             <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', paddingVertical: 20, backgroundColor: colors.dark }}>
-                <TouchableOpacity style={[styles.removeBtn]} onPress={() => navigation.navigate("AddPayment", { item: item, transaction_type: "DEBIT" })}>
+                <TouchableOpacity style={[styles.removeBtn]} onPress={() => navigation.navigate("AddPayment", { item: item, transaction_type: "DEBIT", existPayment: false })}>
 
                     <Text style={styles.addButtonText}>
-                        Debit</Text>
+                        New DEBIT</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.addAmmount} onPress={() => navigation.navigate("AddPayment", { item: item, transaction_type: "CREDIT" })}>
-
+                {/* <TouchableOpacity style={styles.addAmmount} onPress={() => navigation.navigate("AddPayment", { item: item, transaction_type: "CREDIT", existPayment: false })}>
                     <Text style={styles.addButtonText}>
                         Credit</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
 
         </View>

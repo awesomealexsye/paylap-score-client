@@ -10,19 +10,28 @@ import CommonService from '../../lib/CommonService';
 import CONFIG from '../../constants/config';
 import HeaderStyle1 from '../../components/Headers/HeaderStyle1';
 import Header from '../../layout/Header';
+import CustomerTransactionTable from './CustomerTransactionTable';
 
 type CustomerTransationsDetailsScreenProps = StackScreenProps<RootStackParamList, 'CustomerTransationsDetails'>;
 
 export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransationsDetailsScreenProps) => {
     const { customer } = route.params;
+    // console.log("customertransactionDetail", customer)
     const theme = useTheme();
     const { colors } = theme;
     const [modalVisible, setModalVisible] = useState(false);
     const [isImageLoading, setImageLoading] = useState(true); // Image loading state
 
+    const showPayButton = customer.transaction_type === "CREDIT" ? 'DEBIT' : 'CREDIT';
     const handlePreview = () => {
         setModalVisible(true);
     };
+
+    const handlePayment = async () => {
+        console.log("hello...")
+        navigation.navigate("AddPayment", { item: customer, transaction_type: showPayButton, existPayment: true });
+
+    }
 
     const shareTransaction = async () => {
         const PLAY_STORE_URL = CONFIG.APP_BUILD.ANDROID.APP_URL;
@@ -144,6 +153,10 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                     <Text style={[styles.cardTitle, { color: colors.title }]}>Description</Text>
                     <Text style={[styles.cardText, { color: colors.text }]}>{customer.description}</Text>
                 </View>
+                <View>
+                    <CustomerTransactionTable transaction_id={customer.transaction_id} />
+                </View>
+
 
                 {/* Attachment Section */}
                 {customer?.image !== "" && (
@@ -165,7 +178,17 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                 )}
             </ScrollView>
 
+
             {/* Share Button */}
+            <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
+                <ButtonIcon
+                    color={showPayButton == 'DEBIT' ? 'red' : 'green'}
+                    onPress={handlePayment}
+                    title={showPayButton}
+                    iconDirection='right'
+                    icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'rupee'} size={18} />}
+                />
+            </View>
             <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
                 <ButtonIcon
                     onPress={shareTransaction}

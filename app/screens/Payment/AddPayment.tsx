@@ -20,7 +20,8 @@ import { IMAGES } from '../../constants/Images';
 type AddPaymentScreenProps = StackScreenProps<RootStackParamList, 'AddPayment'>;
 
 const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
-    const { item, transaction_type }: any = route.params;
+    const { item, transaction_type, existPayment }: any = route.params;
+    console.log("AddPayment", item)
 
     const { image, pickImage, takePhoto }: any = useImagePicker();
 
@@ -41,7 +42,8 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
 
     useFocusEffect(
         useCallback(() => {
-            setButtonText(transaction_type == "CREDIT" ? "Credit" : "Send OTP")
+            console.log("item", existPayment, typeof (item.transaction_id), (item.transaction_id),)
+            setButtonText("Send OTP")
         }, [])
     )
 
@@ -68,10 +70,17 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
 
     const fetchAddPaymentData = async () => {
         const data: any = { customer_id: item?.customer_id, amount: amount, transaction_type: transaction_type, description: description, transaction_date: takenDate, estimated_given_date: givenDate, image: image, otp: otp }
+        data.transaction_id = item?.transaction_id;
+        data.existPayment = existPayment;
 
         if (amount.length == 0) {
             MessagesService.commonMessage(`Please enter amount that you want to ${transaction_type}`);
             return;
+        }
+        if (Number(item.amount) < Number(amount) || Number(item.amount) < 0 || Number(amount) < 0) {
+            MessagesService.commonMessage(`Enter Amount must be smaller than pending amount`);
+            return;
+
         }
         if (buttonText === "Send OTP") {
             setIsLoading(true);
@@ -84,13 +93,14 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
             setIsLoading(false);
             return;
         }
-        if (buttonText === "Debit") {
-            if (otp.length !== 4) {
-                MessagesService.commonMessage('OTP must be 4 digits.');
-                return;
-            }
+        // if (buttonText === "Debit") {
+        if (otp.length !== 4) {
+            MessagesService.commonMessage('OTP must be 4 digits.');
+            return;
         }
+        // }
         setIsLoading(true);
+        console.log("add-transaction", data);
         ApiService.postWithToken("api/shopkeeper/transactions/add-transaction", data).then((res) => {
             if (res.status == true) {
                 MessagesService.commonMessage(res.message, "SUCCESS");
@@ -128,10 +138,11 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
                         <View style={GlobalStyleSheet.cardBody}>
                             <View style={{ marginBottom: 10 }}>
                                 <Input
-                                    keyboardType='numeric'
+                                    // keyboardType='numeric'
                                     icon={<FontAwesome style={{ opacity: .6 }} name={'rupee'} size={20} color={colors.text} />}
                                     placeholder="Enter amount"
                                     onChangeText={amount => setAmount(amount)}
+                                    defaultValue={existPayment ? String(item.amount) : ''}
                                 />
                             </View>
                             <View style={{ marginBottom: 10 }}>
