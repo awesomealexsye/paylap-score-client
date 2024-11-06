@@ -60,7 +60,7 @@ export const AddCustomer = ({ navigation }: AddCustomerScreenProps) => {
             if (res !== null) {
                 if (res?.status === true) {
                     setOtpSent(false);
-                    MessagesService.commonMessage("Customer Added Successfully");
+                    MessagesService.commonMessage("Customer Added Successfully", "SUCCESS");
                     navigation.navigate("Home");
                 }
             }
@@ -108,6 +108,7 @@ export const AddCustomer = ({ navigation }: AddCustomerScreenProps) => {
                                         <View>
                                             <Input
                                                 inputRounded
+                                                keyboardType={'number-pad'}
                                                 icon={<FontAwesome style={{ opacity: .6 }} name={'mobile-phone'} size={35} color={colors.text} />}
                                                 placeholder="Enter Customer Mobile number"
                                                 onChangeText={(mobile) => setCustomerDetail({ ...customerDetail, "mobile": mobile })}
@@ -117,6 +118,7 @@ export const AddCustomer = ({ navigation }: AddCustomerScreenProps) => {
                                         <View style={{ marginTop: 10 }}>
                                             <Input
                                                 inputRounded
+                                                keyboardType={'number-pad'}
                                                 icon={<FontAwesome style={{ opacity: .6 }} name={'address-card'} size={30} color={colors.text} />}
                                                 placeholder="Enter Aadhaar Number"
                                                 onChangeText={(aadhar) => setCustomerDetail({ ...customerDetail, "aadhar": aadhar })}
