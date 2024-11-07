@@ -18,7 +18,7 @@ const CustomerScore = ({ navigation }: CustomerScoreScreenProps) => {
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
 
-    const scoreVal = { min: 0, max: 100 };
+    const scoreVal = { min: CONFIG.CREDIT_SCORE_RANGE.MIN, max: CONFIG.CREDIT_SCORE_RANGE.MAX };
     const [userScore, setUserScore] = useState(0)
     useFocusEffect(
         useCallback(() => {
@@ -60,7 +60,7 @@ const CustomerScore = ({ navigation }: CustomerScoreScreenProps) => {
                                         <Text style={{ color: colors.title, fontSize: 10 }}>{item.name}</Text>
                                     </View>
                                     <View style={{ flex: 1 }}>
-                                        <Text style={{ color: colors.title, fontSize: 10 }}>{`${((scoreVal.max / CONFIG.CREDIT_SCORE_LABEL.length) * index) + 1} - ${(scoreVal.max / CONFIG.CREDIT_SCORE_LABEL.length) * (index + 1)}`}</Text>
+                                        <Text style={{ color: colors.title, fontSize: 10 }}>{`${((((scoreVal.max - scoreVal.min) / CONFIG.CREDIT_SCORE_LABEL.length) * index) + 1) + scoreVal.min} - ${(((scoreVal.max - scoreVal.min) / CONFIG.CREDIT_SCORE_LABEL.length) * (index + 1) + scoreVal.min)}`}</Text>
                                     </View>
                                 </View>
                             )

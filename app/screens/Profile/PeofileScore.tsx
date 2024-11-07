@@ -11,7 +11,6 @@ import {
     TextStyle,
     StyleSheet, Dimensions
 } from 'react-native';
-import PropTypes from 'prop-types';
 
 
 const { width: deviceWidth } = Dimensions.get('window');
@@ -49,9 +48,9 @@ class ProfileScore extends Component<ProfileScoreProps> {
 
 
     static defaultProps = {
-        defaultValue: 50,
+        defaultValue: 0,
         minValue: 0,
-        maxValue: 100,
+        maxValue: 900,
         easeDuration: 500,
         allowedDecimals: 0,
         labels: [
@@ -253,8 +252,8 @@ class ProfileScore extends Component<ProfileScoreProps> {
                         style={[
                             style.innerCircle,
                             {
-                                width: currentSize * 0.6,
-                                height: (currentSize / 2) * 0.6,
+                                width: currentSize * 0.9,
+                                height: (currentSize / 2) * 0.9,
                                 borderTopLeftRadius: currentSize / 2,
                                 borderTopRightRadius: currentSize / 2,
                             },
@@ -263,13 +262,19 @@ class ProfileScore extends Component<ProfileScoreProps> {
                     />
                 </View>
                 <View style={[style.labelWrapper, labelWrapperStyle]}>
-                    <Text style={[style.label, labelStyle, { color: "grey" }]}>
+                    <Text style={[style.label, labelStyle]}>
                         {this.limitValue(value, Number(minValue), Number(maxValue), allowedDecimals)}
                     </Text>
                     <Text style={[style.labelNote, { color: label.labelColor }, labelNoteStyle]}>
                         {label.name}
                     </Text>
                 </View>
+                <Text style={{ position: 'absolute', bottom: -20, left: 0, fontWeight: 400, fontSize: 15, color: 'gray' }}>
+                    {minValue}
+                </Text>
+                <Text style={{ position: 'absolute', bottom: -20, right: 0, fontWeight: 400, fontSize: 15, color: 'gray' }}>
+                    {maxValue}
+                </Text>
             </View>
         );
     }
@@ -316,7 +321,6 @@ const style = StyleSheet.create({
         overflow: 'hidden',
         justifyContent: 'flex-end',
         alignItems: 'center',
-        backgroundColor: '#ffffff',
         width: deviceWidth * 0.6,
         height: (deviceWidth / 2) * 0.6,
         borderTopLeftRadius: deviceWidth / 2 - 10,
