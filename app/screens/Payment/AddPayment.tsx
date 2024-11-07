@@ -77,14 +77,18 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
             MessagesService.commonMessage(`Please enter amount that you want to ${transaction_type}`);
             return;
         }
-        if (Number(item.amount) < Number(amount) || Number(item.amount) < 0 || Number(amount) < 0) {
+        // if (Number(item.amount) < Number(amount) || Number(item.amount) < 0 || Number(amount) < 0) {
+        // MessagesService.commonMessage(`Enter Amount must be smaller than pending amount`);
+        //     return;
+        // }
+        if (existPayment == true && item.amount < amount) {
             MessagesService.commonMessage(`Enter Amount must be smaller than pending amount`);
             return;
-
         }
+
         if (buttonText === "Send OTP") {
             setIsLoading(true);
-            const res = await ApiService.postWithToken("api/shopkeeper/transactions/send-otp", { customer_id: item.customer_id });
+            const res = await ApiService.postWithToken("api/shopkeeper/transactions/send-otp", { customer_id: item.customer_id, amount: amount });
             if (res.status == true) {
                 setIsOtpSent(true);
                 setButtonText("Debit")
@@ -197,14 +201,16 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
                                     />
                                 </View>}
 
-                                <View style={{ marginTop: 20 }}>
-                                    <ButtonIcon onPress={pickImage}
-                                        size={'sm'}
-                                        title='Attach bills'
-                                        iconDirection='left'
-                                        icon={<FontAwesome style={{ opacity: 1, color: COLORS.white }} name={'camera'} size={20} color={colors.white} />}
-                                    />
-                                </View>
+                                {!existPayment &&
+                                    <View style={{ marginTop: 20 }}>
+                                        <ButtonIcon onPress={pickImage}
+                                            size={'sm'}
+                                            title='Attach bills'
+                                            iconDirection='left'
+                                            icon={<FontAwesome style={{ opacity: 1, color: COLORS.white }} name={'camera'} size={20} color={colors.white} />}
+                                        />
+                                    </View>
+                                }
                             </View>
                         </View>
                     </View>
