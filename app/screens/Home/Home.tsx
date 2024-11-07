@@ -97,13 +97,13 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
         const res = await ApiService.postWithToken("api/banner/all", { type: "Header" });
 
-        console.log(res.data, "rtestin");
-        // const data = JSON.stringify(res.json());
-        // https://paynest.co.in/uploads/banner
-
-        console.log("&&&&&&&&&&&&&&", res?.data[0]);
-        setImageData(res?.data);
-
+        // console.log(res.data, "rtestin");
+        // // const data = JSON.stringify(res.json());
+        // // https://paynest.co.in/uploads/banner
+        if (res.status == true) {
+            setImageData(res?.data);
+            console.log("&&&&&&&&&&&&&&", imageData);
+        }
 
     }
 

@@ -12,11 +12,11 @@ const ImageSwiper = ({ data }: any) => {
 
 
 
-  const [newData] = useState(
+  const [newData] = useState(data
     // [
-    // { key: 'space-left' },
-    data,
-    // { key: 'space-right' },
+    //   { key: 'space-left' },
+    //   ...data,
+    //   { key: 'space-right' },
     // ]
   );
 
