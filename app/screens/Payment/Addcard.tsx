@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useTheme } from '@react-navigation/native';
-import { View, Text,ScrollView, StyleSheet } from 'react-native'
+import { View, Text, ScrollView, StyleSheet } from 'react-native'
 import Header from '../../layout/Header';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import CreditCard from '../../components/Card/CreditCard';
@@ -12,67 +12,67 @@ import { RootStackParamList } from '../../navigation/RootStackParamList';
 
 type AddcardScreenProps = StackScreenProps<RootStackParamList, 'Addcard'>;
 
-const Addcard = ({navigation} : AddcardScreenProps) => {
+const Addcard = ({ navigation }: AddcardScreenProps) => {
 
     const theme = useTheme();
-    const { colors } : {colors : any} = theme;
+    const { colors }: { colors: any } = theme;
 
-    const [isFocused , setisFocused] = useState(false);
-    const [isFocused1 , setisFocused1] = useState(false);
-    const [isFocused2 , setisFocused2] = useState(false);
-    const [isFocused3 , setisFocused3] = useState(false);
+    const [isFocused, setisFocused] = useState(false);
+    const [isFocused1, setisFocused1] = useState(false);
+    const [isFocused2, setisFocused2] = useState(false);
+    const [isFocused3, setisFocused3] = useState(false);
 
     const [inputValue, setInputValue] = useState("");
 
-    const handleChange = (text:any) => { 
-        const numericValue = text.replace(/[^0-9]/g, ""); 
-        setInputValue(numericValue); 
+    const handleChange = (text: any) => {
+        const numericValue = text.replace(/[^0-9]/g, "");
+        setInputValue(numericValue);
     };
 
     const [inputValue1, setInputValue1] = useState("");
 
-    const handleChange1 = (text:any) => { 
-        const numericValue = text.replace(/[^0-9]/g, ""); 
-        setInputValue1(numericValue); 
+    const handleChange1 = (text: any) => {
+        const numericValue = text.replace(/[^0-9]/g, "");
+        setInputValue1(numericValue);
     };
 
     const [inputValue2, setInputValue2] = useState("");
 
-    const handleChange2 = (text:any) => { 
-        const numericValue = text.replace(/[^0-9]/g, ""); 
-        setInputValue1(numericValue); 
+    const handleChange2 = (text: any) => {
+        const numericValue = text.replace(/[^0-9]/g, "");
+        setInputValue1(numericValue);
     };
 
     return (
-       <View style={{flex:1,backgroundColor:colors.background}}>
+        <View style={{ flex: 1, backgroundColor: colors.background }}>
             <Header
                 title='Add Card'
                 leftIcon='back'
                 titleRight
             />
-            <ScrollView contentContainerStyle={{flexGrow:1,padding:15,paddingTop:0}}>
-                <View style={[styles.backgroundData,{}]}>
+            <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 15, paddingTop: 0 }}>
+                <View style={[styles.backgroundData, {}]}>
                     <View style={{}}>
-                        <View style={[GlobalStyleSheet.container,{zIndex:20,padding:0,paddingVertical:15}]}>
+                        <View style={[GlobalStyleSheet.container, { zIndex: 20, padding: 0, paddingVertical: 15 }]}>
                             <CreditCard
                                 creditCard
                             />
                         </View>
                     </View>
-                    <View style={[GlobalStyleSheet.container,{backgroundColor:theme.dark ? 'rgba(255,255,255,.1)':colors.card,marginBottom:10,borderRadius:15}]}>
-                        <Text style={[styles.cardTitle,{color: colors.title,borderBottomColor:COLORS.inputborder,}]}>Enter Details</Text>
+                    <View style={[GlobalStyleSheet.container, { backgroundColor: theme.dark ? 'rgba(255,255,255,.1)' : colors.card, marginBottom: 10, borderRadius: 15 }]}>
+                        <Text style={[styles.cardTitle, { color: colors.title, borderBottomColor: COLORS.inputborder, }]}>Enter Details</Text>
                         <View style={styles.inputCard}>
-                            <Input  
+                            <Input
                                 onFocus={() => setisFocused(true)}
                                 onBlur={() => setisFocused(false)}
                                 isFocused={isFocused}
                                 onChangeText={(value) => console.log(value)}
                                 backround={colors.card}
-                                style={{borderRadius:48,paddingLeft:20}}
+                                style={{ borderRadius: 48, paddingLeft: 20 }}
                                 placeholder='Card Name'
                             />
                         </View>
-                        <View style={{ marginBottom:15 }}>
+                        <View style={{ marginBottom: 15 }}>
                             <Input
                                 onFocus={() => setisFocused1(true)}
                                 onBlur={() => setisFocused1(false)}
@@ -80,12 +80,12 @@ const Addcard = ({navigation} : AddcardScreenProps) => {
                                 backround={colors.card}
                                 value={inputValue}
                                 onChangeText={(value) => handleChange(value)}
-                                style={{borderRadius:48,paddingLeft:20}}
+                                style={{ borderRadius: 48, paddingLeft: 20 }}
                                 keyboardType={'number-pad'}
                                 placeholder='Card Number'
                             />
                         </View>
-                        <View style={[GlobalStyleSheet.flex,{ gap: 10, paddingRight: 20 }]}>
+                        <View style={[GlobalStyleSheet.flex, { gap: 10, paddingRight: 20 }]}>
                             <View style={{ marginBottom: 0, width: '50%' }}>
                                 <Input
                                     onFocus={() => setisFocused2(true)}
@@ -95,7 +95,7 @@ const Addcard = ({navigation} : AddcardScreenProps) => {
                                     value={inputValue1}
                                     onChangeText={(value) => handleChange1(value)}
                                     backround={colors.card}
-                                    style={{borderRadius:48,paddingLeft:20}}
+                                    style={{ borderRadius: 48, paddingLeft: 20 }}
                                     keyboardType={'number-pad'}
                                 />
                             </View>
@@ -108,7 +108,7 @@ const Addcard = ({navigation} : AddcardScreenProps) => {
                                     value={inputValue2}
                                     onChangeText={(value) => handleChange2(value)}
                                     backround={colors.card}
-                                    style={{borderRadius:48,paddingLeft:20}}
+                                    style={{ borderRadius: 48, paddingLeft: 20 }}
                                     keyboardType={'number-pad'}
                                 />
                             </View>
@@ -116,45 +116,45 @@ const Addcard = ({navigation} : AddcardScreenProps) => {
                     </View>
                 </View>
             </ScrollView>
-            <View style={[GlobalStyleSheet.container,{}]}>
+            <View style={[GlobalStyleSheet.container, {}]}>
                 <Button
                     title='Add Card'
                     color={COLORS.primary}
-                    text={COLORS.card}
+                    textColor={COLORS.card}
                     onPress={() => navigation.navigate('Payment')}
-                    style={{borderRadius:48}}
+                    style={{ borderRadius: 48 }}
                 />
             </View>
-       </View>
+        </View>
     )
 }
 
 const styles = StyleSheet.create({
-    backgroundData:{
-        paddingBottom:0,
-        flex:1,
+    backgroundData: {
+        paddingBottom: 0,
+        flex: 1,
     },
-    cardTitle:{
+    cardTitle: {
         ...FONTS.fontRegular,
         fontSize: 14,
         color: COLORS.title,
-        borderBottomWidth:1,
-        borderBottomColor:COLORS.inputborder,
-        borderStyle:'dashed',
-        marginHorizontal:-15,
-        paddingHorizontal:15,
-        paddingBottom:15,
+        borderBottomWidth: 1,
+        borderBottomColor: COLORS.inputborder,
+        borderStyle: 'dashed',
+        marginHorizontal: -15,
+        paddingHorizontal: 15,
+        paddingBottom: 15,
     },
-    inputCard:{
+    inputCard: {
         marginBottom: 15,
-        marginTop: 15 
+        marginTop: 15
     },
-    bottomBtn:{
-        height:75,
-        width:'100%',
-        backgroundColor:COLORS.card,
-        justifyContent:'center',
-        paddingHorizontal:15,
+    bottomBtn: {
+        height: 75,
+        width: '100%',
+        backgroundColor: COLORS.card,
+        justifyContent: 'center',
+        paddingHorizontal: 15,
         shadowColor: "#000",
         shadowOffset: {
             width: 2,

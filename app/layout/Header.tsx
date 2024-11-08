@@ -12,6 +12,7 @@ import { Feather } from '@expo/vector-icons';
 import { COLORS, FONTS } from '../constants/theme';
 import { GlobalStyleSheet } from '../constants/StyleSheet';
 import { FontAwesome } from '@expo/vector-icons';
+import StorageService from '../lib/StorageService';
 
 
 type Props = {
@@ -28,22 +29,32 @@ type Props = {
     rightIcon3?: string,
     rightIcon4?: any,
     rightIcon5?: any,
+    rightIcon6?: any,
     rightIcon5Callback?: any,
+    backgroundColor?: string
 }
 
 
-const Header = ({ title, leftIcon, leftAction, transparent, productId, titleLeft, titleLeft2, titleRight, rightIcon1, rightIcon4, rightIcon2, rightIcon3, rightIcon5, rightIcon5Callback }: Props) => {
+const Header = ({ title, leftIcon, leftAction, transparent, productId, titleLeft, titleLeft2, titleRight, rightIcon1, rightIcon4, rightIcon2, rightIcon3, rightIcon5, rightIcon6, rightIcon5Callback, backgroundColor }: Props) => {
 
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
 
     const navigation = useNavigation<any>();
 
+
+    const handleLogout = async () => {
+        const is_logout = await StorageService.logOut();
+        if (is_logout) {
+            navigation.navigate("MobileSignIn");
+        }
+    }
+
     return (
         <View
             style={[{
                 height: 65,
-                backgroundColor: colors.card,
+                backgroundColor: backgroundColor || colors.card,
                 alignItems: 'center',
                 justifyContent: 'center',
                 zIndex: 99
@@ -122,6 +133,18 @@ const Header = ({ title, leftIcon, leftAction, transparent, productId, titleLeft
                         style={[styles.actionBtn, {}]}
                     >
                         <FontAwesome size={22} color={colors.title} name={'close'} />
+                    </TouchableOpacity>
+                }
+                {rightIcon6 == "logout" &&
+                    <TouchableOpacity
+                        activeOpacity={0.5}
+                        onPress={handleLogout}
+                        style={{ padding: 5 }}
+                    ><View style={{ flexDirection: "column", justifyContent: "center", alignItems: "center", }}>
+                            <FontAwesome size={22} color={colors.title} name={'lock'} />
+                            <Text style={{ ...FONTS.fontSm, color: colors.title }}>Logout</Text>
+                        </View>
+
                     </TouchableOpacity>
                 }
             </View>

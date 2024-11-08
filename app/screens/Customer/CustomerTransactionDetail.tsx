@@ -1,299 +1,407 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList } from 'react-native';
-import { useTheme } from '@react-navigation/native';
-import { GlobalStyleSheet } from '../../constants/StyleSheet';
-import { IMAGES } from '../../constants/Images';
+import React, { useState, useCallback } from 'react';
+import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Share, Platform, ActivityIndicator, Modal, Alert, FlatList } from 'react-native';
+import { useTheme, useFocusEffect } from '@react-navigation/native';
 import { COLORS, FONTS, SIZES } from '../../constants/theme';
 import { Feather, FontAwesome } from '@expo/vector-icons';
-import { useDispatch, useSelector } from 'react-redux';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { ApiService } from '../../lib/ApiService';
 import ButtonIcon from '../../components/Button/ButtonIcon';
-import FilePreviewModal from '../../components/Modal/FilePreviewModal';
+import CommonService from '../../lib/CommonService';
+import CONFIG from '../../constants/config';
+import HeaderStyle1 from '../../components/Headers/HeaderStyle1';
+import Header from '../../layout/Header';
+import CustomerTransactionTable from './CustomerTransactionTable';
+import { ApiService } from '../../lib/ApiService';
 
-
-
-type CustomerTransationsDetailsScreenProps = StackScreenProps<RootStackParamList, 'CustomerTransationsDetails'>
+type CustomerTransationsDetailsScreenProps = StackScreenProps<RootStackParamList, 'CustomerTransationsDetails'>;
 
 export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransationsDetailsScreenProps) => {
     const { customer } = route.params;
+    console.log("customertransactionDetail", customer)
     const theme = useTheme();
-    const { colors }: { colors: any; } = theme;
-
-
-    const [modalVisible, setModalVisible] = useState(false)
+    const { colors } = theme;
+    const [modalVisible, setModalVisible] = useState(false);
+    const [isImageLoading, setImageLoading] = useState(true); // Image loading state
+    const [transactionData, setTransationsData] = useState<Transaction[]>([]);
+    interface Transaction {
+        transaction_id: string;
+        transaction_type: string;
+        amount: number;
+        total_debit_amount: number;
+        created_at: Date;
+    }
+    const showPayButton = customer.transaction_type === "CREDIT" ? 'DEBIT' : 'CREDIT';
     const handlePreview = () => {
         setModalVisible(true);
+    };
+
+    useFocusEffect(useCallback(() => {
+        fetchTransaction();
+    }, []))
+
+    const fetchTransaction = async () => {
+        const res = await ApiService.postWithToken("api/shopkeeper/transactions/list-user-transaction", { transaction_id: customer.transaction_id });
+        if (res.status) {
+            setTransationsData(res.data);
+        }
+    };
+    const handlePayment = async () => {
+        console.log("hello...")
+        navigation.navigate("AddPayment", { item: customer, transaction_type: showPayButton, existPayment: true });
+
     }
 
+    const shareTransaction = async () => {
+        const PLAY_STORE_URL = CONFIG.APP_BUILD.ANDROID.APP_URL;
+        const APP_STORE_URL = CONFIG.APP_BUILD.IOS.APP_URL;
+        let message = `✨✨ *Transaction Details* ✨✨
+        
+        ━━━━━━━━━━━━━━━━━━━━━━━
+        👤 *Customer Name*: ${customer.customer_name}
+        📞 *Mobile*: ${customer.customer_mobile}
+        ━━━━━━━━━━━━━━━━━━━━━━━
 
+        💳 *Transaction Type*: ${customer.transaction_type === "CREDIT" ? "🟢 Credit" : "🔴 Debit"}
+        💰 *Total ${customer.transaction_type} Amount*: ₹ ${customer.total_debit_amount}
+        💰 *Pending Amount*: ₹ ${customer.amount}
+        ━━━━━━━━━━━━━━━━━━━━━━━
+
+        📅 *Transaction Date*: ${customer.transaction_date}
+        ⏳ *Estimated End Date*: ${customer.estimated_given_date}
+        ━━━━━━━━━━━━━━━━━━━━━━━
+
+        🆔 *Transaction ID*: 
+        ${customer.transaction_id}
+        ━━━━━━━━━━━━━━━━━━━━━━━
+
+        📝 *Description*:
+        ${customer.description}
+
+        ━━━━━━━━━━━━━━━━━━━━━━━
+        🔗 *Shared via PayLap App* 🚀
+
+        📲 *Download the PayLap app now*:
+
+        ▶️ [*Play Store*](${PLAY_STORE_URL})
+        🍏 [*App Store*](${APP_STORE_URL})
+        ━━━━━━━━━━━━━━━━━━━━━━━`;
+
+        try {
+            await Share.share({
+                message: message
+            });
+        } catch (error) {
+            Alert.alert("Something Went Wrong");
+        }
+    };
+
+    const renderCustomer = ({ item }: { item: Transaction }) => (
+        <View style={[{ flexDirection: 'row', backgroundColor: colors.card, justifyContent: 'space-between', alignItems: 'center', flex: 1, borderBottomColor: colors.border, borderBottomWidth: 1, marginBottom: 10 }]}>
+            <View style={{ flexDirection: 'column' }}>
+                {/* <Text style={{ ...styles.lastInteraction, color: !theme.dark ? "black" : 'white' }}>{item.transaction_id}</Text> */}
+                <Text style={{ color: colors.text, fontSize: 12, fontWeight: "900" }}>{item.created_at.toString()}</Text>
+            </View>
+
+            <View style={{ flexDirection: "column", alignItems: "flex-end", justifyContent: 'center' }}>
+                <Text style={{ color: item.transaction_type === "CREDIT" ? COLORS.primaryLight : COLORS.danger, fontSize: 15, fontWeight: "900" }}>₹ {parseInt(`${item.amount}`).toLocaleString()}</Text>
+                <Text style={[styles.type, { color: item.transaction_type === "CREDIT" ? COLORS.primary : COLORS.danger, }]}>{item.transaction_type}</Text>
+            </View>
+        </View>
+        // <TouchableOpacity onPress={() => { }}>
+        // </TouchableOpacity>
+    );
 
     return (
         <View style={{ backgroundColor: colors.card, flex: 1 }}>
+
+
             {/* AppBar Start */}
-            <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
-                <View
-                    style={[styles.header, {
-                        backgroundColor: colors.card,
-                        //borderBlockColor:colors.border
-                    }]}
-                >
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5, }}>
-                        <TouchableOpacity
-                            onPress={() => navigation.goBack()}
-                            style={{
-                                padding: 10, marginRight: 5,
-                                height: 45,
-                                width: 45,
-                                borderRadius: 45,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                backgroundColor: colors.background
-                            }}
-                        >
-                            {/* <Ionicons size={20} color={colors.title} name='chevron-back'/> */}
-                            <Feather size={24} color={colors.title} name={'arrow-left'} />
-                        </TouchableOpacity>
-                        {/* <Image
-                            style={{ height: 40, width: 40, borderRadius: 12, marginLeft: 10, marginRight: 15, resizeMode: 'contain' }}
-                            source={IMAGES.small6}
-                        /> */}
-                        <View>
-                            <Text style={{ ...FONTS.fontSemiBold, fontSize: 18, color: colors.title, }}>Transction Details</Text>
-                        </View>
-                    </View>
-                    {/* <TouchableOpacity
-                        onPress={() => navigation.navigate('Call')}
-                    >  <FontAwesome style={{ marginRight: 15, color: colors.white }} name={'ellipsis-v'} size={20} />
-                    </TouchableOpacity> */}
-                </View>
-            </View>
+
+            <Header
+                title='Transaction Details'
+                leftIcon={'back'}
+            // rightIcon2={'Edit'}
+            />
+
+
+            {/* <View style={[styles.headerContainer, { backgroundColor: colors.card }]}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                    <Feather size={24} color={colors.title} name={'arrow-left'} />
+                </TouchableOpacity>
+                <Text style={[styles.headerTitle, { color: colors.title }]}>Transaction Details</Text>
+            </View> */}
 
             {/* AppBar End */}
 
-            <FilePreviewModal close={setModalVisible} modalVisible={modalVisible} title="Preview" previewImage={customer?.image} />
+            {/* Modal to show image in full screen */}
+            <FilePreviewModal
+                modalVisible={modalVisible}
+                close={setModalVisible}
+                image={customer?.image}
+            />
 
-
-
-            <View style={{ flex: 1, alignItems: 'center' }} >
-                <View style={{
-                    height: 220,
-                    width: 380,
-                    top: 20,
-                    backgroundColor: colors.card,
-                    borderRadius: 31,
-                    shadowColor: "#025135",
-                    shadowOffset: {
-                        width: 0,
-                        height: 15,
-                    },
-                    shadowOpacity: 0.34,
-                    shadowRadius: 31.27,
-                    // elevation: 8,
-                    flexDirection: 'column'
-                }}>
-
-
-                    <View style={[styles.customerItem, { marginTop: 25 }]}>
-                        <View style={{}}>
-                            <View style={{ flexDirection: 'row', }}>
-
-                                <View style={{ marginLeft: 18 }}>
-                                    <Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{customer.customer_name}</Text>
-                                    <Text style={[styles.lastInteraction, { color: colors.title }]}>{customer.last_updated_date}</Text>
-
-                                </View>
-
-                            </View>
-
+            <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: 'center', paddingVertical: 20 }}>
+                {/* Customer Details Card */}
+                <View style={[styles.card, { backgroundColor: colors.card }]}>
+                    <View style={styles.customerItem}>
+                        <View>
+                            <Text style={[styles.customerName, { color: colors.title }]}>{customer.customer_name}</Text>
+                            <Text style={[styles.lastInteraction, { color: colors.text }]}>{customer.last_updated_date}</Text>
                         </View>
-
-                        <View style={{ flexDirection: "column", alignItems: "center", position: "relative", }}>
-                            <Text style={{ color: customer.transaction_type === "CREDIT" ? COLORS.primary : COLORS.danger, fontSize: 18, fontWeight: "900" }} > ₹ {customer.amount}</Text>
-                            <Text style={[styles.type, { color: colors.title }]}>{customer.transaction_type}</Text>
+                        <View style={styles.transactionInfo}>
+                            <Text style={{ color: customer.transaction_type === "CREDIT" ? COLORS.primary : COLORS.danger, fontSize: SIZES.font, fontWeight: "900" }}>
+                                ₹ {customer.amount}
+                            </Text>
+                            <Text style={{
+                                color: colors.title, fontSize: SIZES.fontSm, ...FONTS.fontSemiBold,
+                            }}>{customer.transaction_type}</Text>
                         </View>
-
                     </View>
-                    <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: "center", marginTop: 20 }}>
+                    <View style={{
+                        borderBottomColor: colors.text,
+                        borderBottomWidth: 0.4
+                    }} />
+                    <View style={styles.dateContainer}>
 
-                        <Text style={{
-                            color: colors.title, ...FONTS.fontBold, marginRight: 5, fontSize
-                                : 16
-                        }}>
-                            Transaction ID :
-                            {/* <Feather name='arrow-right' size={16} color={COLORS.white} /> */}
-                        </Text>
-                        <Text style={{ color: colors.title, ...FONTS.fontBold, fontSize: 16 }}>
-                            {customer.transaction_id}
-                            {/* <Feather name='arrow-right' size={16} color={COLORS.white} /> */}
-                        </Text>
-
+                        <View style={styles.dateItem}>
+                            <Text style={[styles.label, { color: colors.text, }]}>Taken Date</Text>
+                            <Text style={[styles.value, { color: colors.title, }]}>{customer.transaction_date}</Text>
+                        </View>
+                        <View style={styles.dateItem}>
+                            <Text style={[styles.label, { color: colors.text, }]}>End Date</Text>
+                            <Text style={[styles.value, { color: colors.title }]}>{customer.estimated_given_date}</Text>
+                        </View>
+                    </View>
+                    <View style={{
+                        borderBottomColor: colors.text,
+                        borderBottomWidth: 0.4
+                    }} />
+                    <View style={[styles.transactionIDContainer, { flexDirection: "row", justifyContent: "space-around", alignItems: "center" }]}>
+                        <Text style={[styles.label, { color: colors.text }]}>Transaction ID                       : </Text>
+                        <Text style={[styles.value, { color: colors.title }]}>{customer.transaction_id}</Text>
+                    </View>
+                    <View style={[styles.transactionIDContainer, { flexDirection: "row", justifyContent: "space-around", alignItems: "center" }]}>
+                        <Text style={[styles.label, { color: colors.text }]}>Total {customer.transaction_type} Amount               :                   </Text>
+                        <Text style={[styles.value, { color: colors.title }]}>₹ {customer.total_debit_amount}</Text>
                     </View>
                 </View>
-                <View style={{
-                    height: 140,
-                    width: 380,
-                    top: 40,
-                    backgroundColor: colors.card,
-                    borderRadius: 31,
-                    shadowColor: "#025135",
-                    shadowOffset: {
-                        width: 0,
-                        height: 15,
-                    },
-                    shadowOpacity: 0.34,
-                    shadowRadius: 31.27,
-                    // elevation: 8,
-                    flexDirection: 'column'
-                }}>
-                    <View style={{ borderBottomWidth: 1, height: 50 }} >
-                        <Text style={{ ...FONTS.fontSemiBold, fontSize: 18, color: colors.title, marginLeft: 20, top: 10 }}>Description</Text>
-                    </View>
-                    <View >
-                        <Text style={{ ...FONTS.fontSemiBold, fontSize: 14, color: colors.title, margin: 15, textAlign: "justify" }}>
-                            {customer.description}
-                        </Text>
-                    </View>
 
-
+                {/* Description Card */}
+                <View style={[styles.card, { backgroundColor: colors.card, marginTop: 20 }]}>
+                    <Text style={[styles.cardTitle, { color: colors.title }]}>Description</Text>
+                    <Text style={[styles.cardText, { color: colors.text }]}>{customer.description}</Text>
                 </View>
 
-                {customer?.image !== "" && <View style={{
-                    height: 180,
-                    width: 380,
-                    top: 40,
-                    marginTop: 20,
-                    backgroundColor: colors.card,
-                    borderRadius: 31,
-                    shadowColor: "#025135",
-                    shadowOffset: {
-                        width: 0,
-                        height: 15,
-                    },
-                    shadowOpacity: 0.34,
-                    shadowRadius: 31.27,
-                    // elevation: 8,
-                    flexDirection: 'column',
+                <View style={{ width: 400, marginTop: 20, paddingHorizontal: 30 }}>
+                    <FlatList scrollEnabled={false}
+                        data={transactionData}
+                        renderItem={renderCustomer}
+                        keyExtractor={(item) => item.id}
+                        contentContainerStyle={{ flex: 1 }}
+                    />
+                </View>
 
-                }}>
-                    <View style={{ borderBottomWidth: 1, height: 50 }} >
-                        <Text style={{ ...FONTS.fontSemiBold, fontSize: 18, color: colors.title, marginLeft: 20, top: 10 }}>Attached Bill Reciept</Text>
-                    </View>
+                {/* Attachment Section */}
+                {customer?.image !== "" && (
+                    <View style={[styles.card, { backgroundColor: colors.card, marginTop: 20 }]}>
+                        <Text style={[styles.cardTitle, { color: colors.title }]}>Attached Bill Receipt</Text>
 
-                    < TouchableOpacity onPress={handlePreview} >
-                        <View style={{ paddingHorizontal: 15, top: 10 }}  >
+                        <TouchableOpacity onPress={handlePreview} style={styles.attachmentContainer}>
+                            {isImageLoading && (
+                                <ActivityIndicator size="large" color={COLORS.primary} style={styles.loader} />
+                            )}
                             <Image
-                                style={{ height: 110, width: 350, borderRadius: 10 }}
+                                style={styles.attachmentImage}
                                 source={{ uri: customer?.image }}
+                                onLoadStart={() => setImageLoading(true)}
+                                onLoadEnd={() => setImageLoading(false)}
                             />
-                        </View>
-                    </TouchableOpacity >
+                        </TouchableOpacity>
+                    </View>
+                )}
+            </ScrollView>
 
 
-
-                </View>}
+            {/* Share Button */}
+            <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
+                <ButtonIcon
+                    color={showPayButton == 'DEBIT' ? 'red' : 'green'}
+                    onPress={handlePayment}
+                    title={showPayButton}
+                    iconDirection='right'
+                    icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'rupee'} size={18} />}
+                />
             </View>
-            <View style={{ paddingHorizontal: 20, marginBottom: 30 }}>
-                <ButtonIcon title='Share' iconDirection='right' icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'share'} size={18} />}>
-                </ButtonIcon>
+            <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
+                <ButtonIcon
+                    onPress={shareTransaction}
+                    title='Share'
+                    iconDirection='right'
+                    icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'share'} size={18} />}
+                />
             </View>
         </View>
     );
 };
 
+// Modal Component to show full-screen image
+const FilePreviewModal = ({ modalVisible, close, image }) => {
+    const [isImageLoading, setImageLoading] = useState(true); // Image loading state for popup
+    const theme = useTheme();
+    const { colors } = theme;
+
+    return (
+        <Modal
+            visible={modalVisible}
+            transparent={true}
+            animationType="slide">
+
+            <View style={styles.modalContainer}>
+                {/* Close button */}
+                <TouchableOpacity
+                    style={styles.closeButton}
+                    onPress={() => close(false)}>
+                    <Feather name="x" size={30} color={colors.primary} />
+                </TouchableOpacity>
+
+                <View style={styles.modalContent}>
+                    {isImageLoading && (
+                        <ActivityIndicator size="large" color={COLORS.primary} style={styles.loader} />
+                    )}
+                    <Image
+                        style={styles.fullImage}
+                        source={{ uri: image }}
+                        onLoadStart={() => setImageLoading(true)}
+                        onLoadEnd={() => setImageLoading(false)}
+                    />
+                </View>
+            </View>
+        </Modal>
+    );
+};
+
 const styles = StyleSheet.create({
-
-    TextInput: {
-        ...FONTS.fontRegular,
-        fontSize: 16,
-        color: COLORS.title,
+    headerContainer: {
         height: 60,
-        borderRadius: 61,
-        paddingHorizontal: 20,
-        paddingLeft: 30,
-        borderWidth: 1,
-        //  borderColor:'#EBEBEB',
-        backgroundColor: '#FAFAFA',
-        marginBottom: 10
-
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 10,
     },
-
-
+    backButton: {
+        padding: 10,
+        marginRight: 5,
+        height: 45,
+        width: 45,
+        borderRadius: 22.5,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    headerTitle: {
+        ...FONTS.fontSemiBold,
+        fontSize: SIZES.font,
+    },
+    card: {
+        width: "90%",
+        borderRadius: 15,
+        padding: 15,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.25,
+        shadowRadius: 10,
+        elevation: 5,
+    },
     customerItem: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        padding: 15,
-        borderRadius: 18,
-        shadowColor: "#025135",
-        shadowOffset: {
-            width: 0,
-            height: 15,
-        },
-        shadowOpacity: 0.34,
-        shadowRadius: 31.27,
-        marginHorizontal: 10,
-        marginVertical: 4,
-        top: 4
+        marginVertical: 10,
+
     },
     customerName: {
-        color: COLORS.title,
-        fontSize: 22,
+        ...FONTS.fontSemiBold,
+        fontSize: SIZES.fontLg,
     },
     lastInteraction: {
-        color: 'white',
+        fontSize: SIZES.fontSm,
         opacity: 0.6,
-        fontSize: 16,
+    },
+    transactionInfo: {
+        alignItems: 'center',
+    },
+    dateContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginVertical: 10,
+
     },
     type: {
         color: COLORS.title,
-        fontSize: 16,
-        ...FONTS.fontBold,
-        marginTop: 5
-
-
+        fontSize: SIZES.fontXs,
+        ...FONTS.fontSemiBold,
     },
 
-
-    button: {
-        width: 380,
-        height: 60,
-        backgroundColor: COLORS.primary,
-        marginBottom: 20,
-        padding: 15, // 15px padding around the button content
-        borderRadius: 12, // Circular button
-        elevation: 5,  // Shadow for Android
-        shadowColor: '#000',  // Shadow for iOS
-        shadowOffset: { width: 0, height: 4 },  // Shadow offset for iOS
-        shadowOpacity: 0.2,  // Shadow opacity for iOS
-
-        // Shadow blur radius for iOS
-    },
-    buttonText: {
-        color: Colors.white,
-        fontSize: 16,
-        fontWeight: 'bold',
-        textAlign: "center"
-    },
-
-    header: {
-        height: 60,
-        flexDirection: 'row',
+    dateItem: {
         alignItems: 'center',
-        justifyContent: 'space-between',
-        backgroundColor: COLORS.card,
     },
-
-    actionBtn: {
-        height: 35,
-        width: 35,
-        borderRadius: 8,
+    label: {
+        ...FONTS.fontRe,
+        fontSize: SIZES.fontSm,
+    },
+    value: {
+        ...FONTS.fontBold,
+        fontSize: SIZES.fontSm,
+    },
+    transactionIDContainer: {
+        flexDirection: "row",
+        justifyContent: "center",
+        marginTop: 20,
+    },
+    cardTitle: {
+        ...FONTS.fontSemiBold,
+        fontSize: SIZES.fontLg,
+        marginBottom: 10,
+    },
+    cardText: {
+        ...FONTS.fontRegular,
+        fontSize: SIZES.fontSm,
+        textAlign: "justify",
+    },
+    attachmentContainer: {
+        marginTop: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: COLORS.background,
-
-    }
-})
+    },
+    attachmentImage: {
+        height: 110,
+        width: '100%',
+        borderRadius: 10,
+    },
+    loader: {
+        position: 'absolute',
+    },
+    // Modal styles
+    modalContainer: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalContent: {
+        width: '90%',
+        height: '70%',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    closeButton: {
+        position: 'absolute',
+        top: 30,
+        right: 20,
+        zIndex: 1, // Ensure the close button is on top of the image
+    },
+    fullImage: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'contain',
+    },
+});
 
 export default CustomerTransationsDetails;

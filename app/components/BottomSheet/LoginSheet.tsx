@@ -66,7 +66,7 @@ const LoginSheet = ({ sheetRef, value }: Props) => {
                 <Button
                     onPress={() => { }}
                     title={'Login'}
-                    text={theme.dark ? COLORS.title : COLORS.card}
+                    textColor={theme.dark ? COLORS.title : COLORS.card}
                     color={colors.title}
                 />
             </View>

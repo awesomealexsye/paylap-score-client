@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList, BackHandler } from 'react-native';
+import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, RefreshControl, FlatList, BackHandler, ActivityIndicator } from 'react-native';
 import { useTheme, useFocusEffect } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { IMAGES } from '../../constants/Images';
@@ -11,8 +11,9 @@ import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { openDrawer } from '../../redux/actions/drawerAction';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { ApiService } from '../../lib/ApiService';
-import { MessagesService } from '../../lib/MessagesService';
+// import { MessagesService } from '../../lib/MessagesService';
 import CommonService from '../../lib/CommonService';
+import StorageService from '../../lib/StorageService';
 
 
 
@@ -32,18 +33,17 @@ interface Customer {
 type HomeScreenProps = StackScreenProps<RootStackParamList, 'Home'>
 
 export const Home = ({ navigation }: HomeScreenProps) => {
-    console.log(navigation);
 
     const [searchText, setSearchText] = useState('');
     const [customersData, setCustomersData] = useState<any>([]);
     const [homeBanner, setHomeBanner] = useState<any>({});
     const [filteredCustomers, setFilteredCustomers] = useState([]);
-    const [userDetail, setUserDetail] = useState({ name: "", profile_image: "" });
-
+    const [userDetail, setUserDetail] = useState({ name: "", profile_image: "", aadhar_card: "", notification_count: 0 });
+    const [isLoading, setIsLoading] = useState<any>(false);
+    const [isRefreshing, setIsRefreshing] = useState<any>(false);
     useEffect(() => {
         const handleBackPress = () => {
             if (navigation.isFocused() && navigation.getState().routes[navigation.getState().index].name === 'Home') {
-                console.log("calling back exit");
                 BackHandler.exitApp();
                 return true;
             }
@@ -53,15 +53,23 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         return () => {
             BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
         }
-    }, [navigation])
+    }, [navigation]);
+
+
     useFocusEffect(
         useCallback(() => {
             fetchCustomerList();
+            StorageService.isLoggedIn().then(res => { res === false ? navigation.navigate("MobileSignIn") : null; });
             CommonService.currentUserDetail().then((res) => {
                 setUserDetail(res);
+                if (res.aadhar_card === '') {
+                    navigation.navigate("UserKyc");
+                }
             })
         }, [])
     );
+
+
     const handleSearch = (text: string) => {
         setSearchText(text);
         const filteredList = customersData.filter((customer: any) =>
@@ -69,16 +77,25 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         );
         setFilteredCustomers(filteredList);
     };
+
     const fetchCustomerList = async () => {
+        setIsLoading(true);
         const homeApiRes = await ApiService.postWithToken("api/shopkeeper/list-customer", {});
         if (homeApiRes?.status == true) {
+
             let homeBanner = homeApiRes?.data?.shopkeeper_transaction_sum;
             setHomeBanner(homeBanner);
             setCustomersData(homeApiRes?.data?.records);
             setFilteredCustomers(homeApiRes?.data?.records);
         }
+        setIsLoading(false);
     }
 
+    const handelRefresh = async () => {
+        setIsRefreshing(true);
+        await fetchCustomerList();
+        setIsRefreshing(false);
+    };
 
     const dispatch = useDispatch();
 
@@ -89,25 +106,30 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const renderCustomer = ({ item }: { item: Customer }) => (
         <TouchableOpacity onPress={() => { navigation.navigate("CustomerTransations", { item: item }) }}>
 
-            <View style={[styles.customerItem, { backgroundColor: colors.card }]}>
+            <View style={[styles.customerItem, { backgroundColor: colors.card, marginBottom: 10 }]}>
                 <View style={{}}>
                     <View style={{ flexDirection: 'row' }}>
                         <Image
-                            style={{ height: 50, width: 50, borderRadius: 50 }}
+                            style={{ height: 40, width: 40, borderRadius: 50 }}
                             src={item.profile_image}
                         />
                         <View style={{ marginLeft: 14 }}>
-                            <Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{item.name}</Text>
-                            <Text style={styles.lastInteraction}>{item.latest_updated_at}</Text>
+                            <Text style={{
+                                color: colors.title, ...FONTS.fontSemiBold,
+                                fontSize: SIZES.font,
+                            }}>{item.name.split(' ').slice(0, 2).join(' ')}</Text>
+                            <Text style={{ color: colors.title, fontSize: SIZES.fontSm }}>{item.latest_updated_at}</Text>
                         </View>
 
                     </View>
 
                 </View>
 
-                <View style={{ flexDirection: "column", alignItems: "center", position: "relative" }}>
-                    <Text style={{ color: item.transaction_type === "CREDIT" ? COLORS.primary : COLORS.danger, fontSize: 18, fontWeight: "900" }}>₹ {item.amount}</Text>
-                    <Text style={[styles.type, { color: colors.title }]}>{item.transaction_type}</Text>
+                <View style={{ flexDirection: "column", alignItems: "flex-end", position: "relative" }}>
+                    <Text style={{ color: item.transaction_type === "CREDIT" ? COLORS.primaryLight : COLORS.danger, fontSize: SIZES.font, ...FONTS.fontBold, }}>₹ {parseInt(item.amount).toLocaleString()}</Text>
+                    <Text style={{
+                        color: colors.title, fontSize: SIZES.fontXs, ...FONTS.fontSemiBold,
+                    }}>{item.transaction_type}</Text>
                 </View>
 
             </View>
@@ -126,14 +148,17 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                             flexDirection: "row", alignItems: "center",
                         }}>
                             < View >
-                                <Image style={{ height: 45, width: 45, borderRadius: 50 }}
-                                    source={{ uri: userDetail.profile_image }} />
+                                {userDetail.profile_image && <Image style={{ height: 45, width: 45, borderRadius: 50 }}
+                                    source={{ uri: userDetail.profile_image }} />}
+
                             </View>
                             <View style={{
-                                flexDirection: "column", alignItems: "center", marginLeft: 10
+                                flexDirection: "column", alignItems: "flex-start", marginLeft: 10, width: "65%"
                             }}>
-                                <Text style={{ ...FONTS.fontRegular, fontSize: 14, color: colors.title }}>Namaste</Text>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: 24, color: colors.title }}> {userDetail.name.split(' ')[0]}
+                                <Text style={{ ...FONTS.fontRegular, fontSize: SIZES.fontXs, color: colors.title }}>Namaste</Text>
+                                <Text adjustsFontSizeToFit={true} style={{ ...FONTS.fontSemiBold, fontSize: SIZES.font, color: colors.title, }}>
+
+                                    {userDetail.name.split(' ')[0]}
 
                                 </Text>
                             </View>
@@ -150,17 +175,17 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                     source={IMAGES.Notification}
                                 />
                                 <View
-                                    style={[styles.notifactioncricle, {
+                                    style={[userDetail?.notification_count > 0 ? styles.notifactioncricle : {}, {
                                         backgroundColor: colors.card,
                                     }]}
                                 >
                                     <View
-                                        style={{
+                                        style={userDetail?.notification_count > 0 ? {
                                             height: 13,
                                             width: 13,
                                             borderRadius: 13,
                                             backgroundColor: colors.primary
-                                        }}
+                                        } : {}}
                                     />
                                 </View>
                             </TouchableOpacity>
@@ -183,21 +208,24 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                     </View>
                 </View>
             </View >
-
-
             {/* AppBar End */}
 
 
-            < ScrollView showsVerticalScrollIndicator={false} >
+            < ScrollView showsVerticalScrollIndicator={false}
+                refreshControl={
+                    <RefreshControl refreshing={isRefreshing} onRefresh={handelRefresh} />
+                }
+            >
 
 
                 <View style={{ flex: 1, alignItems: 'center' }} >
                     <View style={{
-                        height: 140,
-                        width: 380,
+                        paddingVertical: 10,
+                        // height: 140,
+                        width: "90%",
                         top: 20,
                         backgroundColor: COLORS.primary,
-                        borderRadius: 31,
+                        borderRadius: 15,
                         shadowColor: "#025135",
                         shadowOffset: {
                             width: 0,
@@ -205,30 +233,69 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                         },
                         shadowOpacity: 0.34,
                         shadowRadius: 31.27,
-                        elevation: 8, flexDirection: 'column'
+                        flexDirection: 'column',
+                        alignItems: "center"
+
                     }}>
 
 
-                        <View style={{ width: 380, flexDirection: 'row', marginTop: 22, rowGap: 4, justifyContent: 'center', borderBlockColor: COLORS.white, borderBottomWidth: 1, padding: 10 }}>
-                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderRightColor: COLORS.white }}>
-                                <Text style={{ ...FONTS.fontBold, fontSize: SIZES.h6, color: COLORS.primaryLight }}>Credit Amt.</Text>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.secondary }}>₹ {homeBanner?.credit}</Text>
+                        <View style={{
+                            width: "90%",
+                            flexDirection: 'row',
+                            marginTop: 22,
+                            rowGap: 4,
+                            justifyContent: 'center',
+                            alignItems: "center",
+                            borderBlockColor: COLORS.white,
+                            borderBottomWidth: 1,
+                            padding: 5,
+                        }}>
+                            <View style={{
+                                flex: 1,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderRightWidth: 1,
+                                borderRightColor: COLORS.white
+                            }}>
+                                <Text style={{
+                                    ...FONTS.fontBold,
+                                    fontSize: SIZES.fontSm,
+                                    color: COLORS.primaryLight,
+
+                                }}>Credit Amt.</Text>
+                                <Text style={{
+                                    ...FONTS.fontSemiBold,
+                                    fontSize: homeBanner?.debit?.length < 10 ? SIZES.fontLg : SIZES.fontSm,
+                                    color: COLORS.secondary
+                                }}>₹ {homeBanner?.credit}</Text>
                             </View>
-                            <View style={{ flex: 1, alignItems: 'center', justifyContent: "center" }}>
-                                <Text style={{ ...FONTS.fontBold, fontSize: SIZES.h6, color: COLORS.primaryLight }}>Debit Amt.</Text>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.danger }}>₹ {homeBanner?.debit}</Text>
+                            <View style={{
+                                flex: 1,
+                                alignItems: 'center', justifyContent: "center",
+                            }}>
+                                <Text style={{
+                                    ...FONTS.fontBold,
+                                    fontSize: SIZES.fontSm,
+                                    color: COLORS.primaryLight
+                                }}>Debit Amt.</Text>
+                                <Text style={{
+                                    ...FONTS.fontSemiBold, fontSize: homeBanner?.debit?.length < 10 ? SIZES.fontLg : SIZES.fontSm,
+                                    color: COLORS.danger, left: 5
+                                }}>₹ {homeBanner?.debit}</Text>
                             </View>
                         </View>
                         <View style={{ flex: 1, alignItems: 'center', justifyContent: "center" }}>
-                            <TouchableOpacity style={{}}>
-                                <TouchableOpacity onPress={() => navigation.navigate("NotAvailable")}>
-                                    <Text style={{ color: COLORS.white, ...FONTS.fontBold, }}>
+                            <TouchableOpacity style={{ paddingVertical: 5 }}>
+                                <TouchableOpacity onPress={() => navigation.navigate("Report")}>
+                                    <Text style={{
+                                        color: COLORS.white, ...FONTS.fontBold, fontSize: SIZES.fontSm,
+
+                                    }}>
                                         VIEW REPORT
-                                        <Feather name='arrow-right' size={16} color={COLORS.white} />
+                                        <Feather name='arrow-right' size={15} color={COLORS.white} />
                                     </Text>
                                 </TouchableOpacity>
                             </TouchableOpacity>
-
                         </View>
                     </View>
                 </View>
@@ -236,11 +303,11 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
                 {/* search Box Start */}
 
-                <View style={[GlobalStyleSheet.container, { padding: 0, paddingHorizontal: 30, paddingTop: 35 }]}>
+                <View style={[GlobalStyleSheet.container, { paddingHorizontal: 30, paddingTop: 35 }]}>
                     <View>
                         <TextInput
                             placeholder='Search Customer'
-                            style={[styles.TextInput, { color: colors.title, backgroundColor: colors.card, ...FONTS.fontSemiBold }]}
+                            style={[styles.TextInput, { color: colors.title, backgroundColor: colors.card, ...FONTS.fontSemiBold, borderColor: colors.borderColor, borderWidth: 0.2 }]}
                             placeholderTextColor={'#929292'}
                             value={searchText}
                             onChangeText={handleSearch} />
@@ -252,14 +319,16 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
                 {/* Search box ends */}
 
-
-                <FlatList scrollEnabled={false}
-                    data={filteredCustomers}
-                    renderItem={renderCustomer}
-                    keyExtractor={(item, index) => index.toString()}
-                    contentContainerStyle={{}}
-
-                />
+                {isLoading === false ?
+                    <FlatList scrollEnabled={false}
+                        data={filteredCustomers}
+                        renderItem={renderCustomer}
+                        keyExtractor={(item, index) => index.toString()}
+                        contentContainerStyle={{}} /> : <View style={{ flex: 1, justifyContent: 'center' }}
+                        >
+                        <ActivityIndicator color={colors.title} size={'large'}></ActivityIndicator>
+                    </View>
+                }
 
             </ScrollView >
             <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("AddCustomer")}>
@@ -276,7 +345,7 @@ const styles = StyleSheet.create({
     notifactioncricle: {
         height: 16,
         width: 16,
-        borderRadius: 16,
+        borderRadius: 15,
         backgroundColor: COLORS.card,
         alignItems: 'center',
         justifyContent: 'center',
@@ -287,75 +356,34 @@ const styles = StyleSheet.create({
 
     TextInput: {
         ...FONTS.fontRegular,
-        fontSize: 16,
+        fontSize: SIZES.font,
         color: COLORS.title,
         height: 60,
-        borderRadius: 61,
+        borderRadius: 15,
         paddingHorizontal: 10,
         paddingLeft: 30,
         marginBottom: 10
 
     },
-    brandsubtitle2: {
-        ...FONTS.fontSemiBold,
-        fontSize: 12,
-        color: COLORS.card
-    },
-    brandsubtitle3: {
-        ...FONTS.fontMedium,
-        fontSize: 12,
-        color: COLORS.title
-    },
-
-
-    customerList: {
-        marginBottom: 100, // Leave space for the floating button
-    },
-
 
     customerItem: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        padding: 15,
-
-        backgroundColor: Colors.white,
-        borderRadius: 18,
-        shadowOffset: {
-            width: 0,
-            height: 15,
-        },
-        shadowOpacity: 0.34,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        borderRadius: 15,
+        // shadowOffset: {
+        //     width: 0,
+        //     height: 15,
+        // },
+        // shadowOpacity: 0.34,
         shadowRadius: 31.27,
         marginHorizontal: 10,
-        marginVertical: 4,
-        top: 4
+        // marginVertical: 4,
+        top: 4,
+        borderBottomColor: "black",
+        borderBottomWidth: 0.2
     },
-    customerName: {
-        color: COLORS.title,
-        fontSize: 18,
-    },
-    lastInteraction: {
-        color: '#888',
-        fontSize: 14,
-    },
-    type: {
-        color: COLORS.title,
-        fontSize: 14,
-        ...FONTS.fontMedium,
-
-
-    },
-    amount: {
-        color: 'red',
-        fontSize: 18,
-        textAlign: "center"
-    },
-    amountZero: {
-        color: '#121221',
-        fontSize: 18,
-    },
-
-
 
     addButton: {
         position: 'absolute', // Fixes the button at a particular position
@@ -377,7 +405,7 @@ const styles = StyleSheet.create({
     },
     addButtonText: {
         color: COLORS.white,
-        fontSize: 16,
+        fontSize: SIZES.font,
         fontWeight: 'bold',
     },
 })

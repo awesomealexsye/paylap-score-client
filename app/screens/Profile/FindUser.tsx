@@ -1,7 +1,7 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { ScrollView, View, Text, ActivityIndicator, Image, StyleSheet } from 'react-native';
+import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { ScrollView, View, Text, ActivityIndicator, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import { useNavigation, useTheme } from '@react-navigation/native';
+import { useNavigation, useTheme, useFocusEffect } from '@react-navigation/native';
 import LoginSheet from '../../components/BottomSheet/LoginSheet';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import Header from '../../layout/Header';
@@ -44,10 +44,12 @@ const FindUser = forwardRef((props, ref) => {
     const [isLoading, setIsLoading] = useState(false);
     const [showDetail, setShowDetail] = useState(false);
 
-    const [aadhar, setAadhar] = useState("");
-    // useEffect(() => {
-
-    // }, []);
+    const [aadhar, setAadhar] = useState("936107513622");
+    useFocusEffect(
+        useCallback(() => {
+            setShowDetail(false);
+        }, [])
+    );
     const searchAadhaar = async () => {
         setIsLoading(true);
 
@@ -57,7 +59,6 @@ const FindUser = forwardRef((props, ref) => {
             return;
         }
         const res = await ApiService.postWithToken("api/user/get-user-via-aadhaar", { "aadhar_card": aadhar });
-        console.log({ "aadhar_card": aadhar }, res)
         if (res !== null && res.status === true) {
             if (res?.data) {
                 setUserDetail(res?.data);
@@ -85,20 +86,26 @@ const FindUser = forwardRef((props, ref) => {
                     />
                     <ScrollView>
                         <View style={[GlobalStyleSheet.container, { padding: 0, paddingTop: 10 }]}>
-                            <View style={{ marginTop: 20, }}>
+                            <View style={{ marginTop: 0, }}>
 
                                 {
                                     !showDetail &&
                                     <>
-                                        <View style={[GlobalStyleSheet.cardHeader, { borderBottomColor: COLORS.inputborder }]}>
-                                            <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, textAlign: 'center' }}>Search Aadhaar Card</Text>
+                                        <View style={[GlobalStyleSheet.container, { borderBottomColor: COLORS.inputborder, justifyContent: "center", alignItems: "center" }]}>
+                                            <Image source={theme.dark ? IMAGES.appnamedark : IMAGES.appname}
+                                                style={{
+                                                    height: 110,
+                                                    width: 150,
+                                                    objectFit: "contain",
+                                                }} />
+                                            {/* <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, textAlign: 'center' }}>Search Aadhaar Card</Text> */}
                                         </View>
-                                        <View style={{ marginTop: 20 }}>
-                                            <View style={{ marginBottom: 10 }}>
+                                        <View style={{ marginTop: 0 }}>
+                                            <View style={{ marginBottom: 10, marginHorizontal: 15 }}>
                                                 <Input
                                                     inputRounded
                                                     icon={<FontAwesome style={{ opacity: .6 }} name={'address-card'} size={20} color={colors.text} />}
-                                                    placeholder="Aadhaar Card Number"
+                                                    placeholder="Enter Aadhaar Card Number"
                                                     onChangeText={(value) => setAadhar(value)}
                                                 />
                                             </View>
@@ -115,56 +122,92 @@ const FindUser = forwardRef((props, ref) => {
                                     showDetail &&
                                     (<View>
                                         <View>
-                                            <View style={[GlobalStyleSheet.container, { alignItems: 'center', marginTop: 50, padding: 0 }]}>
+                                            <View style={[GlobalStyleSheet.container, { alignItems: 'center', marginTop: 0, padding: 0 }]}>
 
-                                                <View
-                                                    style={[styles.sectionimg]}
-                                                >
+                                                {/* <View style={[styles.sectionimg]}>
                                                     <Image
                                                         style={{ height: 90, width: 90, borderRadius: 50 }}
                                                         source={{ uri: userDetail?.profile_image }}
                                                     />
-                                                </View>
+                                                </View> */}
 
-                                                <Text style={{ ...FONTS.fontSemiBold, fontSize: 28, color: colors.title }}>{userDetail?.name}</Text>
+                                                <Text style={{ ...FONTS.fontSemiBold, fontSize: 18, color: colors.title }}>{userDetail?.name}</Text>
                                                 {/* <Text style={{ ...FONTS.fontRegular, fontSize: 16, color: COLORS.primary }}>London, England</Text> */}
-                                            </View>
-
-                                            <View
-                                                style={[GlobalStyleSheet.container, { paddingHorizontal: 40, marginTop: 20 }]}
-                                            >
-                                                <View>
-
-                                                    <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 25, alignItems: 'flex-start' }]} >
-                                                        <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
-                                                            <Image
-                                                                style={[GlobalStyleSheet.image3, { tintColor: COLORS.primary }]}
-                                                                source={IMAGES.call}
-                                                            />
-                                                        </View>
-                                                        <View>
-                                                            <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>Mobile Number</Text>
-                                                            <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>{userDetail?.mobile}</Text>
-                                                        </View>
-                                                    </View>
-                                                    <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 25, alignItems: 'flex-start' }]} >
-                                                        <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
-                                                            <Image
-                                                                style={[GlobalStyleSheet.image3, { tintColor: COLORS.primary }]}
-                                                                source={IMAGES.email}
-                                                            />
-                                                        </View>
-                                                        <View>
-                                                            <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>Email Address</Text>
-                                                            <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>{userDetail?.email}</Text>
-                                                        </View>
-                                                    </View>
-                                                </View>
                                             </View>
                                         </View>
                                         <View style={{ marginBottom: 80 }}>
-                                            <ProfileScore value={userDetail?.credit_score} labels={CONFIG.CREDIT_SCORE_LABEL} minValue={CONFIG.CREDIT_SCORE_RANGE.MIN} maxValue={CONFIG.CREDIT_SCORE_RANGE.MAX} />
+                                            <ProfileScore
+                                                value={userDetail?.credit_score}
+                                                labels={CONFIG.CREDIT_SCORE_LABEL}
+                                                minValue={CONFIG.CREDIT_SCORE_RANGE.MIN}
+                                                maxValue={CONFIG.CREDIT_SCORE_RANGE.MAX}
+                                                innerCircleStyle={{ backgroundColor: colors.background }}
+                                                size={300}
+                                                labelStyle={{ color: colors.title }}
+                                            />
                                         </View>
+                                        <View style={[GlobalStyleSheet.container, { paddingHorizontal: 40, marginTop: 0 }]}>
+                                            <View>
+
+                                                <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 25, alignItems: 'flex-start' }]} >
+                                                    <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
+                                                        <Image
+                                                            style={[GlobalStyleSheet.image3, { tintColor: COLORS.primary }]}
+                                                            source={IMAGES.call}
+                                                        />
+                                                    </View>
+                                                    <View>
+                                                        <Text style={[styles.brandsubtitle2, { color: '#7D7D7D', fontSize: 12 }]}>Mobile Number</Text>
+                                                        <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, marginTop: 5 }}>{userDetail?.mobile}</Text>
+                                                    </View>
+                                                </View>
+                                                <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 25, alignItems: 'flex-start' }]} >
+                                                    <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
+                                                        <Image
+                                                            style={[GlobalStyleSheet.image3, { tintColor: COLORS.primary }]}
+                                                            source={IMAGES.email}
+                                                        />
+                                                    </View>
+                                                    <View>
+                                                        <Text style={[styles.brandsubtitle2, { color: '#7D7D7D', fontSize: 12 }]}>Email Address</Text>
+                                                        <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, marginTop: 0 }}>{userDetail?.email}</Text>
+                                                    </View>
+                                                </View>
+                                            </View>
+                                        </View>
+                                        {/* Credit Profile Overview */}
+                                        {/* <View style={[styles.overviewSection]}>
+
+                                            <View style={styles.gridContainer}>
+                                                <TouchableOpacity style={[styles.gridItem, { borderLeftColor: '#8884d8', backgroundColor: colors.card }]} >
+                                                    <View>
+                                                        <Text style={[styles.gridLabel, { color: colors.title }]}>Total Accounts</Text>
+                                                        <Text style={[styles.gridValue, { color: colors.title }]}>58</Text>
+                                                    </View>
+                                                </TouchableOpacity>
+
+                                                <TouchableOpacity style={[styles.gridItem, { borderLeftColor: '#82ca9d', backgroundColor: colors.card }]}>
+                                                    <View>
+                                                        <Text style={[styles.gridLabel, { color: colors.title }]}>Credit Enquiries</Text>
+                                                        <Text style={[styles.gridValue, { color: colors.title }]}>83</Text>
+                                                    </View>
+                                                </TouchableOpacity>
+
+                                                <TouchableOpacity style={[styles.gridItem, { borderLeftColor: '#ff7675', backgroundColor: colors.card }]}>
+                                                    <View>
+                                                        <Text style={[styles.gridLabel, { color: colors.title }]}>Credit Card Usage</Text>
+                                                        <Text style={[styles.gridValue, { color: colors.title }]}>27%</Text>
+                                                    </View>
+                                                </TouchableOpacity>
+
+                                                <TouchableOpacity style={[styles.gridItem, { borderLeftColor: '#74b9ff', backgroundColor: colors.card }]}>
+                                                    <View>
+                                                        <Text style={[styles.gridLabel, { color: colors.title }]}>Age of Credit</Text>
+                                                        <Text style={[styles.gridValue, { color: colors.title }]}>10y0m</Text>
+                                                    </View>
+                                                </TouchableOpacity>
+                                            </View>
+                                        </View> */}
                                     </View>)
                                 }
                             </View>
@@ -228,7 +271,36 @@ const styles = StyleSheet.create({
         elevation: 10,
         alignItems: 'center',
         justifyContent: 'center'
-    }
+    },
+    overviewSection: {
+        paddingHorizontal: 20,
+        marginTop: 24,
+        marginBottom: 84,
+    },
+    gridContainer: {
+        gap: 20,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'center'
+    },
+    gridItem: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 16,
+        borderRadius: 8,
+        borderLeftWidth: 4,
+        minWidth: 150
+    },
+    gridLabel: {
+        fontSize: 12,
+        color: '#666',
+    },
+    gridValue: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginTop: 4,
+    },
 })
 
 export default FindUser;

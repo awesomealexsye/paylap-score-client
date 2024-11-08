@@ -2,17 +2,24 @@ import axios from 'axios';
 import CONFIG from "../constants/config";
 import { MessagesService } from './MessagesService';
 import StorageService from './StorageService';
+import CommonService from './CommonService';
 
 
 
 const ApiService = {
+
     async postWithoutToken(uri: string, data: object) {
         let api_url = `${CONFIG.APP_URL}/${uri}`;
         // console.log(api_url, data);
         try {
-            const res = await axios.post(api_url, data); // Sending POST request
-            // console.log(api_url, data, res, "ress");
-
+            const res: any = await axios.post(api_url, data); // Sending POST request
+            // console.log(res.json(), "ress");
+            if (res?.logout_user === true) {
+                const is_logout = await StorageService.logOut();
+                if (is_logout) {
+                    return;
+                }
+            }
             if (res.status == 200) {
                 if (res.data.status == false) {
                     MessagesService.commonMessage(res.data.message);
@@ -30,18 +37,23 @@ const ApiService = {
     async postWithToken(uri: string, data: object, headers: object = {}) {
         let api_url = `${CONFIG.APP_URL}/${uri}`;
         let user_id = await StorageService.getStorage(CONFIG.HARDCODE_VALUES.USER_ID);
+        // let user_id = "1";
         let auth_key = await StorageService.getStorage(CONFIG.HARDCODE_VALUES.AUTH_KEY)
         let jwt_token = await StorageService.getStorage(CONFIG.HARDCODE_VALUES.JWT_TOKEN)
         let common_payload = { user_id: Number(user_id), auth_key: auth_key };
         let authHeader = { Authorization: `Bearer ${jwt_token}` };
         data = { ...common_payload, ...data }
         headers = { ...authHeader, ...headers }
-        // console.log("consoleloo", api_url, data, headers);
+        console.log("Request body ", api_url, data, headers);
         try {
-            const res = await axios.post(api_url, data, { headers: headers });
-            //console.log(res, "resresres")
-            // console.log("api pay and res", api_url, data, headers, res.data, res.status);
-
+            const res: any = await axios.post(api_url, data, { headers: headers });
+            console.log("Response ", res.data, res.data.message);
+            if (res.data.logout_user === true) {
+                const is_logout = await StorageService.logOut();
+                if (is_logout) {
+                    return;
+                }
+            }
             if (res.status == 200) {
                 if (res.data.status == false) {
                     if (res.data.message && typeof res.data.message === 'object') {
@@ -62,7 +74,7 @@ const ApiService = {
         } catch (error) {
             MessagesService.commonMessage("Internal Server Error");
         }
-        return { status: false, message: "Somthing went Wrong" };
+        return { status: false, message: "Somthing went Wrong", "app_message": true };
     }
 }
 

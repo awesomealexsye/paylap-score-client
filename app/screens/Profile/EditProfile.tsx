@@ -40,7 +40,6 @@ const EditProfile = () => {
     const navigation = useNavigation<any>();
 
     const [isFocused, setisFocused] = useState(false)
-    const [isFocused1, setisFocused1] = useState(false)
     const [isFocused2, setisFocused2] = useState(false)
     const [isFocused3, setisFocused3] = useState(false)
     const [isLoading, setIsLoading] = useState(false);
@@ -57,12 +56,10 @@ const EditProfile = () => {
 
         const res = await ApiService.postWithToken(
             "api/user/profile-update",
-            { profile_image: image, name: profile?.name, address: addressInputValue },
+            { profile_image: image ?? profile?.image, name: profile?.name, address: addressInputValue ?? profile?.address },
         )
         if (res.status == true) {
-
-            // await CommonService.storageUserDetail();
-            MessagesService.commonMessage(res.message);
+            MessagesService.commonMessage(res.message, "SUCCESS");
             navigation.goBack();
         }
 
@@ -108,9 +105,6 @@ const EditProfile = () => {
                     </View>
                 </View>
                 <View style={[GlobalStyleSheet.container, { backgroundColor: theme.dark ? 'rgba(255,255,255,.1)' : colors.card, marginTop: 10, paddingVertical: 10, borderRadius: 15 }]}>
-                    <View style={[styles.cardBackground, { borderBottomColor: COLORS.inputborder, borderStyle: 'dashed' }]}>
-                        <Text style={{ ...FONTS.fontRegular, fontSize: 14, color: colors.title }}>Overall Rating</Text>
-                    </View>
                     <View style={{ marginBottom: 15, marginTop: 10 }}>
                         <Input
                             editable={false}
@@ -162,7 +156,7 @@ const EditProfile = () => {
                         <Button
                             title='Update Profile'
                             color={COLORS.primary}
-                            text={COLORS.card}
+                            textColor={COLORS.card}
                             onPress={updateProfileData}
                             style={{ borderRadius: 50 }}
                         /> : <ActivityIndicator size={70} color={COLORS.primary} />

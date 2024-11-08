@@ -1,6 +1,6 @@
 import { useTheme, useFocusEffect } from '@react-navigation/native';
 import React, { useEffect, useCallback, useState } from 'react'
-import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, ImageBackground, Alert } from 'react-native'
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { IMAGES } from '../../constants/Images';
 import { COLORS, FONTS } from '../../constants/theme';
@@ -9,6 +9,12 @@ import { RootStackParamList } from '../../navigation/RootStackParamList';
 import Header from '../../layout/Header';
 import CommonService from '../../lib/CommonService';
 import FilePreviewModal from '../../components/Modal/FilePreviewModal';
+import FontAwesome from '@expo/vector-icons/build/FontAwesome';
+import { ApiService } from '../../lib/ApiService';
+import ButtonIcon from '../../components/Button/ButtonIcon';
+import { Feather } from '@expo/vector-icons';
+import { MessagesService } from '../../lib/MessagesService';
+import StorageService from '../../lib/StorageService';
 
 
 type ProfileScreenProps = StackScreenProps<RootStackParamList, 'Profile'>;
@@ -16,12 +22,16 @@ type ProfileScreenProps = StackScreenProps<RootStackParamList, 'Profile'>;
 const Profile = ({ navigation }: ProfileScreenProps) => {
 
     const [profile, setProfile] = React.useState<any>({});
+    const [paymentDetail, setPaymentDetail] = React.useState<any>();
 
     useFocusEffect(
         useCallback(() => {
             CommonService.currentUserDetail().then((res) => {
                 setProfile(res);
             })
+            ApiService.postWithToken("api/user/payment/fetch", {}).then((res: any) => {
+                setPaymentDetail(res.data);
+            });
         }, [])
     );
 
@@ -30,11 +40,54 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
 
 
 
-    const [modalVisible, setModalVisible] = useState(false)
-    const handlePreview = () => {
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalImageSource, setModalImageSource] = useState<any>();
+    const handlePreview = (type: string) => {
+        if (type == 'profile') {
+            setModalImageSource(profile.profile_image);
+
+        } else {
+            setModalImageSource(paymentDetail.qr_image);
+
+        }
         setModalVisible(true);
     }
 
+    const deleteAccount = () => {
+        Alert.alert(
+            'Delete Account',
+            'Are you sure you want to remove your account? This action is permanent and cannot be undone. All your information will be erased and you will not be able to recover your account.',
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Delete',
+                    onPress: () => {
+                        // Add code to delete the user's account here
+                        console.log('Account deleted');
+                        ApiService.postWithToken("api/user/delete", {}).then((res: any) => {
+                            MessagesService.commonMessage(res?.message);
+                            if (res?.status == true) {
+                                console.log('Account deleted success');
+
+                                StorageService.logOut().then((is_logout) => {
+                                    if (is_logout) {
+                                        console.log('Account logout success');
+
+                                        navigation.navigate("MobileSignIn");
+                                    }
+                                })
+
+
+                            }
+                        });
+                    },
+                },
+            ],
+        );
+    }
 
     return (
         <View style={{ backgroundColor: colors.card, flex: 1 }}>
@@ -44,12 +97,12 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                 rightIcon2={'Edit'}
             />
 
-            <FilePreviewModal close={setModalVisible} modalVisible={modalVisible} title="Preview" previewImage={profile.profile_image} />
+            <FilePreviewModal close={setModalVisible} modalVisible={modalVisible} title=" Profile Image " previewImage={modalImageSource} />
             <ScrollView showsHorizontalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1, paddingBottom: 50 }}>
 
 
                 <View style={[GlobalStyleSheet.container, { alignItems: 'center', marginTop: 50, padding: 0 }]}>
-                    <TouchableOpacity onPress={handlePreview}>
+                    <TouchableOpacity onPress={() => handlePreview('profile')}>
 
                         <View
                             style={[styles.sectionimg]}
@@ -61,8 +114,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                         </View>
                     </TouchableOpacity>
 
-                    <Text style={{ ...FONTS.fontSemiBold, fontSize: 28, color: colors.title }}>{profile?.name}</Text>
-                    {/* <Text style={{ ...FONTS.fontRegular, fontSize: 16, color: COLORS.primary }}>London, England</Text> */}
+                    <Text style={{ ...FONTS.fontSemiBold, fontSize: 18, color: colors.title }}>{profile?.name}</Text>
                 </View>
 
                 <View
@@ -91,7 +143,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                             </View>
                             <View>
                                 <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>Email Address</Text>
-                                <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>{profile?.email}</Text>
+                                <Text style={{ ...FONTS.fontMedium, fontSize: profile?.email?.length > 15 ? 12 : 16, color: colors.title, marginTop: 5 }}>{profile?.email}</Text>
                             </View>
                         </View>
                         {profile?.aadhar_card && <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 25, alignItems: 'flex-start' }]} >
@@ -115,14 +167,72 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                                 />
                             </View>
                             <View>
-                                <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>Pancard</Text>
+                                <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>Pan Card</Text>
                                 <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>{profile?.pan_card}</Text>
                             </View>
 
                         </View>}
+                    </View>
+                    {/* <View style={[GlobalStyleSheet.card, { backgroundColor: colors.card }]}>
+                        <View style={[GlobalStyleSheet.cardHeader, { borderBottomColor: COLORS.inputborder, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]} >
+                            <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title }}>Payment Details</Text>
+                            <TouchableOpacity
+                                activeOpacity={0.5}
+                                onPress={() => navigation.navigate('EditUserPaymentDetail')}
+                            >
+                                <FontAwesome size={22} color={colors.title} name={'pencil'} />
+                            </TouchableOpacity>
 
+                        </View>
+                        <View style={GlobalStyleSheet.cardBody}>
+                            <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 25, alignItems: 'flex-start' }]}  >
+                                <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
+                                    <Image
+                                        style={[GlobalStyleSheet.image3, { tintColor: COLORS.primary }]}
+                                        source={IMAGES.card2}
+                                    />
+                                </View>
+                                <View>
+                                    <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>UPI ID</Text>
+                                    <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>{paymentDetail?.upi_id}</Text>
+                                </View>
+                            </View>
+                            {paymentDetail?.qr_image &&
+                                < TouchableOpacity onPress={() => handlePreview('qr')} >
+                                    <View style={{ flex: 1, height: 200, marginTop: 30, borderRadius: 20 }}>
+                                        <ImageBackground source={{ uri: paymentDetail?.qr_image }} resizeMode="cover" style={{ flex: 1, justifyContent: 'center' }}>
+                                            <Text style={{
+                                                textAlign: 'center', color: 'white', fontSize: 32, lineHeight: 200, fontWeight: 'bold', backgroundColor: '#000000c0',
+                                            }}>View QR Code</Text>
+                                        </ImageBackground>
+                                    </View>
+                                </TouchableOpacity >}
+                        </View>
+                    </View> */}
+                    <View >
+                        <View style={{
+                            paddingHorizontal: 1, marginTop: 50,
 
+                        }}>
+                            <ButtonIcon
+                                color={colors.card}
+                                style={{
+                                    height: 50,
+                                    width: "100%",
+                                    elvation: 2,
+                                    shadowOpacity: 0.14,
+                                }}
+                                onPress={deleteAccount}
+                                title='Delete Account'
+                                text={COLORS.danger}
+                                iconDirection='right'
+                                icon={<FontAwesome style={{ color: COLORS.danger, marginLeft: 10 }}
+                                    name={'trash'}
+                                    size={25}
 
+                                />}>
+                            </ButtonIcon>
+                        </View>
                     </View>
                 </View>
             </ScrollView>

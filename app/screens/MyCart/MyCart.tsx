@@ -104,7 +104,7 @@ const MyCart = ({ navigation }: MyCartScreenProps) => {
                         <Button
                             title='Proceed to Buy'
                             color={COLORS.primary}
-                            text={COLORS.card}
+                            textColor={COLORS.card}
                             onPress={() => navigation.navigate('DeliveryAddress')}
                             style={{ borderRadius: 48 }}
                         />

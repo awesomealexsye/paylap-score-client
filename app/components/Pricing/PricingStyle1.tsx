@@ -7,9 +7,9 @@ import { COLORS, FONTS, SIZES } from '../../constants/theme';
 import Button from '../Button/Button';
 
 const PricingStyle1 = () => {
-    
+
     const theme = useTheme();
-    const { colors } : {colors : any} = theme;
+    const { colors }: { colors: any } = theme;
 
 
     const Data = [
@@ -24,45 +24,45 @@ const PricingStyle1 = () => {
         <>
             <View
                 style={{
-                    padding:30,
-                    borderWidth:1,
-                    borderColor:COLORS.primary,
-                    backgroundColor:colors.card,
-                    maxWidth:320,
-                    width:'100%',
-                    borderRadius:SIZES.radius,
+                    padding: 30,
+                    borderWidth: 1,
+                    borderColor: COLORS.primary,
+                    backgroundColor: colors.card,
+                    maxWidth: 320,
+                    width: '100%',
+                    borderRadius: SIZES.radius,
                 }}
             >
-                <View style={{alignItems:'center',marginBottom:20}}>
-                    <Text style={{...FONTS.h3,color:colors.title}}>$10/Month</Text>
-                    <Text style={{...FONTS.font,...FONTS.fontMedium,marginBottom:10,color:colors.title}}>Basic plan</Text>
-                    <Text style={{...FONTS.font,color:colors.text}}>Billed annually</Text>
+                <View style={{ alignItems: 'center', marginBottom: 20 }}>
+                    <Text style={{ ...FONTS.h3, color: colors.title }}>$10/Month</Text>
+                    <Text style={{ ...FONTS.font, ...FONTS.fontMedium, marginBottom: 10, color: colors.title }}>Basic plan</Text>
+                    <Text style={{ ...FONTS.font, color: colors.text }}>Billed annually</Text>
                 </View>
-                <View style={{marginBottom:25}}>
-                    {Data.map((data,index) => {
-                        return(
+                <View style={{ marginBottom: 25 }}>
+                    {Data.map((data, index) => {
+                        return (
                             <View
                                 key={index}
                                 style={{
-                                    flexDirection:'row',
-                                    alignItems:'center',
-                                    paddingVertical:5,
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    paddingVertical: 5,
                                 }}
                             >
-                                <FeatherIcon 
-                                    style={{marginRight:8}}
+                                <FeatherIcon
+                                    style={{ marginRight: 8 }}
                                     color={colors.title}
                                     name="check-circle"
                                     size={18}
                                 />
-                                <Text style={{...FONTS.font,color:colors.text}}>{data}</Text>
+                                <Text style={{ ...FONTS.font, color: colors.text }}>{data}</Text>
                             </View>
                         )
                     })}
                 </View>
-                <Button 
+                <Button
                     title={'Get started'}
-                    text={theme.dark ? COLORS.title : COLORS.white}
+                    textColor={theme.dark ? COLORS.title : COLORS.white}
                     color={colors.title}
                 />
             </View>

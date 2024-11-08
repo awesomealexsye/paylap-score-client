@@ -1,5 +1,5 @@
 const CONFIG = {
-    APP_URL: "https://paylapscore.com",
+    APP_URL: "https://paynest.co.in",
 
     HARDCODE_VALUES: {
         USER_ID: 'user_id',
@@ -13,8 +13,21 @@ const CONFIG = {
         },
     },
     CREDIT_SCORE_RANGE: {
-        MIN: 0,
-        MAX: 100
+        MIN: 300,
+        MAX: 900
+    },
+    APP_BUILD: {
+        ANDROID: {
+            APP_VERSION: 23,
+            APP_VERSION_NAME: '1.0.23',
+            APP_URL: "https://play.google.com/store/apps/details?id=com.paylap.paylapscore"
+        },
+        IOS: {
+            APP_VERSION: 23,
+            APP_VERSION_NAME: '1.0.23',
+            APP_URL: "https://apps.apple.com/us/app/paylap-score/id6736965791"
+
+        }
     },
 
     CREDIT_SCORE_LABEL: [

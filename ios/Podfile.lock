@@ -16,6 +16,8 @@ PODS:
     - ExpoModulesCore
     - ZXingObjC/OneD
     - ZXingObjC/PDF417
+  - ExpoClipboard (5.0.1):
+    - ExpoModulesCore
   - ExpoCrypto (12.8.1):
     - ExpoModulesCore
   - ExpoFileSystem (16.0.9):
@@ -1124,12 +1126,12 @@ PODS:
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
-  - RNImageCropPicker (0.41.1):
+  - RNImageCropPicker (0.41.4):
     - React-Core
     - React-RCTImage
-    - RNImageCropPicker/QBImagePickerController (= 0.41.1)
+    - RNImageCropPicker/QBImagePickerController (= 0.41.4)
     - TOCropViewController (~> 2.7.4)
-  - RNImageCropPicker/QBImagePickerController (0.41.1):
+  - RNImageCropPicker/QBImagePickerController (0.41.4):
     - React-Core
     - React-RCTImage
     - TOCropViewController (~> 2.7.4)
@@ -1166,6 +1168,7 @@ DEPENDENCIES:
   - EXImageLoader (from `../node_modules/expo-image-loader/ios`)
   - Expo (from `../node_modules/expo`)
   - ExpoCamera (from `../node_modules/expo-camera/ios`)
+  - ExpoClipboard (from `../node_modules/expo-clipboard/ios`)
   - ExpoCrypto (from `../node_modules/expo-crypto/ios`)
   - ExpoFileSystem (from `../node_modules/expo-file-system/ios`)
   - ExpoHead (from `../node_modules/expo-router/ios`)
@@ -1265,6 +1268,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo"
   ExpoCamera:
     :path: "../node_modules/expo-camera/ios"
+  ExpoClipboard:
+    :path: "../node_modules/expo-clipboard/ios"
   ExpoCrypto:
     :path: "../node_modules/expo-crypto/ios"
   ExpoFileSystem:
@@ -1416,6 +1421,7 @@ SPEC CHECKSUMS:
   EXImageLoader: 55080616b2fe9da19ef8c7f706afd9814e279b6b
   Expo: ad8bce0c0fc557cae703cc8dbce73d61a90ab5c5
   ExpoCamera: f3f157db67e5a491e1104a2c0018c240242936e7
+  ExpoClipboard: b597982124f067ff9f5b89093eb3d97898d5d877
   ExpoCrypto: b6428f48599c007676dc81a9b5f72c07e62fdccc
   ExpoFileSystem: 74cc0fae916f9f044248433971dcfc8c3befd057
   ExpoHead: 89ffd324e60520751c2c285233fe45e875c91874
@@ -1482,7 +1488,7 @@ SPEC CHECKSUMS:
   RNColorMatrixImageFilters: 9b6a80ef1337e327d8b9a1c27d50e753bdcc252f
   RNDateTimePicker: 40ffda97d071a98a10fdca4fa97e3977102ccd14
   RNGestureHandler: 15c6ef51acba34c49ff03003806cf5dd6098f383
-  RNImageCropPicker: 601604515fd6fbba318147b0a56aed0be9379415
+  RNImageCropPicker: 3d888d481c65776063556b72c19893a8b8344b1b
   RNReanimated: f6b02d8f5eaa2830296411d4ec3b8ef5442dd13d
   RNScreens: 17e2f657f1b09a71ec3c821368a04acbb7ebcb46
   RNShare: 05f1eabad4f60e09cab1d964eca54e21fb8de15d
@@ -1494,4 +1500,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 90956d7faabcb37db8baa929b4545729c83efbed
 
-COCOAPODS: 1.14.3
+COCOAPODS: 1.15.2

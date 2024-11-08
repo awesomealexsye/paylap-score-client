@@ -9,6 +9,9 @@ import BottomMenu from '../layout/BottomMenu';
 import { useTheme } from '@react-navigation/native';
 import CustomerScore from '../screens/Profile/CustomerScore';
 import NotAvailable from '../screens/NotAvailable';
+import FindUser from '../screens/Profile/FindUser';
+import UserReferralList from '../screens/Profile/⁠UserReferralList';
+import ShareApp from '../screens/ShareApp';
 
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
@@ -32,12 +35,12 @@ const BottomNavigation = () => {
                 component={HomeScreen}
             />
             <Tab.Screen
-                name='CustomerScore'
-                component={CustomerScore}
+                name='FindUser'
+                component={FindUser}
             />
             <Tab.Screen
-                name='NotAvailable'
-                component={NotAvailable}
+                name='Share'
+                component={ShareApp}
             />
             <Tab.Screen
                 name='Profile'

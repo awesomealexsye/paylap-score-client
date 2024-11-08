@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList, } from 'react-native';
+import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList, Linking, Alert, ActivityIndicator } from 'react-native';
 import { useTheme, useFocusEffect } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { IMAGES } from '../../constants/Images';
@@ -11,6 +11,9 @@ import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import CustomerActivityBtn from './CustomerActivityBtn';
 import { ApiService } from '../../lib/ApiService';
+import CommonService from '../../lib/CommonService';
+import { MessagesService } from '../../lib/MessagesService';
+import CONFIG from '../../constants/config';
 
 
 interface Customer {
@@ -22,6 +25,8 @@ interface Customer {
     transaction_date: Date;
     description: string;
     image: any;
+    customer_mobile: string;
+
 }
 
 type CustomerTransationsScreenProps = StackScreenProps<RootStackParamList, 'CustomerTransations'>
@@ -30,16 +35,59 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
     const { item } = route.params;
 
     const [customerData, setCustomersData] = useState<any>({});
+    const [isLoading, setIsLoading] = useState<any>(false);
+
+
+    const PLAY_STORE_URL = CONFIG.APP_BUILD.ANDROID.APP_URL;
+    const APP_STORE_URL = CONFIG.APP_BUILD.IOS.APP_URL;
 
     useFocusEffect(
         useCallback(() => {
-            fetchCustomerList();
+
+            fetchCustomerTransactionList();
+
         }, [])
     );
 
-    const fetchCustomerList = async () => {
+    const fetchCustomerTransactionList = async () => {
+        setIsLoading(true);
         const res = await ApiService.postWithToken("api/shopkeeper/transactions/list-shopkeeper-customer-transaction", { "customer_id": item.customer_id });
+        // const data = JSON.stringify(res);
         setCustomersData(res);
+        setIsLoading(false);
+    }
+    const reminder = () => {
+        Alert.alert(
+            'Send Reminder',
+            'Are you sure you want to send a payment reminder to the customer?',
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Yes',
+                    onPress: () => {
+                        CommonService.currentUserDetail().then((res) => {
+                            const defaultMessage = `Dear Sir / Madam, Your payment of ₹ ${item.amount} is pending at ${res.name}(${res.mobile}).Open Paylapscore app for view the details and make the payment.`;
+                            ApiService.postWithToken("api/add-notification", { receiver_id: item.customer_id, title: "Payment Reminder", description: defaultMessage }).then((resNotification) => {
+                                if (!resNotification.status) {
+                                    MessagesService.commonMessage(resNotification.message);
+                                }
+                            })
+                        })
+                    },
+                },
+            ],
+        );
+    }
+    const send_sms = () => {
+        CommonService.currentUserDetail().then((res) => {
+            const defaultMessage = `Dear Sir / Madam, Your payment of ₹ ${item.amount} is pending at ${res.name}(${res.mobile}).Open Paylapscore app for view the details and make the payment.💥\n\n\n\n📱📱🔗 Download on Play Store: ${PLAY_STORE_URL}\n\n🔗 Download on Apple App Store: ${APP_STORE_URL}`;
+            console.log(defaultMessage);
+            const sms = `sms:${item.customer.mobile}?body=${defaultMessage}`;
+            Linking.openURL(sms);
+        })
     }
     const theme = useTheme();
     const { colors }: { colors: any; } = theme;
@@ -48,36 +96,32 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
     const renderCustomer = ({ item }: { item: Customer }) => (
         <TouchableOpacity onPress={() => navigation.navigate("CustomerTransationsDetails", { customer: item })
         }>
-            <View style={[styles.customerItem, { backgroundColor: colors.card }]}>
+            <View style={[styles.customerItem, { backgroundColor: colors.card, },
+                // !theme.dark && { elevation: 2 }
+
+            ]}>
                 <View style={{}}>
                     <View style={{ flexDirection: 'row' }}>
-                        {/* <Image
-                            style={{ height: 50, width: 50, borderRadius: 50 }}
-                            source={item.image}
-                        /> */}
                         <View style={{ marginLeft: 14 }}>
-                            <Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{item.customer_name}</Text>
-                            <Text style={styles.lastInteraction}>{item.last_updated_date}</Text>
-                            <Text style={styles.lastInteraction}>{
-                                item.transaction_date.toLocaleString()
-                            }
-
+                            {/*<Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{item.customer_name}</Text>*/}
+                            <Text style={{ ...styles.lastInteraction, color: !theme.dark ? "black" : 'white' }}>{item.last_updated_date}</Text>
+                            <Text style={{ color: colors.text, fontSize: 12 }}>{item.transaction_date.toLocaleString()}
                             </Text>
-                            <Text style={styles.lastInteraction}>{item.description}</Text>
+                            <Text style={{ fontSize: 13, color: !theme.dark ? "black" : 'white' }}>{item.description}</Text>
                         </View>
-
                     </View>
-
                 </View>
-
-                <View style={{ flexDirection: "column", alignItems: "center", position: "relative" }}>
-                    <Text style={{ color: item.transaction_type === "CREDIT" ? COLORS.primary : COLORS.danger, fontSize: 18, fontWeight: "900" }}>₹ {item.amount}</Text>
+                <View style={{ flexDirection: "column", alignItems: "flex-end", position: "relative", justifyContent: 'center' }}>
+                    <Text style={{ color: item.transaction_type === "CREDIT" ? COLORS.primaryLight : COLORS.danger, fontSize: 15, fontWeight: "900" }}>₹ {parseInt(item.amount).toLocaleString()}</Text>
                     <Text style={[styles.type, { color: colors.title }]}>{item.transaction_type}</Text>
                 </View>
             </View>
         </TouchableOpacity>
 
     );
+
+
+
     return (
         <View style={{ backgroundColor: colors.card, flex: 1 }}>
             {/* AppBar Start */}
@@ -103,7 +147,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                             <Feather size={24} color={colors.title} name={'arrow-left'} />
                         </TouchableOpacity>
                         <Image
-                            style={{ height: 40, width: 40, borderRadius: 12, marginLeft: 10, marginRight: 15, resizeMode: 'contain' }}
+                            style={{ height: 45, width: 45, borderRadius: 50, marginHorizontal: 15, resizeMode: 'contain' }}
                             src={item.profile_image}
                         />
 
@@ -119,11 +163,11 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
             <ScrollView showsVerticalScrollIndicator={true}>
                 <View style={{ flex: 1, alignItems: 'center' }} >
                     <View style={{
-                        height: 80,
-                        width: 380,
+                        height: 70,
+                        width: "90%",
                         top: 15,
-                        backgroundColor: COLORS.primary,
-                        borderRadius: 31,
+                        backgroundColor: customerData.data?.shopkeeper_transaction_sum?.transaction_type === "DEBIT" ? COLORS.danger : COLORS.primary,
+                        borderRadius: 15,
                         shadowColor: "#025135",
                         shadowOffset: {
                             width: 0,
@@ -132,16 +176,33 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                         shadowOpacity: 0.34,
                         shadowRadius: 31.27,
                         elevation: 8,
-                        flexDirection: 'column'
+                        flexDirection: 'column',
+                        alignItems: "center"
                     }}>
 
 
-                        <View style={{ width: 400, flexDirection: 'row', justifyContent: "space-evenly", paddingTop: 20, alignItems: "center", alignContent: "center" }}>
-                            <View style={{ alignItems: 'center', justifyContent: 'center', borderRightColor: colors.dark }}>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h4, color: COLORS.primaryLight, textAlign: "center" }}>{item.transaction_type} </Text>
+                        <View style={{
+                            width: "90%",
+                            flexDirection: 'row',
+                            justifyContent: "space-evenly",
+                            paddingTop: 20,
+                            alignItems: "center",
+                            alignContent: "center"
+                        }}>
+                            <View style={{
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderRightColor: colors.dark
+                            }}>
+                                <Text style={{
+                                    ...FONTS.fontSemiBold,
+                                    fontSize: SIZES.h5,
+                                    color: 'white',
+                                    textAlign: "center"
+                                }}>{customerData.data?.shopkeeper_transaction_sum?.transaction_type} </Text>
                             </View>
                             <View style={{ alignItems: 'center', justifyContent: "center" }}>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h3, color: COLORS.primaryLight }}>₹ {item.amount}</Text>
+                                <Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h5, color: 'white' }}>₹ {customerData.data?.shopkeeper_transaction_sum?.total_amount}</Text>
                             </View>
                         </View>
                     </View>
@@ -150,8 +211,8 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                     <View style={{}}>
                         <View style={[{ flexDirection: "row", justifyContent: "space-evenly", alignItems: "center", marginBottom: 10 }]}>
                             <CustomerActivityBtn
-
                                 gap
+                                isDisabled={false}
                                 icon={<Image source={IMAGES.tachometerfast} style={{ height: 20, width: 20, resizeMode: 'contain' }}></Image>}
                                 color={colors.card}
                                 text='Score'
@@ -159,48 +220,54 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                             />
                             <CustomerActivityBtn
                                 gap
-                                icon={<FontAwesome style={{ color: colors.title }} name={'rupee'} size={20} />}
+                                isDisabled={false}
+                                icon={<FontAwesome style={{ color: '#8fc11e' }} name={'rupee'} size={20} />}
                                 color={colors.card}
                                 text='Payments'
                                 onpress={() => navigation.navigate('NotAvailable')}
                             /><CustomerActivityBtn
                                 gap
-                                icon={<FontAwesome style={{ color: colors.title }} name={'bell'} size={20} />}
+                                isDisabled={item.transaction_type == "DEBIT" ? item.amount > 0 ? false : true : true}
+                                icon={<FontAwesome style={{ color: '#8fc11e' }} name={'bell'} size={20} />}
                                 color={colors.card}
                                 text='Reminder'
-                                onpress={() => navigation.navigate('NotAvailable')}
+                                onpress={() => reminder()}
                             /><CustomerActivityBtn
                                 gap
-                                icon={<FontAwesome style={{ color: colors.title }} name={'envelope'} size={20} />}
+                                isDisabled={item.transaction_type == "DEBIT" ? item.amount > 0 ? false : true : true}
+                                icon={<FontAwesome style={{ color: '#8fc11e' }} name={'envelope'} size={20} />}
                                 color={colors.card}
                                 text='SMS'
-                                onpress={() => navigation.navigate('NotAvailable')}
+                                onpress={() => send_sms()}
                             />
                         </View>
 
                     </View>
                 </View>
+                {
+                    isLoading === false ?
+                        <FlatList scrollEnabled={false}
+                            data={customerData.data?.records}
+                            renderItem={renderCustomer}
+                            keyExtractor={(item) => item.id}
+                            contentContainerStyle={{}}
 
-                <FlatList scrollEnabled={false}
-                    data={customerData.data?.records}
-                    renderItem={renderCustomer}
-                    keyExtractor={(item) => item.id}
-                    contentContainerStyle={{}}
-
-                />
+                        /> : <View style={{ flex: 1, justifyContent: 'center' }} >
+                            <ActivityIndicator color={colors.title} size={'large'}></ActivityIndicator>
+                        </View>
+                }
 
             </ScrollView>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 30, backgroundColor: colors.dark }}>
-                <TouchableOpacity style={[styles.removeBtn]} onPress={() => navigation.navigate("AddPayment", { item: item, transaction_type: "DEBIT" })}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', paddingVertical: 20, backgroundColor: colors.dark }}>
+                <TouchableOpacity style={[styles.removeBtn]} onPress={() => navigation.navigate("AddPayment", { item: item, transaction_type: "DEBIT", existPayment: false })}>
 
                     <Text style={styles.addButtonText}>
-                        Debit</Text>
+                        New DEBIT</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.addAmmount} onPress={() => navigation.navigate("AddPayment", { item: item, transaction_type: "CREDIT" })}>
-
+                {/* <TouchableOpacity style={styles.addAmmount} onPress={() => navigation.navigate("AddPayment", { item: item, transaction_type: "CREDIT", existPayment: false })}>
                     <Text style={styles.addButtonText}>
                         Credit</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
 
         </View>
@@ -230,42 +297,36 @@ const styles = StyleSheet.create({
     customerItem: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        padding: 15,
-
-        backgroundColor: Colors.white,
-        borderRadius: 18,
-        shadowColor: "#025135",
-        shadowOffset: {
-            width: 0,
-            height: 15,
-        },
-        shadowOpacity: 0.34,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        borderRadius: 15,
         shadowRadius: 31.27,
         marginHorizontal: 10,
         marginVertical: 4,
-
-        top: 4
+        top: 4,
+        borderBottomColor: "black",
+        borderBottomWidth: 0.2
     },
     customerName: {
         color: COLORS.title,
-        fontSize: 18,
+        fontSize: SIZES.fontLg,
     },
     lastInteraction: {
-        color: '#888',
-        fontSize: 14,
+        fontSize: SIZES.font,
+        fontWeight: 'bold'
     },
     type: {
         color: COLORS.title,
-        fontSize: 14,
-        ...FONTS.fontMedium,
-
-
+        fontSize: SIZES.fontXs,
+        ...FONTS.fontSemiBold,
     },
+
     amount: {
         color: 'red',
-        fontSize: 18,
+        fontSize: SIZES.font,
         textAlign: "center"
     },
+
     amountZero: {
         color: '#121221',
         fontSize: 18,
@@ -273,7 +334,7 @@ const styles = StyleSheet.create({
     addAmmount: {
         backgroundColor: COLORS.primary,
         padding: 15, // 15px padding around the button content
-        borderRadius: 12, // Circular button
+        borderRadius: 10, // Circular button
         elevation: 5,  // Shadow for Android
         shadowColor: '#000',  // Shadow for iOS
         shadowOffset: { width: 0, height: 4 },  // Shadow offset for iOS
@@ -284,7 +345,7 @@ const styles = StyleSheet.create({
     removeBtn: {
         backgroundColor: 'red', // Matches the button's background color from CSS
         padding: 15, // 15px padding around the button content
-        borderRadius: 12, // Circular button
+        borderRadius: 10, // Circular button
         elevation: 5,  // Shadow for Android
         shadowColor: '#000',  // Shadow for iOS
         shadowOffset: { width: 0, height: 4 },  // Shadow offset for iOS

@@ -24,7 +24,7 @@ const ImagePickerModal = ({ close, modalVisible, pickImageFromCamera, pickImageF
 	return (
 		<>
 			<Modal
-				animation="slide"
+				// animation="slide"
 				transparent={true}
 				visible={modalVisible}
 			>
@@ -47,10 +47,6 @@ const ImagePickerModal = ({ close, modalVisible, pickImageFromCamera, pickImageF
 					shadowRadius: 31.27,
 
 				}}>
-					<Text style={{ ...FONTS.h5, color: colors.title, textAlign: "center", }}>Profile Photo</Text>
-					<View style={{ borderTopWidth: 1, }}>
-
-					</View>
 					<View style={[{ flexDirection: "row", justifyContent: "space-around", alignItems: "center", paddingVertical: 10, }]}>
 						<CustomerActivityBtn
 							onpress={pickImageFromCamera}
@@ -64,13 +60,7 @@ const ImagePickerModal = ({ close, modalVisible, pickImageFromCamera, pickImageF
 							gap
 							icon={<FontAwesome style={{ color: colors.title }} name={'image'} size={22} />}
 							color={colors.card}
-							text='Galery'
-						/><CustomerActivityBtn
-							onpress={removeImage}
-							gap
-							icon={<FontAwesome style={{ color: colors.title }} name={'trash'} size={22} />}
-							color={colors.card}
-							text='Remove'
+							text='Gallery'
 						/>
 
 					</View>

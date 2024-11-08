@@ -38,7 +38,7 @@ const WelCome = ({ navigation }: WelComeScreenProps) => {
                         {/* <Text style={[styles.title, { color: COLORS.background }]}>Open Your Account</Text> */}
                         <View style={{ flexDirection: "column", gap: 10 }}>
                             <ButtonIcon
-                                title={"Sign In"}
+                                title={"Log In"}
                                 iconDirection="left"
                                 text={COLORS.background}
                                 color={COLORS.primary}
@@ -46,14 +46,24 @@ const WelCome = ({ navigation }: WelComeScreenProps) => {
                                 // border={COLORS.card}
                                 onPress={() => navigation.navigate('MobileSignIn')}
                             />
+
                             <ButtonIcon
-                                title={"sign up"}
+                                title={"Register"}
                                 iconDirection="left"
                                 text={COLORS.background}
                                 color={COLORS.primary}
                                 icon={<FontAwesome name='user-plus' size={22} color={COLORS.background} />}
                                 // border={COLORS.card}
                                 onPress={() => navigation.navigate('SignUp')}
+                            />
+                            <ButtonIcon
+                                title={"Contact Support"}
+                                iconDirection="left"
+                                text={COLORS.background}
+                                color={COLORS.primary}
+                                icon={<FontAwesome name='user-circle' size={22} color={COLORS.background} />}
+                                // border={COLORS.card}
+                                onPress={() => navigation.navigate('CustomerSupport')}
                             />
                         </View>
                         {/* <View style={{marginBottom:10}}>

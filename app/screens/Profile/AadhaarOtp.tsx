@@ -74,7 +74,7 @@ const AadhaarOtp = ({ sheetRef, client_id, customer_id }: Props) => {
                 <Button
                     onPress={verifyOtp}
                     title={'Verify OTP'}
-                    text={theme.dark ? COLORS.title : COLORS.card}
+                    textColor={theme.dark ? COLORS.title : COLORS.card}
                     color={colors.title}
                 />
             </View>

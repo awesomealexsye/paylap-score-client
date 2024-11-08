@@ -17,6 +17,9 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import StorageService from '../lib/StorageService';
+import FontAwesome from '@expo/vector-icons/build/FontAwesome';
+import { Ionicons } from '@expo/vector-icons';
 
 type Props = {
     state: any,
@@ -50,7 +53,12 @@ const BottomMenu = ({ state, navigation, descriptors }: Props) => {
     }, [state.index, tabWidth])
 
 
-    const onTabPress = (index: any) => {
+    const onTabPress = async (index: any) => {
+        const isLogedIn = await StorageService.isLoggedIn();
+        if (isLogedIn === false) {
+            navigation.navigate("MobileSignIn");
+            return;
+        }
         const tabW =
             tabWidth < SIZES.container ? tabWidth / 4 : SIZES.container / 4; // Adjust this according to your tab width
 
@@ -158,23 +166,15 @@ const BottomMenu = ({ state, navigation, descriptors }: Props) => {
                                     {/* <Animated.View
                                         style={{
                                             transform: [{translateY: iconTranslateY}],
-                                    }}> */}
-                                    <Image
-                                        style={{
-                                            height: 20,
-                                            width: 20,
-                                            resizeMode: 'contain',
-                                            tintColor: isFocused ? theme.dark ? COLORS.card : colors.card : COLORS.primary,
-                                        }}
-                                        source={
-                                            label === 'Home' ? IMAGES.Home :
-                                                label === 'CustomerScore' ? IMAGES.tachometerfast :
-                                                    label === 'NotAvailable' ? IMAGES.list :
-                                                        label === 'Profile' ? IMAGES.user3 : IMAGES.tachometerfast
-                                        }
-                                    />
+                                    }}> ,*/}
+                                    {
+                                        label === 'Home' ? <FontAwesome name={'home'} size={25} color={isFocused ? theme.dark ? COLORS.card : colors.card : COLORS.primary} /> :
+                                            label === 'FindUser' ? <Ionicons name={'speedometer'} size={25} color={isFocused ? theme.dark ? COLORS.card : colors.card : COLORS.primary} /> :
+                                                label === 'Share' ? <FontAwesome name={'users'} size={25} color={isFocused ? theme.dark ? COLORS.card : colors.card : COLORS.primary} /> :
+                                                    label === 'Profile' ? <FontAwesome name={'user'} size={25} color={isFocused ? theme.dark ? COLORS.card : colors.card : COLORS.primary} /> : IMAGES.tachometerfast
+                                    }
                                     {/* </Animated.View> */}
-                                    {/* <Text style={[styles.navText,{color:isFocused ? COLORS.primary : colors.title}]}>{label}</Text> */}
+                                    {/* <Text style={[styles.navText, { color: isFocused ? COLORS.primary : colors.title }]}>{label}</Text> */}
                                 </TouchableOpacity>
                             </View>
                         )
