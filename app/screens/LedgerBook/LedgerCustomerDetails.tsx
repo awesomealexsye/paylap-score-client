@@ -1,6 +1,6 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList } from 'react-native';
-import { useTheme } from '@react-navigation/native';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
+import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList, ActivityIndicator } from 'react-native';
+import { useFocusEffect, useTheme } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { IMAGES } from '../../constants/Images';
 import { COLORS, FONTS, SIZES } from '../../constants/theme';
@@ -13,13 +13,18 @@ import { ApiService } from '../../lib/ApiService';
 import ButtonIcon from '../../components/Button/ButtonIcon';
 import FilePreviewModal from '../../components/Modal/FilePreviewModal';
 import Header from '../../layout/Header';
+import Button from '../../components/Button/Button';
 
 
 
 type LedgerCustomerDetailsScreenProps = StackScreenProps<RootStackParamList, 'LedgerCustomerDetails'>
 
 export const LedgerCustomerDetails = ({ navigation, route }: LedgerCustomerDetailsScreenProps) => {
-	const { customer } = route.params;
+	const { item } = route.params;
+	// const { customer } = route.params;
+
+	const [customerData, setCustomersData] = useState<any>({});
+	const [isLoading, setIsLoading] = useState<any>(false);
 
 	const theme = useTheme();
 	const { colors }: { colors: any; } = theme;
@@ -30,144 +35,205 @@ export const LedgerCustomerDetails = ({ navigation, route }: LedgerCustomerDetai
 		setModalVisible(true);
 	}
 
+	useFocusEffect(
+		useCallback(() => {
+			fetchCustomerTransactionList();
+		}, [])
+	);
+
+	const fetchCustomerTransactionList = async () => {
+		setIsLoading(true);
+		const res = await ApiService.postWithToken(
+			"api/shopkeeper/transactions/list-shopkeeper-customer-transaction",
+			{ "customer_id": item?.user_id });
+		// const data = JSON.stringify(res);
+		setCustomersData(res);
+		setIsLoading(false);
+	}
+
+	const renderCustomer = ({ item }: { item: any }) => (
+		<TouchableOpacity onPress={() => navigation.navigate("CustomerTransationsDetails", { customer: item })
+		}>
+			<View style={[styles.customerItem, { backgroundColor: colors.card, },
+				// !theme.dark && { elevation: 2 }
+
+			]}>
+				<View style={{}}>
+					<View style={{ flexDirection: 'row' }}>
+						<View style={{ marginLeft: 14 }}>
+							{/*<Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{item.customer_name}</Text>*/}
+							<Text style={{ ...styles.lastInteraction, color: !theme.dark ? "black" : 'white' }}>{item.last_updated_date}</Text>
+							<Text style={{ color: colors.text, fontSize: 12 }}>{item.transaction_date.toLocaleString()}
+							</Text>
+							<Text style={{ fontSize: 13, color: !theme.dark ? "black" : 'white' }}>{item.description}</Text>
+						</View>
+					</View>
+				</View>
+				<View style={{ flexDirection: "column", alignItems: "flex-end", position: "relative", justifyContent: 'center' }}>
+					<Text style={{ color: item.transaction_type === "CREDIT" ? COLORS.primaryLight : COLORS.danger, fontSize: 15, fontWeight: "900" }}>₹ {parseInt(item.amount).toLocaleString()}</Text>
+					<Text style={[styles.type, { color: colors.title }]}>{item.transaction_type}</Text>
+				</View>
+			</View>
+		</TouchableOpacity>
+
+	);
+
 
 	return (
 		<View style={{ backgroundColor: colors.card, flex: 1 }}>
+			{/* AppBar Start */}
+			<View style={[GlobalStyleSheet.container, { padding: 0 }]}>
+				<View
+					style={[styles.header, {
+						backgroundColor: colors.card,
+					}]}
+				>
+					<View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5, }}>
+						<TouchableOpacity
+							onPress={() => navigation.goBack()}
+							style={{
+								padding: 10, marginRight: 5,
+								height: 45,
+								width: 45,
+								borderRadius: 45,
+								alignItems: 'center',
+								justifyContent: 'center',
+								backgroundColor: colors.background
+							}}
+						>
+							<Feather size={24} color={colors.title} name={'arrow-left'} />
+						</TouchableOpacity>
+						<Image
+							style={{ height: 45, width: 45, borderRadius: 50, marginHorizontal: 15, resizeMode: 'contain' }}
+							src={item?.profile_image}
+						/>
 
-			<Header
-				title='Transction Details'
-				leftIcon='back'
-				titleRight
-			/>
-
-			<FilePreviewModal close={setModalVisible} modalVisible={modalVisible} title="Preview" previewImage={customer?.image} />
-
-			<View style={{ flex: 1, alignItems: 'center' }} >
-				<View style={{
-					height: 220,
-					width: 380,
-					top: 20,
-					backgroundColor: colors.card,
-					borderRadius: 31,
-					shadowColor: "#025135",
-					shadowOffset: {
-						width: 0,
-						height: 15,
-					},
-					shadowOpacity: 0.34,
-					shadowRadius: 31.27,
-					flexDirection: 'column'
-				}}>
-
-
-					<View style={[styles.customerItem, { marginTop: 25 }]}>
-						<View style={{}}>
-							<View style={{ flexDirection: 'row', }}>
-
-								<View style={{ marginLeft: 18 }}>
-									<Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{customer.customer_name + "static"}</Text>
-									<Text style={[styles.lastInteraction, { color: colors.title }]}>{customer.last_updated_date}</Text>
-
-								</View>
-
-							</View>
-
+						<View>
+							<Text style={{ ...FONTS.fontSemiBold, fontSize: 18, color: colors.title, }}>{item?.name}</Text>
 						</View>
-
-						<View style={{ flexDirection: "column", alignItems: "center", position: "relative", }}>
-							<Text style={{ color: customer.transaction_type === "CREDIT" ? COLORS.primary : COLORS.danger, fontSize: 18, fontWeight: "900" }} > ₹ {customer.amount}</Text>
-							<Text style={[styles.type, { color: colors.title }]}>{customer.transaction_type}</Text>
-						</View>
-
 					</View>
-					<View style={{ flexDirection: "row", alignItems: 'center', justifyContent: "center", marginTop: 20 }}>
+				</View>
+			</View>
 
-						<Text style={{
-							color: colors.title, ...FONTS.fontBold, marginRight: 5, fontSize
-								: 16
+			{/* AppBar End */}
+
+			<ScrollView showsVerticalScrollIndicator={true}>
+				<View style={{ flex: 1, alignItems: 'center' }} >
+					<View style={{
+						height: 70,
+						width: "90%",
+						top: 15,
+						backgroundColor: customerData.data?.shopkeeper_transaction_sum?.transaction_type === "DEBIT" ? COLORS.danger : COLORS.primary,
+						borderRadius: 15,
+						shadowColor: "#025135",
+						shadowOffset: {
+							width: 0,
+							height: 15,
+						},
+						shadowOpacity: 0.34,
+						shadowRadius: 31.27,
+						elevation: 8,
+						flexDirection: 'column',
+						alignItems: "center"
+					}}>
+
+
+						<View style={{
+							width: "90%",
+							flexDirection: 'row',
+							justifyContent: "space-evenly",
+							paddingTop: 20,
+							alignItems: "center",
+							alignContent: "center"
 						}}>
-							Transaction ID :
-							{/* <Feather name='arrow-right' size={16} color={COLORS.white} /> */}
-						</Text>
-						<Text style={{ color: colors.title, ...FONTS.fontBold, fontSize: 16 }}>
-							{customer.transaction_id}
-							{/* <Feather name='arrow-right' size={16} color={COLORS.white} /> */}
-						</Text>
-
+							<View style={{
+								alignItems: 'center',
+								justifyContent: 'center',
+								borderRightColor: colors.dark
+							}}>
+								<Text style={{
+									...FONTS.fontSemiBold,
+									fontSize: SIZES.h5,
+									color: 'white',
+									textAlign: "center"
+								}}>{customerData.data?.shopkeeper_transaction_sum?.transaction_type} </Text>
+							</View>
+							<View style={{ alignItems: 'center', justifyContent: "center" }}>
+								<Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h5, color: 'white' }}>₹ {customerData.data?.shopkeeper_transaction_sum?.total_amount}</Text>
+							</View>
+						</View>
 					</View>
 				</View>
-				<View style={{
-					height: 140,
-					width: 380,
-					top: 40,
-					backgroundColor: colors.card,
-					borderRadius: 31,
-					shadowColor: "#025135",
-					shadowOffset: {
-						width: 0,
-						height: 15,
-					},
-					shadowOpacity: 0.34,
-					shadowRadius: 31.27,
-					// elevation: 8,
-					flexDirection: 'column'
-				}}>
-					<View style={{ borderBottomWidth: 1, height: 50 }} >
-						<Text style={{ ...FONTS.fontSemiBold, fontSize: 18, color: colors.title, marginLeft: 20, top: 10 }}>Description</Text>
-					</View>
-					<View >
-						<Text style={{ ...FONTS.fontSemiBold, fontSize: 14, color: colors.title, margin: 15, textAlign: "justify" }}>
-							{customer.description + "ejwkgbriwbru"}
-						</Text>
-					</View>
-
-
-				</View>
-
-				{/* {customer?.image !== "" && <View style={{
-					height: 180,
-					width: 380,
-					top: 40,
-					marginTop: 20,
-					backgroundColor: colors.card,
-					borderRadius: 31,
-					shadowColor: "#025135",
-					shadowOffset: {
-						width: 0,
-						height: 15,
-					},
-					shadowOpacity: 0.34,
-					shadowRadius: 31.27,
-					// elevation: 8,
-					flexDirection: 'column',
-
-				}}>
-					<View style={{ borderBottomWidth: 1, height: 50 }} >
-						<Text style={{ ...FONTS.fontSemiBold, fontSize: 18, color: colors.title, marginLeft: 20, top: 10 }}>Attached Bill Reciept</Text>
-					</View>
-
-					< TouchableOpacity onPress={handlePreview} >
-						<View style={{ paddingHorizontal: 15, top: 10 }}  >
-							<Image
-								style={{ height: 110, width: 350, borderRadius: 10 }}
-								source={{ uri: customer?.image }}
+				{/* <View style={[GlobalStyleSheet.cardBody, { marginTop: 20 }]}>
+					<View style={{}}>
+						<View style={[{ flexDirection: "row", justifyContent: "space-evenly", alignItems: "center", marginBottom: 10 }]}>
+							<CustomerActivityBtn
+								gap
+								isDisabled={false}
+								icon={<Image source={IMAGES.tachometerfast} style={{ height: 20, width: 20, resizeMode: 'contain' }}></Image>}
+								color={colors.card}
+								text='Score'
+								onpress={() => navigation.navigate('CustomerScore', { customer: item })}
+							/>
+							<CustomerActivityBtn
+								gap
+								isDisabled={false}
+								icon={<FontAwesome style={{ color: '#8fc11e' }} name={'rupee'} size={20} />}
+								color={colors.card}
+								text='Payments'
+								onpress={() => navigation.navigate('NotAvailable')}
+							/><CustomerActivityBtn
+								gap
+								isDisabled={item.transaction_type == "DEBIT" ? item.amount > 0 ? false : true : true}
+								icon={<FontAwesome style={{ color: '#8fc11e' }} name={'bell'} size={20} />}
+								color={colors.card}
+								text='Reminder'
+								onpress={() => reminder()}
+							/><CustomerActivityBtn
+								gap
+								isDisabled={item.transaction_type == "DEBIT" ? item.amount > 0 ? false : true : true}
+								icon={<FontAwesome style={{ color: '#8fc11e' }} name={'envelope'} size={20} />}
+								color={colors.card}
+								text='SMS'
+								onpress={() => send_sms()}
 							/>
 						</View>
-					</TouchableOpacity >
 
+					</View>
+				</View> */}
 
+				{
+					isLoading === false ?
+						<FlatList scrollEnabled={false}
+							data={customerData.data?.records}
+							renderItem={renderCustomer}
+							keyExtractor={(item) => item.id}
+							contentContainerStyle={{}}
 
-				</View>} */}
-			</View>
-			<View style={{ paddingHorizontal: 20, marginBottom: 30 }}>
-				<ButtonIcon title='Share' iconDirection='right' icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'share'} size={18} />}>
-				</ButtonIcon>
+						/> : <View style={{ flex: 1, justifyContent: 'center' }} >
+							<ActivityIndicator color={colors.title} size={'large'}></ActivityIndicator>
+						</View>
+				}
+
+			</ScrollView>
+			<View style={{ flexDirection: 'row', alignItems: "center", justifyContent: 'space-evenly', paddingVertical: 20, }}>
+				<Button title='DEBIT'
+					color={COLORS.danger}
+					style={{ paddingHorizontal: 60, }}
+					onPress={() => navigation.navigate("AddPayment", { item: item, transaction_type: "DEBIT", existPayment: false })} />
+				<Button title='CREDIT'
+					color={COLORS.primary}
+					style={{ paddingHorizontal: 60, }}
+					onPress={() => navigation.navigate("AddPayment", { item: item, transaction_type: "CREDIT", existPayment: false })} />
 			</View>
 		</View>
 	);
 };
 
+
 const styles = StyleSheet.create({
+
+
 
 	TextInput: {
 		...FONTS.fontRegular,
@@ -178,52 +244,54 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 20,
 		paddingLeft: 30,
 		borderWidth: 1,
-		//  borderColor:'#EBEBEB',
 		backgroundColor: '#FAFAFA',
 		marginBottom: 10
 
 	},
-
-
+	customerList: {
+		marginBottom: 100,
+	},
 	customerItem: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		padding: 15,
-		borderRadius: 18,
-		shadowColor: "#025135",
-		shadowOffset: {
-			width: 0,
-			height: 15,
-		},
-		shadowOpacity: 0.34,
+		paddingHorizontal: 12,
+		paddingVertical: 8,
+		borderRadius: 15,
 		shadowRadius: 31.27,
 		marginHorizontal: 10,
 		marginVertical: 4,
-		top: 4
+		top: 4,
+		borderBottomColor: "black",
+		borderBottomWidth: 0.2
 	},
 	customerName: {
 		color: COLORS.title,
-		fontSize: 22,
+		fontSize: SIZES.fontLg,
 	},
 	lastInteraction: {
-		color: 'white',
-		opacity: 0.6,
-		fontSize: 16,
+		fontSize: SIZES.font,
+		fontWeight: 'bold'
 	},
 	type: {
 		color: COLORS.title,
-		fontSize: 16,
-		...FONTS.fontBold,
-		marginTop: 5
-
+		fontSize: SIZES.fontXs,
+		...FONTS.fontSemiBold,
 	},
-	button: {
-		width: 380,
-		height: 60,
+
+	amount: {
+		color: 'red',
+		fontSize: SIZES.font,
+		textAlign: "center"
+	},
+
+	amountZero: {
+		color: '#121221',
+		fontSize: 18,
+	},
+	addAmmount: {
 		backgroundColor: COLORS.primary,
-		marginBottom: 20,
 		padding: 15, // 15px padding around the button content
-		borderRadius: 12, // Circular button
+		borderRadius: 10, // Circular button
 		elevation: 5,  // Shadow for Android
 		shadowColor: '#000',  // Shadow for iOS
 		shadowOffset: { width: 0, height: 4 },  // Shadow offset for iOS
@@ -231,11 +299,21 @@ const styles = StyleSheet.create({
 
 		// Shadow blur radius for iOS
 	},
-	buttonText: {
-		color: Colors.white,
-		fontSize: 16,
+	removeBtn: {
+		backgroundColor: 'red', // Matches the button's background color from CSS
+		padding: 15, // 15px padding around the button content
+		borderRadius: 10, // Circular button
+		elevation: 5,  // Shadow for Android
+		shadowColor: '#000',  // Shadow for iOS
+		shadowOffset: { width: 0, height: 4 },  // Shadow offset for iOS
+		shadowOpacity: 0.2,
+	},
+	addButtonText: {
+		color: COLORS.white,
+		fontSize: 20,
 		fontWeight: 'bold',
-		textAlign: "center"
+		paddingLeft: 40,
+		paddingRight: 40
 	},
 
 	header: {
@@ -245,15 +323,17 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		backgroundColor: COLORS.card,
 	},
-
+	title: {
+		fontSize: 20,
+		...FONTS.fontMedium,
+	},
 	actionBtn: {
 		height: 35,
 		width: 35,
 		borderRadius: 8,
 		alignItems: 'center',
 		justifyContent: 'center',
-		backgroundColor: COLORS.background,
-
+		backgroundColor: COLORS.background
 	}
 })
 

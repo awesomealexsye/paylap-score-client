@@ -61,7 +61,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     useFocusEffect(
         useCallback(() => {
             fetchCustomerList();
-            fetchImageList();
+            // fetchImageList();
             StorageService.isLoggedIn().then(res => { res === false ? navigation.navigate("MobileSignIn") : null; });
             CommonService.currentUserDetail().then((res) => {
                 setUserDetail(res);
@@ -316,7 +316,12 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                     <View>
                         <TextInput
                             placeholder='Search Customer'
-                            style={[styles.TextInput, { color: colors.title, backgroundColor: colors.card, ...FONTS.fontSemiBold, borderColor: colors.borderColor, borderWidth: 0.2 }]}
+                            style={[styles.TextInput,
+                            {
+                                color: colors.title,
+                                backgroundColor: colors.card,
+                                ...FONTS.fontSemiBold, borderColor: colors.borderColor, borderWidth: 0.2
+                            }]}
                             placeholderTextColor={'#929292'}
                             value={searchText}
                             onChangeText={handleSearch} />

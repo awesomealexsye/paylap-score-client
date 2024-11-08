@@ -24,17 +24,31 @@ interface Customer {
     name: string;
     amount: string;
     joined_at: string;
-    latest_updated_at: string;
+    last_updated_date: string;
     transaction_type: string;
-    profile_image: any;
+    image: any;
+    mobile: any;
 }
+
+
+
+// { "created_at": null,
+//      "id": 2, 
+//      "image": null, 
+//      "last_updated_date": "2024-11-08 12:49:37", 
+//      "mobile": "9625442725", 
+//      "name": "arbaz",
+//       "status": 1, 
+//       "updated_at": null,
+//       "user_id": "1" 
+//     }, 
 
 
 
 type LedgerMainProps = StackScreenProps<RootStackParamList, 'LedgerMain'>
 
 export const LedgerMain = ({ navigation }: LedgerMainProps) => {
-    console.log(navigation);
+
 
     const [searchText, setSearchText] = useState('');
     const [customersData, setCustomersData] = useState<any>([]);
@@ -42,26 +56,26 @@ export const LedgerMain = ({ navigation }: LedgerMainProps) => {
     const [filteredCustomers, setFilteredCustomers] = useState([]);
     const [userDetail, setUserDetail] = useState({ name: "", profile_image: "" });
 
-    useEffect(() => {
-        const handleBackPress = () => {
-            if (navigation.isFocused() && navigation.getState().routes[navigation.getState().index].name === 'Home') {
-                console.log("calling back exit");
-                BackHandler.exitApp();
-                return true;
-            }
-            return false;
-        }
-        BackHandler.addEventListener('hardwareBackPress', handleBackPress);
-        return () => {
-            BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
-        }
-    }, [navigation])
+    // useEffect(() => {
+    //     const handleBackPress = () => {
+    //         if (navigation.isFocused() && navigation.getState().routes[navigation.getState().index].name === 'Home') {
+    //             console.log("calling back exit");
+    //             BackHandler.exitApp();
+    //             return true;
+    //         }
+    //         return false;
+    //     }
+    //     BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+    //     return () => {
+    //         BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+    //     }
+    // }, [navigation])
 
 
 
     useFocusEffect(
         useCallback(() => {
-            fetchCustomerList();
+            fetchCustomerListInLedgerBook();
             CommonService.currentUserDetail().then((res) => {
                 setUserDetail(res);
             })
@@ -77,36 +91,38 @@ export const LedgerMain = ({ navigation }: LedgerMainProps) => {
         setFilteredCustomers(filteredList);
     };
 
-    const fetchCustomerList = async () => {
-        const homeApiRes = await ApiService.postWithToken("api/shopkeeper/list-customer", {});
-        if (homeApiRes?.status == true) {
-            let homeBanner = homeApiRes?.data?.shopkeeper_transaction_sum;
+    const fetchCustomerListInLedgerBook = async () => {
+        const res = await ApiService.postWithToken("api/ledger-book/customer/list", {});
+
+        if (res.status == true) {
+
+            // let homeBanner = res?.data?.shopkeeper_transaction_sum;
             setHomeBanner(homeBanner);
-            setCustomersData(homeApiRes?.data?.records);
-            setFilteredCustomers(homeApiRes?.data?.records);
+            setCustomersData(res?.data);
+            setFilteredCustomers(res?.data);
         }
     }
 
 
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
 
     const theme = useTheme();
     const { colors }: { colors: any; } = theme;
 
 
     const renderCustomer = ({ item }: { item: Customer }) => (
-        <TouchableOpacity onPress={() => { navigation.navigate("LedgerCustomerDetails", { customer: item }) }}>
+        <TouchableOpacity onPress={() => { navigation.navigate("LedgerCustomerDetails", { item: item }) }}>
 
-            <View style={[styles.customerItem, { backgroundColor: colors.card }]}>
+            <View style={[styles.customerItem, { backgroundColor: colors.card, marginBottom: 10 }]}>
                 <View style={{}}>
                     <View style={{ flexDirection: 'row' }}>
                         <Image
                             style={{ height: 50, width: 50, borderRadius: 50 }}
-                            src={item.profile_image}
+                            src={item.image}
                         />
                         <View style={{ marginLeft: 14 }}>
                             <Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{item.name}</Text>
-                            <Text style={styles.lastInteraction}>{item.latest_updated_at}</Text>
+                            <Text style={styles.lastInteraction}>{item.last_updated_date}</Text>
                         </View>
                     </View>
                 </View>
@@ -128,7 +144,85 @@ export const LedgerMain = ({ navigation }: LedgerMainProps) => {
             />
 
             < ScrollView showsVerticalScrollIndicator={false} >
+                <View style={{ flex: 1, alignItems: 'center' }} >
+                    <View style={{
+                        paddingVertical: 10,
+                        width: "90%",
+                        top: 14,
+                        backgroundColor: COLORS.primary,
+                        borderRadius: 15,
+                        shadowColor: "#025135",
+                        shadowOffset: {
+                            width: 0,
+                            height: 15,
+                        },
+                        shadowOpacity: 0.34,
+                        shadowRadius: 31.27,
+                        flexDirection: 'column',
+                        alignItems: "center"
 
+                    }}>
+                        <View style={{
+                            width: "90%",
+                            flexDirection: 'row',
+                            marginTop: 5,
+                            rowGap: 4,
+                            justifyContent: 'center',
+                            alignItems: "center",
+                            // borderBlockColor: COLORS.white,
+                            // borderBottomWidth: 1,
+                            padding: 5,
+                        }}>
+                            <View style={{
+                                flex: 1,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderRightWidth: 1,
+                                borderRightColor: COLORS.white
+                            }}>
+                                <Text style={{
+                                    ...FONTS.fontBold,
+                                    fontSize: SIZES.fontSm,
+                                    color: COLORS.primaryLight,
+
+                                }}>Credit Amt.</Text>
+                                <Text style={{
+                                    ...FONTS.fontSemiBold,
+                                    fontSize: homeBanner?.debit?.length < 10 ? SIZES.fontLg : SIZES.fontSm,
+                                    color: COLORS.secondary
+                                }}>₹ {homeBanner?.credit}</Text>
+                            </View>
+                            <View style={{
+                                flex: 1,
+                                alignItems: 'center',
+                                justifyContent: "center",
+                            }}>
+                                <Text style={{
+                                    ...FONTS.fontBold,
+                                    fontSize: SIZES.fontSm,
+                                    color: COLORS.primaryLight
+                                }}>Debit Amt.</Text>
+                                <Text style={{
+                                    ...FONTS.fontSemiBold, fontSize: homeBanner?.debit?.length < 10 ? SIZES.fontLg : SIZES.fontSm,
+                                    color: COLORS.danger, left: 5
+                                }}>₹ {homeBanner?.debit}</Text>
+                            </View>
+                        </View>
+                        {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: "center" }}>
+                            <TouchableOpacity style={{ paddingVertical: 5 }}>
+                                <TouchableOpacity onPress={() => navigation.navigate("Report")}>
+                                    <Text style={{
+                                        color: COLORS.white, ...FONTS.fontBold, fontSize: SIZES.fontSm,
+
+                                    }}>
+                                        VIEW REPORT
+                                        <Feather name='arrow-right' size={15} color={COLORS.white} />
+                                    </Text>
+                                </TouchableOpacity>
+                            </TouchableOpacity>
+                        </View> */}
+                    </View>
+                </View>
 
                 {/* search Box Start */}
 
@@ -169,28 +263,18 @@ export const LedgerMain = ({ navigation }: LedgerMainProps) => {
 
 const styles = StyleSheet.create({
 
-    notifactioncricle: {
-        height: 16,
-        width: 16,
-        borderRadius: 16,
-        backgroundColor: COLORS.card,
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'absolute',
-        top: 2,
-        right: 2
-    },
 
     TextInput: {
         ...FONTS.fontRegular,
         fontSize: 16,
         color: COLORS.title,
         height: 60,
-        borderRadius: 61,
+        borderRadius: 15,
         paddingHorizontal: 10,
         paddingLeft: 30,
-        marginBottom: 10
-
+        marginBottom: 10,
+        borderColor: COLORS.borderColor,
+        borderWidth: 1
     },
     brandsubtitle2: {
         ...FONTS.fontSemiBold,
@@ -212,27 +296,22 @@ const styles = StyleSheet.create({
     customerItem: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        padding: 15,
-
+        padding: 5,
         backgroundColor: Colors.white,
         borderRadius: 18,
-        shadowOffset: {
-            width: 0,
-            height: 15,
-        },
-        shadowOpacity: 0.34,
-        shadowRadius: 31.27,
         marginHorizontal: 10,
-        marginVertical: 4,
-        top: 4
+        marginVertical: 6,
+        top: 4,
+        borderBottomWidth: 0.6,
+        borderBlockColor: COLORS.borderColor
     },
     customerName: {
         color: COLORS.title,
-        fontSize: 18,
+        fontSize: SIZES.font,
     },
     lastInteraction: {
         color: '#888',
-        fontSize: 14,
+        fontSize: SIZES.fontSm,
     },
     type: {
         color: COLORS.title,

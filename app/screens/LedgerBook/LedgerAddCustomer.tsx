@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { ScrollView, View, Text, ActivityIndicator } from 'react-native';
+import { ScrollView, View, Text, ActivityIndicator, Image } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import Header from '../../layout/Header';
@@ -12,30 +12,42 @@ import { ApiService } from '../../lib/ApiService';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { StackScreenProps } from '@react-navigation/stack';
 import { LedgerService } from '../../lib/LedgerService';
+import { IMAGES } from '../../constants/Images';
 
 type LedgerAddCustomer = StackScreenProps<RootStackParamList, 'LedgerAddCustomer'>;
-
+let aadharDetail: any = {};
 export const LedgerAddCustomer = ({ navigation }: LedgerAddCustomer) => {
 
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
 
     const [isLoading, setIsLoading] = useState(false);
-    const [customerDetail, setCustomerDetail] = useState<any>({});
+
+    const [name, setName] = useState("Send OTP");
+    const [mobileNumber, setMobileNumber] = useState<any>({});
 
 
-    const addCustomer = async () => {
-        if (customerDetail.name == '') {
-            MessagesService.commonMessage("Name is required");
-        } else if (customerDetail.mobile == '') {
-            MessagesService.commonMessage("Mobile is required");
-        } else {
-            let addCustomerObj = LedgerService.addCustomer(customerDetail.name, customerDetail.mobile)
+    const addCustomerInLedgerBook = async () => {
 
+        setIsLoading(true);
+
+        if (mobileNumber.length != 10) {
+            MessagesService.commonMessage("Invalid Mobile Number");
+            return;
         }
-        console.log("customerDetail", customerDetail);
-    }
 
+        const res = await ApiService.postWithToken("api/ledger-book/customer/add",
+            { "mobile": mobileNumber, "name": name });
+
+        if (res?.status === true) {
+            console.log(res);
+            MessagesService.commonMessage("Customer Added Successfully", "SUCCESS");
+            navigation.navigate("LedgerMain");
+        }
+
+        setIsLoading(false);
+
+    }
     return (
         <>
             <View style={{ flex: 1, backgroundColor: colors.background }}>
@@ -46,7 +58,20 @@ export const LedgerAddCustomer = ({ navigation }: LedgerAddCustomer) => {
                         titleRight
                     />
                     <ScrollView>
-                        <View style={[GlobalStyleSheet.container, { flex: 1, padding: 0, paddingTop: 10 }]}>
+                        <View style={{
+                            flex: 1.5,
+                            alignItems: 'center',
+                        }}>
+                            <Image
+                                source={theme.dark ? IMAGES.appnamedark : IMAGES.appname}
+                                style={{
+                                    height: 110,
+                                    width: 150,
+                                    objectFit: "contain",
+                                }}
+                            />
+                        </View>
+                        <View style={[GlobalStyleSheet.container, { flex: 1, paddingTop: 10 }]}>
                             <View style={{ marginTop: 20, }}>
                                 <View style={{ marginTop: 20 }}>
                                     <View style={{ marginBottom: 10, padding: 12 }}>
@@ -55,24 +80,22 @@ export const LedgerAddCustomer = ({ navigation }: LedgerAddCustomer) => {
                                                 inputRounded
                                                 icon={<FontAwesome style={{ opacity: .6 }} name={'user'} size={30} color={colors.text} />}
                                                 placeholder="Enter Customer Name"
-                                                onChangeText={(name) => setCustomerDetail({ ...customerDetail, "name": name })}
+                                                onChangeText={(name) => setName(name)}
                                             />
                                         </View>
-
                                         <View>
                                             <Input
                                                 inputRounded
+                                                keyboardType={'number-pad'}
                                                 icon={<FontAwesome style={{ opacity: .6 }} name={'mobile-phone'} size={35} color={colors.text} />}
                                                 placeholder="Enter Customer Mobile number"
-                                                onChangeText={(mobile) => setCustomerDetail({ ...customerDetail, "mobile": mobile })}
+                                                onChangeText={(mobile) => setMobileNumber(mobile)}
                                             />
                                         </View>
-
                                     </View>
-
                                     <View style={GlobalStyleSheet.cardBody}>
                                         {isLoading === true ? <ActivityIndicator size={70} color={COLORS.primary} />
-                                            : <Button title={"Add Customer"} onPress={() => { addCustomer() }} />}
+                                            : <Button title={"Add Customer"} onPress={addCustomerInLedgerBook} />}
                                     </View>
                                 </View>
                             </View>
