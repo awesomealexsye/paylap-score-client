@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Share, Platform, ActivityIndicator, Modal, Alert } from 'react-native';
-import { useTheme } from '@react-navigation/native';
+import React, { useState, useCallback } from 'react';
+import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Share, Platform, ActivityIndicator, Modal, Alert, FlatList } from 'react-native';
+import { useTheme, useFocusEffect } from '@react-navigation/native';
 import { COLORS, FONTS, SIZES } from '../../constants/theme';
 import { Feather, FontAwesome } from '@expo/vector-icons';
 import { StackScreenProps } from '@react-navigation/stack';
@@ -11,6 +11,7 @@ import CONFIG from '../../constants/config';
 import HeaderStyle1 from '../../components/Headers/HeaderStyle1';
 import Header from '../../layout/Header';
 import CustomerTransactionTable from './CustomerTransactionTable';
+import { ApiService } from '../../lib/ApiService';
 
 type CustomerTransationsDetailsScreenProps = StackScreenProps<RootStackParamList, 'CustomerTransationsDetails'>;
 
@@ -21,12 +22,28 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
     const { colors } = theme;
     const [modalVisible, setModalVisible] = useState(false);
     const [isImageLoading, setImageLoading] = useState(true); // Image loading state
-
+    const [transactionData, setTransationsData] = useState<Transaction[]>([]);
+    interface Transaction {
+        transaction_id: string;
+        transaction_type: string;
+        amount: number;
+        created_at: Date;
+    }
     const showPayButton = customer.transaction_type === "CREDIT" ? 'DEBIT' : 'CREDIT';
     const handlePreview = () => {
         setModalVisible(true);
     };
 
+    useFocusEffect(useCallback(() => {
+        fetchTransaction();
+    }, []))
+
+    const fetchTransaction = async () => {
+        const res = await ApiService.postWithToken("api/shopkeeper/transactions/list-user-transaction", { transaction_id: customer.transaction_id });
+        if (res.status) {
+            setTransationsData(res.data);
+        }
+    };
     const handlePayment = async () => {
         console.log("hello...")
         navigation.navigate("AddPayment", { item: customer, transaction_type: showPayButton, existPayment: true });
@@ -76,6 +93,21 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
         }
     };
 
+    const renderCustomer = ({ item }: { item: Transaction }) => (
+        <View style={[{ flexDirection: 'row', backgroundColor: colors.card, justifyContent: 'space-between', alignItems: 'center', flex: 1, borderBottomColor: colors.border, borderBottomWidth: 1, marginBottom: 10 }]}>
+            <View style={{ flexDirection: 'column' }}>
+                {/* <Text style={{ ...styles.lastInteraction, color: !theme.dark ? "black" : 'white' }}>{item.transaction_id}</Text> */}
+                <Text style={{ color: colors.text, fontSize: 12, fontWeight: "900" }}>{item.created_at.toString()}</Text>
+            </View>
+
+            <View style={{ flexDirection: "column", alignItems: "flex-end", justifyContent: 'center' }}>
+                <Text style={{ color: item.transaction_type === "CREDIT" ? COLORS.primaryLight : COLORS.danger, fontSize: 15, fontWeight: "900" }}>₹ {parseInt(`${item.amount}`).toLocaleString()}</Text>
+                <Text style={[styles.type, { color: item.transaction_type === "CREDIT" ? COLORS.primary : COLORS.danger, }]}>{item.transaction_type}</Text>
+            </View>
+        </View>
+        // <TouchableOpacity onPress={() => { }}>
+        // </TouchableOpacity>
+    );
 
     return (
         <View style={{ backgroundColor: colors.card, flex: 1 }}>
@@ -153,10 +185,15 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                     <Text style={[styles.cardTitle, { color: colors.title }]}>Description</Text>
                     <Text style={[styles.cardText, { color: colors.text }]}>{customer.description}</Text>
                 </View>
-                <View>
-                    <CustomerTransactionTable transaction_id={customer.transaction_id} />
-                </View>
 
+                <View style={{ width: 400, marginTop: 20, paddingHorizontal: 30 }}>
+                    <FlatList scrollEnabled={false}
+                        data={transactionData}
+                        renderItem={renderCustomer}
+                        keyExtractor={(item) => item.id}
+                        contentContainerStyle={{ flex: 1 }}
+                    />
+                </View>
 
                 {/* Attachment Section */}
                 {customer?.image !== "" && (
@@ -290,6 +327,12 @@ const styles = StyleSheet.create({
         marginVertical: 10,
 
     },
+    type: {
+        color: COLORS.title,
+        fontSize: SIZES.fontXs,
+        ...FONTS.fontSemiBold,
+    },
+
     dateItem: {
         alignItems: 'center',
     },
