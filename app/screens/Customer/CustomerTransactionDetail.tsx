@@ -17,7 +17,7 @@ type CustomerTransationsDetailsScreenProps = StackScreenProps<RootStackParamList
 
 export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransationsDetailsScreenProps) => {
     const { customer } = route.params;
-    // console.log("customertransactionDetail", customer)
+    console.log("customertransactionDetail", customer)
     const theme = useTheme();
     const { colors } = theme;
     const [modalVisible, setModalVisible] = useState(false);
@@ -27,6 +27,7 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
         transaction_id: string;
         transaction_type: string;
         amount: number;
+        total_debit_amount: number;
         created_at: Date;
     }
     const showPayButton = customer.transaction_type === "CREDIT" ? 'DEBIT' : 'CREDIT';
@@ -61,7 +62,8 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
         ━━━━━━━━━━━━━━━━━━━━━━━
 
         💳 *Transaction Type*: ${customer.transaction_type === "CREDIT" ? "🟢 Credit" : "🔴 Debit"}
-        💰 *Amount*: ₹ ${customer.amount}
+        💰 *Total ${customer.transaction_type} Amount*: ₹ ${customer.total_debit_amount}
+        💰 *Pending Amount*: ₹ ${customer.amount}
         ━━━━━━━━━━━━━━━━━━━━━━━
 
         📅 *Transaction Date*: ${customer.transaction_date}
@@ -177,6 +179,10 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                     <View style={[styles.transactionIDContainer, { flexDirection: "row", justifyContent: "space-around", alignItems: "center" }]}>
                         <Text style={[styles.label, { color: colors.text }]}>Transaction ID                       : </Text>
                         <Text style={[styles.value, { color: colors.title }]}>{customer.transaction_id}</Text>
+                    </View>
+                    <View style={[styles.transactionIDContainer, { flexDirection: "row", justifyContent: "space-around", alignItems: "center" }]}>
+                        <Text style={[styles.label, { color: colors.text }]}>Total {customer.transaction_type} Amount               :                   </Text>
+                        <Text style={[styles.value, { color: colors.title }]}>₹ {customer.total_debit_amount}</Text>
                     </View>
                 </View>
 

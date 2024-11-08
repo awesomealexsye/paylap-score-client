@@ -61,18 +61,31 @@ export const AddCustomer = ({ navigation }: AddCustomerScreenProps) => {
             MessagesService.commonMessage(aadharDetail.message);
         }
     };
-    const handleSendOtp = async () => {
+    const handleSendOtp = () => {
         if (customerDetail?.mobile?.length != 10) {
             MessagesService.commonMessage("Invalid Mobile Number.");
             return;
         }
-        const userExists = await checkIsUserExist();
-        if (userExists) {
-            setOtpSent(true);
-            MessagesService.commonMessage("OTP has been sent to customer.");
-        } else {
-            setShowOtherFields(true); // Shows fields only if the user does not exist
-        }
+        setIsLoading(true);
+        ApiService.postWithToken("api/shopkeeper/search-user-mobile", { "mobile": customerDetail?.mobile }).then((res) => {
+            setIsLoading(false);
+            if (!res?.app_message) {
+
+                MessagesService.commonMessage(res.message, res.status ? "SUCCESS" : 'ERROR');
+            }
+            if (res.mode_type == "MOBILE_OTP") {
+                setCustomerId(res?.data?.id);
+                setUserExist(res.status);
+                setOtpSent(true);
+                // MessagesService.commonMessage("OTP has been sent to customer.", "SUCCESS");
+            } else if (res.mode_type == "AADHAAR_OTP") {
+                setShowOtherFields(true); // Shows fields only if the user does not exist
+            } else {
+                // MessagesService.commonMessage(res.message, "ERROR");
+
+            }
+        })
+
     }
     const handleVerifyOtp = async () => {
         if (customerDetail?.otp?.length != (isShowOtherFields ? 6 : 4)) {
