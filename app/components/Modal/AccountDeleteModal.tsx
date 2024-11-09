@@ -31,7 +31,7 @@ const AccountDeleteModal = ({ close, modalVisible }: Props) => {
     const SendOTP = () => {
         setIsLoading(true);
         ApiService.postWithToken("api/user/sent-otp", {}).then((res: any) => {
-            MessagesService.commonMessage(res?.message);
+            MessagesService.commonMessage(res?.message, res?.status ? 'SUCCESS' : 'ERROR');
             if (res?.status == true) {
                 setIsOTPSent(true);
             }
@@ -41,14 +41,12 @@ const AccountDeleteModal = ({ close, modalVisible }: Props) => {
     const ConfirmOTP = async () => {
         setIsLoading(true);
         ApiService.postWithToken("api/user/delete", { otp }).then((res: any) => {
-            MessagesService.commonMessage(res?.message);
+            MessagesService.commonMessage(res?.message, res?.status ? 'SUCCESS' : 'ERROR');
             if (res?.status == true) {
-                console.log('Account deleted success');
 
                 StorageService.logOut().then((is_logout) => {
                     if (is_logout) {
-                        console.log('Account logout success');
-
+                        close(false);
                         navigation.navigate("MobileSignIn");
                     }
                 })
@@ -127,7 +125,7 @@ const AccountDeleteModal = ({ close, modalVisible }: Props) => {
                                 onPress={!isOTPSent ? SendOTP : ConfirmOTP}
                                 title={!isOTPSent ? 'Send OTP' : 'Confirm OTP To Delete'}
                                 textColor={theme.dark ? COLORS.title : COLORS.card}
-                                color={colors.title}
+                                color={COLORS.danger}
                             />
                     }
                 </View>
