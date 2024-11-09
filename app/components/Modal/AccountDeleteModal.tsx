@@ -110,7 +110,6 @@ const AccountDeleteModal = ({ close, modalVisible }: Props) => {
                     </View>
                     {isOTPSent &&
                         <View style={{ marginBottom: 25 }}>
-                            <Text style={{ ...FONTS.font, color: colors.title, marginBottom: 4 }}>Password</Text>
                             <Input
                                 type="Text"
                                 placeholder={'Enter OTP'}

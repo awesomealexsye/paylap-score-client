@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 type MessageType = "ERROR" | "SUCCESS";
 
 const MessagesService = {
-    commonMessage(message: string, messageType: MessageType = "ERROR", duration = 2000) {
+    commonMessage(message: string, messageType: MessageType = "ERROR", duration = 4000) {
         const toastStyle = messageType === "ERROR" ? styles.error : styles.success;
 
         Toast.show({
