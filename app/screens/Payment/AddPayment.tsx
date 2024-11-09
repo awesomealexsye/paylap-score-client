@@ -65,6 +65,7 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
     };
 
     useEffect(() => {
+        setAmount(existPayment ? String(item.amount) : '');
         setGivenDate(`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`);
     }, []);
 

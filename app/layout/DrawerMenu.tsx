@@ -22,12 +22,12 @@ const MenuItems = [
         navigate: "Home",
     },
 
-    // {
-    //     id: "2",
-    //     icon: IMAGES.folder,
-    //     name: "View Report",
-    //     navigate: 'Report',
-    // },
+    {
+        id: "2",
+        icon: IMAGES.tachometerfast,
+        name: "My Cibil",
+        navigate: 'CustomerScore',
+    },
     {
         id: "3",
         icon: IMAGES.help,
@@ -118,6 +118,10 @@ const DrawerMenu = () => {
             navigation.navigate("MobileSignIn");
         }
     };
+    const handleCibilFunc = async () => {
+        let user_id = await StorageService.getStorage(CONFIG.HARDCODE_VALUES.USER_ID);
+        navigation.navigate("CustomerScore", { customer: { id: user_id } });
+    }
 
     const getAppversion = () => {
         CommonService.getAppUploadDetail().then((res) => {
@@ -187,7 +191,11 @@ const DrawerMenu = () => {
                                     data.navigate === "DrawerNavigation" ? dispatch(closeDrawer()) : dispatch(closeDrawer());
                                     if (data.name == "Logout") {
                                         handleLogout();
-                                    } else {
+                                    }
+                                    else if (data.name == "My Cibil") {
+                                        handleCibilFunc();
+                                    }
+                                    else {
                                         navigation.navigate(data.navigate);
                                     }
                                 }}
