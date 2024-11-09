@@ -13,7 +13,6 @@ import AadhaarOtp from './AadhaarOtp';
 import { COLORS, FONTS } from '../../constants/theme';
 import { ApiService } from '../../lib/ApiService';
 import CommonService from '../../lib/CommonService';
-import CustomerScore from './CustomerScore';
 import ProfileScore from './PeofileScore';
 import CONFIG from '../../constants/config';
 import { IMAGES } from '../../constants/Images';
