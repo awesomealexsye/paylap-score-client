@@ -2,7 +2,7 @@
   "expo": {
     "name": "PaylapScore",
     "slug": "paylap-score",
-    "version": "1.0.24",
+    "version": "1.0.25",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -25,8 +25,8 @@
       "bundleIdentifier": "com.paylap.paylapscore"
     },
     "android": {
-      "versionCode": 24,
-      "versionName": "1.0.24",
+      "versionCode": 25,
+      "versionName": "1.0.25",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
