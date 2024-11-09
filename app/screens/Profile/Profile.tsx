@@ -15,6 +15,7 @@ import ButtonIcon from '../../components/Button/ButtonIcon';
 import { Feather } from '@expo/vector-icons';
 import { MessagesService } from '../../lib/MessagesService';
 import StorageService from '../../lib/StorageService';
+import AccountDeleteModal from '../../components/Modal/AccountDeleteModal';
 
 
 type ProfileScreenProps = StackScreenProps<RootStackParamList, 'Profile'>;
@@ -41,6 +42,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
 
 
     const [modalVisible, setModalVisible] = useState(false);
+    const [accountDeleteModalVisibleModal, setAccountDeleteModalVisible] = useState(false);
     const [modalImageSource, setModalImageSource] = useState<any>();
     const handlePreview = (type: string) => {
         if (type == 'profile') {
@@ -96,7 +98,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                 leftIcon={'back'}
                 rightIcon2={'Edit'}
             />
-
+            <AccountDeleteModal close={setAccountDeleteModalVisible} modalVisible={accountDeleteModalVisibleModal} />
             <FilePreviewModal close={setModalVisible} modalVisible={modalVisible} title=" Profile Image " previewImage={modalImageSource} />
             <ScrollView showsHorizontalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1, paddingBottom: 50 }}>
 
@@ -222,7 +224,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                                     elvation: 2,
                                     shadowOpacity: 0.14,
                                 }}
-                                onPress={deleteAccount}
+                                onPress={() => { setAccountDeleteModalVisible(true); }}
                                 title='Delete Account'
                                 text={COLORS.danger}
                                 iconDirection='right'
