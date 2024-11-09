@@ -89,6 +89,9 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
             Linking.openURL(sms);
         })
     }
+    const newDebitBtnHandler = () => {
+        navigation.navigate("AddPayment", { item: item, transaction_type: "DEBIT", existPayment: false })
+    }
     const theme = useTheme();
     const { colors }: { colors: any; } = theme;
 
@@ -216,7 +219,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                                 icon={<Image source={IMAGES.tachometerfast} style={{ height: 20, width: 20, resizeMode: 'contain' }}></Image>}
                                 color={colors.card}
                                 text='Score'
-                                onpress={() => navigation.navigate('CustomerScore', { customer: item })}
+                                onpress={() => navigation.navigate('CustomerScore', { customer: { id: item.customer.id } })}
                             />
                             <CustomerActivityBtn
                                 gap
@@ -258,18 +261,15 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                 }
 
             </ScrollView>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', paddingVertical: 20, backgroundColor: colors.dark }}>
-                <TouchableOpacity style={[styles.removeBtn]} onPress={() => navigation.navigate("AddPayment", { item: item, transaction_type: "DEBIT", existPayment: false })}>
+            {!(item.transaction_type == "CREDIT" && item.amount > 0) &&
+                <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', paddingVertical: 20, backgroundColor: colors.dark }}>
+                    <TouchableOpacity style={[styles.removeBtn]} onPress={() => newDebitBtnHandler()}>
 
-                    <Text style={styles.addButtonText}>
-                        New DEBIT</Text>
-                </TouchableOpacity>
-                {/* <TouchableOpacity style={styles.addAmmount} onPress={() => navigation.navigate("AddPayment", { item: item, transaction_type: "CREDIT", existPayment: false })}>
-                    <Text style={styles.addButtonText}>
-                        Credit</Text>
-                </TouchableOpacity> */}
-            </View>
-
+                        <Text style={styles.addButtonText}>
+                            New DEBIT</Text>
+                    </TouchableOpacity>
+                </View>
+            }
         </View>
     );
 };

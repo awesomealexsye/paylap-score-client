@@ -23,12 +23,16 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
     const [modalVisible, setModalVisible] = useState(false);
     const [isImageLoading, setImageLoading] = useState(true); // Image loading state
     const [transactionData, setTransationsData] = useState<Transaction[]>([]);
+    const [isLoading, setIsLoading] = useState(false)
+
     interface Transaction {
         transaction_id: string;
         transaction_type: string;
         amount: number;
         total_debit_amount: number;
         created_at: Date;
+        latest_updated_at: string;
+        normal_date: string;
     }
     const showPayButton = customer.transaction_type === "CREDIT" ? 'DEBIT' : 'CREDIT';
     const handlePreview = () => {
@@ -40,10 +44,12 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
     }, []))
 
     const fetchTransaction = async () => {
+        setIsLoading(true)
         const res = await ApiService.postWithToken("api/shopkeeper/transactions/list-user-transaction", { transaction_id: customer.transaction_id });
         if (res.status) {
             setTransationsData(res.data);
         }
+        setIsLoading(false)
     };
     const handlePayment = async () => {
         console.log("hello...")
@@ -99,7 +105,8 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
         <View style={[{ flexDirection: 'row', backgroundColor: colors.card, justifyContent: 'space-between', alignItems: 'center', flex: 1, borderBottomColor: colors.border, borderBottomWidth: 1, marginBottom: 10 }]}>
             <View style={{ flexDirection: 'column' }}>
                 {/* <Text style={{ ...styles.lastInteraction, color: !theme.dark ? "black" : 'white' }}>{item.transaction_id}</Text> */}
-                <Text style={{ color: colors.text, fontSize: 12, fontWeight: "900" }}>{item.created_at.toString()}</Text>
+                <Text style={{ color: colors.text, fontSize: 12, fontWeight: "900" }}>{item.latest_updated_at}</Text>
+                <Text style={{ color: colors.text, fontSize: 12, fontWeight: "500" }}>{item.normal_date}</Text>
             </View>
 
             <View style={{ flexDirection: "column", alignItems: "flex-end", justifyContent: 'center' }}>
@@ -193,12 +200,17 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                 </View>
 
                 <View style={{ width: 400, marginTop: 20, paddingHorizontal: 30 }}>
-                    <FlatList scrollEnabled={false}
-                        data={transactionData}
-                        renderItem={renderCustomer}
-                        keyExtractor={(item) => item.id}
-                        contentContainerStyle={{ flex: 1 }}
-                    />
+                    {isLoading == false ?
+                        <FlatList scrollEnabled={false}
+                            data={transactionData}
+                            renderItem={renderCustomer}
+                            keyExtractor={(item) => item.id}
+                            contentContainerStyle={{ flex: 1 }}
+                        />
+                        :
+                        <ActivityIndicator color={colors.title} size={'large'}></ActivityIndicator>
+                    }
+
                 </View>
 
                 {/* Attachment Section */}
