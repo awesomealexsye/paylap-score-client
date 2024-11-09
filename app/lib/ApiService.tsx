@@ -47,7 +47,7 @@ const ApiService = {
         // console.log("consoleloo  ", api_url, data, headers);
         try {
             const res: any = await axios.post(api_url, data, { headers: headers });
-            // console.log("response", res.data);
+            console.log("response", res.data);
             if (res.data.logout_user === true) {
                 const is_logout = await StorageService.logOut();
                 if (is_logout) {
@@ -74,7 +74,7 @@ const ApiService = {
         } catch (error) {
             MessagesService.commonMessage("Internal Server Error");
         }
-        return { status: false, message: "Somthing went Wrong" };
+        return { status: false, message: "Somthing went Wrong", "app_message": true };
     }
 }
 
