@@ -20,7 +20,8 @@ import { IMAGES } from '../../constants/Images';
 type AddPaymentScreenProps = StackScreenProps<RootStackParamList, 'AddPayment'>;
 
 const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
-    const { item, transaction_type }: any = route.params;
+    const { item, transaction_type, existPayment }: any = route.params;
+    console.log("AddPayment", item)
 
     const { image, pickImage, takePhoto }: any = useImagePicker();
 
@@ -28,7 +29,7 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
     const [description, setDescription] = useState<String>("");
     const [otp, setOtp] = useState<String>("");
     const [givenDate, setGivenDate] = useState<String>("");
-    const [takenDate, setTakenDate] = useState<String>("");
+    const [takenDate, setTakenDate] = useState(`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')} ${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}:${String(new Date().getSeconds()).padStart(2, '0')}`);
     const [inputDateType, setInputDateType] = useState<String>("");
     const [isLoading, setIsLoading] = useState(false)
     const theme = useTheme();
@@ -41,7 +42,8 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
 
     useFocusEffect(
         useCallback(() => {
-            setButtonText(transaction_type == "CREDIT" ? "Credit" : "Send OTP")
+            console.log("item", existPayment, typeof (item.transaction_id), (item.transaction_id),)
+            setButtonText("Send OTP")
         }, [])
     )
 
@@ -63,34 +65,47 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
     };
 
     useEffect(() => {
+        setAmount(existPayment ? String(item.amount) : '');
         setGivenDate(`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`);
     }, []);
 
     const fetchAddPaymentData = async () => {
         const data: any = { customer_id: item?.customer_id, amount: amount, transaction_type: transaction_type, description: description, transaction_date: takenDate, estimated_given_date: givenDate, image: image, otp: otp }
+        data.transaction_id = item?.transaction_id;
+        data.existPayment = existPayment;
 
         if (amount.length == 0) {
             MessagesService.commonMessage(`Please enter amount that you want to ${transaction_type}`);
             return;
         }
+        // if (Number(item.amount) < Number(amount) || Number(item.amount) < 0 || Number(amount) < 0) {
+        // MessagesService.commonMessage(`Enter Amount must be smaller than pending amount`);
+        //     return;
+        // }
+        if (existPayment == true && item.amount < amount) {
+            MessagesService.commonMessage(`Enter Amount must be smaller than pending amount`);
+            return;
+        }
+
         if (buttonText === "Send OTP") {
             setIsLoading(true);
-            const res = await ApiService.postWithToken("api/shopkeeper/transactions/send-otp", { customer_id: item.customer_id });
+            const res = await ApiService.postWithToken("api/shopkeeper/transactions/send-otp", { customer_id: item.customer_id, amount: amount });
             if (res.status == true) {
                 setIsOtpSent(true);
                 setButtonText("Debit")
-                MessagesService.commonMessage(res.message);
+                MessagesService.commonMessage(res.message, "SUCCESS");
             }
             setIsLoading(false);
             return;
         }
-        if (buttonText === "Debit") {
-            if (otp.length !== 4) {
-                MessagesService.commonMessage('OTP must be 4 digits.');
-                return;
-            }
+        // if (buttonText === "Debit") {
+        if (otp.length !== 4) {
+            MessagesService.commonMessage('OTP must be 4 digits.');
+            return;
         }
+        // }
         setIsLoading(true);
+        console.log("add-transaction", data);
         ApiService.postWithToken("api/shopkeeper/transactions/add-transaction", data).then((res) => {
             if (res.status == true) {
                 MessagesService.commonMessage(res.message, "SUCCESS");
@@ -128,10 +143,11 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
                         <View style={GlobalStyleSheet.cardBody}>
                             <View style={{ marginBottom: 10 }}>
                                 <Input
-                                    keyboardType='numeric'
+                                    // keyboardType='numeric'
                                     icon={<FontAwesome style={{ opacity: .6 }} name={'rupee'} size={20} color={colors.text} />}
                                     placeholder="Enter amount"
                                     onChangeText={amount => setAmount(amount)}
+                                    defaultValue={existPayment ? String(item.amount) : ''}
                                 />
                             </View>
                             <View style={{ marginBottom: 10 }}>
@@ -146,7 +162,7 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
                                 <View style={{ marginBottom: 10 }}>
                                     <Input
                                         keyboardType='numeric'
-                                        multiline={true}
+                                        multiline={false}
                                         placeholder="Enter OTP"
                                         onChangeText={otp => setOtp(otp)}
                                     />
@@ -165,7 +181,7 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
                                 )}
                             </View>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: "center", marginTop: 12, flexWrap: 'wrap' }}>
-                                <View>
+                                {/* <View>
                                     <Text>{transaction_type === 'CREDIT' ? 'Transaction Date' : 'Taken Date'}</Text>
                                     <ButtonIcon
                                         onPress={() => showDatepicker('Taken Date')}
@@ -174,10 +190,10 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
                                         icon={<FontAwesome style={{ opacity: 1 }} name={'calendar'} size={20} color={COLORS.white} />}
                                     />
 
-                                </View>
+                                </View> */}
 
                                 {transaction_type === 'DEBIT' && <View>
-                                    <Text>Given Date</Text>
+                                    <Text>Last Date</Text>
                                     <ButtonIcon onPress={() => showDatepicker('Given Date')}
                                         size={'sm'}
                                         title={givenDate || date.toLocaleDateString()}
@@ -186,14 +202,16 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
                                     />
                                 </View>}
 
-                                <View style={{ marginTop: 20 }}>
-                                    <ButtonIcon onPress={pickImage}
-                                        size={'sm'}
-                                        title='Attach bills'
-                                        iconDirection='left'
-                                        icon={<FontAwesome style={{ opacity: 1, color: COLORS.white }} name={'camera'} size={20} color={colors.white} />}
-                                    />
-                                </View>
+                                {!existPayment &&
+                                    <View style={{ marginTop: 20 }}>
+                                        <ButtonIcon onPress={pickImage}
+                                            size={'sm'}
+                                            title='Attach bills'
+                                            iconDirection='left'
+                                            icon={<FontAwesome style={{ opacity: 1, color: COLORS.white }} name={'camera'} size={20} color={colors.white} />}
+                                        />
+                                    </View>
+                                }
                             </View>
                         </View>
                     </View>

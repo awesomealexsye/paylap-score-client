@@ -42,3 +42,7 @@ Edit profile:
 
 
 
+
+
+simulator open device command:
+open -a Simulator --args -CurrentDeviceUDID 6EDC92C3-D603-4F26-900E-67D9BAE31D7A

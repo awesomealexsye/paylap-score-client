@@ -1,5 +1,5 @@
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { ScrollView, View, Text, ActivityIndicator, Image, StyleSheet } from 'react-native';
+import { ScrollView, View, Text, ActivityIndicator, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { useNavigation, useTheme, useFocusEffect } from '@react-navigation/native';
 import LoginSheet from '../../components/BottomSheet/LoginSheet';
@@ -13,7 +13,6 @@ import AadhaarOtp from './AadhaarOtp';
 import { COLORS, FONTS } from '../../constants/theme';
 import { ApiService } from '../../lib/ApiService';
 import CommonService from '../../lib/CommonService';
-import CustomerScore from './CustomerScore';
 import ProfileScore from './PeofileScore';
 import CONFIG from '../../constants/config';
 import { IMAGES } from '../../constants/Images';
@@ -44,13 +43,9 @@ const FindUser = forwardRef((props, ref) => {
     const [isLoading, setIsLoading] = useState(false);
     const [showDetail, setShowDetail] = useState(false);
 
-    const [aadhar, setAadhar] = useState("642546277815");
-    // useEffect(() => {
-
-    // }, []);
+    const [aadhar, setAadhar] = useState("936107513622");
     useFocusEffect(
         useCallback(() => {
-
             setShowDetail(false);
         }, [])
     );
@@ -63,7 +58,6 @@ const FindUser = forwardRef((props, ref) => {
             return;
         }
         const res = await ApiService.postWithToken("api/user/get-user-via-aadhaar", { "aadhar_card": aadhar });
-        console.log({ "aadhar_card": aadhar }, res)
         if (res !== null && res.status === true) {
             if (res?.data) {
                 setUserDetail(res?.data);
@@ -129,54 +123,90 @@ const FindUser = forwardRef((props, ref) => {
                                         <View>
                                             <View style={[GlobalStyleSheet.container, { alignItems: 'center', marginTop: 0, padding: 0 }]}>
 
-                                                <View
-                                                    style={[styles.sectionimg]}
-                                                >
+                                                {/* <View style={[styles.sectionimg]}>
                                                     <Image
                                                         style={{ height: 90, width: 90, borderRadius: 50 }}
                                                         source={{ uri: userDetail?.profile_image }}
                                                     />
-                                                </View>
+                                                </View> */}
 
                                                 <Text style={{ ...FONTS.fontSemiBold, fontSize: 18, color: colors.title }}>{userDetail?.name}</Text>
                                                 {/* <Text style={{ ...FONTS.fontRegular, fontSize: 16, color: COLORS.primary }}>London, England</Text> */}
                                             </View>
+                                        </View>
+                                        <View style={{ marginBottom: 80 }}>
+                                            <ProfileScore
+                                                value={userDetail?.credit_score}
+                                                labels={CONFIG.CREDIT_SCORE_LABEL}
+                                                minValue={CONFIG.CREDIT_SCORE_RANGE.MIN}
+                                                maxValue={CONFIG.CREDIT_SCORE_RANGE.MAX}
+                                                innerCircleStyle={{ backgroundColor: colors.background }}
+                                                size={300}
+                                                labelStyle={{ color: colors.title }}
+                                            />
+                                        </View>
+                                        <View style={[GlobalStyleSheet.container, { paddingHorizontal: 40, marginTop: 0 }]}>
+                                            <View>
 
-                                            <View
-                                                style={[GlobalStyleSheet.container, { paddingHorizontal: 40, marginTop: 0 }]}
-                                            >
-                                                <View>
-
-                                                    <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 25, alignItems: 'flex-start' }]} >
-                                                        <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
-                                                            <Image
-                                                                style={[GlobalStyleSheet.image3, { tintColor: COLORS.primary }]}
-                                                                source={IMAGES.call}
-                                                            />
-                                                        </View>
-                                                        <View>
-                                                            <Text style={[styles.brandsubtitle2, { color: '#7D7D7D', fontSize: 12 }]}>Mobile Number</Text>
-                                                            <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, marginTop: 5 }}>{userDetail?.mobile}</Text>
-                                                        </View>
+                                                <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 25, alignItems: 'flex-start' }]} >
+                                                    <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
+                                                        <Image
+                                                            style={[GlobalStyleSheet.image3, { tintColor: COLORS.primary }]}
+                                                            source={IMAGES.call}
+                                                        />
                                                     </View>
-                                                    <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 25, alignItems: 'flex-start' }]} >
-                                                        <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
-                                                            <Image
-                                                                style={[GlobalStyleSheet.image3, { tintColor: COLORS.primary }]}
-                                                                source={IMAGES.email}
-                                                            />
-                                                        </View>
-                                                        <View>
-                                                            <Text style={[styles.brandsubtitle2, { color: '#7D7D7D', fontSize: 12 }]}>Email Address</Text>
-                                                            <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, marginTop: 0 }}>{userDetail?.email}</Text>
-                                                        </View>
+                                                    <View>
+                                                        <Text style={[styles.brandsubtitle2, { color: '#7D7D7D', fontSize: 12 }]}>Mobile Number</Text>
+                                                        <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, marginTop: 5 }}>{userDetail?.mobile}</Text>
+                                                    </View>
+                                                </View>
+                                                <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 25, alignItems: 'flex-start' }]} >
+                                                    <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
+                                                        <Image
+                                                            style={[GlobalStyleSheet.image3, { tintColor: COLORS.primary }]}
+                                                            source={IMAGES.email}
+                                                        />
+                                                    </View>
+                                                    <View>
+                                                        <Text style={[styles.brandsubtitle2, { color: '#7D7D7D', fontSize: 12 }]}>Email Address</Text>
+                                                        <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, marginTop: 0 }}>{userDetail?.email}</Text>
                                                     </View>
                                                 </View>
                                             </View>
                                         </View>
-                                        <View style={{ marginBottom: 80 }}>
-                                            <ProfileScore value={userDetail?.credit_score} labels={CONFIG.CREDIT_SCORE_LABEL} minValue={CONFIG.CREDIT_SCORE_RANGE.MIN} maxValue={CONFIG.CREDIT_SCORE_RANGE.MAX} />
-                                        </View>
+                                        {/* Credit Profile Overview */}
+                                        {/* <View style={[styles.overviewSection]}>
+
+                                            <View style={styles.gridContainer}>
+                                                <TouchableOpacity style={[styles.gridItem, { borderLeftColor: '#8884d8', backgroundColor: colors.card }]} >
+                                                    <View>
+                                                        <Text style={[styles.gridLabel, { color: colors.title }]}>Total Accounts</Text>
+                                                        <Text style={[styles.gridValue, { color: colors.title }]}>58</Text>
+                                                    </View>
+                                                </TouchableOpacity>
+
+                                                <TouchableOpacity style={[styles.gridItem, { borderLeftColor: '#82ca9d', backgroundColor: colors.card }]}>
+                                                    <View>
+                                                        <Text style={[styles.gridLabel, { color: colors.title }]}>Credit Enquiries</Text>
+                                                        <Text style={[styles.gridValue, { color: colors.title }]}>83</Text>
+                                                    </View>
+                                                </TouchableOpacity>
+
+                                                <TouchableOpacity style={[styles.gridItem, { borderLeftColor: '#ff7675', backgroundColor: colors.card }]}>
+                                                    <View>
+                                                        <Text style={[styles.gridLabel, { color: colors.title }]}>Credit Card Usage</Text>
+                                                        <Text style={[styles.gridValue, { color: colors.title }]}>27%</Text>
+                                                    </View>
+                                                </TouchableOpacity>
+
+                                                <TouchableOpacity style={[styles.gridItem, { borderLeftColor: '#74b9ff', backgroundColor: colors.card }]}>
+                                                    <View>
+                                                        <Text style={[styles.gridLabel, { color: colors.title }]}>Age of Credit</Text>
+                                                        <Text style={[styles.gridValue, { color: colors.title }]}>10y0m</Text>
+                                                    </View>
+                                                </TouchableOpacity>
+                                            </View>
+                                        </View> */}
                                     </View>)
                                 }
                             </View>
@@ -240,7 +270,36 @@ const styles = StyleSheet.create({
         elevation: 10,
         alignItems: 'center',
         justifyContent: 'center'
-    }
+    },
+    overviewSection: {
+        paddingHorizontal: 20,
+        marginTop: 24,
+        marginBottom: 84,
+    },
+    gridContainer: {
+        gap: 20,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'center'
+    },
+    gridItem: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 16,
+        borderRadius: 8,
+        borderLeftWidth: 4,
+        minWidth: 150
+    },
+    gridLabel: {
+        fontSize: 12,
+        color: '#666',
+    },
+    gridValue: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginTop: 4,
+    },
 })
 
 export default FindUser;

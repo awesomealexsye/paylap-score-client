@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList, BackHandler, ActivityIndicator, Platform, Button } from 'react-native';
+import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList, BackHandler, ActivityIndicator, Platform, Button, RefreshControl } from 'react-native';
 import { useTheme, useFocusEffect } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { IMAGES } from '../../constants/Images';
@@ -39,8 +39,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const [filteredCustomers, setFilteredCustomers] = useState([]);
     const [userDetail, setUserDetail] = useState({ name: "", profile_image: "", aadhar_card: "", notification_count: 0 });
     const [isLoading, setIsLoading] = useState<any>(false);
-    const [imageData, setImageData] = useState<any>([]);
-
+    const [isRefreshing, setIsRefreshing] = useState<any>(false);
     useEffect(() => {
         const handleBackPress = () => {
             if (navigation.isFocused() && navigation.getState().routes[navigation.getState().index].name === 'Home') {
@@ -91,6 +90,11 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         setIsLoading(false);
     }
 
+    const handelRefresh = async () => {
+        setIsRefreshing(true);
+        await fetchCustomerList();
+        setIsRefreshing(false);
+    };
 
     const dispatch = useDispatch();
 
@@ -205,12 +209,14 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                     </View>
                 </View>
             </View >
-
-
             {/* AppBar End */}
 
 
-            < ScrollView showsVerticalScrollIndicator={false} >
+            < ScrollView showsVerticalScrollIndicator={false}
+                refreshControl={
+                    <RefreshControl refreshing={isRefreshing} onRefresh={handelRefresh} />
+                }
+            >
 
 
 
@@ -296,7 +302,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                     </View>
                 </View>
 
-                <SliderModal data={imageData} />
+                <SliderModal />
                 {/* search Box Start */}
 
                 <View style={[GlobalStyleSheet.container, { paddingHorizontal: 30, paddingTop: 30 }]}>
@@ -320,7 +326,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                         data={filteredCustomers}
                         renderItem={renderCustomer}
                         keyExtractor={(item, index) => index.toString()}
-                        contentContainerStyle={{}} /> : <View style={{ flex: 1, justifyContent: 'center' }} >
+                        contentContainerStyle={{}} /> : <View style={{ flex: 1, justifyContent: 'center' }}
+                        >
                         <ActivityIndicator color={colors.title} size={'large'}></ActivityIndicator>
                     </View>
                 }
