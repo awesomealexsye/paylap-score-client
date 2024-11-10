@@ -210,7 +210,6 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                         :
                         <ActivityIndicator color={colors.title} size={'large'}></ActivityIndicator>
                     }
-
                 </View>
 
                 {/* Attachment Section */}
@@ -235,15 +234,16 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
 
 
             {/* Share Button */}
-            <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
-                <ButtonIcon
-                    color={showPayButton == 'DEBIT' ? 'red' : 'green'}
-                    onPress={handlePayment}
-                    title={showPayButton}
-                    iconDirection='right'
-                    icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'rupee'} size={18} />}
-                />
-            </View>
+            {customer.amount > 0 &&
+                <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
+                    <ButtonIcon
+                        color={showPayButton == 'DEBIT' ? 'red' : 'green'}
+                        onPress={handlePayment}
+                        title={showPayButton}
+                        iconDirection='right'
+                        icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'rupee'} size={18} />}
+                    />
+                </View>}
             <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
                 <ButtonIcon
                     onPress={shareTransaction}
