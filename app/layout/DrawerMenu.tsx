@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity, Modal, StyleSheet, Linking, Platform } from 'react-native';
+import { View, Text, Image, ScrollView, TouchableOpacity, Modal, StyleSheet, Linking, Platform, Alert } from 'react-native';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import { IMAGES } from '../constants/Images';
 import { COLORS, FONTS } from '../constants/theme';
@@ -113,11 +113,28 @@ const DrawerMenu = () => {
     // }, [appInfo]);
 
     const handleLogout = async () => {
-        const is_logout = await StorageService.logOut();
-        if (is_logout) {
-            navigation.navigate("MobileSignIn");
-        }
+        Alert.alert(
+            "Confirmation",
+            "Are you sure you want to log out of your account?",
+            [
+                {
+                    text: "No",
+                    style: "cancel",
+                    onPress: () => console.log("Cancelled"),
+                },
+                {
+                    text: "Yes",
+                    onPress: async () => {
+                        const is_logout = await StorageService.logOut();
+                        if (is_logout) {
+                            navigation.navigate("MobileSignIn");
+                        }
+                    },
+                },
+            ]
+        );
     };
+
     const handleCibilFunc = async () => {
         let user_id = await StorageService.getStorage(CONFIG.HARDCODE_VALUES.USER_ID);
         navigation.navigate("CustomerScore", { customer: { id: user_id } });
