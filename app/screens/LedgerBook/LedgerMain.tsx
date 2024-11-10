@@ -56,21 +56,6 @@ export const LedgerMain = ({ navigation }: LedgerMainProps) => {
     const [filteredCustomers, setFilteredCustomers] = useState([]);
     const [userDetail, setUserDetail] = useState({ name: "", profile_image: "" });
 
-    // useEffect(() => {
-    //     const handleBackPress = () => {
-    //         if (navigation.isFocused() && navigation.getState().routes[navigation.getState().index].name === 'Home') {
-    //             console.log("calling back exit");
-    //             BackHandler.exitApp();
-    //             return true;
-    //         }
-    //         return false;
-    //     }
-    //     BackHandler.addEventListener('hardwareBackPress', handleBackPress);
-    //     return () => {
-    //         BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
-    //     }
-    // }, [navigation])
-
 
 
     useFocusEffect(
@@ -85,7 +70,7 @@ export const LedgerMain = ({ navigation }: LedgerMainProps) => {
 
     const handleSearch = (text: string) => {
         setSearchText(text);
-        const filteredList = customersData.filter((customer: any) =>
+        const filteredList = customersData.data?.filter((customer: any) =>
             customer.name.toLowerCase().includes(text.toLowerCase())
         );
         setFilteredCustomers(filteredList);
@@ -95,10 +80,10 @@ export const LedgerMain = ({ navigation }: LedgerMainProps) => {
         const res = await ApiService.postWithToken("api/ledger-book/customer/list", {});
 
         if (res.status == true) {
-
+            console.log(res);
             // let homeBanner = res?.data?.shopkeeper_transaction_sum;
             setHomeBanner(homeBanner);
-            setCustomersData(res?.data);
+            setCustomersData(res);
             setFilteredCustomers(res?.data);
         }
     }
@@ -149,7 +134,7 @@ export const LedgerMain = ({ navigation }: LedgerMainProps) => {
                         paddingVertical: 10,
                         width: "90%",
                         top: 14,
-                        backgroundColor: COLORS.primary,
+                        backgroundColor: colors.primary,
                         borderRadius: 15,
                         shadowColor: "#025135",
                         shadowOffset: {
@@ -183,14 +168,14 @@ export const LedgerMain = ({ navigation }: LedgerMainProps) => {
                                 <Text style={{
                                     ...FONTS.fontBold,
                                     fontSize: SIZES.fontSm,
-                                    color: COLORS.primaryLight,
+                                    color: COLORS.dark,
 
                                 }}>Credit Amt.</Text>
                                 <Text style={{
                                     ...FONTS.fontSemiBold,
                                     fontSize: homeBanner?.debit?.length < 10 ? SIZES.fontLg : SIZES.fontSm,
-                                    color: COLORS.secondary
-                                }}>₹ {homeBanner?.credit}</Text>
+                                    color: COLORS.background
+                                }}>₹ {customersData.transaction_sum?.credit}</Text>
                             </View>
                             <View style={{
                                 flex: 1,
@@ -200,12 +185,12 @@ export const LedgerMain = ({ navigation }: LedgerMainProps) => {
                                 <Text style={{
                                     ...FONTS.fontBold,
                                     fontSize: SIZES.fontSm,
-                                    color: COLORS.primaryLight
+                                    color: COLORS.dark
                                 }}>Debit Amt.</Text>
                                 <Text style={{
                                     ...FONTS.fontSemiBold, fontSize: homeBanner?.debit?.length < 10 ? SIZES.fontLg : SIZES.fontSm,
-                                    color: COLORS.danger, left: 5
-                                }}>₹ {homeBanner?.debit}</Text>
+                                    color: COLORS.background,
+                                }}>₹ {customersData.transaction_sum?.debit}</Text>
                             </View>
                         </View>
                         {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: "center" }}>
@@ -252,7 +237,7 @@ export const LedgerMain = ({ navigation }: LedgerMainProps) => {
                 />
 
             </ScrollView >
-            <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("LedgerAddCustomer")}>
+            <TouchableOpacity style={[styles.addButton, { backgroundColor: colors.primary }]} onPress={() => navigation.navigate("LedgerAddCustomer")}>
                 <FontAwesome style={{ marginRight: 6, color: COLORS.white }} name={'user-plus'} size={20} />
                 <Text style={styles.addButtonText}>
                     Add Customer</Text>

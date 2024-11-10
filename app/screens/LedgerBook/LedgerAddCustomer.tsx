@@ -95,7 +95,8 @@ export const LedgerAddCustomer = ({ navigation }: LedgerAddCustomer) => {
                                     </View>
                                     <View style={GlobalStyleSheet.cardBody}>
                                         {isLoading === true ? <ActivityIndicator size={70} color={COLORS.primary} />
-                                            : <Button title={"Add Customer"} onPress={addCustomerInLedgerBook} />}
+                                            : <Button
+                                                color={colors.primary} title={"Add Customer"} onPress={addCustomerInLedgerBook} />}
                                     </View>
                                 </View>
                             </View>

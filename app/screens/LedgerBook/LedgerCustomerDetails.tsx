@@ -15,6 +15,33 @@ import FilePreviewModal from '../../components/Modal/FilePreviewModal';
 import Header from '../../layout/Header';
 import Button from '../../components/Button/Button';
 
+interface Customer {
+	id: string;
+	customer_id: string;
+	name: string;
+	amount: string;
+	joined_at: string;
+	last_updated_date: string;
+	transaction_type: string;
+	image: any;
+	mobile: any;
+};
+// {
+// 	"amount": "3838.00",
+// 	"created_at": "2024-11-10T14:23:49.000000Z",
+// 	"description": "Jewhsgubu",
+// 	"id": 9,
+// 	"image": "1731248629.jpg",
+// 	"ledger_book_customers_id": "10",
+// 	"status": 1,
+// 	"transaction_date": "2024-11-10",
+// 	"transaction_type": "DEBIT",
+// 	"updated_at": "2024-11-10T14:23:49.00`0000Z",
+// 	"user_id": "1"
+// }
+
+
+
 
 
 type LedgerCustomerDetailsScreenProps = StackScreenProps<RootStackParamList, 'LedgerCustomerDetails'>
@@ -44,15 +71,15 @@ export const LedgerCustomerDetails = ({ navigation, route }: LedgerCustomerDetai
 	const fetchCustomerTransactionList = async () => {
 		setIsLoading(true);
 		const res = await ApiService.postWithToken(
-			"api/shopkeeper/transactions/list-shopkeeper-customer-transaction",
-			{ "customer_id": item?.user_id });
-		// const data = JSON.stringify(res);
+			"api/ledger-book/customer/transactions/list",
+			{ "ledger_book_customers_id": item?.id });
+		console.log("hero########", res);
 		setCustomersData(res);
 		setIsLoading(false);
 	}
 
-	const renderCustomer = ({ item }: { item: any }) => (
-		<TouchableOpacity onPress={() => navigation.navigate("CustomerTransationsDetails", { customer: item })
+	const renderCustomer = ({ item }: { item: Customer }) => (
+		<TouchableOpacity onPress={() => navigation.navigate("LedgerCustomerTransationsDetails", { customer: item })
 		}>
 			<View style={[styles.customerItem, { backgroundColor: colors.card, },
 				// !theme.dark && { elevation: 2 }
@@ -60,10 +87,9 @@ export const LedgerCustomerDetails = ({ navigation, route }: LedgerCustomerDetai
 			]}>
 				<View style={{}}>
 					<View style={{ flexDirection: 'row' }}>
-						<View style={{ marginLeft: 14 }}>
-							{/*<Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{item.customer_name}</Text>*/}
-							<Text style={{ ...styles.lastInteraction, color: !theme.dark ? "black" : 'white' }}>{item.last_updated_date}</Text>
-							<Text style={{ color: colors.text, fontSize: 12 }}>{item.transaction_date.toLocaleString()}
+						<View style={{ marginLeft: 14, }}>
+							{/* <Text style={{ ...styles.lastInteraction, color: !theme.dark ? "black" : 'white' }}>{item.last_updated_date}</Text> */}
+							<Text style={{ color: colors.text, fontSize: 12 }}>{item.transaction_date}
 							</Text>
 							<Text style={{ fontSize: 13, color: !theme.dark ? "black" : 'white' }}>{item.description}</Text>
 						</View>
@@ -81,41 +107,13 @@ export const LedgerCustomerDetails = ({ navigation, route }: LedgerCustomerDetai
 
 	return (
 		<View style={{ backgroundColor: colors.card, flex: 1 }}>
-			{/* AppBar Start */}
-			<View style={[GlobalStyleSheet.container, { padding: 0 }]}>
-				<View
-					style={[styles.header, {
-						backgroundColor: colors.card,
-					}]}
-				>
-					<View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5, }}>
-						<TouchableOpacity
-							onPress={() => navigation.goBack()}
-							style={{
-								padding: 10, marginRight: 5,
-								height: 45,
-								width: 45,
-								borderRadius: 45,
-								alignItems: 'center',
-								justifyContent: 'center',
-								backgroundColor: colors.background
-							}}
-						>
-							<Feather size={24} color={colors.title} name={'arrow-left'} />
-						</TouchableOpacity>
-						<Image
-							style={{ height: 45, width: 45, borderRadius: 50, marginHorizontal: 15, resizeMode: 'contain' }}
-							src={item?.profile_image}
-						/>
 
-						<View>
-							<Text style={{ ...FONTS.fontSemiBold, fontSize: 18, color: colors.title, }}>{item?.name}</Text>
-						</View>
-					</View>
-				</View>
-			</View>
+			<Header
+				title={item?.name}
+				leftIcon='back'
+				titleRight
+			/>
 
-			{/* AppBar End */}
 
 			<ScrollView showsVerticalScrollIndicator={true}>
 				<View style={{ flex: 1, alignItems: 'center' }} >
@@ -123,7 +121,7 @@ export const LedgerCustomerDetails = ({ navigation, route }: LedgerCustomerDetai
 						height: 70,
 						width: "90%",
 						top: 15,
-						backgroundColor: customerData.data?.shopkeeper_transaction_sum?.transaction_type === "DEBIT" ? COLORS.danger : COLORS.primary,
+						backgroundColor: colors.primary,
 						borderRadius: 15,
 						shadowColor: "#025135",
 						shadowOffset: {
@@ -134,7 +132,8 @@ export const LedgerCustomerDetails = ({ navigation, route }: LedgerCustomerDetai
 						shadowRadius: 31.27,
 						elevation: 8,
 						flexDirection: 'column',
-						alignItems: "center"
+						alignItems: "center",
+						marginVertical: 30
 					}}>
 
 
@@ -205,7 +204,7 @@ export const LedgerCustomerDetails = ({ navigation, route }: LedgerCustomerDetai
 				{
 					isLoading === false ?
 						<FlatList scrollEnabled={false}
-							data={customerData.data?.records}
+							data={customerData?.data}
 							renderItem={renderCustomer}
 							keyExtractor={(item) => item.id}
 							contentContainerStyle={{}}
@@ -218,13 +217,13 @@ export const LedgerCustomerDetails = ({ navigation, route }: LedgerCustomerDetai
 			</ScrollView>
 			<View style={{ flexDirection: 'row', alignItems: "center", justifyContent: 'space-evenly', paddingVertical: 20, }}>
 				<Button title='DEBIT'
-					color={COLORS.danger}
+					color={colors.primary}
 					style={{ paddingHorizontal: 60, }}
-					onPress={() => navigation.navigate("AddPayment", { item: item, transaction_type: "DEBIT", existPayment: false })} />
+					onPress={() => navigation.navigate("LedgerAddPayment", { item: item, transaction_type: "DEBIT", existPayment: false })} />
 				<Button title='CREDIT'
-					color={COLORS.primary}
+					color={colors.primary}
 					style={{ paddingHorizontal: 60, }}
-					onPress={() => navigation.navigate("AddPayment", { item: item, transaction_type: "CREDIT", existPayment: false })} />
+					onPress={() => navigation.navigate("LedgerAddPayment", { item: item, transaction_type: "CREDIT", existPayment: false })} />
 			</View>
 		</View>
 	);

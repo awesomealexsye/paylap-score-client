@@ -16,8 +16,6 @@ type LedgerCustomerTransationsDetailsScreenProps = StackScreenProps<RootStackPar
 
 export const LedgerCustomerTransationsDetails = ({ navigation, route }: LedgerCustomerTransationsDetailsScreenProps) => {
 
-
-
 	const { customer } = route.params;
 	// console.log("customertransactionDetail", customer)
 	const theme = useTheme();
@@ -30,11 +28,10 @@ export const LedgerCustomerTransationsDetails = ({ navigation, route }: LedgerCu
 		setModalVisible(true);
 	};
 
-	const handlePayment = async () => {
-		console.log("hello...")
-		navigation.navigate("AddPayment", { item: customer, transaction_type: showPayButton, existPayment: true });
-
-	}
+	// const handlePayment = async () => {
+	// 	console.log("hello...")
+	// 	navigation.navigate("AddPayment", { item: customer, transaction_type: showPayButton, existPayment: true });
+	// }
 
 	const shareTransaction = async () => {
 		const PLAY_STORE_URL = CONFIG.APP_BUILD.ANDROID.APP_URL;
@@ -183,16 +180,14 @@ export const LedgerCustomerTransationsDetails = ({ navigation, route }: LedgerCu
 
 
 			{/* Share Button */}
-			<View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
-				<ButtonIcon
+			<View style={{ paddingHorizontal: 20, marginBottom: 20, }}>
+				{/* <ButtonIcon
 					color={showPayButton == 'DEBIT' ? 'red' : 'green'}
 					onPress={handlePayment}
 					title={showPayButton}
 					iconDirection='right'
 					icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'rupee'} size={18} />}
-				/>
-			</View>
-			<View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
+				/> */}
 				<ButtonIcon
 					onPress={shareTransaction}
 					title='Share'
@@ -200,6 +195,7 @@ export const LedgerCustomerTransationsDetails = ({ navigation, route }: LedgerCu
 					icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'share'} size={18} />}
 				/>
 			</View>
+
 		</View>
 	);
 };
