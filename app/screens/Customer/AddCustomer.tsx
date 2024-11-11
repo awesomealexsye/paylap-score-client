@@ -147,6 +147,7 @@ export const AddCustomer = ({ navigation }: AddCustomerScreenProps) => {
                                                 icon={<FontAwesome style={{ opacity: .6 }} name={'mobile-phone'} size={35} color={colors.text} />}
                                                 placeholder="Mobile number"
                                                 onChangeText={(mobile) => setCustomerDetail({ ...customerDetail, "mobile": mobile })}
+                                                maxlength={10}
                                             />
                                         </View>
                                         {isShowOtherFields &&
@@ -166,6 +167,7 @@ export const AddCustomer = ({ navigation }: AddCustomerScreenProps) => {
                                                         icon={<FontAwesome style={{ opacity: .6 }} name={'address-card'} size={30} color={colors.text} />}
                                                         placeholder="Aadhaar Number"
                                                         onChangeText={(aadhar) => setCustomerDetail({ ...customerDetail, "aadhar": aadhar })}
+                                                        maxlength={12}
                                                     />
                                                 </View>
                                             </>
@@ -177,6 +179,7 @@ export const AddCustomer = ({ navigation }: AddCustomerScreenProps) => {
                                                     icon={<FontAwesome style={{ opacity: .6 }} name={'user-secret'} size={30} color={colors.text} />}
                                                     placeholder="Enter OTP"
                                                     onChangeText={(otp) => setCustomerDetail({ ...customerDetail, "otp": otp })}
+                                                    maxlength={6}
                                                 />
                                             </View>
                                         }

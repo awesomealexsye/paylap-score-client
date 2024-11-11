@@ -116,6 +116,7 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
                             </View>
                             <View style={{ marginVertical: 10 }}>
                                 <Input
+                                    maxlength={10}
                                     keyboardType="numeric"
                                     onFocus={() => setisFocused(true)}
                                     onBlur={() => setisFocused(false)}

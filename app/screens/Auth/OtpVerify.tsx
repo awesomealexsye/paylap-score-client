@@ -185,6 +185,7 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
                                 isFocused={isFocused}
                                 //inputBorder
                                 defaultValue=''
+                                maxlength={6}
                             />
                         </View>
                         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>

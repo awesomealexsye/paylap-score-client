@@ -21,6 +21,7 @@ interface Customer {
     id: string;
     customer_id: string;
     name: string;
+    mobile: string;
     amount: string;
     joined_at: string;
     latest_updated_at: string;
@@ -118,6 +119,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                 color: colors.title, ...FONTS.fontSemiBold,
                                 fontSize: SIZES.font,
                             }}>{item.name.split(' ').slice(0, 2).join(' ')}</Text>
+                            <Text style={{ fontSize: 12 }}>{item.mobile}</Text>
                             <Text style={{ color: colors.title, fontSize: SIZES.fontSm }}>{item.latest_updated_at}</Text>
                         </View>
 

@@ -31,7 +31,8 @@ type Props = {
     text?: any,
     isFocused?: any,
     inputicon?: any,
-    editable?: any
+    editable?: any,
+    maxlength?: any
 }
 
 const Input = ({
@@ -54,8 +55,10 @@ const Input = ({
     text,
     keyboardType,
     isFocused,
-    inputicon
-    , editable
+    inputicon,
+    editable,
+    maxlength
+
 
 }: Props) => {
 
@@ -119,6 +122,7 @@ const Input = ({
                 }, isFocused && {
                     borderColor: COLORS.primary,
                 }]}
+                maxLength={maxlength != null ? maxlength : 100}
                 multiline={multiline ? multiline : false}
                 secureTextEntry={type === 'password' ? showPass : false}
                 value={value}

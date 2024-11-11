@@ -136,6 +136,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                                         isFocused={isFocused}
                                         //inputBorder
                                         defaultValue=''
+                                        maxlength={20}
                                     />
                                 </View>
                                 <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
@@ -151,6 +152,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                                         isFocused={isFocused3}
                                         // inputBorder
                                         defaultValue=''
+                                        maxlength={10}
                                     />
                                 </View>
                                 <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
@@ -181,6 +183,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                                         isFocused={isFocused4}
                                         //inputBorder
                                         defaultValue=''
+                                        maxlength={30}
                                     />
                                 </View>
                             </View>
