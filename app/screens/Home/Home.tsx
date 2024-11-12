@@ -274,7 +274,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                 <Text style={{
                                     ...FONTS.fontSemiBold,
                                     fontSize: homeBanner?.debit?.length < 10 ? SIZES.fontLg : SIZES.fontSm,
-                                    color: COLORS.secondary
+                                    color: COLORS.white
                                 }}>₹ {homeBanner?.credit}</Text>
                             </View>
                             <View style={{
@@ -288,7 +288,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                 }}>Debit Amt.</Text>
                                 <Text style={{
                                     ...FONTS.fontSemiBold, fontSize: homeBanner?.debit?.length < 10 ? SIZES.fontLg : SIZES.fontSm,
-                                    color: COLORS.danger, left: 5
+                                    color: COLORS.white, left: 5
                                 }}>₹ {homeBanner?.debit}</Text>
                             </View>
                         </View>
