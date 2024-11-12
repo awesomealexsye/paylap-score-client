@@ -21,7 +21,6 @@ const MenuItems = [
         name: "Home",
         navigate: "Home",
     },
-
     {
         id: "2",
         icon: IMAGES.folder,
@@ -30,25 +29,31 @@ const MenuItems = [
     },
     {
         id: "3",
+        icon: IMAGES.tachometerfast,
+        name: "Customer Score",
+        navigate: 'CustomerScore',
+    },
+    {
+        id: "4",
         icon: IMAGES.help,
         name: "Support",
         navigate: 'CustomerSupport',
     },
     {
-        id: "4",
+        id: "5",
         icon: IMAGES.termandCondition,
         name: "Our Policy",
         navigate: 'TermsAndConditionsScreen',
     },
 
     {
-        id: "5",
+        id: "6",
         icon: IMAGES.share,
         name: "Share",
         navigate: "ShareApp",
     },
     {
-        id: "6",
+        id: "7",
         icon: IMAGES.logout,
         name: "Logout",
         navigate: 'MobileSignIn',

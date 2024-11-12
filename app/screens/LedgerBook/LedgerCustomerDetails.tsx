@@ -17,12 +17,13 @@ import Button from '../../components/Button/Button';
 
 interface Customer {
 	id: string;
-	customer_id: string;
+	ledger_book_customers_id: string;
 	name: string;
 	amount: string;
 	joined_at: string;
 	last_updated_date: string;
 	transaction_type: string;
+	description: string,
 	image: any;
 	mobile: any;
 };
@@ -155,56 +156,19 @@ export const LedgerCustomerDetails = ({ navigation, route }: LedgerCustomerDetai
 									fontSize: SIZES.h5,
 									color: 'white',
 									textAlign: "center"
-								}}>{customerData.data?.shopkeeper_transaction_sum?.transaction_type} </Text>
+								}}>{customerData?.data?.transaction_sum?.transaction_type} </Text>
 							</View>
 							<View style={{ alignItems: 'center', justifyContent: "center" }}>
-								<Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h5, color: 'white' }}>₹ {customerData.data?.shopkeeper_transaction_sum?.total_amount}</Text>
+								<Text style={{ ...FONTS.fontSemiBold, fontSize: SIZES.h5, color: 'white' }}>₹ {customerData.data?.transaction_sum?.updated_amount}</Text>
 							</View>
 						</View>
 					</View>
 				</View>
-				{/* <View style={[GlobalStyleSheet.cardBody, { marginTop: 20 }]}>
-					<View style={{}}>
-						<View style={[{ flexDirection: "row", justifyContent: "space-evenly", alignItems: "center", marginBottom: 10 }]}>
-							<CustomerActivityBtn
-								gap
-								isDisabled={false}
-								icon={<Image source={IMAGES.tachometerfast} style={{ height: 20, width: 20, resizeMode: 'contain' }}></Image>}
-								color={colors.card}
-								text='Score'
-								onpress={() => navigation.navigate('CustomerScore', { customer: item })}
-							/>
-							<CustomerActivityBtn
-								gap
-								isDisabled={false}
-								icon={<FontAwesome style={{ color: '#8fc11e' }} name={'rupee'} size={20} />}
-								color={colors.card}
-								text='Payments'
-								onpress={() => navigation.navigate('NotAvailable')}
-							/><CustomerActivityBtn
-								gap
-								isDisabled={item.transaction_type == "DEBIT" ? item.amount > 0 ? false : true : true}
-								icon={<FontAwesome style={{ color: '#8fc11e' }} name={'bell'} size={20} />}
-								color={colors.card}
-								text='Reminder'
-								onpress={() => reminder()}
-							/><CustomerActivityBtn
-								gap
-								isDisabled={item.transaction_type == "DEBIT" ? item.amount > 0 ? false : true : true}
-								icon={<FontAwesome style={{ color: '#8fc11e' }} name={'envelope'} size={20} />}
-								color={colors.card}
-								text='SMS'
-								onpress={() => send_sms()}
-							/>
-						</View>
-
-					</View>
-				</View> */}
 
 				{
 					isLoading === false ?
 						<FlatList scrollEnabled={false}
-							data={customerData?.data}
+							data={customerData?.data?.records}
 							renderItem={renderCustomer}
 							keyExtractor={(item) => item.id}
 							contentContainerStyle={{}}
