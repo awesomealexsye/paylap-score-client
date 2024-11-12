@@ -24,9 +24,9 @@ const MenuItems = [
 
     {
         id: "2",
-        icon: IMAGES.tachometerfast,
-        name: "My Cibil",
-        navigate: 'CustomerScore',
+        icon: IMAGES.folder,
+        name: "Ledger book",
+        navigate: 'LedgerMain',
     },
     {
         id: "3",

@@ -14,9 +14,7 @@ import { ApiService } from '../../lib/ApiService';
 // import { MessagesService } from '../../lib/MessagesService';
 import CommonService from '../../lib/CommonService';
 import StorageService from '../../lib/StorageService';
-
-
-
+import ImageSwiper from '../../components/ImageSwiper';
 interface Customer {
     id: string;
     customer_id: string;
@@ -42,7 +40,11 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const [userDetail, setUserDetail] = useState({ name: "", profile_image: "", aadhar_card: "", notification_count: 0 });
     const [isLoading, setIsLoading] = useState<any>(false);
     const [isRefreshing, setIsRefreshing] = useState<any>(false);
+    const [imageData, setImageData] = useState<any>([]);
+
+
     useEffect(() => {
+        // fetchImageList();
         const handleBackPress = () => {
             if (navigation.isFocused() && navigation.getState().routes[navigation.getState().index].name === 'Home') {
                 BackHandler.exitApp();
@@ -60,6 +62,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     useFocusEffect(
         useCallback(() => {
             fetchCustomerList();
+            // fetchImageList();
             StorageService.isLoggedIn().then(res => { res === false ? navigation.navigate("MobileSignIn") : null; });
             CommonService.currentUserDetail().then((res) => {
                 setUserDetail(res);
@@ -138,6 +141,11 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         </TouchableOpacity>
     );
 
+
+
+
+
+
     return (
         <View style={{ backgroundColor: colors.card, flex: 1 }}>
             {/* AppBar Start */}
@@ -192,10 +200,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                 </View>
                             </TouchableOpacity>
 
-                            {/* /ssafsf
 
-
-                            */}
                             <TouchableOpacity
                                 activeOpacity={0.5}
                                 onPress={() => dispatch(openDrawer())}
@@ -218,6 +223,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                     <RefreshControl refreshing={isRefreshing} onRefresh={handelRefresh} />
                 }
             >
+
 
 
                 <View style={{ flex: 1, alignItems: 'center' }} >
@@ -302,14 +308,22 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                     </View>
                 </View>
 
+                <ImageSwiper
+                    data={imageData}
+                />
 
                 {/* search Box Start */}
 
-                <View style={[GlobalStyleSheet.container, { paddingHorizontal: 30, paddingTop: 35 }]}>
+                <View style={[GlobalStyleSheet.container, { paddingHorizontal: 30, paddingTop: 0 }]}>
                     <View>
                         <TextInput
                             placeholder='Search Customer'
-                            style={[styles.TextInput, { color: colors.title, backgroundColor: colors.card, ...FONTS.fontSemiBold, borderColor: colors.borderColor, borderWidth: 0.2 }]}
+                            style={[styles.TextInput,
+                            {
+                                color: colors.title,
+                                backgroundColor: colors.card,
+                                ...FONTS.fontSemiBold, borderColor: colors.borderColor, borderWidth: 0.2
+                            }]}
                             placeholderTextColor={'#929292'}
                             value={searchText}
                             onChangeText={handleSearch} />
