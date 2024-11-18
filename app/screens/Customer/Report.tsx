@@ -67,11 +67,10 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
     const refRBSheet = useRef<any>(null);
 
 
+
     useFocusEffect(
         useCallback(() => {
             setFromAndToDate(timeRange);
-            FatechApiData();
-
         }, [])
     );
     const FatechApiData = () => {
@@ -132,7 +131,6 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
 
 
     const setFromAndToDate = (value: string) => {
-        FatechApiData();
         switch (value) {
             case "Today":
                 const currentDate = new Date();
@@ -181,6 +179,7 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
                 showDatepicker("To Date")
                 break;
         }
+        FatechApiData();
     }
     const handelDateInput = async (value: string) => {
         showDatepicker(value)
@@ -374,7 +373,6 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
         </div>
 
         <div class="entries-count">No. of Entries: ${transactions.length}   (${fromDate} - ${todayDate})</div>
-
         <table>
             <thead>
                 <tr>
@@ -405,16 +403,7 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
         <div class="page-number">Page 1 of 2</div>
     </div>
 
-    <footer class="footer">
-        <div>
-            Start Using Paylap Score Now
-            <a href="#" taget="_blank" class="install-btn">Install</a>
-        </div>
-        <div style="display:flex; flex-direction:column;margin-right:50px;">
-            Help: +91-9876543210
-            <a href="#" target="_blank" class="install-btn">T&C Apply</a>
-        </div>
-    </footer>
+    
 </body>
 </html>`;
 
