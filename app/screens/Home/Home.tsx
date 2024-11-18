@@ -122,7 +122,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                 color: colors.title, ...FONTS.fontSemiBold,
                                 fontSize: SIZES.font,
                             }}>{item.name.split(' ').slice(0, 2).join(' ')}</Text>
-                            <Text style={{ fontSize: 12 }}>{item.mobile}</Text>
+                            <Text style={{ color: colors.title, fontSize: SIZES.fontSm }}>{item.mobile}</Text>
                             <Text style={{ color: colors.title, fontSize: SIZES.fontSm }}>{item.latest_updated_at}</Text>
                         </View>
 
