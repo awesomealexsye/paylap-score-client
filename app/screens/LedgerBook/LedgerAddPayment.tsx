@@ -59,9 +59,6 @@ const LedgerAddPayment = ({ navigation, route }: LedgerAddPaymentScreenProps) =>
 		setShow(true);
 	};
 
-	useEffect(() => {
-		setGivenDate(`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`);
-	}, []);
 
 	const fetchAddPaymentData = async () => {
 		const data: any = {
@@ -86,7 +83,6 @@ const LedgerAddPayment = ({ navigation, route }: LedgerAddPaymentScreenProps) =>
 
 
 		setIsLoading(true);
-		console.log("add-transaction", data);
 		ApiService.postWithToken("api/ledger-book/customer/transactions/add", data).then((res) => {
 			console.log("************", res);
 			if (res.status == true) {
@@ -162,7 +158,7 @@ const LedgerAddPayment = ({ navigation, route }: LedgerAddPaymentScreenProps) =>
 
                                 </View> */}
 
-								<View>
+								{/* <View>
 									<Text style={{ color: colors.title, margin: 5 }}>Last Date</Text>
 									<ButtonIcon onPress={() => showDatepicker('Given Date')}
 										size={'sm'}
@@ -171,7 +167,7 @@ const LedgerAddPayment = ({ navigation, route }: LedgerAddPaymentScreenProps) =>
 										iconDirection='right'
 										icon={<FontAwesome style={{ opacity: 1 }} name={'calendar'} size={20} color={COLORS.white} />}
 									/>
-								</View>
+								</View> */}
 
 								{!existPayment &&
 									<View style={{ marginTop: 20 }}>

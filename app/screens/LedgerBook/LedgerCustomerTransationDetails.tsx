@@ -2,13 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Share, Platform, ActivityIndicator, Modal, Alert } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { COLORS, FONTS, SIZES } from '../../constants/theme';
-import { Feather, FontAwesome } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
-import ButtonIcon from '../../components/Button/ButtonIcon';
-import CommonService from '../../lib/CommonService';
-import CONFIG from '../../constants/config';
-import HeaderStyle1 from '../../components/Headers/HeaderStyle1';
 import Header from '../../layout/Header';
 import CustomerTransactionTable from '../Customer/CustomerTransactionTable';
 
@@ -33,48 +29,48 @@ export const LedgerCustomerTransationsDetails = ({ navigation, route }: LedgerCu
 	// 	navigation.navigate("AddPayment", { item: customer, transaction_type: showPayButton, existPayment: true });
 	// }
 
-	const shareTransaction = async () => {
-		const PLAY_STORE_URL = CONFIG.APP_BUILD.ANDROID.APP_URL;
-		const APP_STORE_URL = CONFIG.APP_BUILD.IOS.APP_URL;
-		let message = `✨✨ *Transaction Details* ✨✨
-        
-        ━━━━━━━━━━━━━━━━━━━━━━━
-        👤 *Customer Name*: ${customer.customer_name}
-        📞 *Mobile*: ${customer.customer_mobile}
-        ━━━━━━━━━━━━━━━━━━━━━━━
+	// const shareTransaction = async () => {
+	// 	const PLAY_STORE_URL = CONFIG.APP_BUILD.ANDROID.APP_URL;
+	// 	const APP_STORE_URL = CONFIG.APP_BUILD.IOS.APP_URL;
+	// 	let message = `✨✨ *Transaction Details* ✨✨
 
-        💳 *Transaction Type*: ${customer.transaction_type === "CREDIT" ? "🟢 Credit" : "🔴 Debit"}
-        💰 *Amount*: ₹ ${customer.amount}
-        ━━━━━━━━━━━━━━━━━━━━━━━
+	//     ━━━━━━━━━━━━━━━━━━━━━━━
+	//     👤 *Customer Name*: ${customer.customer_name}
+	//     📞 *Mobile*: ${customer.customer_mobile}
+	//     ━━━━━━━━━━━━━━━━━━━━━━━
 
-        📅 *Transaction Date*: ${customer.transaction_date}
-        ⏳ *Estimated End Date*: ${customer.estimated_given_date}
-        ━━━━━━━━━━━━━━━━━━━━━━━
+	//     💳 *Transaction Type*: ${customer.transaction_type === "CREDIT" ? "🟢 Credit" : "🔴 Debit"}
+	//     💰 *Amount*: ₹ ${customer.amount}
+	//     ━━━━━━━━━━━━━━━━━━━━━━━
 
-        🆔 *Transaction ID*: 
-        ${customer.transaction_id}
-        ━━━━━━━━━━━━━━━━━━━━━━━
+	//     📅 *Transaction Date*: ${customer.transaction_date}
+	//     ⏳ *Estimated End Date*: ${customer.estimated_given_date}
+	//     ━━━━━━━━━━━━━━━━━━━━━━━
 
-        📝 *Description*:
-        ${customer.description}
+	//     🆔 *Transaction ID*: 
+	//     ${customer.transaction_id}
+	//     ━━━━━━━━━━━━━━━━━━━━━━━
 
-        ━━━━━━━━━━━━━━━━━━━━━━━
-        🔗 *Shared via PayLap App* 🚀
+	//     📝 *Description*:
+	//     ${customer.description}
 
-        📲 *Download the PayLap app now*:
+	//     ━━━━━━━━━━━━━━━━━━━━━━━
+	//     🔗 *Shared via PayLap App* 🚀
 
-        ▶️ [*Play Store*](${PLAY_STORE_URL})
-        🍏 [*App Store*](${APP_STORE_URL})
-        ━━━━━━━━━━━━━━━━━━━━━━━`;
+	//     📲 *Download the PayLap app now*:
 
-		try {
-			await Share.share({
-				message: message
-			});
-		} catch (error) {
-			Alert.alert("Something Went Wrong");
-		}
-	};
+	//     ▶️ [*Play Store*](${PLAY_STORE_URL})
+	//     🍏 [*App Store*](${APP_STORE_URL})
+	//     ━━━━━━━━━━━━━━━━━━━━━━━`;
+
+	// 	try {
+	// 		await Share.share({
+	// 			message: message
+	// 		});
+	// 	} catch (error) {
+	// 		Alert.alert("Something Went Wrong");
+	// 	}
+	// };
 
 
 	return (
@@ -111,16 +107,16 @@ export const LedgerCustomerTransationsDetails = ({ navigation, route }: LedgerCu
 				<View style={[styles.card, { backgroundColor: colors.card }]}>
 					<View style={styles.customerItem}>
 						<View>
-							<Text style={[styles.customerName, { color: colors.title }]}>{customer.customer_name}</Text>
+							<Text style={[styles.customerName, { color: colors.title }]}>{customer.transaction_type}</Text>
 							<Text style={[styles.lastInteraction, { color: colors.text }]}>{customer.last_updated_date}</Text>
 						</View>
-						<View style={styles.transactionInfo}>
+						<View style={{ flexDirection: "row-reverse", justifyContent: "space-around", alignItems: "center" }}>
 							<Text style={{ color: customer.transaction_type === "CREDIT" ? COLORS.primary : COLORS.danger, fontSize: SIZES.font, fontWeight: "900" }}>
 								₹ {customer.amount}
 							</Text>
-							<Text style={{
+							{/* <Text style={{
 								color: colors.title, fontSize: SIZES.fontSm, ...FONTS.fontSemiBold,
-							}}>{customer.transaction_type}</Text>
+							}}>{customer.transaction_type}</Text> */}
 						</View>
 					</View>
 					<View style={{
@@ -129,32 +125,22 @@ export const LedgerCustomerTransationsDetails = ({ navigation, route }: LedgerCu
 					}} />
 					<View style={styles.dateContainer}>
 
-						<View style={styles.dateItem}>
-							<Text style={[styles.label, { color: colors.text, }]}>Taken Date</Text>
+						<View style={{ flexDirection: 'row', justifyContent: 'center', gap: 10 }}>
+							<Text style={[styles.label, { color: colors.text, }]}>Date: </Text>
 							<Text style={[styles.value, { color: colors.title, }]}>{customer.transaction_date}</Text>
 						</View>
-						<View style={styles.dateItem}>
-							<Text style={[styles.label, { color: colors.text, }]}>End Date</Text>
-							<Text style={[styles.value, { color: colors.title }]}>{customer.estimated_given_date}</Text>
-						</View>
 					</View>
-					<View style={{
+					{/* <View style={{
 						borderBottomColor: colors.text,
 						borderBottomWidth: 0.4
-					}} />
-					<View style={[styles.transactionIDContainer, { flexDirection: "row", justifyContent: "space-around", alignItems: "center" }]}>
-						<Text style={[styles.label, { color: colors.text }]}>Transaction ID                       : </Text>
-						<Text style={[styles.value, { color: colors.title }]}>{customer.transaction_id}</Text>
-					</View>
+					}} /> */}
+
 				</View>
 
 				{/* Description Card */}
 				<View style={[styles.card, { backgroundColor: colors.card, marginTop: 20 }]}>
 					<Text style={[styles.cardTitle, { color: colors.title }]}>Description</Text>
 					<Text style={[styles.cardText, { color: colors.text }]}>{customer.description}</Text>
-				</View>
-				<View>
-					<CustomerTransactionTable transaction_id={customer.transaction_id} />
 				</View>
 
 
@@ -188,12 +174,12 @@ export const LedgerCustomerTransationsDetails = ({ navigation, route }: LedgerCu
 					iconDirection='right'
 					icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'rupee'} size={18} />}
 				/> */}
-				<ButtonIcon
+				{/* <ButtonIcon
 					onPress={shareTransaction}
 					title='Share'
 					iconDirection='right'
 					icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'share'} size={18} />}
-				/>
+				/> */}
 			</View>
 
 		</View>
@@ -274,23 +260,21 @@ const styles = StyleSheet.create({
 	},
 	customerName: {
 		...FONTS.fontSemiBold,
-		fontSize: SIZES.fontLg,
+		fontSize: SIZES.font,
 	},
 	lastInteraction: {
 		fontSize: SIZES.fontSm,
 		opacity: 0.6,
 	},
-	transactionInfo: {
-		alignItems: 'center',
-	},
+
 	dateContainer: {
 		flexDirection: "row",
-		justifyContent: "space-between",
+		justifyContent: 'center',
 		marginVertical: 10,
 
 	},
 	dateItem: {
-		alignItems: 'center',
+		alignItems: 'flex-start',
 	},
 	label: {
 		...FONTS.fontRegular,
