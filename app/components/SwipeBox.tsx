@@ -69,7 +69,7 @@ export default class SwipeBox extends Component {
             source={IMAGES.Notification}
 
           />}
-          <View>
+          <View style={{ maxWidth: 305 }}>
             <Text style={{ ...FONTS.fontSemiBold, fontSize: 14, color: this.props.colors.title }}>{this.props.data?.title}</Text>
             <Text style={{ ...FONTS.fontRegular, fontSize: 14, color: this.props.colors.title }}>{this.props.data?.description}</Text>
             <Text style={{ ...FONTS.fontRegular, fontSize: 11, color: this.props.colors.title }}>{this.props.data?.date}</Text>
