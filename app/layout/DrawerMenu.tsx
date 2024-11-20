@@ -21,16 +21,16 @@ const MenuItems = [
         name: "Home",
         navigate: "Home",
     },
-    {
-        id: "2",
-        icon: IMAGES.folder,
-        name: "Ledger book",
-        navigate: 'LedgerMain',
-    },
+    // {
+    //     id: "2",
+    //     icon: IMAGES.folder,
+    //     name: "Ledger book",
+    //     navigate: 'LedgerMain',
+    // },
     {
         id: "3",
         icon: IMAGES.tachometerfast,
-        name: "Customer Score",
+        name: "My Cibil",
         navigate: 'CustomerScore',
     },
     {
