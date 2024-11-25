@@ -21,12 +21,12 @@ const MenuItems = [
         name: "Home",
         navigate: "Home",
     },
-    // {
-    //     id: "2",
-    //     icon: IMAGES.folder,
-    //     name: "Ledger book",
-    //     navigate: 'LedgerMain',
-    // },
+    {
+        id: "2",
+        icon: IMAGES.wallet2,
+        name: "Withdrawal",
+        navigate: 'WithdrawalAmount',
+    },
     {
         id: "3",
         icon: IMAGES.tachometerfast,

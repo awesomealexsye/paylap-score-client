@@ -128,6 +128,18 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                             <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
                                 <Image
                                     style={[GlobalStyleSheet.image3, { tintColor: COLORS.primary }]}
+                                    source={IMAGES.wallet2}
+                                />
+                            </View>
+                            <View>
+                                <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>Wallet Balance</Text>
+                                <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>₹ {profile?.wallet_amount}</Text>
+                            </View>
+                        </View>
+                        <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 25, alignItems: 'flex-start' }]} >
+                            <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
+                                <Image
+                                    style={[GlobalStyleSheet.image3, { tintColor: COLORS.primary }]}
                                     source={IMAGES.call}
                                 />
                             </View>
