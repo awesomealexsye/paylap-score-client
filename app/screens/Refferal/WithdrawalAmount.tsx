@@ -62,7 +62,6 @@ export const WithdrawalAmount = ({ navigation }: WithdrawalScreenProps) => {
             accountHolderName,
             bankName,
         }
-        console.log(data)
         ApiService.postWithToken("api/user/withdrawal-request", data).then((res) => {
             setIsLoading(false);
             if (res.status) {

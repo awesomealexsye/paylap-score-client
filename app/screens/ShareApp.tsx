@@ -110,14 +110,6 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 				/>
 				<StatusBar barStyle="light-content" backgroundColor="#4C1D95" />
 				<ScrollView contentContainerStyle={{ padding: 16 }}>
-					<View style={[GlobalStyleSheet.container, { borderBottomColor: COLORS.inputborder, justifyContent: "center", alignItems: "center" }]}>
-						<Image source={theme.dark ? IMAGES.appnamedark : IMAGES.appname}
-							style={{
-								height: 110,
-								width: 150,
-								objectFit: "contain",
-							}} />
-					</View>
 					<Text style={{
 						...FONTS.fontBold,
 						fontSize: SIZES.h4,

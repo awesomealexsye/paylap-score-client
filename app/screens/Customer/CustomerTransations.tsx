@@ -14,6 +14,7 @@ import { ApiService } from '../../lib/ApiService';
 import CommonService from '../../lib/CommonService';
 import { MessagesService } from '../../lib/MessagesService';
 import CONFIG from '../../constants/config';
+import ButtonIcon from '../../components/Button/ButtonIcon';
 
 
 interface Customer {
@@ -97,7 +98,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
 
 
     const renderCustomer = ({ item }: { item: Customer }) => (
-        <TouchableOpacity onPress={() => navigation.navigate("CustomerTransationsDetails", { customer: item })
+        <TouchableOpacity onPress={() => { }
         }>
             <View style={[styles.customerItem, { backgroundColor: colors.card, },
                 // !theme.dark && { elevation: 2 }
@@ -117,6 +118,17 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                 <View style={{ flexDirection: "column", alignItems: "flex-end", position: "relative", justifyContent: 'center' }}>
                     <Text style={{ color: item.transaction_type === "CREDIT" ? COLORS.primaryLight : COLORS.danger, fontSize: 15, fontWeight: "900" }}>₹ {parseInt(item.amount).toLocaleString()}</Text>
                     <Text style={[styles.type, { color: colors.title }]}>{item.transaction_type}</Text>
+                </View>
+                <View style={{ flexDirection: "column", alignItems: "flex-end", position: "relative", justifyContent: 'center' }}>
+                    <ButtonIcon
+                        onPress={() => navigation.navigate("CustomerTransationsDetails", { customer: item })}
+                        title={""}
+                        iconDirection='left'
+                        icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'info-circle'} size={18} />}
+                    />
+                    {/* <Text style={{ color: 'red' }}>
+                        <FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'info-circle'} size={12} />
+                    </Text> */}
                 </View>
             </View>
         </TouchableOpacity>

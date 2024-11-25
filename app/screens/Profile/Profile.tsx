@@ -24,6 +24,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
 
     const [profile, setProfile] = React.useState<any>({});
     const [paymentDetail, setPaymentDetail] = React.useState<any>();
+    const [seeMoreBTN, setSeeMoreBTN] = React.useState<boolean>(false);
 
     useFocusEffect(
         useCallback(() => {
@@ -223,31 +224,44 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                                 </TouchableOpacity >}
                         </View>
                     </View> */}
-                    <View >
-                        <View style={{
-                            paddingHorizontal: 1, marginTop: 50,
 
-                        }}>
-                            <ButtonIcon
-                                color={colors.card}
-                                style={{
-                                    height: 50,
-                                    width: "100%",
-                                    elvation: 2,
-                                    shadowOpacity: 0.14,
-                                }}
-                                onPress={() => { setAccountDeleteModalVisible(true); }}
-                                title='Delete Account'
-                                text={COLORS.danger}
-                                iconDirection='right'
-                                icon={<FontAwesome style={{ color: COLORS.danger, marginLeft: 10 }}
-                                    name={'trash'}
-                                    size={25}
 
-                                />}>
-                            </ButtonIcon>
+                    {
+                        seeMoreBTN &&
+                        <View >
+                            <View style={{
+                                paddingHorizontal: 1, marginTop: 50,
+
+                            }}>
+                                <ButtonIcon
+                                    color={colors.card}
+                                    style={{
+                                        height: 50,
+                                        width: "100%",
+                                        elvation: 2,
+                                        shadowOpacity: 0.14,
+                                    }}
+                                    onPress={() => { setAccountDeleteModalVisible(true); }}
+                                    title='Delete Account'
+                                    text={COLORS.danger}
+                                    iconDirection='right'
+                                    icon={<FontAwesome style={{ color: COLORS.danger, marginLeft: 10 }}
+                                        name={'trash'}
+                                        size={25}
+
+                                    />}>
+                                </ButtonIcon>
+                            </View>
                         </View>
+                    }
+                    <View>
+                        < TouchableOpacity onPress={() => { setSeeMoreBTN(!seeMoreBTN) }} >
+                            <View style={{ flex: 1, height: 200, marginTop: 30, borderRadius: 20 }}>
+                                <Text style={{ ...FONTS.fontSemiBold, fontSize: 12, color: colors.title }}>{seeMoreBTN ? 'Hide' : 'See More..'}</Text>
+                            </View>
+                        </TouchableOpacity >
                     </View>
+
                 </View>
             </ScrollView>
         </View>
