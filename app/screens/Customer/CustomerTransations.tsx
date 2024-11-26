@@ -85,7 +85,6 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
     const send_sms = () => {
         CommonService.currentUserDetail().then((res) => {
             const defaultMessage = `Dear Sir / Madam, Your payment of ₹ ${item.amount} is pending at ${res.name}(${res.mobile}).Open Paylapscore app for view the details and make the payment.💥\n\n\n\n📱📱🔗 Download on Play Store: ${PLAY_STORE_URL}\n\n🔗 Download on Apple App Store: ${APP_STORE_URL}`;
-            console.log(defaultMessage);
             const sms = `sms:${item.customer.mobile}?body=${defaultMessage}`;
             Linking.openURL(sms);
         })
@@ -123,6 +122,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                     <ButtonIcon
                         onPress={() => navigation.navigate("CustomerTransationsDetails", { customer: item })}
                         title={""}
+                        color={COLORS.warning}
                         iconDirection='left'
                         icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'info-circle'} size={18} />}
                     />

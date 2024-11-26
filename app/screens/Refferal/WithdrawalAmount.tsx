@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, Text, Alert, Image, StyleSheet, ActivityIndicator } from 'react-native';
+import { ScrollView, View, Text, Alert, Image, StyleSheet, ActivityIndicator, TouchableOpacity, FlatList } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import Header from '../../layout/Header';
@@ -11,9 +11,20 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { IMAGES } from '../../constants/Images';
 import { ApiService } from '../../lib/ApiService';
 import { MessagesService } from '../../lib/MessagesService';
-import { COLORS } from '../../constants/theme';
+import { COLORS, FONTS, SIZES } from '../../constants/theme';
 import CommonService from '../../lib/CommonService';
+import ButtonIcon from '../../components/Button/ButtonIcon';
 
+interface WithdrawalListType {
+    id: string;
+    amount: number;
+    payment_mode: string;
+    status: string;
+    created_at: Date;
+    updated_at: Date;
+    last_interaction: string;
+    receiver_account: string;
+}
 type WithdrawalScreenProps = StackScreenProps<RootStackParamList, 'WithdrawalAmount'>;
 
 export const WithdrawalAmount = ({ navigation }: WithdrawalScreenProps) => {
@@ -28,12 +39,29 @@ export const WithdrawalAmount = ({ navigation }: WithdrawalScreenProps) => {
     const [accountHolderName, setAccountHolderName] = useState('');
     const [bankName, setBankName] = useState('');
     const [userBalance, setUserBalance] = useState(0);
+    const [withdrawalList, setWithdrawalList] = useState<any>([]);
+    const [withdrawalRange, setWithdrawalRange] = useState<any>({});
 
     useEffect(() => {
+        loadWithdrawalData();
+    }, []);
+
+    const loadWithdrawalData = () => {
         CommonService.currentUserDetail().then((res) => {
             setUserBalance(res.wallet_amount);
         })
-    });
+        withdrawal_list_func();
+    }
+
+    const withdrawal_list_func = () => {
+        setIsLoading(true);
+        ApiService.postWithToken("api/user/withdrawal-list", {}).then(function (res) {
+            setWithdrawalList(res.data);
+            setWithdrawalRange(res.withdrawal_range);
+            setIsLoading(false);
+
+        });
+    }
 
     const handleFormSubmission = () => {
         // Basic validation
@@ -63,6 +91,7 @@ export const WithdrawalAmount = ({ navigation }: WithdrawalScreenProps) => {
             bankName,
         }
         ApiService.postWithToken("api/user/withdrawal-request", data).then((res) => {
+            loadWithdrawalData();
             setIsLoading(false);
             if (res.status) {
                 Alert.alert('Success', res.message);
@@ -80,6 +109,28 @@ export const WithdrawalAmount = ({ navigation }: WithdrawalScreenProps) => {
         })
 
     };
+    const renderWithdrawalList = ({ item }: { item: WithdrawalListType }) => (
+        <View style={[styles.customerItem, { backgroundColor: colors.card, },
+            // !theme.dark && { elevation: 2 }
+
+        ]}>
+            <View style={{}}>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{ marginLeft: 14 }}>
+                        {/*<Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{item.customer_name}</Text>*/}
+                        <Text style={{ ...styles.lastInteraction, color: item.status == "SUCCESS" ? COLORS.primary : item.status == "PENDING" || item.status == "PROCESSING" ? COLORS.warning : COLORS.danger }}>{item.status}</Text>
+                        <Text style={{ color: colors.text, fontSize: 12 }}>{item.last_interaction}</Text>
+                        <Text style={{ fontSize: 13, color: !theme.dark ? "black" : 'white' }}>{item.receiver_account}</Text>
+                    </View>
+                </View>
+            </View>
+            <View style={{ flexDirection: "column", alignItems: "flex-end", position: "relative", justifyContent: 'center' }}>
+                <Text style={{ color: COLORS.primaryLight, fontSize: 15, fontWeight: "900" }}>₹ {(item.amount).toLocaleString()}</Text>
+                {/* <Text style={[styles.type, { color: colors.title }]}>₹ {item.amount}</Text> */}
+            </View>
+        </View>
+
+    );
 
     return (
         <>
@@ -100,9 +151,15 @@ export const WithdrawalAmount = ({ navigation }: WithdrawalScreenProps) => {
                                 }}
                             />
                         </View>
+
+                        <View style={styles.container}>
+                            <View style={{ marginBottom: 18, marginTop: 12 }}>
+                                <Text style={{ fontSize: 11 }}>{`You can withdrawal amount from ₹${withdrawalRange?.MIN} to ₹${withdrawalRange?.MAX}`}</Text>
+                            </View>
+                        </View>
                         <View style={styles.container}>
                             <View style={styles.balanceContainer}>
-                                <Text style={styles.label}>Wallet Balance:</Text>
+                                <Text style={styles.label}>Balance:</Text>
                                 <Text style={styles.amount}>₹ {userBalance}</Text>
                             </View>
                         </View>
@@ -201,6 +258,20 @@ export const WithdrawalAmount = ({ navigation }: WithdrawalScreenProps) => {
                                 </View>
                             </View>
                         </View>
+                        <View>
+
+                            {
+                                isLoading === false ?
+                                    <FlatList scrollEnabled={false}
+                                        data={withdrawalList}
+                                        renderItem={renderWithdrawalList}
+                                        keyExtractor={(item) => item.id}
+                                        contentContainerStyle={{}}
+                                    /> : <View style={{ flex: 1, justifyContent: 'center' }} >
+                                        <ActivityIndicator color={colors.title} size={'large'}></ActivityIndicator>
+                                    </View>
+                            }
+                        </View>
                     </ScrollView>
                 </View>
             </View>
@@ -243,6 +314,28 @@ const styles = StyleSheet.create({
     inactiveButton: {
         backgroundColor: '#E0E0E0', // Inactive button color (e.g., light gray)
         color: '#000000', // Text color for inactive button
+    },
+    customerItem: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        borderRadius: 15,
+        shadowRadius: 31.27,
+        marginHorizontal: 10,
+        marginVertical: 4,
+        top: 4,
+        borderBottomColor: "black",
+        borderBottomWidth: 0.2
+    },
+    lastInteraction: {
+        fontSize: SIZES.font,
+        fontWeight: 'bold'
+    },
+    type: {
+        color: COLORS.title,
+        fontSize: SIZES.fontXs,
+        ...FONTS.fontSemiBold,
     },
 });
 

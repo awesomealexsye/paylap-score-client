@@ -69,11 +69,9 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                     text: 'Delete',
                     onPress: () => {
                         // Add code to delete the user's account here
-                        console.log('Account deleted');
                         ApiService.postWithToken("api/user/delete", {}).then((res: any) => {
                             MessagesService.commonMessage(res?.message);
                             if (res?.status == true) {
-                                console.log('Account deleted success');
 
                                 StorageService.logOut().then((is_logout) => {
                                     if (is_logout) {
@@ -133,8 +131,10 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                                 />
                             </View>
                             <View>
-                                <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>Wallet Balance</Text>
-                                <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>₹ {profile?.wallet_amount}</Text>
+                                <TouchableOpacity onPress={() => { navigation.navigate("WithdrawalAmount") }}>
+                                    <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>Wallet Balance</Text>
+                                    <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>₹ {profile?.wallet_amount}</Text>
+                                </TouchableOpacity>
                             </View>
                         </View>
                         <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 25, alignItems: 'flex-start' }]} >
