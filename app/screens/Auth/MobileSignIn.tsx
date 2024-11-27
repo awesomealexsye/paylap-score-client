@@ -12,6 +12,7 @@ import { ApiService } from '../../lib/ApiService';
 import { MessagesService } from '../../lib/MessagesService';
 import StorageService from '../../lib/StorageService';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTranslation } from 'react-i18next';
 
 type SingInScreenProps = StackScreenProps<RootStackParamList, 'MobileSignIn'>;
 
@@ -26,6 +27,8 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
 
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
+
+    const { t } = useTranslation();
 
     const [isLoading, setIsLoading] = useState(false);
     const [isFocused, setisFocused] = useState(false);
@@ -112,7 +115,7 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
                                 <Text style={{
                                     color: colors.title, ...FONTS.fontMedium,
                                     fontSize: SIZES.font,
-                                }}>Mobile Number</Text>
+                                }}>{t('mobileNumber')}</Text>
                             </View>
                             <View style={{ marginVertical: 10 }}>
                                 <Input

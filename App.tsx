@@ -8,7 +8,7 @@ import { Provider } from 'react-redux'
 import store from './app/redux/store';
 import CommonService from './app/lib/CommonService';
 import Toast from 'react-native-toast-message';
-
+import './i18n';
 export default function App() {
 
 

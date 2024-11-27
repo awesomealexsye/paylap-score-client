@@ -11,6 +11,7 @@ const CONFIG = {
             LIGHT: 'LIGHT',
             DARK: 'DARK'
         },
+        SET_LANGUAGE: 'SET_LANGUAGE'
     },
     CREDIT_SCORE_RANGE: {
         MIN: 300,

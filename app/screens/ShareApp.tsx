@@ -23,6 +23,7 @@ import CONFIG from '../constants/config';
 import * as Clipboard from 'expo-clipboard';  // Import Clipboard API
 import { MessagesService } from '../lib/MessagesService';
 import { IMAGES } from '../constants/Images';
+import { useTranslation } from 'react-i18next';
 
 type ShareAppProps = StackScreenProps<RootStackParamList, 'ShareApp'>;
 
@@ -36,6 +37,7 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 	const PLAY_STORE_URL = CONFIG.APP_BUILD.ANDROID.APP_URL;
 	const APP_STORE_URL = CONFIG.APP_BUILD.IOS.APP_URL;
 
+	const { t } = useTranslation();
 	useEffect(() => {
 		CommonService.currentUserDetail().then((res) => {
 			setUserReferral(res?.refferal);
@@ -104,7 +106,7 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 		<View style={{ backgroundColor: colors.background, flex: 1 }}>
 			<View style={[GlobalStyleSheet.card, { backgroundColor: colors.background }]}>
 				<Header
-					title='Share'
+					title={t('share')}
 					leftIcon={'back'}
 					titleRight
 				/>
@@ -115,7 +117,7 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 						fontSize: SIZES.h4,
 						color: colors.title,
 						marginBottom: 8,
-					}} >Invite</Text>
+					}} >{t('invite')}</Text>
 					<Text style={{
 						...FONTS.fontBold,
 						fontSize: SIZES.h4,
@@ -127,7 +129,7 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 						color: colors.title,
 						marginBottom: 24,
 					}}>
-						Invite your Indian contacts and NRI friends & family to PayLap Score.
+						{t('inviteDesc')}
 					</Text>
 
 					<View style={{
@@ -170,7 +172,7 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 							fontSize: SIZES.font,
 							color: colors.title,
 							marginBottom: 8,
-						}}>Your Referral Code</Text>
+						}}>{t('inviteDesc')}</Text>
 						<View style={{
 							backgroundColor: COLORS.primary,
 							borderRadius: 10,
@@ -211,7 +213,7 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 							...FONTS.fontBold,
 							fontSize: SIZES.font,
 							color: colors.title,
-						}}>People you've referred</Text>
+						}}>{t('peopleYouHaveReferred')}</Text>
 						<Text style={{
 							...FONTS.fontBold,
 							fontSize: SIZES.font,

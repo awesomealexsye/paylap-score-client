@@ -12,18 +12,20 @@ import HeaderStyle1 from '../../components/Headers/HeaderStyle1';
 import Header from '../../layout/Header';
 import CustomerTransactionTable from './CustomerTransactionTable';
 import { ApiService } from '../../lib/ApiService';
+import { useTranslation } from 'react-i18next';
 
 type CustomerTransationsDetailsScreenProps = StackScreenProps<RootStackParamList, 'CustomerTransationsDetails'>;
 
 export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransationsDetailsScreenProps) => {
     const { customer } = route.params;
-    console.log("customertransactionDetail", customer)
     const theme = useTheme();
     const { colors } = theme;
     const [modalVisible, setModalVisible] = useState(false);
     const [isImageLoading, setImageLoading] = useState(true); // Image loading state
     const [transactionData, setTransationsData] = useState<Transaction[]>([]);
     const [isLoading, setIsLoading] = useState(false)
+
+    const { t } = useTranslation();
 
     interface Transaction {
         transaction_id: string;
@@ -111,7 +113,7 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
 
             <View style={{ flexDirection: "column", alignItems: "flex-end", justifyContent: 'center' }}>
                 <Text style={{ color: item.transaction_type === "CREDIT" ? COLORS.primaryLight : COLORS.danger, fontSize: 15, fontWeight: "900" }}>₹ {parseInt(`${item.amount}`).toLocaleString()}</Text>
-                <Text style={[styles.type, { color: item.transaction_type === "CREDIT" ? COLORS.primary : COLORS.danger, }]}>{item.transaction_type}</Text>
+                <Text style={[styles.type, { color: item.transaction_type === "CREDIT" ? COLORS.primary : COLORS.danger, }]}>{item.transaction_type == 'CREDIT' ? t('credit') : t('debit')}</Text>
             </View>
         </View>
         // <TouchableOpacity onPress={() => { }}>
@@ -125,7 +127,7 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
             {/* AppBar Start */}
 
             <Header
-                title='Transaction Details'
+                title={t('transactionDetail')}
                 leftIcon={'back'}
             // rightIcon2={'Edit'}
             />
@@ -171,11 +173,11 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                     <View style={styles.dateContainer}>
 
                         <View style={styles.dateItem}>
-                            <Text style={[styles.label, { color: colors.text, }]}>Taken Date</Text>
+                            <Text style={[styles.label, { color: colors.text, }]}>{t('takenDate')}</Text>
                             <Text style={[styles.value, { color: colors.title, }]}>{customer.transaction_date}</Text>
                         </View>
                         <View style={styles.dateItem}>
-                            <Text style={[styles.label, { color: colors.text, }]}>End Date</Text>
+                            <Text style={[styles.label, { color: colors.text, }]}>{t('endDate')}</Text>
                             <Text style={[styles.value, { color: colors.title }]}>{customer.estimated_given_date}</Text>
                         </View>
                     </View>
@@ -184,18 +186,18 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                         borderBottomWidth: 0.4
                     }} />
                     <View style={[styles.transactionIDContainer, { flexDirection: "row", justifyContent: "space-around", alignItems: "center" }]}>
-                        <Text style={[styles.label, { color: colors.text }]}>Transaction ID                       : </Text>
+                        <Text style={[styles.label, { color: colors.text }]}>{t('transactionId')}                       : </Text>
                         <Text style={[styles.value, { color: colors.title }]}>{customer.transaction_id}</Text>
                     </View>
                     <View style={[styles.transactionIDContainer, { flexDirection: "row", justifyContent: "space-around", alignItems: "center" }]}>
-                        <Text style={[styles.label, { color: colors.text }]}>Total {customer.transaction_type} Amount               :                   </Text>
+                        <Text style={[styles.label, { color: colors.text }]}> {customer.transaction_type == 'DEBIT' ? t('debitAmount') : t('creditAmount')}               :                   </Text>
                         <Text style={[styles.value, { color: colors.title }]}>₹ {customer.total_debit_amount}</Text>
                     </View>
                 </View>
 
                 {/* Description Card */}
                 <View style={[styles.card, { backgroundColor: colors.card, marginTop: 20 }]}>
-                    <Text style={[styles.cardTitle, { color: colors.title }]}>Description</Text>
+                    <Text style={[styles.cardTitle, { color: colors.title }]}>{t('description')}</Text>
                     <Text style={[styles.cardText, { color: colors.text }]}>{customer.description}</Text>
                 </View>
 
@@ -239,7 +241,7 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                     <ButtonIcon
                         color={showPayButton == 'DEBIT' ? 'red' : 'green'}
                         onPress={handlePayment}
-                        title={showPayButton}
+                        title={showPayButton == 'CREDIT' ? t('credit') : t('debit')}
                         iconDirection='right'
                         icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'rupee'} size={18} />}
                     />
@@ -247,7 +249,7 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
             <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
                 <ButtonIcon
                     onPress={shareTransaction}
-                    title='Share'
+                    title={t('share')}
                     iconDirection='right'
                     icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'share'} size={18} />}
                 />

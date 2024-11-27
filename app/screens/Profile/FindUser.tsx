@@ -16,6 +16,7 @@ import CommonService from '../../lib/CommonService';
 import ProfileScore from './PeofileScore';
 import CONFIG from '../../constants/config';
 import { IMAGES } from '../../constants/Images';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
     height?: string,
@@ -27,6 +28,7 @@ const FindUser = forwardRef((props, ref) => {
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
     const navigation = useNavigation<any>();
+    const { t } = useTranslation();
 
     const [userDetail, setUserDetail] = useState({
         id: 0,
@@ -79,7 +81,7 @@ const FindUser = forwardRef((props, ref) => {
             <View style={{ flex: 1, backgroundColor: colors.background }}>
                 <View style={{}}>
                     <Header
-                        title={'Find User'}
+                        title={t('findUser')}
                         leftIcon={'back'}
                         titleRight
                     />
@@ -104,13 +106,13 @@ const FindUser = forwardRef((props, ref) => {
                                                 <Input
                                                     inputRounded
                                                     icon={<FontAwesome style={{ opacity: .6 }} name={'address-card'} size={20} color={colors.text} />}
-                                                    placeholder="Enter Aadhaar Card Number"
+                                                    placeholder={t('enterAadhaarCardNumber')}
                                                     onChangeText={(value) => setAadhar(value)}
                                                 />
                                             </View>
                                             <View style={GlobalStyleSheet.cardBody}>
                                                 {isLoading === true ? <ActivityIndicator size={70} color={COLORS.primary} />
-                                                    : <Button title={'Search'} onPress={() => { searchAadhaar() }} />
+                                                    : <Button title={t('search')} onPress={() => { searchAadhaar() }} />
                                                 }
                                             </View>
                                         </View>

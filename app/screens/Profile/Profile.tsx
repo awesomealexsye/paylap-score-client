@@ -16,6 +16,7 @@ import { Feather } from '@expo/vector-icons';
 import { MessagesService } from '../../lib/MessagesService';
 import StorageService from '../../lib/StorageService';
 import AccountDeleteModal from '../../components/Modal/AccountDeleteModal';
+import { useTranslation } from 'react-i18next';
 
 
 type ProfileScreenProps = StackScreenProps<RootStackParamList, 'Profile'>;
@@ -26,6 +27,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
     const [paymentDetail, setPaymentDetail] = React.useState<any>();
     const [seeMoreBTN, setSeeMoreBTN] = React.useState<boolean>(false);
 
+    const { t } = useTranslation();
     useFocusEffect(
         useCallback(() => {
             CommonService.currentUserDetail().then((res) => {
@@ -93,7 +95,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
     return (
         <View style={{ backgroundColor: colors.card, flex: 1 }}>
             <Header
-                title='Profile'
+                title={t('profile')}
                 leftIcon={'back'}
                 rightIcon2={'Edit'}
             />
@@ -132,7 +134,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                             </View>
                             <View>
                                 <TouchableOpacity onPress={() => { navigation.navigate("WithdrawalAmount") }}>
-                                    <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>Wallet Balance</Text>
+                                    <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>{t('walletbalance')}</Text>
                                     <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>₹ {profile?.wallet_amount}</Text>
                                 </TouchableOpacity>
                             </View>
@@ -145,7 +147,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                                 />
                             </View>
                             <View>
-                                <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>Mobile Number</Text>
+                                <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>{t('mobileNumber')}</Text>
                                 <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>{profile?.mobile}</Text>
                             </View>
                         </View>
@@ -157,7 +159,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                                 />
                             </View>
                             <View>
-                                <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>Email Address</Text>
+                                <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>{t('email')}</Text>
                                 <Text style={{ ...FONTS.fontMedium, fontSize: profile?.email?.length > 15 ? 12 : 16, color: colors.title, marginTop: 5 }}>{profile?.email}</Text>
                             </View>
                         </View>
@@ -169,7 +171,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                                 />
                             </View>
                             <View>
-                                <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>Aadhaar Number</Text>
+                                <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>{t('aadhaarNumber')}</Text>
                                 <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>{profile?.aadhar_card}</Text>
                             </View>
 
@@ -182,7 +184,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                                 />
                             </View>
                             <View>
-                                <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>Pan Card</Text>
+                                <Text style={[styles.brandsubtitle2, { color: '#7D7D7D' }]}>{t('panCard')}</Text>
                                 <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>{profile?.pan_card}</Text>
                             </View>
 
@@ -228,7 +230,22 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
 
                     {
                         seeMoreBTN &&
-                        <View >
+                        <View style={{ marginTop: 12 }} >
+                            <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', alignItems: 'flex-start' }]} >
+                                <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
+                                    <Image
+                                        style={[GlobalStyleSheet.image3, { tintColor: COLORS.primary }]}
+                                        source={IMAGES.translation}
+                                    />
+                                </View>
+                                <View>
+                                    <TouchableOpacity onPress={() => { navigation.navigate("SelectLanguage", { fromPage: 'Profile' }) }}>
+                                        <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: colors.title, marginTop: 5 }}>{t('chooseLanguage')}</Text>
+
+                                    </TouchableOpacity>
+
+                                </View>
+                            </View>
                             <View style={{
                                 paddingHorizontal: 1, marginTop: 50,
 
@@ -242,7 +259,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                                         shadowOpacity: 0.14,
                                     }}
                                     onPress={() => { setAccountDeleteModalVisible(true); }}
-                                    title='Delete Account'
+                                    title={t('deleteAccount')}
                                     text={COLORS.danger}
                                     iconDirection='right'
                                     icon={<FontAwesome style={{ color: COLORS.danger, marginLeft: 10 }}
@@ -257,7 +274,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                     <View>
                         < TouchableOpacity onPress={() => { setSeeMoreBTN(!seeMoreBTN) }} >
                             <View style={{ flex: 1, height: 200, marginTop: 30, borderRadius: 20 }}>
-                                <Text style={{ ...FONTS.fontSemiBold, fontSize: 12, color: colors.title }}>{seeMoreBTN ? 'Hide' : 'See More..'}</Text>
+                                <Text style={{ ...FONTS.fontSemiBold, fontSize: 12, color: colors.title }}>{seeMoreBTN ? t('hide') : t('seeMore')}</Text>
                             </View>
                         </TouchableOpacity >
                     </View>

@@ -13,11 +13,13 @@ import ImagePickerModal from '../../components/Modal/ImagePickerModal';
 import useImagePicker from '../../customHooks/ImagePickerHook';
 import { ApiService } from '../../lib/ApiService';
 import { MessagesService } from '../../lib/MessagesService';
+import { useTranslation } from 'react-i18next';
 
 const EditProfile = () => {
     const { image, pickImage, takePhoto }: any = useImagePicker();
 
     const [modalVisible, setModalVisible] = useState(false)
+    const { t } = useTranslation();
 
     useEffect(() => {
         if (image !== null) {
@@ -69,7 +71,7 @@ const EditProfile = () => {
         <View style={{ backgroundColor: colors.background, flex: 1 }}>
 
             <Header
-                title='Edit Profile'
+                title={t('editProfile')}
                 leftIcon='back'
                 titleRight
             />
@@ -115,7 +117,7 @@ const EditProfile = () => {
                             backround={colors.card}
                             style={{ borderRadius: 48 }}
                             inputicon
-                            placeholder='Mobile Number'
+                            placeholder={t('mobileNumber')}
                             value={profile.mobile}
                             icon={<Image source={IMAGES.call} style={[styles.icon, { tintColor: colors.title }]} />}
                         />
@@ -130,7 +132,7 @@ const EditProfile = () => {
                             backround={colors.card}
                             style={{ borderRadius: 48 }}
                             inputicon
-                            placeholder='Email Address '
+                            placeholder={t('email')}
                             value={profile?.email}
                             icon={<Image source={IMAGES.email} style={[styles.icon, { tintColor: colors.title }]} />}
                         />
@@ -144,7 +146,7 @@ const EditProfile = () => {
                             backround={colors.card}
                             style={{ borderRadius: 48 }}
                             inputicon
-                            placeholder={profile?.address ?? "Address"}
+                            placeholder={profile?.address ?? t('address')}
                             icon={<Image source={IMAGES.Location} style={[styles.icon, { tintColor: colors.title }]} />}
                         />
                     </View>
@@ -154,7 +156,7 @@ const EditProfile = () => {
                 {
                     isLoading === false ?
                         <Button
-                            title='Update Profile'
+                            title={t('updateProfile')}
                             color={COLORS.primary}
                             textColor={COLORS.card}
                             onPress={updateProfileData}

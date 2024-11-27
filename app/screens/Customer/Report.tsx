@@ -25,6 +25,7 @@ import { MessagesService } from '../../lib/MessagesService';
 // import * as FileSystem from 'expo-file-system';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
+import { useTranslation } from 'react-i18next';
 
 
 let toDateObj = new Date();
@@ -66,6 +67,7 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
 
     const refRBSheet = useRef<any>(null);
 
+    const { t } = useTranslation();
 
 
     useFocusEffect(
@@ -504,21 +506,21 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
                 }
             </RBSheet>
             <Header
-                title={'View Report'}
+                title={t('viewReport')}
                 leftIcon={'back'}
                 titleRight
             />
             <ScrollView style={{ ...styles.content, backgroundColor: colors.card }}>
                 <View style={{ ...styles.dateRange, backgroundColor: !theme.dark ? COLORS.primary : colors.card }}>
                     <TouchableOpacity onPress={async () => { await handelDateInput('From Date'); }} style={{ borderRightWidth: 1, borderRightColor: 'white', flex: 1 }} >
-                        <Text style={{ fontSize: 12, marginBottom: 5, color: !theme.dark ? 'white' : colors.title }}>From Date</Text>
+                        <Text style={{ fontSize: 12, marginBottom: 5, color: !theme.dark ? 'white' : colors.title }}>{t('fromDate')}</Text>
                         <View style={styles.dateItem}>
                             <Ionicons name="calendar-outline" size={20} color={!theme.dark ? 'white' : colors.title} />
                             <Text style={{ ...styles.dateText, color: !theme.dark ? 'white' : colors.title }}>{fromDate}</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={async () => { await handelDateInput('To Date'); }} style={{ flex: 1, alignItems: 'flex-end' }} >
-                        <Text style={{ fontSize: 12, marginBottom: 5, color: !theme.dark ? 'white' : colors.title }}>To Date</Text>
+                        <Text style={{ fontSize: 12, marginBottom: 5, color: !theme.dark ? 'white' : colors.title }}>{t('toDate')}</Text>
                         <View style={styles.dateItem}>
                             <Ionicons name="calendar-outline" size={20} color={!theme.dark ? 'white' : colors.title} />
                             <Text style={{ ...styles.dateText, color: !theme.dark ? 'white' : colors.title }}>{toDate}</Text>
@@ -554,10 +556,10 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
 
                 <View style={{ ...styles.entriesCard, backgroundColor: colors.card }}>
                     <View style={styles.entriesSummary}>
-                        <Text style={styles.summaryLabel}>ENTRIES</Text>
+                        <Text style={styles.summaryLabel}>{t('entries')}</Text>
                         <View style={styles.summaryAmounts}>
-                            <Text style={styles.summaryLabel}>DEBIT</Text>
-                            <Text style={styles.summaryLabel}>CREDIT</Text>
+                            <Text style={styles.summaryLabel}>{t('debit')}</Text>
+                            <Text style={styles.summaryLabel}>{t('credit')}</Text>
                         </View>
                     </View>
                     {/* <View style={styles.entriesSummary}>
@@ -570,7 +572,7 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
                     {
                         isLoading == true ? <ActivityIndicator size="large" color={colors.title} />
                             : transactions.length == 0 ?
-                                <Text style={{ ...styles.summaryText, color: colors.title, textAlign: 'center' }}>No Data Found</Text> :
+                                <Text style={{ ...styles.summaryText, color: colors.title, textAlign: 'center' }}>{t('noDataFound')}</Text> :
 
                                 transactions.map((transaction, index) => (
                                     <View key={index} style={styles.transactionItem}>
@@ -601,11 +603,11 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
             <View style={{ ...styles.footer, backgroundColor: colors.card }}>
                 <TouchableOpacity style={[styles.footerButton, styles.downloadButton]} onPress={DownloadPDF}>
                     <Ionicons name="download-outline" size={20} color="white" />
-                    <Text style={styles.footerButtonText}>Download</Text>
+                    <Text style={styles.footerButtonText}>{t('download')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.footerButton, styles.shareButton]} onPress={SharePDF}>
                     <Ionicons name="share-social-outline" size={20} color="white" />
-                    <Text style={styles.footerButtonText}>Share</Text>
+                    <Text style={styles.footerButtonText}>{t('share')}</Text>
                 </TouchableOpacity>
             </View>
         </SafeAreaView>

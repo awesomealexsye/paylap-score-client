@@ -77,6 +77,7 @@ import UserReferralList from '../screens/Profile/⁠UserReferralList';
 import LedgerCustomerTransationsDetails from '../screens/LedgerBook/LedgerCustomerTransationDetails';
 import LedgerAddPayment from '../screens/LedgerBook/LedgerAddPayment';
 import WithdrawalAmount from '../screens/Refferal/WithdrawalAmount';
+import SelectLanguage from '../screens/SelectLanguage';
 
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -88,7 +89,7 @@ const StackNavigator = () => {
 	return (
 		<View style={{ width: '100%', flex: 1 }}>
 			<Stack.Navigator
-				initialRouteName='Onboarding'
+				initialRouteName='SelectLanguage'
 				screenOptions={{
 					headerShown: false,
 					cardStyle: { backgroundColor: "transparent" },
@@ -172,6 +173,7 @@ const StackNavigator = () => {
 				<Stack.Screen name="LedgerCustomerDetails" component={LedgerCustomerDetails} />
 				<Stack.Screen name="LedgerAddPayment" component={LedgerAddPayment} />
 				<Stack.Screen name="LedgerCustomerTransationsDetails" component={LedgerCustomerTransationsDetails} />
+				<Stack.Screen name="SelectLanguage" component={SelectLanguage} />
 
 			</Stack.Navigator>
 		</View>

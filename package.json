@@ -42,10 +42,13 @@
     "expo-print": "~12.8.1",
     "expo-router": "~3.4.7",
     "expo-screen-orientation": "~6.4.1",
+    "expo-sharing": "~11.10.0",
     "expo-status-bar": "~1.11.1",
+    "i18next": "^24.0.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-gauge-component": "^1.2.61",
+    "react-i18next": "^15.1.2",
     "react-native": "0.73.6",
     "react-native-chart-kit": "^6.12.0",
     "react-native-collapsible": "^1.6.1",
@@ -56,6 +59,7 @@
     "react-native-gesture-handler": "~2.14.0",
     "react-native-image-crop-picker": "^0.41.2",
     "react-native-linear-gradient": "^2.8.3",
+    "react-native-localize": "^3.3.0",
     "react-native-maps": "1.10.0",
     "react-native-maps-directions": "^1.9.0",
     "react-native-material-ripple": "^0.9.1",
@@ -78,7 +82,7 @@
     "redux": "^5.0.1",
     "redux-thunk": "^3.1.0",
     "ws": "^8.17.0",
-    "expo-sharing": "~11.10.0"
+    "expo-localization": "~14.8.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -65,7 +65,8 @@
         {
           "initialOrientation": "DEFAULT"
         }
-      ]
+      ],
+      "expo-localization"
     ],
     "owner": "alexsye1999"
   }

@@ -13,74 +13,78 @@ import CommonService from '../lib/CommonService';
 import ButtonIcon from '../components/Button/ButtonIcon';
 import Constants from 'expo-constants';
 import CONFIG from '../constants/config';
+import { useTranslation } from 'react-i18next';
 
-const MenuItems = [
-    {
-        id: "1",
-        icon: IMAGES.home,
-        name: "Home",
-        navigate: "Home",
-    },
-    {
-        id: "2",
-        icon: IMAGES.wallet2,
-        name: "Withdrawal",
-        navigate: 'WithdrawalAmount',
-    },
-    {
-        id: "3",
-        icon: IMAGES.tachometerfast,
-        name: "My Cibil",
-        navigate: 'CustomerScore',
-    },
-    {
-        id: "4",
-        icon: IMAGES.help,
-        name: "Support",
-        navigate: 'CustomerSupport',
-    },
-    {
-        id: "5",
-        icon: IMAGES.termandCondition,
-        name: "Our Policy",
-        navigate: 'TermsAndConditionsScreen',
-    },
-
-    {
-        id: "6",
-        icon: IMAGES.share,
-        name: "Share",
-        navigate: "ShareApp",
-    },
-    {
-        id: "7",
-        icon: IMAGES.logout,
-        name: "Logout",
-        navigate: 'MobileSignIn',
-    },
-];
-
-const { OS } = Platform;
-type AppConfig = {
-    ANDROID: {
-        IS_MANDATORY: boolean;
-        VERSION_CODE: number;
-        VERSION_NAME: string;
-        VERSION_MESSAGE: string
-    },
-    IOS: {
-        IS_MANDATORY: boolean;
-        VERSION_CODE: number;
-        VERSION_NAME: string;
-        VERSION_MESSAGE: string
-    }
-};
 
 interface InstalledAppBuild {
     APP_VERSION: number;
     APP_VERSION_NAME: string;
 }
 const DrawerMenu = () => {
+
+    const { t } = useTranslation();
+
+    const MenuItems = [
+        {
+            id: "1",
+            icon: IMAGES.home,
+            name: "Home",
+            navigate: "Home",
+        },
+        {
+            id: "2",
+            icon: IMAGES.wallet2,
+            name: t('withdrawal'),
+            navigate: 'WithdrawalAmount',
+        },
+        {
+            id: "3",
+            icon: IMAGES.tachometerfast,
+            name: t('myCibil'),
+            navigate: 'CustomerScore',
+        },
+        {
+            id: "4",
+            icon: IMAGES.help,
+            name: t('support'),
+            navigate: 'CustomerSupport',
+        },
+        {
+            id: "5",
+            icon: IMAGES.termandCondition,
+            name: t('ourPolicy'),
+            navigate: 'TermsAndConditionsScreen',
+        },
+
+        {
+            id: "6",
+            icon: IMAGES.share,
+            name: t('share'),
+            navigate: "ShareApp",
+        },
+        {
+            id: "7",
+            icon: IMAGES.logout,
+            name: t('logout'),
+            navigate: 'MobileSignIn',
+        },
+    ];
+
+    const { OS } = Platform;
+    type AppConfig = {
+        ANDROID: {
+            IS_MANDATORY: boolean;
+            VERSION_CODE: number;
+            VERSION_NAME: string;
+            VERSION_MESSAGE: string
+        },
+        IOS: {
+            IS_MANDATORY: boolean;
+            VERSION_CODE: number;
+            VERSION_NAME: string;
+            VERSION_MESSAGE: string
+        }
+    };
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigation = useNavigation<any>();

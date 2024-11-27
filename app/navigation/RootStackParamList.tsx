@@ -99,6 +99,7 @@ export type RootStackParamList = {
     LedgerAddPayment: object | undefined;
     LedgerCustomerTransationsDetails: { customer: any };
     WithdrawalAmount: undefined;
+    SelectLanguage: any;
 
 
 };

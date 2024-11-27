@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useEffect, useCallback, useTransition } from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList, Linking, Alert, ActivityIndicator } from 'react-native';
 import { useTheme, useFocusEffect } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
@@ -15,6 +15,7 @@ import CommonService from '../../lib/CommonService';
 import { MessagesService } from '../../lib/MessagesService';
 import CONFIG from '../../constants/config';
 import ButtonIcon from '../../components/Button/ButtonIcon';
+import { useTranslation } from 'react-i18next';
 
 
 interface Customer {
@@ -41,6 +42,8 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
 
     const PLAY_STORE_URL = CONFIG.APP_BUILD.ANDROID.APP_URL;
     const APP_STORE_URL = CONFIG.APP_BUILD.IOS.APP_URL;
+
+    const { t } = useTranslation();
 
     useFocusEffect(
         useCallback(() => {
@@ -230,7 +233,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                                 isDisabled={false}
                                 icon={<Image source={IMAGES.tachometerfast} style={{ height: 20, width: 20, resizeMode: 'contain' }}></Image>}
                                 color={colors.card}
-                                text='Score'
+                                text={t('score')}
                                 onpress={() => navigation.navigate('CustomerScore', { customer: { id: item.customer.id } })}
                             />
                             <CustomerActivityBtn
@@ -238,21 +241,21 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                                 isDisabled={false}
                                 icon={<FontAwesome style={{ color: '#8fc11e' }} name={'rupee'} size={20} />}
                                 color={colors.card}
-                                text='Payments'
+                                text={t('payment')}
                                 onpress={() => navigation.navigate('NotAvailable')}
                             /><CustomerActivityBtn
                                 gap
                                 isDisabled={item.transaction_type == "DEBIT" ? item.amount > 0 ? false : true : true}
                                 icon={<FontAwesome style={{ color: '#8fc11e' }} name={'bell'} size={20} />}
                                 color={colors.card}
-                                text='Reminder'
+                                text={t('reminder')}
                                 onpress={() => reminder()}
                             /><CustomerActivityBtn
                                 gap
                                 isDisabled={item.transaction_type == "DEBIT" ? item.amount > 0 ? false : true : true}
                                 icon={<FontAwesome style={{ color: '#8fc11e' }} name={'envelope'} size={20} />}
                                 color={colors.card}
-                                text='SMS'
+                                text={t('sms')}
                                 onpress={() => send_sms()}
                             />
                         </View>
@@ -278,7 +281,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                     <TouchableOpacity style={[styles.removeBtn]} onPress={() => newDebitBtnHandler()}>
 
                         <Text style={styles.addButtonText}>
-                            New DEBIT</Text>
+                            {t('newPayment')}</Text>
                     </TouchableOpacity>
                 </View>
             }

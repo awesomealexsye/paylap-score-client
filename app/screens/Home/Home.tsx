@@ -15,6 +15,7 @@ import { ApiService } from '../../lib/ApiService';
 import CommonService from '../../lib/CommonService';
 import StorageService from '../../lib/StorageService';
 import ImageSwiper from '../../components/ImageSwiper';
+import { useTranslation } from 'react-i18next';
 interface Customer {
     id: string;
     customer_id: string;
@@ -32,6 +33,7 @@ interface Customer {
 type HomeScreenProps = StackScreenProps<RootStackParamList, 'Home'>
 
 export const Home = ({ navigation }: HomeScreenProps) => {
+    const { t } = useTranslation();
 
     const [searchText, setSearchText] = useState('');
     const [customersData, setCustomersData] = useState<any>([]);
@@ -270,7 +272,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                     fontSize: SIZES.fontSm,
                                     color: COLORS.primaryLight,
 
-                                }}>Credit Amt.</Text>
+                                }}>{t('creditAmount')}</Text>
                                 <Text style={{
                                     ...FONTS.fontSemiBold,
                                     fontSize: homeBanner?.debit?.length < 10 ? SIZES.fontLg : SIZES.fontSm,
@@ -285,7 +287,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                     ...FONTS.fontBold,
                                     fontSize: SIZES.fontSm,
                                     color: COLORS.primaryLight
-                                }}>Debit Amt.</Text>
+                                }}>{t('debitAmount')}</Text>
                                 <Text style={{
                                     ...FONTS.fontSemiBold, fontSize: homeBanner?.debit?.length < 10 ? SIZES.fontLg : SIZES.fontSm,
                                     color: COLORS.white, left: 5
@@ -299,7 +301,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                         color: COLORS.white, ...FONTS.fontBold, fontSize: SIZES.fontSm,
 
                                     }}>
-                                        VIEW REPORT
+                                        {t('viewReport')}
                                         <Feather name='arrow-right' size={15} color={COLORS.white} />
                                     </Text>
                                 </TouchableOpacity>
@@ -349,8 +351,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
             </ScrollView >
             <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("AddCustomer")}>
                 <FontAwesome style={{ marginRight: 6, color: COLORS.white }} name={'user-plus'} size={20} />
-                <Text style={styles.addButtonText}>
-                    Add Customer</Text>
+                <Text style={styles.addButtonText}>{t('addCustomer')}</Text>
             </TouchableOpacity>
         </View >
     );
