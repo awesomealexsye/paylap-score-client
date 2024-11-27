@@ -9,6 +9,7 @@ import CommonService from '../../lib/CommonService';
 import Header from '../../layout/Header';
 import MaterialCommunityIcons from '@expo/vector-icons/build/MaterialCommunityIcons';
 import { IMAGES } from '../../constants/Images';
+import { useTranslation } from 'react-i18next';
 
 type CustomerSupportScreenProps = StackScreenProps<RootStackParamList, 'CustomerSupport'>;
 
@@ -23,7 +24,7 @@ const CustomerSupport = ({ navigation }: CustomerSupportScreenProps) => {
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
 
-
+    const { t } = useTranslation();
 
 
 
@@ -67,11 +68,11 @@ const CustomerSupport = ({ navigation }: CustomerSupportScreenProps) => {
     };
 
     const supportOptions = [
-        { type: 'mobile', icon: 'phone', iconColor: '#007bff', label: 'Mobile Number', value: `${supportObject?.PHONE_NUMBER || "8228822825"}` },
-        { type: 'whatsapp', icon: 'whatsapp', iconColor: '#25D366', label: 'WhatsApp Number', value: `${supportObject?.WHATSAPP_NUMBER || "8228822825"}` },
-        { type: 'supportMail', icon: 'email', iconColor: '#007bff', label: 'Support Mail', value: `${supportObject?.EMAIL || "paylapscore.com"}` },
+        { type: 'mobile', icon: 'phone', iconColor: '#007bff', label: t('mobileNumber'), value: `${supportObject?.PHONE_NUMBER || "8228822825"}` },
+        { type: 'whatsapp', icon: 'whatsapp', iconColor: '#25D366', label: t('whatsAppNumber'), value: `${supportObject?.WHATSAPP_NUMBER || "8228822825"}` },
+        { type: 'supportMail', icon: 'email', iconColor: '#007bff', label: t('supportMail'), value: `${supportObject?.EMAIL || "paylapscore.com"}` },
 
-        { type: 'website', icon: 'web', iconColor: '#007bff', label: 'Website', value: `${supportObject?.WEBSITE || "paylapscore.com"}` },
+        { type: 'website', icon: 'web', iconColor: '#007bff', label: t('website'), value: `${supportObject?.WEBSITE || "paylapscore.com"}` },
     ];
 
 
@@ -107,7 +108,7 @@ const CustomerSupport = ({ navigation }: CustomerSupportScreenProps) => {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.card }}>
             <Header
-                title={"Customer Support"}
+                title={t('customerSupport')}
                 leftIcon='back'
                 titleRight
             />

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, Text, Alert, Image, StyleSheet, ActivityIndicator, TouchableOpacity, FlatList } from 'react-native';
+import { ScrollView, View, Text, Alert, Image, StyleSheet, ActivityIndicator, TouchableOpacity, FlatList, RefreshControl } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import Header from '../../layout/Header';
@@ -14,6 +14,7 @@ import { MessagesService } from '../../lib/MessagesService';
 import { COLORS, FONTS, SIZES } from '../../constants/theme';
 import CommonService from '../../lib/CommonService';
 import ButtonIcon from '../../components/Button/ButtonIcon';
+import { useTranslation } from 'react-i18next';
 
 interface WithdrawalListType {
     id: string;
@@ -41,6 +42,9 @@ export const WithdrawalAmount = ({ navigation }: WithdrawalScreenProps) => {
     const [userBalance, setUserBalance] = useState(0);
     const [withdrawalList, setWithdrawalList] = useState<any>([]);
     const [withdrawalRange, setWithdrawalRange] = useState<any>({});
+    const [isRefreshing, setIsRefreshing] = useState<any>(false);
+
+    const { t } = useTranslation();
 
     useEffect(() => {
         loadWithdrawalData();
@@ -117,27 +121,40 @@ export const WithdrawalAmount = ({ navigation }: WithdrawalScreenProps) => {
             <View style={{}}>
                 <View style={{ flexDirection: 'row' }}>
                     <View style={{ marginLeft: 14 }}>
-                        {/*<Text style={[styles.customerName, { color: colors.title, ...FONTS.fontSemiBold }]}>{item.customer_name}</Text>*/}
-                        <Text style={{ ...styles.lastInteraction, color: item.status == "SUCCESS" ? COLORS.primary : item.status == "PENDING" || item.status == "PROCESSING" ? COLORS.warning : COLORS.danger }}>{item.status}</Text>
+                        <View style={{ flexDirection: 'row', gap: 12 }}>
+                            <Text><FontAwesome style={{ color: item.status == "SUCCESS" ? COLORS.primary : item.status == "PENDING" || item.status == "PROCESSING" ? COLORS.warning : COLORS.danger }} name={item.status == "SUCCESS" ? 'check' : item.status == "PENDING" || item.status == "PROCESSING" ? 'refresh' : 'close'} size={20} /></Text>
+                            <Text style={{ ...styles.lastInteraction, color: item.status == "SUCCESS" ? COLORS.primary : item.status == "PENDING" || item.status == "PROCESSING" ? COLORS.warning : COLORS.danger }}>{item.status}</Text>
+
+                        </View>
                         <Text style={{ color: colors.text, fontSize: 12 }}>{item.last_interaction}</Text>
                         <Text style={{ fontSize: 13, color: !theme.dark ? "black" : 'white' }}>{item.receiver_account}</Text>
                     </View>
                 </View>
             </View>
             <View style={{ flexDirection: "column", alignItems: "flex-end", position: "relative", justifyContent: 'center' }}>
-                <Text style={{ color: COLORS.primaryLight, fontSize: 15, fontWeight: "900" }}>₹ {(item.amount).toLocaleString()}</Text>
+                <Text style={{ color: item.status == "SUCCESS" ? COLORS.primary : item.status == "PENDING" || item.status == "PROCESSING" ? COLORS.warning : COLORS.danger, fontSize: 15, fontWeight: "900" }}>₹ {(item.amount).toLocaleString()}</Text>
                 {/* <Text style={[styles.type, { color: colors.title }]}>₹ {item.amount}</Text> */}
             </View>
         </View>
 
     );
 
+    const handelRefresh = () => {
+        setIsRefreshing(true);
+        loadWithdrawalData();
+        setIsRefreshing(false);
+    };
+
     return (
         <>
             <View style={{ flex: 1, backgroundColor: colors.background }}>
                 <View>
-                    <Header title={'Withdrawal Amount'} leftIcon={'back'} titleRight />
-                    <ScrollView>
+                    <Header title={t('withdrawalAmount')} leftIcon={'back'} titleRight />
+                    <ScrollView
+                        refreshControl={
+                            <RefreshControl refreshing={isRefreshing} onRefresh={handelRefresh} />
+                        }
+                    >
                         <View style={{
                             flex: 1.5,
                             alignItems: 'center',
@@ -154,12 +171,12 @@ export const WithdrawalAmount = ({ navigation }: WithdrawalScreenProps) => {
 
                         <View style={styles.container}>
                             <View style={{ marginBottom: 18, marginTop: 12 }}>
-                                <Text style={{ fontSize: 11 }}>{`You can withdrawal amount from ₹${withdrawalRange?.MIN} to ₹${withdrawalRange?.MAX}`}</Text>
+                                <Text style={{ fontSize: 11 }}>{`${t('withdrawalAmountDesc')} ₹${withdrawalRange?.MIN} to ₹${withdrawalRange?.MAX}`}</Text>
                             </View>
                         </View>
                         <View style={styles.container}>
                             <View style={styles.balanceContainer}>
-                                <Text style={styles.label}>Balance:</Text>
+                                <Text style={styles.label}>{t('balance')}:</Text>
                                 <Text style={styles.amount}>₹ {userBalance}</Text>
                             </View>
                         </View>
@@ -170,7 +187,7 @@ export const WithdrawalAmount = ({ navigation }: WithdrawalScreenProps) => {
                                         inputRounded
                                         keyboardType={'number-pad'}
                                         icon={<FontAwesome style={{ opacity: .6 }} name={'mobile-phone'} size={35} color={colors.text} />}
-                                        placeholder="Enter Amount"
+                                        placeholder={t('enterAmount')}
                                         value={amount}
                                         onChangeText={setAmount}
                                         maxlength={10}
@@ -179,7 +196,7 @@ export const WithdrawalAmount = ({ navigation }: WithdrawalScreenProps) => {
                                     {/* Payment Method Selection using Buttons */}
                                     <View style={styles.paymentMethodContainer}>
                                         <Button
-                                            title="UPI"
+                                            title={t('upi')}
                                             onPress={() => setPaymentMethod('UPI')}
                                             style={[
                                                 styles.paymentButton,
@@ -187,7 +204,7 @@ export const WithdrawalAmount = ({ navigation }: WithdrawalScreenProps) => {
                                             ]}
                                         />
                                         <Button
-                                            title="Bank Transfer"
+                                            title={t('bankTransfer')}
                                             onPress={() => setPaymentMethod('Bank')}
                                             style={[
                                                 styles.paymentButton,
@@ -200,7 +217,7 @@ export const WithdrawalAmount = ({ navigation }: WithdrawalScreenProps) => {
                                     {paymentMethod === 'UPI' && (
                                         <Input
                                             inputRounded
-                                            placeholder="Enter UPI ID"
+                                            placeholder={t('enterUpiId')}
                                             value={upiId}
                                             onChangeText={setUpiId}
                                         />
@@ -211,7 +228,7 @@ export const WithdrawalAmount = ({ navigation }: WithdrawalScreenProps) => {
                                             <View style={{ marginTop: 10 }}>
                                                 <Input
                                                     inputRounded
-                                                    placeholder="Account Number"
+                                                    placeholder={t('accountNumber')}
                                                     value={accountNumber}
                                                     onChangeText={setAccountNumber}
                                                     maxlength={20}
@@ -220,7 +237,7 @@ export const WithdrawalAmount = ({ navigation }: WithdrawalScreenProps) => {
                                             <View style={{ marginTop: 10 }}>
                                                 <Input
                                                     inputRounded
-                                                    placeholder="IFSC Code"
+                                                    placeholder={t('ifscCode')}
                                                     value={ifscCode}
                                                     onChangeText={setIfscCode}
                                                     maxlength={20}
@@ -229,7 +246,7 @@ export const WithdrawalAmount = ({ navigation }: WithdrawalScreenProps) => {
                                             <View style={{ marginTop: 10 }}>
                                                 <Input
                                                     inputRounded
-                                                    placeholder="Account Holder Name"
+                                                    placeholder={t('accountHolderName')}
                                                     value={accountHolderName}
                                                     onChangeText={setAccountHolderName}
                                                     maxlength={25}
@@ -238,7 +255,7 @@ export const WithdrawalAmount = ({ navigation }: WithdrawalScreenProps) => {
                                             <View style={{ marginTop: 10 }}>
                                                 <Input
                                                     inputRounded
-                                                    placeholder="Bank Name"
+                                                    placeholder={t('bankName')}
                                                     value={bankName}
                                                     onChangeText={setBankName}
                                                     maxlength={25}
@@ -252,7 +269,7 @@ export const WithdrawalAmount = ({ navigation }: WithdrawalScreenProps) => {
 
                                         {
                                             isLoading === false ?
-                                                <Button title="Send Request" onPress={handleFormSubmission} /> : <ActivityIndicator size={70} color={COLORS.primary} />
+                                                <Button title={t('sendRequest')} onPress={handleFormSubmission} /> : <ActivityIndicator size={70} color={COLORS.primary} />
                                         }
                                     </View>
                                 </View>

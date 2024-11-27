@@ -28,7 +28,7 @@ const DrawerMenu = () => {
         {
             id: "1",
             icon: IMAGES.home,
-            name: "Home",
+            name: t('home'),
             navigate: "Home",
         },
         {
@@ -123,8 +123,8 @@ const DrawerMenu = () => {
 
     const handleLogout = async () => {
         Alert.alert(
-            "Confirmation",
-            "Are you sure you want to log out of your account?",
+            t('confirmation'),
+            t('confirmationDesc'),
             [
                 {
                     text: "No",
@@ -200,7 +200,7 @@ const DrawerMenu = () => {
                         paddingBottom: 20
                     }]}
                 >
-                    <Text style={{ ...FONTS.fontSemiBold, fontSize: 20, color: theme.colors.title }}>Main Menu</Text>
+                    <Text style={{ ...FONTS.fontSemiBold, fontSize: 20, color: theme.colors.title }}>{t('mainMenu')}</Text>
                     <TouchableOpacity
                         onPress={() => dispatch(closeDrawer())}
                         activeOpacity={0.5}
@@ -215,10 +215,10 @@ const DrawerMenu = () => {
                                 activeOpacity={0.7}
                                 onPress={() => {
                                     data.navigate === "DrawerNavigation" ? dispatch(closeDrawer()) : dispatch(closeDrawer());
-                                    if (data.name == "Logout") {
+                                    if (data.name == t('logout')) {
                                         handleLogout();
                                     }
-                                    else if (data.name == "My Cibil") {
+                                    else if (data.name == t('myCibil')) {
                                         handleCibilFunc();
                                     }
                                     else {
@@ -254,7 +254,7 @@ const DrawerMenu = () => {
                 </View>
                 <View style={{ paddingVertical: 15, paddingHorizontal: 10 }}>
                     <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: theme.colors.title }}>Paylap Score</Text>
-                    <Text style={{ ...FONTS.fontMedium, fontSize: 12, color: theme.colors.title }}>App Version {installedAppBuild.APP_VERSION_NAME}</Text>
+                    <Text style={{ ...FONTS.fontMedium, fontSize: 12, color: theme.colors.title }}>{t('appVersion')} {installedAppBuild.APP_VERSION_NAME}</Text>
                 </View>
             </View>
 

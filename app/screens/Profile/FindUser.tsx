@@ -158,7 +158,7 @@ const FindUser = forwardRef((props, ref) => {
                                                         />
                                                     </View>
                                                     <View>
-                                                        <Text style={[styles.brandsubtitle2, { color: '#7D7D7D', fontSize: 12 }]}>Mobile Number</Text>
+                                                        <Text style={[styles.brandsubtitle2, { color: '#7D7D7D', fontSize: 12 }]}>{t('mobileNumber')}</Text>
                                                         <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, marginTop: 5 }}>{userDetail?.mobile}</Text>
                                                     </View>
                                                 </View>
@@ -170,7 +170,7 @@ const FindUser = forwardRef((props, ref) => {
                                                         />
                                                     </View>
                                                     <View>
-                                                        <Text style={[styles.brandsubtitle2, { color: '#7D7D7D', fontSize: 12 }]}>Email Address</Text>
+                                                        <Text style={[styles.brandsubtitle2, { color: '#7D7D7D', fontSize: 12 }]}>{t('email')}</Text>
                                                         <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, marginTop: 0 }}>{userDetail?.email}</Text>
                                                     </View>
                                                 </View>

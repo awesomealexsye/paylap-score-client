@@ -124,10 +124,13 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                 <View style={{ flexDirection: "column", alignItems: "flex-end", position: "relative", justifyContent: 'center' }}>
                     <ButtonIcon
                         onPress={() => navigation.navigate("CustomerTransationsDetails", { customer: item })}
-                        title={""}
-                        color={COLORS.warning}
-                        iconDirection='left'
-                        icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'info-circle'} size={18} />}
+                        title={t('view')}
+                        color={theme.dark ? COLORS.darkCard : COLORS.white}
+                        textColor={theme.dark ? COLORS.white : COLORS.primary}
+                        iconDirection='right'
+                        size={14}
+                        style={{ padding: 10 }}
+                        icon={<FontAwesome style={{ color: theme.dark ? COLORS.white : COLORS.primary, marginLeft: 0 }} name={'arrow-right'} size={14} />}
                     />
                     {/* <Text style={{ color: 'red' }}>
                         <FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'info-circle'} size={12} />
@@ -239,10 +242,12 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                             <CustomerActivityBtn
                                 gap
                                 isDisabled={false}
-                                icon={<FontAwesome style={{ color: '#8fc11e' }} name={'rupee'} size={20} />}
+                                icon={<FontAwesome style={{ color: '#8fc11e' }} name={'phone'} size={20} />}
                                 color={colors.card}
-                                text={t('payment')}
-                                onpress={() => navigation.navigate('NotAvailable')}
+                                text={t('call')}
+                                onpress={() =>
+                                    Linking.openURL(`tel:+91${item.mobile}`).catch((err) => Alert.alert('Error', 'Unable to make a call'))
+                                }
                             /><CustomerActivityBtn
                                 gap
                                 isDisabled={item.transaction_type == "DEBIT" ? item.amount > 0 ? false : true : true}

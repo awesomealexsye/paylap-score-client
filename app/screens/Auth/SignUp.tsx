@@ -13,6 +13,7 @@ import { ApiService } from '../../lib/ApiService'
 import { MessagesService } from '../../lib/MessagesService'
 import Header from '../../layout/Header'
 import { LinearGradient } from 'expo-linear-gradient'
+import { useTranslation } from 'react-i18next'
 
 
 type SignUpScreenProps = StackScreenProps<RootStackParamList, 'SignUp'>;
@@ -32,6 +33,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
     const [mobile, setMobile] = useState("");
     const [referralCode, setReferralCode] = useState("");
 
+    const { t } = useTranslation();
     const sentOtp = async () => {
         if (name == '' || name.length < 2) {
             MessagesService.commonMessage("Invalid Name")
@@ -121,11 +123,11 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                         <View style={[GlobalStyleSheet.container, { flexGrow: 1, paddingBottom: 0, paddingHorizontal: 10, paddingTop: 0 }]}>
                             <View style={{}}>
                                 <View style={{ marginBottom: 30 }}>
-                                    <Text style={[styles.title1, { color: colors.title }]}>Create an account</Text>
+                                    <Text style={[styles.title1, { color: colors.title }]}>{t('createNewAccount')}</Text>
                                     {/* <Text style={[styles.title2, { color: colors.title }]}>Join us! Enter your mobile number to get an OTP and create your account</Text> */}
                                 </View>
                                 <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
-                                    <Text style={[styles.title3, { color: colors.title }]}>Your Name / Business Name (*)
+                                    <Text style={[styles.title3, { color: colors.title }]}>{t('yourName')} (*)
                                     </Text>
                                 </View>
                                 <View style={{ marginVertical: 10, }}>
@@ -140,7 +142,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                                     />
                                 </View>
                                 <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
-                                    <Text style={[styles.title3, { color: colors.title }]}>Phone Number(*)</Text>
+                                    <Text style={[styles.title3, { color: colors.title }]}>{t('mobileNumber')}(*)</Text>
                                 </View>
                                 <View style={{ marginVertical: 10, }}>
                                     <Input
@@ -156,7 +158,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                                     />
                                 </View>
                                 <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
-                                    <Text style={[styles.title3, { color: colors.title }]}>Your Email (Optional)</Text>
+                                    <Text style={[styles.title3, { color: colors.title }]}>{t('email')} ({t('optional')})</Text>
                                 </View>
                                 <View style={{ marginVertical: 10 }}>
                                     <Input
@@ -171,7 +173,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                                 </View>
 
                                 <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
-                                    <Text style={[styles.title3, { color: colors.title }]}>Referral Code (Optional)</Text>
+                                    <Text style={[styles.title3, { color: colors.title }]}>{t('yourRefferalCode')} ({t('optional')})</Text>
                                 </View>
                                 <View style={{ marginBottom: 10, marginTop: 10 }}>
                                     <Input
@@ -191,18 +193,18 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                                 {
                                     isLoading === false ?
                                         <Button
-                                            title={"Send OTP"}
+                                            title={t('sendOtp')}
                                             onPress={sentOtp}
                                             style={{ borderRadius: 15 }}
                                         /> : <ActivityIndicator size={70} color={COLORS.primary} />
 
                                 }
                                 <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", margin: 40 }}>
-                                    <Text style={{ ...FONTS.fontMedium, color: colors.title }}>Already account ?</Text>
+                                    <Text style={{ ...FONTS.fontMedium, color: colors.title }}>{t('alreadyAccount')}</Text>
                                     <TouchableOpacity
                                         onPress={() => navigation.navigate('MobileSignIn')}
                                     >
-                                        <Text style={{ ...FONTS.fontBold, color: COLORS.primary }}> Log IN </Text>
+                                        <Text style={{ ...FONTS.fontBold, color: COLORS.primary }}> {t('login')} </Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>

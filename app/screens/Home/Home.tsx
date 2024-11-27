@@ -319,7 +319,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 <View style={[GlobalStyleSheet.container, { paddingHorizontal: 30, paddingTop: 0 }]}>
                     <View>
                         <TextInput
-                            placeholder='Search Customer'
+                            placeholder={t('searchCustomer')}
                             style={[styles.TextInput,
                             {
                                 color: colors.title,

@@ -98,7 +98,7 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
                                     fontSize: SIZES.font,
                                     color: COLORS.background,
                                     marginTop: 10,
-                                }}>Welcome Back!</Text>
+                                }}>{t('welcome')}!</Text>
                             </View>
                         </View>
 
@@ -135,18 +135,18 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
                                 {
                                     !isLoading ?
                                         <Button
-                                            title={"Send OTP"}
+                                            title={t('sendOtp')}
                                             onPress={sentOtp}
                                             style={{ borderRadius: 15 }}
                                         /> : <ActivityIndicator color={COLORS.primary} size={70} />
                                 }
                             </View>
                             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", margin: 40 }}>
-                                <Text style={{ ...FONTS.fontMedium, color: colors.title }}>Don't have an account? </Text>
+                                <Text style={{ ...FONTS.fontMedium, color: colors.title }}>{t('registerDesc')}</Text>
                                 <TouchableOpacity
                                     onPress={() => navigation.navigate('SignUp')}
                                 >
-                                    <Text style={{ ...FONTS.fontBold, color: COLORS.primary }}> Register </Text>
+                                    <Text style={{ ...FONTS.fontBold, color: COLORS.primary }}> {t('register')} </Text>
                                 </TouchableOpacity>
                             </View>
                         </View>

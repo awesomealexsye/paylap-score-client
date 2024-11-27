@@ -62,7 +62,7 @@ const SelectLanguage = ({ navigation, route }: SelectLanguage) => {
     return (
         <View style={{ flex: 1, backgroundColor: colors.background }}>
             <View style={{ flex: 1, }}>
-                <Header title={t('chooseLanguage')} leftIcon={'back'} titleRight />
+                <Header title={t('chooseLanguage')} titleRight />
                 <ScrollView>
                     <View style={{ ...GlobalStyleSheet.container }}>
                         <View style={[GlobalStyleSheet.card, { backgroundColor: colors.card }]}>

@@ -28,16 +28,16 @@ const Onboarding = ({ navigation }: OnboardingScreenProps) => {
     const { t } = useTranslation();
     const DATA = [
         {
-            title: t("welcome"),
-            subtitle: "Discover an efficient way to track your customer’s credit behavior, manage lent items, and streamline your business with smart analytics."
+            title: t("onboardingTitle1"),
+            subtitle: t("onboardingSubstitle1"),
         },
         {
-            title: "Find Customer Credit Score",
-            subtitle: "Quickly access and analyze detailed credit scores for your customers, ensuring informed lending decisions and fostering trust."
+            title: t("onboardingTitle2"),
+            subtitle: t("onboardingSubstitle2"),
         },
         {
-            title: "100% Safe And Secure",
-            subtitle: "Your data and transactions are fully encrypted, ensuring a secure and private environment for your shop and customers."
+            title: t("onboardingTitle3"),
+            subtitle: t("onboardingSubstitle3"),
         }
     ]
 

@@ -12,6 +12,7 @@ import { ApiService } from '../../lib/ApiService';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { StackScreenProps } from '@react-navigation/stack';
 import { IMAGES } from '../../constants/Images';
+import { useTranslation } from 'react-i18next';
 
 type AddCustomerScreenProps = StackScreenProps<RootStackParamList, 'AddCustomer'>;
 let aadharDetail: any = {};
@@ -26,6 +27,8 @@ export const AddCustomer = ({ navigation }: AddCustomerScreenProps) => {
     const [isShowOtherFields, setShowOtherFields] = useState(false);
     const [customerId, setCustomerId] = useState(0);
     const [customerDetail, setCustomerDetail] = useState<any>({});
+
+    const { t } = useTranslation();
 
     const checkIsUserExist = async () => {
         const res = await ApiService.postWithToken("api/shopkeeper/search-user-mobile", { "mobile": customerDetail?.mobile });
@@ -117,7 +120,7 @@ export const AddCustomer = ({ navigation }: AddCustomerScreenProps) => {
             <View style={{ flex: 1, backgroundColor: colors.background }}>
                 <View style={{}}>
                     <Header
-                        title={'Add Customer'}
+                        title={t('addCustomer')}
                         leftIcon={'back'}
                         titleRight
                     />
@@ -145,7 +148,7 @@ export const AddCustomer = ({ navigation }: AddCustomerScreenProps) => {
                                                 inputRounded
                                                 keyboardType={'number-pad'}
                                                 icon={<FontAwesome style={{ opacity: .6 }} name={'mobile-phone'} size={35} color={colors.text} />}
-                                                placeholder="Mobile number"
+                                                placeholder={t('mobileNumber')}
                                                 onChangeText={(mobile) => setCustomerDetail({ ...customerDetail, "mobile": mobile })}
                                                 maxlength={10}
                                             />
@@ -156,7 +159,7 @@ export const AddCustomer = ({ navigation }: AddCustomerScreenProps) => {
                                                     <Input
                                                         inputRounded
                                                         icon={<FontAwesome style={{ opacity: .6 }} name={'user'} size={30} color={colors.text} />}
-                                                        placeholder="Name"
+                                                        placeholder={t('name')}
                                                         onChangeText={(name) => setCustomerDetail({ ...customerDetail, "name": name })}
                                                     />
                                                 </View>
@@ -165,7 +168,7 @@ export const AddCustomer = ({ navigation }: AddCustomerScreenProps) => {
                                                         inputRounded
                                                         keyboardType={'number-pad'}
                                                         icon={<FontAwesome style={{ opacity: .6 }} name={'address-card'} size={30} color={colors.text} />}
-                                                        placeholder="Aadhaar Number"
+                                                        placeholder={t('aadhaarNumber')}
                                                         onChangeText={(aadhar) => setCustomerDetail({ ...customerDetail, "aadhar": aadhar })}
                                                         maxlength={12}
                                                     />
@@ -193,7 +196,7 @@ export const AddCustomer = ({ navigation }: AddCustomerScreenProps) => {
                                                 {/* Button for Sending Mobile OTP */}
                                                 {!isOtpSent && !isShowOtherFields && (
                                                     <Button
-                                                        title="Send OTP"
+                                                        title={t('sendOtp')}
                                                         onPress={handleSendOtp}
                                                     />
                                                 )}
@@ -201,7 +204,7 @@ export const AddCustomer = ({ navigation }: AddCustomerScreenProps) => {
                                                 {/* Button for Sending Aadhaar OTP - Shown if user does not exist */}
                                                 {isShowOtherFields && !isOtpSent && (
                                                     <Button
-                                                        title="Send Aadhaar OTP"
+                                                        title={t('sendAadhaarOtp')}
                                                         onPress={handleSendAadharOtp}
                                                     />
                                                 )}
@@ -209,7 +212,7 @@ export const AddCustomer = ({ navigation }: AddCustomerScreenProps) => {
                                                 {/* Button for Verifying OTP */}
                                                 {isOtpSent && (
                                                     <Button
-                                                        title="Verify OTP"
+                                                        title={t('verifyOtp')}
                                                         onPress={handleVerifyOtp}
                                                     />
                                                 )}
