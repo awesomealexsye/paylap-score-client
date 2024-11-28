@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, StyleSheet, ActivityIndicator } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { COLORS, FONTS, SIZES } from '../../constants/theme'
 import { GlobalStyleSheet } from '../../constants/StyleSheet'
 import { useTheme } from '@react-navigation/native'
@@ -14,6 +14,8 @@ import { MessagesService } from '../../lib/MessagesService'
 import Header from '../../layout/Header'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useTranslation } from 'react-i18next'
+import StorageService from '../../lib/StorageService'
+import CONFIG from '../../constants/config'
 
 
 type SignUpScreenProps = StackScreenProps<RootStackParamList, 'SignUp'>;
@@ -32,6 +34,13 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
     const [email, setEmail] = useState("");
     const [mobile, setMobile] = useState("");
     const [referralCode, setReferralCode] = useState("");
+
+    useEffect(() => {
+        StorageService.getStorage(CONFIG.HARDCODE_VALUES.REFFERAL_CODE).then((res: any) => {
+            // console.log("SEt Refferal", res)
+            setReferralCode(res);
+        })
+    }, [])
 
     const { t } = useTranslation();
     const sentOtp = async () => {
@@ -184,7 +193,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                                         onChangeText={(value) => setReferralCode(value)}
                                         isFocused={isFocused4}
                                         //inputBorder
-                                        defaultValue=''
+                                        defaultValue={referralCode}
                                         maxlength={30}
                                     />
                                 </View>

@@ -9,11 +9,33 @@ import store from './app/redux/store';
 import CommonService from './app/lib/CommonService';
 import Toast from 'react-native-toast-message';
 import './i18n';
+import { useEffect } from 'react';
+import { Linking } from 'react-native';
+import StorageService from './app/lib/StorageService';
 export default function App() {
 
 
   const theme = useTheme();
   const { colors }: { colors: any } = theme;
+
+  useEffect(() => {
+    const handleDeepLink = async () => {
+      const initialUrl = await Linking.getInitialURL();
+      if (initialUrl) {
+        const urlParams = new URL(initialUrl);
+        const referralCode = urlParams.searchParams.get("referralCode");
+        // const referralCode = "PAYLAP00125"
+        if (referralCode) {
+          // console.log("App Referral Code:", referralCode);
+          // StorageService.removeAllStorageValue([referralCode]);
+          StorageService.setStorage('referralCode', referralCode);
+          // Save or use the referral code as needed
+        }
+      }
+    };
+
+    handleDeepLink();
+  }, []);
 
   const [loaded] = useFonts({
     PoppinsBold: require('./app/assets/fonts/Poppins-Bold.ttf'),

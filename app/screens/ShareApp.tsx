@@ -34,20 +34,28 @@ const ShareApp = ({ navigation }: ShareAppProps) => {
 	const [userReferral, setUserReferral] = useState("");
 	const selector = Platform.OS === "ios" ? "& " : "?";
 
-	const PLAY_STORE_URL = CONFIG.APP_BUILD.ANDROID.APP_URL;
-	const APP_STORE_URL = CONFIG.APP_BUILD.IOS.APP_URL;
+	const DOWNLOAD_PLAY_STORE_URL = CONFIG.APP_BUILD.ANDROID.APP_URL;
+	const DOWNLOAD_APP_STORE_URL = CONFIG.APP_BUILD.IOS.APP_URL;
+	const [androidRefferal, setAndroidRefferal] = useState("");
+	const [iosRefferal, setIosRefferal] = useState("");
 
 	const { t } = useTranslation();
 	useEffect(() => {
 		CommonService.currentUserDetail().then((res) => {
 			setUserReferral(res?.refferal);
+			// setAndroidRefferal(DOWNLOAD_PLAY_STORE_URL + "&referralCode=" + res?.refferal)
+			// setIosRefferal(DOWNLOAD_APP_STORE_URL + "?referralCode=" + res?.refferal)
+
+			setAndroidRefferal(`${DOWNLOAD_PLAY_STORE_URL}&${CONFIG.HARDCODE_VALUES.REFFERAL_CODE}=${res?.refferal}`)
+			setIosRefferal(`${DOWNLOAD_APP_STORE_URL}?${CONFIG.HARDCODE_VALUES.REFFERAL_CODE}=${res?.refferal}`)
+
 		});
 	}, []);
 
 	const handleShareCode = async () => {
 		try {
 			await Share.share({
-				message: `🚀 Join PAYLAP Score Today! 🚀\n\nHey there! 📲 I’m using PAYLAP Score to manage finances easily, and it’s been a game-changer! You should try it too. Download the app and start managing your business effortlessly with just a few taps!\n\n💥 Use my referral code: **${userReferral}** to get started and unlock exciting features! 💥\n\n\n\n📱📱🔗 Download on Play Store: ${PLAY_STORE_URL}\n\n🔗 Download on Apple App Store: ${APP_STORE_URL}\n\nManage your business finances smarter and faster with PAYLAP Score! 📊`,
+				message: `🚀 Join PAYLAP Score Today! 🚀\n\nHey there! 📲 I’m using PAYLAP Score to manage finances easily, and it’s been a game-changer! You should try it too. Download the app and start managing your business effortlessly with just a few taps!\n\n💥 Use my referral code: **${userReferral}** to get started and unlock exciting features! 💥\n\n\n\n📱📱🔗 Download on Play Store: ${androidRefferal}\n\n🔗 Download on Apple App Store: ${iosRefferal}\n\nManage your business finances smarter and faster with PAYLAP Score! 📊`,
 			});
 		} catch (error) {
 			Alert.alert("SomeThing Went Wrong");
