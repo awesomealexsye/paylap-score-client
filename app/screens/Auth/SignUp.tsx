@@ -35,12 +35,12 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
     const [mobile, setMobile] = useState("");
     const [referralCode, setReferralCode] = useState("");
 
-    useEffect(() => {
-        StorageService.getStorage(CONFIG.HARDCODE_VALUES.REFFERAL_CODE).then((res: any) => {
-            // console.log("SEt Refferal", res)
-            setReferralCode(res);
-        })
-    }, [])
+    // useEffect(() => {
+    //     StorageService.getStorage(CONFIG.HARDCODE_VALUES.REFFERAL_CODE).then((res: any) => {
+    //         // console.log("SEt Refferal", res)
+    //         setReferralCode(res);
+    //     })
+    // }, [])
 
     const { t } = useTranslation();
     const sentOtp = async () => {
@@ -193,7 +193,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                                         onChangeText={(value) => setReferralCode(value)}
                                         isFocused={isFocused4}
                                         //inputBorder
-                                        defaultValue={referralCode}
+                                        defaultValue={''}
                                         maxlength={30}
                                     />
                                 </View>
