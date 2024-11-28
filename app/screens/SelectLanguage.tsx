@@ -82,6 +82,7 @@ const SelectLanguage = ({ navigation, route }: SelectLanguage) => {
                                     >
                                         <Text style={{ ...FONTS.font, color: colors.title, ...FONTS.fontMedium }}>English</Text>
                                         <RadioButton
+                                            onPress={() => handleLang('en')}
                                             value="en"
                                             status={langChecked === 'en' ? 'checked' : 'unchecked'}
                                         />
@@ -101,6 +102,7 @@ const SelectLanguage = ({ navigation, route }: SelectLanguage) => {
                                     >
                                         <Text style={{ ...FONTS.font, color: colors.title, ...FONTS.fontMedium }}>Hindi</Text>
                                         <RadioButton
+                                            onPress={() => handleLang('hi')}
                                             value="hi"
                                             status={langChecked === 'hi' ? 'checked' : 'unchecked'}
                                         />
@@ -121,6 +123,7 @@ const SelectLanguage = ({ navigation, route }: SelectLanguage) => {
                                     >
                                         <Text style={{ ...FONTS.font, color: colors.title, ...FONTS.fontMedium }}>Punjabi</Text>
                                         <RadioButton
+                                            onPress={() => handleLang('pa')}
                                             value="pa"
                                             status={langChecked === 'pa' ? 'checked' : 'unchecked'}
                                         />
@@ -140,6 +143,7 @@ const SelectLanguage = ({ navigation, route }: SelectLanguage) => {
                                     >
                                         <Text style={{ ...FONTS.font, color: colors.title, ...FONTS.fontMedium }}>Tamil</Text>
                                         <RadioButton
+                                            onPress={() => handleLang('ta')}
                                             value="ta"
                                             status={langChecked === 'ta' ? 'checked' : 'unchecked'}
                                         />

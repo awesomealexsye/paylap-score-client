@@ -18,9 +18,9 @@ const languageDetector: any = {
     type: 'languageDetector',
     async: true,
     detect: (callback: (language: string) => void) => {
-        // const bestLanguage = Localization.locale; // Use the current locale from Expo
-        const bestLanguage = "hi";
-        callback(bestLanguage || 'hi'); // Fallback to 'en' if no locale found
+        const bestLanguage = Localization.locale; // Use the current locale from Expo
+        // const bestLanguage = "hi";
+        callback(bestLanguage || 'en'); // Fallback to 'en' if no locale found
     },
     init: () => { },
     cacheUserLanguage: () => { },

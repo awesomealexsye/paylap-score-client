@@ -122,17 +122,17 @@ export const WithdrawalAmount = ({ navigation }: WithdrawalScreenProps) => {
                 <View style={{ flexDirection: 'row' }}>
                     <View style={{ marginLeft: 14 }}>
                         <View style={{ flexDirection: 'row', gap: 12 }}>
-                            <Text><FontAwesome style={{ color: item.status == "SUCCESS" ? COLORS.primary : item.status == "PENDING" || item.status == "PROCESSING" ? COLORS.warning : COLORS.danger }} name={item.status == "SUCCESS" ? 'check' : item.status == "PENDING" || item.status == "PROCESSING" ? 'refresh' : 'close'} size={20} /></Text>
-                            <Text style={{ ...styles.lastInteraction, color: item.status == "SUCCESS" ? COLORS.primary : item.status == "PENDING" || item.status == "PROCESSING" ? COLORS.warning : COLORS.danger }}>{item.status}</Text>
+                            <Text><FontAwesome style={{ color: item.status == "SUCCESS" ? COLORS.primary : item.status == "PENDING" || item.status == "PROCESSING" ? COLORS.warning : COLORS.danger }} name={item.status == "SUCCESS" ? 'check' : item.status == "PENDING" || item.status == "PROCESSING" ? 'refresh' : 'close'} size={14} /></Text>
+                            <Text style={{ ...styles.lastInteraction, color: item.status == "SUCCESS" ? COLORS.primary : item.status == "PENDING" || item.status == "PROCESSING" ? COLORS.warning : COLORS.danger, fontSize: 14 }}>{item.status}</Text>
 
                         </View>
-                        <Text style={{ color: colors.text, fontSize: 12 }}>{item.last_interaction}</Text>
-                        <Text style={{ fontSize: 13, color: !theme.dark ? "black" : 'white' }}>{item.receiver_account}</Text>
+                        <Text style={{ color: colors.text, fontSize: 10 }}>{item.last_interaction}</Text>
+                        <Text style={{ fontSize: 10, color: !theme.dark ? "black" : 'white' }}>{item.receiver_account}</Text>
                     </View>
                 </View>
             </View>
             <View style={{ flexDirection: "column", alignItems: "flex-end", position: "relative", justifyContent: 'center' }}>
-                <Text style={{ color: item.status == "SUCCESS" ? COLORS.primary : item.status == "PENDING" || item.status == "PROCESSING" ? COLORS.warning : COLORS.danger, fontSize: 15, fontWeight: "900" }}>₹ {(item.amount).toLocaleString()}</Text>
+                <Text style={{ color: item.status == "SUCCESS" ? COLORS.primary : item.status == "PENDING" || item.status == "PROCESSING" ? COLORS.warning : COLORS.danger, fontSize: 13, fontWeight: "900" }}>₹ {(item.amount).toLocaleString()}</Text>
                 {/* <Text style={[styles.type, { color: colors.title }]}>₹ {item.amount}</Text> */}
             </View>
         </View>
@@ -306,6 +306,7 @@ const styles = StyleSheet.create({
     balanceContainer: {
         flexDirection: 'row', // Aligns children in a row
         alignItems: 'center', // Centers items vertically
+        marginBottom: 12
     },
     label: {
         marginRight: 5, // Adds space between label and amount
