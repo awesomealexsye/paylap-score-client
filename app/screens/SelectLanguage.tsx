@@ -17,27 +17,27 @@ type SelectLanguage = StackScreenProps<RootStackParamList, 'SelectLanguage'>;
 
 const SelectLanguage = ({ navigation, route }: SelectLanguage) => {
 
-    const { fromPage }: any = route.params ?? '';
+    // const { fromPage }: any = route.params ?? '';
 
-    if (fromPage != 'Profile') {
-        StorageService.isLoggedIn().then((is_login) => {
-            if (is_login) {
-                navigation.replace("DrawerNavigation", { screen: 'Home' });
-            } else {
-                isLanguageSet().then((res) => {
-                    if (res != null) {
-                        navigation.navigate("MobileSignIn")
-                    }
-                })
-            }
-        })
-    } else {
-        isLanguageSet().then((res) => {
-            if (res != null) {
-                setLangChecked(res);
-            }
-        })
-    }
+    // if (fromPage != 'Profile') {
+    //     StorageService.isLoggedIn().then((is_login) => {
+    //         if (is_login) {
+    //             navigation.replace("DrawerNavigation", { screen: 'Home' });
+    //         } else {
+    //             isLanguageSet().then((res) => {
+    //                 if (res != null) {
+    //                     navigation.navigate("MobileSignIn")
+    //                 }
+    //             })
+    //         }
+    //     })
+    // } else {
+    //     isLanguageSet().then((res) => {
+    //         if (res != null) {
+    //             setLangChecked(res);
+    //         }
+    //     })
+    // }
 
 
     const theme = useTheme();
@@ -156,7 +156,7 @@ const SelectLanguage = ({ navigation, route }: SelectLanguage) => {
                                             if (is_login) {
                                                 navigation.replace("DrawerNavigation", { screen: 'Home' });
                                             } else {
-                                                navigation.navigate("Onboarding")
+                                                navigation.navigate("MobileSignIn")
                                             }
                                         })
                                     }} />

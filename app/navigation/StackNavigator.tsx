@@ -89,7 +89,7 @@ const StackNavigator = () => {
 	return (
 		<View style={{ width: '100%', flex: 1 }}>
 			<Stack.Navigator
-				initialRouteName='SelectLanguage'
+				initialRouteName='Onboarding'
 				screenOptions={{
 					headerShown: false,
 					cardStyle: { backgroundColor: "transparent" },

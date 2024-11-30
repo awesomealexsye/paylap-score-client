@@ -130,8 +130,8 @@ const Onboarding = ({ navigation }: OnboardingScreenProps) => {
                 <View style={[GlobalStyleSheet.container, { padding: 0, paddingHorizontal: 30, paddingBottom: 30 }]}>
                     <Button
                         style={{ borderRadius: 52 }}
-                        title="Log In"
-                        onPress={() => navigation.navigate('MobileSignIn')}
+                        title={t('selectLanguage')}
+                        onPress={() => navigation.navigate('SelectLanguage')}
                     />
                 </View>
             </ScrollView>
