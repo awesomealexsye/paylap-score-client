@@ -16,6 +16,7 @@ import CommonService from '../../lib/CommonService';
 import StorageService from '../../lib/StorageService';
 import ImageSwiper from '../../components/ImageSwiper';
 import { useTranslation } from 'react-i18next';
+import i18n from '../../../i18n';
 interface Customer {
     id: string;
     customer_id: string;
@@ -46,6 +47,11 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
 
     useEffect(() => {
+        StorageService.isLanguageSet().then((res) => {
+            if (res != null) {
+                i18n.changeLanguage(res);
+            }
+        })
         // fetchImageList();
         const handleBackPress = () => {
             if (navigation.isFocused() && navigation.getState().routes[navigation.getState().index].name === 'Home') {

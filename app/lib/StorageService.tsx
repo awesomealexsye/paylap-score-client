@@ -31,7 +31,11 @@ const StorageService = {
     } else {
       return false;
     }
+  },
+  async isLanguageSet() {
+    return await this.getStorage(CONFIG.HARDCODE_VALUES.SET_LANGUAGE);
   }
 };
+
 
 export default StorageService;

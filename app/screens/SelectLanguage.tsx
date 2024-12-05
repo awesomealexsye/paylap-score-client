@@ -17,37 +17,22 @@ type SelectLanguage = StackScreenProps<RootStackParamList, 'SelectLanguage'>;
 
 const SelectLanguage = ({ navigation, route }: SelectLanguage) => {
 
-    // const { fromPage }: any = route.params ?? '';
-
-    // if (fromPage != 'Profile') {
-    //     StorageService.isLoggedIn().then((is_login) => {
-    //         if (is_login) {
-    //             navigation.replace("DrawerNavigation", { screen: 'Home' });
-    //         } else {
-    //             isLanguageSet().then((res) => {
-    //                 if (res != null) {
-    //                     navigation.navigate("MobileSignIn")
-    //                 }
-    //             })
-    //         }
-    //     })
-    // } else {
-    //     isLanguageSet().then((res) => {
-    //         if (res != null) {
-    //             setLangChecked(res);
-    //         }
-    //     })
-    // }
-
-
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
 
     const [langChecked, setLangChecked] = React.useState('en');
 
-    function isLanguageSet() {
-        return StorageService.getStorage(CONFIG.HARDCODE_VALUES.SET_LANGUAGE);
-    }
+    useEffect(() => {
+        StorageService.isLanguageSet().then((res) => {
+            if (res != null) {
+                i18n.changeLanguage(res);
+                setLangChecked(res);
+            }
+        })
+    }, [])
+    // function isLanguageSet() {
+    //     return StorageService.getStorage(CONFIG.HARDCODE_VALUES.SET_LANGUAGE);
+    // }
 
     const handleLang = (lang: string) => {
         setLangChecked(lang);
