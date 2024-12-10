@@ -12,12 +12,12 @@ const ImageSwiper = ({ data }: any) => {
 
 
 
-  const [newData] = useState(data
-    // [
-    //   { key: 'space-left' },
-    //   ...data,
-    //   { key: 'space-right' },
-    // ]
+  const [newData] = useState(
+    [
+      // { key: 'space-left' },
+      ...data,
+      // { key: 'space-right' },
+    ]
   );
 
   const [activeIndex, setActiveIndex] = useState(0);

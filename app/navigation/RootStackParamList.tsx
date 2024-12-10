@@ -101,5 +101,14 @@ export type RootStackParamList = {
     WithdrawalAmount: undefined;
     SelectLanguage: any;
 
+    AddCompany: any;
+    ListCompany: any;
+    InvoiceGenList: any;
+    AddInvoiceDetails: { items: any };
+    AddItems: { items: any };
+    ChooseInvoiceDesign: any;
+
+    FinalInvoiceResult: any;
+
 
 };

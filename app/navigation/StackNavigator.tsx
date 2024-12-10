@@ -78,6 +78,13 @@ import LedgerCustomerTransationsDetails from '../screens/LedgerBook/LedgerCustom
 import LedgerAddPayment from '../screens/LedgerBook/LedgerAddPayment';
 import WithdrawalAmount from '../screens/Refferal/WithdrawalAmount';
 import SelectLanguage from '../screens/SelectLanguage';
+import { AddCompany } from '../screens/InvoiceGenerator/AddCompany';
+import ListCompany from '../screens/InvoiceGenerator/ListCompany';
+import InvoiceGenList from '../screens/InvoiceGenerator/InvoiceGenList';
+import AddItems from '../screens/InvoiceGenerator/AddItems';
+import ChooseInvoiceDesign from '../screens/InvoiceGenerator/ChooseInvoiceDesign';
+import FinalInvoiceResult from '../screens/InvoiceGenerator/FinalInvoiceResult';
+import AddInvoiceDetails from '../screens/InvoiceGenerator/AddInvoiceDetails';
 
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -174,6 +181,14 @@ const StackNavigator = () => {
 				<Stack.Screen name="LedgerAddPayment" component={LedgerAddPayment} />
 				<Stack.Screen name="LedgerCustomerTransationsDetails" component={LedgerCustomerTransationsDetails} />
 				<Stack.Screen name="SelectLanguage" component={SelectLanguage} />
+
+				<Stack.Screen name="AddCompany" component={AddCompany} />
+				<Stack.Screen name="ListCompany" component={ListCompany} />
+				<Stack.Screen name="InvoiceGenList" component={InvoiceGenList} />
+				<Stack.Screen name="AddInvoiceDetails" component={AddInvoiceDetails} />
+				<Stack.Screen name="AddItems" component={AddItems} />
+				<Stack.Screen name="ChooseInvoiceDesign" component={ChooseInvoiceDesign} />
+				<Stack.Screen name="FinalInvoiceResult" component={FinalInvoiceResult} />
 
 			</Stack.Navigator>
 		</View>

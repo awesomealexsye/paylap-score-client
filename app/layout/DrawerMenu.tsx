@@ -63,6 +63,12 @@ const DrawerMenu = () => {
             navigate: "ShareApp",
         },
         {
+            id: "6",
+            icon: IMAGES.list,
+            name: t('Invoice'),
+            navigate: "ListCompany",
+        },
+        {
             id: "7",
             icon: IMAGES.logout,
             name: t('logout'),

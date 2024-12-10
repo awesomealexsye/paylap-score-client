@@ -52,6 +52,9 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 i18n.changeLanguage(res);
             }
         })
+    }, [])
+    useEffect(() => {
+
         // fetchImageList();
         const handleBackPress = () => {
             if (navigation.isFocused() && navigation.getState().routes[navigation.getState().index].name === 'Home') {
