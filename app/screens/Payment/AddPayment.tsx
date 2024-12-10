@@ -21,7 +21,7 @@ type AddPaymentScreenProps = StackScreenProps<RootStackParamList, 'AddPayment'>;
 
 const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
     const { item, transaction_type, existPayment }: any = route.params;
-    console.log("AddPayment", item)
+
 
     const { image, pickImage, takePhoto }: any = useImagePicker();
 
@@ -42,7 +42,6 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
 
     useFocusEffect(
         useCallback(() => {
-            console.log("item", existPayment, typeof (item.transaction_id), (item.transaction_id),)
             setButtonText("Send OTP")
         }, [])
     )
@@ -192,7 +191,7 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
 
                                 </View> */}
 
-                                {transaction_type === 'DEBIT' && <View>
+                                {transaction_type === 'DEBIT' && existPayment == false && <View>
                                     <Text>Last Date</Text>
                                     <ButtonIcon onPress={() => showDatepicker('Given Date')}
                                         size={'sm'}

@@ -9,6 +9,7 @@ import { COLORS, FONTS } from '../constants/theme';
 import { ApiService } from '../lib/ApiService';
 import { GlobalStyleSheet } from '../constants/StyleSheet';
 import { IMAGES } from '../constants/Images';
+import { useTranslation } from 'react-i18next';
 
 type TermsDataItem = {
 	heading: string;
@@ -23,6 +24,7 @@ const TermsAndConditionsScreen = ({ navigation, route }: TermsAndConditionsScree
 	const theme = useTheme();
 	const { colors }: { colors: any; } = theme;
 	const [termsData, setTermsData] = useState<any>([]);
+	const { t } = useTranslation();
 	// const [termsData, setTermsData] = useState<Term[]>([]);
 
 	useEffect(() => {
@@ -36,7 +38,7 @@ const TermsAndConditionsScreen = ({ navigation, route }: TermsAndConditionsScree
 		<View style={{ backgroundColor: colors.background, flex: 1 }}>
 
 			<Header
-				title=' Our Policy'
+				title={t('ourPolicy')}
 				leftIcon='back'
 				titleRight
 			/>

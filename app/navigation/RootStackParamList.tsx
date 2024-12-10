@@ -95,7 +95,20 @@ export type RootStackParamList = {
     // ledgerbook
     LedgerMain: undefined;
     LedgerAddCustomer: undefined;
-    LedgerCustomerDetails: { customer: any };
+    LedgerCustomerDetails: { item: any };
+    LedgerAddPayment: object | undefined;
+    LedgerCustomerTransationsDetails: { customer: any };
+    WithdrawalAmount: undefined;
+    SelectLanguage: any;
+
+    AddCompany: any;
+    ListCompany: any;
+    InvoiceGenList: any;
+    AddInvoiceDetails: { items: any };
+    AddItems: { items: any };
+    ChooseInvoiceDesign: any;
+
+    FinalInvoiceResult: any;
 
 
 };

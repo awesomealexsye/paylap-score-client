@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity, Modal, StyleSheet, Linking, Platform } from 'react-native';
+import { View, Text, Image, ScrollView, TouchableOpacity, Modal, StyleSheet, Linking, Platform, Alert } from 'react-native';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import { IMAGES } from '../constants/Images';
 import { COLORS, FONTS } from '../constants/theme';
@@ -13,69 +13,84 @@ import CommonService from '../lib/CommonService';
 import ButtonIcon from '../components/Button/ButtonIcon';
 import Constants from 'expo-constants';
 import CONFIG from '../constants/config';
+import { useTranslation } from 'react-i18next';
 
-const MenuItems = [
-    {
-        id: "1",
-        icon: IMAGES.home,
-        name: "Home",
-        navigate: "Home",
-    },
-
-    {
-        id: "2",
-        icon: IMAGES.tachometerfast,
-        name: "My Cibil",
-        navigate: 'CustomerScore',
-    },
-    {
-        id: "3",
-        icon: IMAGES.help,
-        name: "Support",
-        navigate: 'CustomerSupport',
-    },
-    {
-        id: "4",
-        icon: IMAGES.termandCondition,
-        name: "Our Policy",
-        navigate: 'TermsAndConditionsScreen',
-    },
-
-    {
-        id: "5",
-        icon: IMAGES.share,
-        name: "Share",
-        navigate: "ShareApp",
-    },
-    {
-        id: "6",
-        icon: IMAGES.logout,
-        name: "Logout",
-        navigate: 'MobileSignIn',
-    },
-];
-
-const { OS } = Platform;
-type AppConfig = {
-    ANDROID: {
-        IS_MANDATORY: boolean;
-        VERSION_CODE: number;
-        VERSION_NAME: string;
-        VERSION_MESSAGE: string
-    },
-    IOS: {
-        IS_MANDATORY: boolean;
-        VERSION_CODE: number;
-        VERSION_NAME: string;
-        VERSION_MESSAGE: string
-    }
-};
 
 interface InstalledAppBuild {
     APP_VERSION: number;
     APP_VERSION_NAME: string;
 }
 const DrawerMenu = () => {
+
+    const { t } = useTranslation();
+
+    const MenuItems = [
+        {
+            id: "1",
+            icon: IMAGES.home,
+            name: t('home'),
+            navigate: "Home",
+        },
+        {
+            id: "2",
+            icon: IMAGES.wallet2,
+            name: t('withdrawal'),
+            navigate: 'WithdrawalAmount',
+        },
+        {
+            id: "3",
+            icon: IMAGES.tachometerfast,
+            name: t('myCibil'),
+            navigate: 'CustomerScore',
+        },
+        {
+            id: "4",
+            icon: IMAGES.help,
+            name: t('support'),
+            navigate: 'CustomerSupport',
+        },
+        {
+            id: "5",
+            icon: IMAGES.termandCondition,
+            name: t('ourPolicy'),
+            navigate: 'TermsAndConditionsScreen',
+        },
+
+        {
+            id: "6",
+            icon: IMAGES.share,
+            name: t('share'),
+            navigate: "ShareApp",
+        },
+        {
+            id: "6",
+            icon: IMAGES.list,
+            name: t('Invoice'),
+            navigate: "ListCompany",
+        },
+        {
+            id: "7",
+            icon: IMAGES.logout,
+            name: t('logout'),
+            navigate: 'MobileSignIn',
+        },
+    ];
+
+    const { OS } = Platform;
+    type AppConfig = {
+        ANDROID: {
+            IS_MANDATORY: boolean;
+            VERSION_CODE: number;
+            VERSION_NAME: string;
+            VERSION_MESSAGE: string
+        },
+        IOS: {
+            IS_MANDATORY: boolean;
+            VERSION_CODE: number;
+            VERSION_NAME: string;
+            VERSION_MESSAGE: string
+        }
+    };
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigation = useNavigation<any>();
@@ -113,11 +128,28 @@ const DrawerMenu = () => {
     // }, [appInfo]);
 
     const handleLogout = async () => {
-        const is_logout = await StorageService.logOut();
-        if (is_logout) {
-            navigation.navigate("MobileSignIn");
-        }
+        Alert.alert(
+            t('confirmation'),
+            t('confirmationDesc'),
+            [
+                {
+                    text: "No",
+                    style: "cancel",
+                    onPress: () => console.log("Cancelled"),
+                },
+                {
+                    text: "Yes",
+                    onPress: async () => {
+                        const is_logout = await StorageService.logOut();
+                        if (is_logout) {
+                            navigation.navigate("MobileSignIn");
+                        }
+                    },
+                },
+            ]
+        );
     };
+
     const handleCibilFunc = async () => {
         let user_id = await StorageService.getStorage(CONFIG.HARDCODE_VALUES.USER_ID);
         navigation.navigate("CustomerScore", { customer: { id: user_id } });
@@ -174,7 +206,7 @@ const DrawerMenu = () => {
                         paddingBottom: 20
                     }]}
                 >
-                    <Text style={{ ...FONTS.fontSemiBold, fontSize: 20, color: theme.colors.title }}>Main Menu</Text>
+                    <Text style={{ ...FONTS.fontSemiBold, fontSize: 20, color: theme.colors.title }}>{t('mainMenu')}</Text>
                     <TouchableOpacity
                         onPress={() => dispatch(closeDrawer())}
                         activeOpacity={0.5}
@@ -189,10 +221,10 @@ const DrawerMenu = () => {
                                 activeOpacity={0.7}
                                 onPress={() => {
                                     data.navigate === "DrawerNavigation" ? dispatch(closeDrawer()) : dispatch(closeDrawer());
-                                    if (data.name == "Logout") {
+                                    if (data.name == t('logout')) {
                                         handleLogout();
                                     }
-                                    else if (data.name == "My Cibil") {
+                                    else if (data.name == t('myCibil')) {
                                         handleCibilFunc();
                                     }
                                     else {
@@ -228,7 +260,7 @@ const DrawerMenu = () => {
                 </View>
                 <View style={{ paddingVertical: 15, paddingHorizontal: 10 }}>
                     <Text style={{ ...FONTS.fontMedium, fontSize: 16, color: theme.colors.title }}>Paylap Score</Text>
-                    <Text style={{ ...FONTS.fontMedium, fontSize: 12, color: theme.colors.title }}>App Version {installedAppBuild.APP_VERSION_NAME}</Text>
+                    <Text style={{ ...FONTS.fontMedium, fontSize: 12, color: theme.colors.title }}>{t('appVersion')} {installedAppBuild.APP_VERSION_NAME}</Text>
                 </View>
             </View>
 

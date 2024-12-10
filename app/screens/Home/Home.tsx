@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList, BackHandler, ActivityIndicator, Platform, Button, RefreshControl } from 'react-native';
+import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, RefreshControl, FlatList, BackHandler, ActivityIndicator } from 'react-native';
 import { useTheme, useFocusEffect } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { IMAGES } from '../../constants/Images';
@@ -15,11 +15,13 @@ import { ApiService } from '../../lib/ApiService';
 import CommonService from '../../lib/CommonService';
 import StorageService from '../../lib/StorageService';
 import ImageSwiper from '../../components/ImageSwiper';
-import SliderModal from '../../components/SliderModal';
+import { useTranslation } from 'react-i18next';
+import i18n from '../../../i18n';
 interface Customer {
     id: string;
     customer_id: string;
     name: string;
+    mobile: string;
     amount: string;
     joined_at: string;
     latest_updated_at: string;
@@ -32,6 +34,7 @@ interface Customer {
 type HomeScreenProps = StackScreenProps<RootStackParamList, 'Home'>
 
 export const Home = ({ navigation }: HomeScreenProps) => {
+    const { t } = useTranslation();
 
     const [searchText, setSearchText] = useState('');
     const [customersData, setCustomersData] = useState<any>([]);
@@ -40,7 +43,19 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const [userDetail, setUserDetail] = useState({ name: "", profile_image: "", aadhar_card: "", notification_count: 0 });
     const [isLoading, setIsLoading] = useState<any>(false);
     const [isRefreshing, setIsRefreshing] = useState<any>(false);
+    const [imageData, setImageData] = useState<any>([]);
+
+
     useEffect(() => {
+        StorageService.isLanguageSet().then((res) => {
+            if (res != null) {
+                i18n.changeLanguage(res);
+            }
+        })
+    }, [])
+    useEffect(() => {
+
+        // fetchImageList();
         const handleBackPress = () => {
             if (navigation.isFocused() && navigation.getState().routes[navigation.getState().index].name === 'Home') {
                 BackHandler.exitApp();
@@ -58,6 +73,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     useFocusEffect(
         useCallback(() => {
             fetchCustomerList();
+            // fetchImageList();
             StorageService.isLoggedIn().then(res => { res === false ? navigation.navigate("MobileSignIn") : null; });
             CommonService.currentUserDetail().then((res) => {
                 setUserDetail(res);
@@ -117,6 +133,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                 color: colors.title, ...FONTS.fontSemiBold,
                                 fontSize: SIZES.font,
                             }}>{item.name.split(' ').slice(0, 2).join(' ')}</Text>
+                            <Text style={{ color: colors.title, fontSize: SIZES.fontSm }}>{item.mobile}</Text>
                             <Text style={{ color: colors.title, fontSize: SIZES.fontSm }}>{item.latest_updated_at}</Text>
                         </View>
 
@@ -264,11 +281,11 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                     fontSize: SIZES.fontSm,
                                     color: COLORS.primaryLight,
 
-                                }}>Credit Amt.</Text>
+                                }}>{t('creditAmount')}</Text>
                                 <Text style={{
                                     ...FONTS.fontSemiBold,
                                     fontSize: homeBanner?.debit?.length < 10 ? SIZES.fontLg : SIZES.fontSm,
-                                    color: COLORS.secondary
+                                    color: COLORS.white
                                 }}>₹ {homeBanner?.credit}</Text>
                             </View>
                             <View style={{
@@ -279,10 +296,10 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                     ...FONTS.fontBold,
                                     fontSize: SIZES.fontSm,
                                     color: COLORS.primaryLight
-                                }}>Debit Amt.</Text>
+                                }}>{t('debitAmount')}</Text>
                                 <Text style={{
                                     ...FONTS.fontSemiBold, fontSize: homeBanner?.debit?.length < 10 ? SIZES.fontLg : SIZES.fontSm,
-                                    color: COLORS.danger, left: 5
+                                    color: COLORS.white, left: 5
                                 }}>₹ {homeBanner?.debit}</Text>
                             </View>
                         </View>
@@ -293,7 +310,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                         color: COLORS.white, ...FONTS.fontBold, fontSize: SIZES.fontSm,
 
                                     }}>
-                                        VIEW REPORT
+                                        {t('viewReport')}
                                         <Feather name='arrow-right' size={15} color={COLORS.white} />
                                     </Text>
                                 </TouchableOpacity>
@@ -308,8 +325,13 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 <View style={[GlobalStyleSheet.container, { paddingHorizontal: 30, paddingTop: 30 }]}>
                     <View>
                         <TextInput
-                            placeholder='Search Customer'
-                            style={[styles.TextInput, { color: colors.title, backgroundColor: colors.card, ...FONTS.fontSemiBold, borderColor: colors.borderColor, borderWidth: 0.2 }]}
+                            placeholder={t('searchCustomer')}
+                            style={[styles.TextInput,
+                            {
+                                color: colors.title,
+                                backgroundColor: colors.card,
+                                ...FONTS.fontSemiBold, borderColor: colors.borderColor, borderWidth: 0.2
+                            }]}
                             placeholderTextColor={'#929292'}
                             value={searchText}
                             onChangeText={handleSearch} />
@@ -335,8 +357,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
             </ScrollView >
             <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("AddCustomer")}>
                 <FontAwesome style={{ marginRight: 6, color: COLORS.white }} name={'user-plus'} size={20} />
-                <Text style={styles.addButtonText}>
-                    Add Customer</Text>
+                <Text style={styles.addButtonText}>{t('addCustomer')}</Text>
             </TouchableOpacity>
         </View >
     );

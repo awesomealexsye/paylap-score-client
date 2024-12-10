@@ -8,27 +8,14 @@ import { COLORS, FONTS, SIZES } from '../../constants/theme';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import Button from '../../components/Button/Button';
 import StorageService from '../../lib/StorageService';
+import { useTranslation } from 'react-i18next';
 
-
-const DATA = [
-    {
-        title: "Welcome to PaylapScore",
-        subtitle: "Discover an efficient way to track your customer’s credit behavior, manage lent items, and streamline your business with smart analytics."
-    },
-    {
-        title: "Find Customer Credit Score",
-        subtitle: "Quickly access and analyze detailed credit scores for your customers, ensuring informed lending decisions and fostering trust."
-    },
-    {
-        title: "100% Safe And Secure",
-        subtitle: "Your data and transactions are fully encrypted, ensuring a secure and private environment for your shop and customers."
-    }
-]
 
 type OnboardingScreenProps = StackScreenProps<RootStackParamList, 'Onboarding'>;
 
 const Onboarding = ({ navigation }: OnboardingScreenProps) => {
     StorageService.isLoggedIn().then((is_login) => {
+        // console.log("is_logged_in", is_login);
         if (is_login) {
             navigation.replace("DrawerNavigation", { screen: 'Home' });
         }
@@ -37,6 +24,22 @@ const Onboarding = ({ navigation }: OnboardingScreenProps) => {
 
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
+
+    const { t } = useTranslation();
+    const DATA = [
+        {
+            title: t("onboardingTitle1"),
+            subtitle: t("onboardingSubstitle1"),
+        },
+        {
+            title: t("onboardingTitle2"),
+            subtitle: t("onboardingSubstitle2"),
+        },
+        {
+            title: t("onboardingTitle3"),
+            subtitle: t("onboardingSubstitle3"),
+        }
+    ]
 
     const IndexData = ["01", "02", "03"]
 
@@ -127,8 +130,8 @@ const Onboarding = ({ navigation }: OnboardingScreenProps) => {
                 <View style={[GlobalStyleSheet.container, { padding: 0, paddingHorizontal: 30, paddingBottom: 30 }]}>
                     <Button
                         style={{ borderRadius: 52 }}
-                        title="Log In"
-                        onPress={() => navigation.navigate('MobileSignIn')}
+                        title={t('selectLanguage')}
+                        onPress={() => navigation.navigate('SelectLanguage')}
                     />
                 </View>
             </ScrollView>

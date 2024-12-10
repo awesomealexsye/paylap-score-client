@@ -8,6 +8,7 @@ import SwipeBox from '../../components/SwipeBox';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { COLORS, FONTS, SIZES } from '../../constants/theme';
 import { ApiService } from '../../lib/ApiService';
+import { useTranslation } from 'react-i18next';
 
 
 const SwipeData: any = []
@@ -18,6 +19,8 @@ const Notification = () => {
     useEffect(() => {
         getNotificationRecords();
     }, []);
+
+    const { t } = useTranslation();
 
     const getNotificationRecords = () => {
         ApiService.postWithToken("api/fetch_admin/notification", {}).then((res: any) => {
@@ -42,7 +45,7 @@ const Notification = () => {
     return (
         <View style={{ backgroundColor: colors.background, flex: 1 }}>
             <Header
-                title='Notifications'
+                title={t('notification')}
                 leftIcon='back'
                 titleRight
             />

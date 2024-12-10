@@ -14,6 +14,7 @@ import StorageService from '../../lib/StorageService';
 import CONFIG from '../../constants/config';
 import Header from '../../layout/Header';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTranslation } from 'react-i18next';
 
 
 
@@ -27,6 +28,8 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
 
     const [isFocused, setisFocused] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const { t } = useTranslation();
+
 
     const [isDisabled, setIsDisabled] = useState(true);
     const [isBtnDisabled, setIsBtnDisabled] = useState(true);
@@ -162,14 +165,14 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
                             fontSize: SIZES.font,
                             color: colors.title,
                             marginVertical: 10,
-                        }}>{`OTP sent to this Mobile Number ${mobile}`}</Text>
+                        }}>{`${t('otpSendDesc')} ${mobile}`}</Text>
 
                         <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
                             <Text style={{
                                 color: colors.title,
                                 ...FONTS.fontMedium,
                                 fontSize: SIZES.fontSm,
-                            }}>Enter OTP</Text>
+                            }}>{t('enterOtp')}</Text>
                         </View>
                         <View style={{ marginVertical: 10, }}>
                             <Input
@@ -185,16 +188,17 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
                                 isFocused={isFocused}
                                 //inputBorder
                                 defaultValue=''
+                                maxlength={6}
                             />
                         </View>
                         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                             < Text style={{ ...FONTS.fontSemiBold, textAlign: "right", color: isDisabled ? COLORS.warning : COLORS.primary, }}>
-                                {isDisabled ? `Time remaining : ${formatTime(timeLeft)}` : "Now Resend OTP"}
+                                {isDisabled ? `${t('timeRemaining')} : ${formatTime(timeLeft)}` : t('nowresendOtp')}
                             </Text>
                             <TouchableOpacity onPress={handleResend} disabled={isDisabled}>
                                 <View style={{ backgroundColor: isDisabled ? "grey" : COLORS.primary, borderRadius: 10, padding: 8 }} >
                                     < Text style={{ ...FONTS.fontSm, textAlign: "right", color: COLORS.backgroundColor, }}>
-                                        Resend OTP
+                                        {t('resendOtp')}
                                     </Text>
 
                                 </View>
@@ -208,7 +212,7 @@ const OtpVerify = ({ navigation, route }: SingInScreenProps) => {
                                 isLoading === false ?
                                     <Button
                                         disabled={isBtnDisabled}
-                                        title={"Verify"}
+                                        title={t('verify')}
                                         onPress={verifyOtp}
                                         style={{ borderRadius: 15 }}
                                         color={isBtnDisabled ? "grey" : COLORS.primary}

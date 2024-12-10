@@ -12,6 +12,7 @@ import { ApiService } from '../../lib/ApiService';
 import { MessagesService } from '../../lib/MessagesService';
 import StorageService from '../../lib/StorageService';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTranslation } from 'react-i18next';
 
 type SingInScreenProps = StackScreenProps<RootStackParamList, 'MobileSignIn'>;
 
@@ -26,6 +27,8 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
 
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
+
+    const { t } = useTranslation();
 
     const [isLoading, setIsLoading] = useState(false);
     const [isFocused, setisFocused] = useState(false);
@@ -95,7 +98,7 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
                                     fontSize: SIZES.font,
                                     color: COLORS.background,
                                     marginTop: 10,
-                                }}>Welcome Back!</Text>
+                                }}>{t('welcome')}!</Text>
                             </View>
                         </View>
 
@@ -112,10 +115,11 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
                                 <Text style={{
                                     color: colors.title, ...FONTS.fontMedium,
                                     fontSize: SIZES.font,
-                                }}>Mobile Number</Text>
+                                }}>{t('mobileNumber')}</Text>
                             </View>
                             <View style={{ marginVertical: 10 }}>
                                 <Input
+                                    maxlength={10}
                                     keyboardType="numeric"
                                     onFocus={() => setisFocused(true)}
                                     onBlur={() => setisFocused(false)}
@@ -131,18 +135,18 @@ const MobileSignIn = ({ navigation }: SingInScreenProps) => {
                                 {
                                     !isLoading ?
                                         <Button
-                                            title={"Send OTP"}
+                                            title={t('sendOtp')}
                                             onPress={sentOtp}
                                             style={{ borderRadius: 15 }}
                                         /> : <ActivityIndicator color={COLORS.primary} size={70} />
                                 }
                             </View>
                             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", margin: 40 }}>
-                                <Text style={{ ...FONTS.fontMedium, color: colors.title }}>Don't have an account? </Text>
+                                <Text style={{ ...FONTS.fontMedium, color: colors.title }}>{t('registerDesc')}</Text>
                                 <TouchableOpacity
                                     onPress={() => navigation.navigate('SignUp')}
                                 >
-                                    <Text style={{ ...FONTS.fontBold, color: COLORS.primary }}> Register </Text>
+                                    <Text style={{ ...FONTS.fontBold, color: COLORS.primary }}> {t('register')} </Text>
                                 </TouchableOpacity>
                             </View>
                         </View>

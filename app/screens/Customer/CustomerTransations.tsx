@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useEffect, useCallback, useTransition } from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, FlatList, Linking, Alert, ActivityIndicator } from 'react-native';
 import { useTheme, useFocusEffect } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
@@ -14,6 +14,8 @@ import { ApiService } from '../../lib/ApiService';
 import CommonService from '../../lib/CommonService';
 import { MessagesService } from '../../lib/MessagesService';
 import CONFIG from '../../constants/config';
+import ButtonIcon from '../../components/Button/ButtonIcon';
+import { useTranslation } from 'react-i18next';
 
 
 interface Customer {
@@ -40,6 +42,8 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
 
     const PLAY_STORE_URL = CONFIG.APP_BUILD.ANDROID.APP_URL;
     const APP_STORE_URL = CONFIG.APP_BUILD.IOS.APP_URL;
+
+    const { t } = useTranslation();
 
     useFocusEffect(
         useCallback(() => {
@@ -84,7 +88,6 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
     const send_sms = () => {
         CommonService.currentUserDetail().then((res) => {
             const defaultMessage = `Dear Sir / Madam, Your payment of ₹ ${item.amount} is pending at ${res.name}(${res.mobile}).Open Paylapscore app for view the details and make the payment.💥\n\n\n\n📱📱🔗 Download on Play Store: ${PLAY_STORE_URL}\n\n🔗 Download on Apple App Store: ${APP_STORE_URL}`;
-            console.log(defaultMessage);
             const sms = `sms:${item.customer.mobile}?body=${defaultMessage}`;
             Linking.openURL(sms);
         })
@@ -97,7 +100,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
 
 
     const renderCustomer = ({ item }: { item: Customer }) => (
-        <TouchableOpacity onPress={() => navigation.navigate("CustomerTransationsDetails", { customer: item })
+        <TouchableOpacity onPress={() => { }
         }>
             <View style={[styles.customerItem, { backgroundColor: colors.card, },
                 // !theme.dark && { elevation: 2 }
@@ -117,6 +120,21 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                 <View style={{ flexDirection: "column", alignItems: "flex-end", position: "relative", justifyContent: 'center' }}>
                     <Text style={{ color: item.transaction_type === "CREDIT" ? COLORS.primaryLight : COLORS.danger, fontSize: 15, fontWeight: "900" }}>₹ {parseInt(item.amount).toLocaleString()}</Text>
                     <Text style={[styles.type, { color: colors.title }]}>{item.transaction_type}</Text>
+                </View>
+                <View style={{ flexDirection: "column", alignItems: "flex-end", position: "relative", justifyContent: 'center' }}>
+                    <ButtonIcon
+                        onPress={() => navigation.navigate("CustomerTransationsDetails", { customer: item })}
+                        title={t('view')}
+                        color={theme.dark ? COLORS.darkCard : COLORS.white}
+                        textColor={theme.dark ? COLORS.white : COLORS.primary}
+                        iconDirection='right'
+                        size={14}
+                        style={{ padding: 10 }}
+                        icon={<FontAwesome style={{ color: theme.dark ? COLORS.white : COLORS.primary, marginLeft: 0 }} name={'arrow-right'} size={14} />}
+                    />
+                    {/* <Text style={{ color: 'red' }}>
+                        <FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'info-circle'} size={12} />
+                    </Text> */}
                 </View>
             </View>
         </TouchableOpacity>
@@ -218,29 +236,31 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                                 isDisabled={false}
                                 icon={<Image source={IMAGES.tachometerfast} style={{ height: 20, width: 20, resizeMode: 'contain' }}></Image>}
                                 color={colors.card}
-                                text='Score'
+                                text={t('score')}
                                 onpress={() => navigation.navigate('CustomerScore', { customer: { id: item.customer.id } })}
                             />
                             <CustomerActivityBtn
                                 gap
                                 isDisabled={false}
-                                icon={<FontAwesome style={{ color: '#8fc11e' }} name={'rupee'} size={20} />}
+                                icon={<FontAwesome style={{ color: '#8fc11e' }} name={'phone'} size={20} />}
                                 color={colors.card}
-                                text='Payments'
-                                onpress={() => navigation.navigate('NotAvailable')}
+                                text={t('call')}
+                                onpress={() =>
+                                    Linking.openURL(`tel:+91${item.mobile}`).catch((err) => Alert.alert('Error', 'Unable to make a call'))
+                                }
                             /><CustomerActivityBtn
                                 gap
                                 isDisabled={item.transaction_type == "DEBIT" ? item.amount > 0 ? false : true : true}
                                 icon={<FontAwesome style={{ color: '#8fc11e' }} name={'bell'} size={20} />}
                                 color={colors.card}
-                                text='Reminder'
+                                text={t('reminder')}
                                 onpress={() => reminder()}
                             /><CustomerActivityBtn
                                 gap
                                 isDisabled={item.transaction_type == "DEBIT" ? item.amount > 0 ? false : true : true}
                                 icon={<FontAwesome style={{ color: '#8fc11e' }} name={'envelope'} size={20} />}
                                 color={colors.card}
-                                text='SMS'
+                                text={t('sms')}
                                 onpress={() => send_sms()}
                             />
                         </View>
@@ -266,7 +286,7 @@ export const CustomerTransations = ({ navigation, route }: CustomerTransationsSc
                     <TouchableOpacity style={[styles.removeBtn]} onPress={() => newDebitBtnHandler()}>
 
                         <Text style={styles.addButtonText}>
-                            New DEBIT</Text>
+                            {t('newPayment')}</Text>
                     </TouchableOpacity>
                 </View>
             }

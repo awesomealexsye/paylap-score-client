@@ -9,6 +9,7 @@ type Props = {
     style?: object,
     size?: any,
     text?: any,
+    textColor?: any,
     icon?: any,
     iconDirection?: string
 }
@@ -20,6 +21,7 @@ const ButtonIcon = ({
     style,
     size = "lg",
     text,
+    textColor = COLORS.white,
     icon,
     iconDirection = "top"
 }: Props) => {
@@ -61,7 +63,7 @@ const ButtonIcon = ({
                     fontSize: 12,
                 }, size === 'lg' && {
                     fontSize: 18,
-                }, color && { color: COLORS.white }, text && { color: text }]}>{title}</Text>
+                }, color && { color: textColor }, text && { color: text }]}>{title}</Text>
             </View>
         </TouchableOpacity>
     )

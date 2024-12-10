@@ -10,6 +10,7 @@ import ProfileScore from './PeofileScore';
 import CommonService from '../../lib/CommonService';
 import CONFIG from '../../constants/config';
 import { ApiService } from '../../lib/ApiService';
+import { useTranslation } from 'react-i18next';
 
 type CustomerScoreScreenProps = StackScreenProps<RootStackParamList, 'CustomerScore'>;
 
@@ -19,6 +20,8 @@ const CustomerScore = ({ navigation, route }: CustomerScoreScreenProps) => {
 
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
+
+    const { t } = useTranslation();
 
     const scoreVal = { min: CONFIG.CREDIT_SCORE_RANGE.MIN, max: CONFIG.CREDIT_SCORE_RANGE.MAX };
     const [userScore, setUserScore] = useState(0)
@@ -44,7 +47,7 @@ const CustomerScore = ({ navigation, route }: CustomerScoreScreenProps) => {
     return (
         <>
             <Header
-                title='Credit Score'
+                title={t('creditScore')}
                 leftIcon='back'
                 titleRight
             />
@@ -55,13 +58,13 @@ const CustomerScore = ({ navigation, route }: CustomerScoreScreenProps) => {
             <View style={[GlobalStyleSheet.container, { marginTop: 70, paddingHorizontal: 30 }]}>
                 <View style={{ marginTop: 10, flexDirection: 'row', gap: 80 }}>
                     <View>
-                        <Text style={{ ...FONTS.font, ...FONTS.fontMedium, ...FONTS.fontBold, color: colors.title, fontSize: 14 }}>Color</Text>
+                        <Text style={{ ...FONTS.font, ...FONTS.fontMedium, ...FONTS.fontBold, color: colors.title, fontSize: 14 }}>{t('color')}</Text>
                     </View>
                     <View>
-                        <Text style={{ ...FONTS.font, ...FONTS.fontMedium, ...FONTS.fontBold, color: colors.title, fontSize: 14 }}>Description</Text>
+                        <Text style={{ ...FONTS.font, ...FONTS.fontMedium, ...FONTS.fontBold, color: colors.title, fontSize: 14 }}>{t('description')}</Text>
                     </View>
                     <View>
-                        <Text style={{ ...FONTS.font, ...FONTS.fontMedium, ...FONTS.fontBold, color: colors.title, fontSize: 14 }}>Range</Text>
+                        <Text style={{ ...FONTS.font, ...FONTS.fontMedium, ...FONTS.fontBold, color: colors.title, fontSize: 14 }}>{t('range')}</Text>
                     </View>
                 </View>
                 <View style={{ marginTop: 10, flexDirection: 'column', gap: 5 }}>

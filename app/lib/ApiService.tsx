@@ -45,6 +45,7 @@ const ApiService = {
         data = { ...common_payload, ...data }
         headers = { ...authHeader, ...headers }
         // console.log("Request body ", api_url, data, headers);
+        // console.log("consoleloo  ", api_url, data, headers);
         try {
             const res: any = await axios.post(api_url, data, { headers: headers });
             // console.log("Response ", res.data, res.data.message);

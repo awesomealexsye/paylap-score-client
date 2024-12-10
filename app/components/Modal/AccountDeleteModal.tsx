@@ -8,6 +8,7 @@ import Input from '../Input/Input';
 import { ApiService } from '../../lib/ApiService';
 import { MessagesService } from '../../lib/MessagesService';
 import StorageService from '../../lib/StorageService';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
     close: any;
@@ -19,6 +20,7 @@ const AccountDeleteModal = ({ close, modalVisible }: Props) => {
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
 
+    const { t } = useTranslation();
     const [isOTPSent, setIsOTPSent] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [otp, setOTP] = useState('')
@@ -93,7 +95,7 @@ const AccountDeleteModal = ({ close, modalVisible }: Props) => {
                             borderBottomColor: colors.border,
                         }}
                     >
-                        <Text style={{ flex: 1, ...FONTS.h6, color: colors.title }}>Delete Account</Text>
+                        <Text style={{ flex: 1, ...FONTS.h6, color: colors.title }}>{t('deleteAccount')}</Text>
                         <TouchableOpacity
                             onPress={() => { close(false); ResetStateValue(); }}
                             style={{
@@ -122,7 +124,7 @@ const AccountDeleteModal = ({ close, modalVisible }: Props) => {
                         isLoading ? <ActivityIndicator size={'large'} /> :
                             <Button
                                 onPress={!isOTPSent ? SendOTP : ConfirmOTP}
-                                title={!isOTPSent ? 'Send OTP' : 'Confirm OTP To Delete'}
+                                title={!isOTPSent ? t('sendOtp') : 'Confirm OTP To Delete'}
                                 textColor={theme.dark ? COLORS.title : COLORS.card}
                                 color={COLORS.danger}
                             />

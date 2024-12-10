@@ -22,8 +22,10 @@ import ReportFilterOptionSheet from '../../components/BottomSheet/ReportFilterOp
 import { ApiService } from '../../lib/ApiService';
 import Button from '../../components/Button/Button';
 import { MessagesService } from '../../lib/MessagesService';
-
-
+// import * as FileSystem from 'expo-file-system';
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
+import { useTranslation } from 'react-i18next';
 
 
 let toDateObj = new Date();
@@ -32,7 +34,7 @@ let fromDateObj = new Date();
 type Transaction = {
     customer_id: string,
     amount: string,
-    transaction_type: string,
+    transaction_type: "CREDIT" | "DEBIT",
     description: string,
     transaction_date: string,
     estimated_given_date: string,
@@ -65,12 +67,12 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
 
     const refRBSheet = useRef<any>(null);
 
+    const { t } = useTranslation();
+
 
     useFocusEffect(
         useCallback(() => {
             setFromAndToDate(timeRange);
-            FatechApiData();
-
         }, [])
     );
     const FatechApiData = () => {
@@ -131,7 +133,6 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
 
 
     const setFromAndToDate = (value: string) => {
-        FatechApiData();
         switch (value) {
             case "Today":
                 const currentDate = new Date();
@@ -180,6 +181,7 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
                 showDatepicker("To Date")
                 break;
         }
+        FatechApiData();
     }
     const handelDateInput = async (value: string) => {
         showDatepicker(value)
@@ -193,6 +195,269 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
         setFromAndToDate(value);
         await refRBSheet.current.close();
     }
+    const GeneratePDF = async () => {
+        const totalDebit = transactions.reduce((total, transaction) => total + (transaction.transaction_type === 'DEBIT' ? parseInt(transaction.amount) : 0), 0)
+        const totalCredit = transactions.reduce((total, transaction) => total + (transaction.transaction_type === 'CREDIT' ? parseInt(transaction.amount) : 0), 0)
+
+        const HTMLData = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Statement - Paylap Score</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.5;
+        }
+
+        .header {
+            background-color: green;
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .phone {
+            font-size: 16px;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .date-range {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .summary-item {
+            padding: 15px;
+            background: #fff;
+        }
+
+        .summary-label {
+            font-weight: 500;
+            color: #444;
+            margin-bottom: 8px;
+        }
+
+        .summary-value {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .entries-count {
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 100px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f8f9fa;
+        }
+
+        .month-header {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            padding: 12px;
+        }
+
+        .debit {
+            background-color: #fff2f2;
+        }
+
+        .credit {
+            background-color: #f2fff2;
+        }
+
+        .total-row td {
+            font-weight: bold;
+            background-color: #f8f9fa;
+        }
+
+        .footer {
+            background-color: green;
+            color: white;
+            padding: 15px 24px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .install-btn {
+            background-color: white;
+            color: #003B95;
+            text-decoration:none,
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            text-align: center
+        }
+
+        .red-text {
+            color: #dc3545;
+        }
+        .page-number {
+            color: #666;
+            text-align: right;
+            margin-top: 20px;
+            margin-bottom: 70px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="phone">+919716476396</div>
+        <div class="logo">Paylap Score</div>
+    </header>
+
+    <div class="container">
+        <div class="title">
+            <h1>Account Statement</h1>
+            <div class="date-range">(${fromDate} - ${todayDate})</div>
+        </div>
+
+        <div class="summary">
+            <div class="summary-item">
+                <div class="summary-label">Total Debit(-)</div>
+                <div class="summary-value">₹${totalDebit}</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-label">Total Credit(+)</div>
+                <div class="summary-value">₹${totalCredit.toLocaleString()}</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-label">Net Balance</div>
+                <div class="summary-value red-text">₹${totalDebit - totalCredit} Dr</div>
+            </div>
+        </div>
+
+        <div class="entries-count">No. of Entries: ${transactions.length}   (${fromDate} - ${todayDate})</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Debit(-)</th>
+                    <th>Credit(+)</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${transactions.map(transaction => {
+            return `<tr>
+                                         <td>${transaction.transaction_date}</td>
+                                         <td>${transaction.customer_info.name}</td>
+                                         <td>${transaction.description}</td>
+                                         <td class="debit">${transaction.transaction_type === 'DEBIT' ? `₹ ${parseInt(transaction.amount).toLocaleString()}` : ''}</td>
+                                         <td class="credit">${transaction.transaction_type === 'CREDIT' ? `₹ ${parseInt(transaction.amount).toLocaleString()}` : ''}</td>
+                                         </tr>`;
+        })}
+                <tr class="total-row">
+                    <td colspan="3">Total</td>
+                    <td>${transactions.reduce((total, transaction) => total + (transaction.transaction_type === 'DEBIT' ? parseInt(transaction.amount) : 0), 0).toLocaleString()}</td>
+                    <td>${transactions.reduce((total, transaction) => total + (transaction.transaction_type === 'CREDIT' ? parseInt(transaction.amount) : 0), 0).toLocaleString()}</td>
+                </tr>                
+            </tbody>
+        </table>
+        <div class="page-number">Page 1 of 2</div>
+    </div>
+
+    
+</body>
+</html>`;
+
+        try {
+
+            const file = await Print.printToFileAsync({ html: HTMLData });
+            return file.uri;
+
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            return "";
+
+        }
+    };
+
+    const SharePDF = async () => {
+        if (transactions.length == 0) {
+            MessagesService.commonMessage("No data to genrate PDF.", "ERROR");
+            return
+        }
+
+        const uri = await GeneratePDF();
+        if (uri) {
+            Sharing.shareAsync(uri, { dialogTitle: "Hello" });
+        } else {
+            MessagesService.commonMessage("unable to share file.", "ERROR");
+        }
+
+    }
+    const DownloadPDF = async () => {
+        if (transactions.length == 0) {
+            MessagesService.commonMessage("No data to genrate PDF.", "ERROR");
+            return
+        }
+
+        const uri = await GeneratePDF();
+        if (uri) {
+            // Move the file to the Downloads folder
+            // const downloadsDir = FileSystem.documentDirectory + 'Download/';
+            // const filePath = downloadsDir + 'MyPDF.pdf';
+
+            // await FileSystem.makeDirectoryAsync(downloadsDir, { intermediates: true });
+            // await FileSystem.copyAsync({ from: file.uri, to: filePath });
+
+            // console.log('PDF saved to:', filePath);
+            Print.printAsync({ uri: uri, orientation: Print.Orientation.portrait, })
+        } else {
+            MessagesService.commonMessage("unable to share file.", "ERROR");
+        }
+
+    }
+
 
     return (
         <SafeAreaView style={{ ...styles.container }}>
@@ -241,21 +506,21 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
                 }
             </RBSheet>
             <Header
-                title={'View Report'}
+                title={t('viewReport')}
                 leftIcon={'back'}
                 titleRight
             />
             <ScrollView style={{ ...styles.content, backgroundColor: colors.card }}>
                 <View style={{ ...styles.dateRange, backgroundColor: !theme.dark ? COLORS.primary : colors.card }}>
                     <TouchableOpacity onPress={async () => { await handelDateInput('From Date'); }} style={{ borderRightWidth: 1, borderRightColor: 'white', flex: 1 }} >
-                        <Text style={{ fontSize: 12, marginBottom: 5, color: !theme.dark ? 'white' : colors.title }}>From Date</Text>
+                        <Text style={{ fontSize: 12, marginBottom: 5, color: !theme.dark ? 'white' : colors.title }}>{t('fromDate')}</Text>
                         <View style={styles.dateItem}>
                             <Ionicons name="calendar-outline" size={20} color={!theme.dark ? 'white' : colors.title} />
                             <Text style={{ ...styles.dateText, color: !theme.dark ? 'white' : colors.title }}>{fromDate}</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={async () => { await handelDateInput('To Date'); }} style={{ flex: 1, alignItems: 'flex-end' }} >
-                        <Text style={{ fontSize: 12, marginBottom: 5, color: !theme.dark ? 'white' : colors.title }}>To Date</Text>
+                        <Text style={{ fontSize: 12, marginBottom: 5, color: !theme.dark ? 'white' : colors.title }}>{t('toDate')}</Text>
                         <View style={styles.dateItem}>
                             <Ionicons name="calendar-outline" size={20} color={!theme.dark ? 'white' : colors.title} />
                             <Text style={{ ...styles.dateText, color: !theme.dark ? 'white' : colors.title }}>{toDate}</Text>
@@ -291,10 +556,10 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
 
                 <View style={{ ...styles.entriesCard, backgroundColor: colors.card }}>
                     <View style={styles.entriesSummary}>
-                        <Text style={styles.summaryLabel}>ENTRIES</Text>
+                        <Text style={styles.summaryLabel}>{t('entries')}</Text>
                         <View style={styles.summaryAmounts}>
-                            <Text style={styles.summaryLabel}>DEBIT</Text>
-                            <Text style={styles.summaryLabel}>CREDIT</Text>
+                            <Text style={styles.summaryLabel}>{t('debit')}</Text>
+                            <Text style={styles.summaryLabel}>{t('credit')}</Text>
                         </View>
                     </View>
                     {/* <View style={styles.entriesSummary}>
@@ -307,7 +572,7 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
                     {
                         isLoading == true ? <ActivityIndicator size="large" color={colors.title} />
                             : transactions.length == 0 ?
-                                <Text style={{ ...styles.summaryText, color: colors.title, textAlign: 'center' }}>No Data Found</Text> :
+                                <Text style={{ ...styles.summaryText, color: colors.title, textAlign: 'center' }}>{t('noDataFound')}</Text> :
 
                                 transactions.map((transaction, index) => (
                                     <View key={index} style={styles.transactionItem}>
@@ -336,13 +601,13 @@ const Report = ({ navigation, route }: ReportDetailsScreenProps) => {
             </ScrollView>
 
             <View style={{ ...styles.footer, backgroundColor: colors.card }}>
-                <TouchableOpacity style={[styles.footerButton, styles.downloadButton]}>
+                <TouchableOpacity style={[styles.footerButton, styles.downloadButton]} onPress={DownloadPDF}>
                     <Ionicons name="download-outline" size={20} color="white" />
-                    <Text style={styles.footerButtonText}>Download</Text>
+                    <Text style={styles.footerButtonText}>{t('download')}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.footerButton, styles.shareButton]}>
+                <TouchableOpacity style={[styles.footerButton, styles.shareButton]} onPress={SharePDF}>
                     <Ionicons name="share-social-outline" size={20} color="white" />
-                    <Text style={styles.footerButtonText}>Share</Text>
+                    <Text style={styles.footerButtonText}>{t('share')}</Text>
                 </TouchableOpacity>
             </View>
         </SafeAreaView>

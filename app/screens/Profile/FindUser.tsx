@@ -16,6 +16,7 @@ import CommonService from '../../lib/CommonService';
 import ProfileScore from './PeofileScore';
 import CONFIG from '../../constants/config';
 import { IMAGES } from '../../constants/Images';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
     height?: string,
@@ -27,6 +28,7 @@ const FindUser = forwardRef((props, ref) => {
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
     const navigation = useNavigation<any>();
+    const { t } = useTranslation();
 
     const [userDetail, setUserDetail] = useState({
         id: 0,
@@ -79,7 +81,7 @@ const FindUser = forwardRef((props, ref) => {
             <View style={{ flex: 1, backgroundColor: colors.background }}>
                 <View style={{}}>
                     <Header
-                        title={'Find User'}
+                        title={t('findUser')}
                         leftIcon={'back'}
                         titleRight
                     />
@@ -104,13 +106,13 @@ const FindUser = forwardRef((props, ref) => {
                                                 <Input
                                                     inputRounded
                                                     icon={<FontAwesome style={{ opacity: .6 }} name={'address-card'} size={20} color={colors.text} />}
-                                                    placeholder="Enter Aadhaar Card Number"
+                                                    placeholder={t('enterAadhaarCardNumber')}
                                                     onChangeText={(value) => setAadhar(value)}
                                                 />
                                             </View>
                                             <View style={GlobalStyleSheet.cardBody}>
                                                 {isLoading === true ? <ActivityIndicator size={70} color={COLORS.primary} />
-                                                    : <Button title={'Search'} onPress={() => { searchAadhaar() }} />
+                                                    : <Button title={t('search')} onPress={() => { searchAadhaar() }} />
                                                 }
                                             </View>
                                         </View>
@@ -156,7 +158,7 @@ const FindUser = forwardRef((props, ref) => {
                                                         />
                                                     </View>
                                                     <View>
-                                                        <Text style={[styles.brandsubtitle2, { color: '#7D7D7D', fontSize: 12 }]}>Mobile Number</Text>
+                                                        <Text style={[styles.brandsubtitle2, { color: '#7D7D7D', fontSize: 12 }]}>{t('mobileNumber')}</Text>
                                                         <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, marginTop: 5 }}>{userDetail?.mobile}</Text>
                                                     </View>
                                                 </View>
@@ -168,7 +170,7 @@ const FindUser = forwardRef((props, ref) => {
                                                         />
                                                     </View>
                                                     <View>
-                                                        <Text style={[styles.brandsubtitle2, { color: '#7D7D7D', fontSize: 12 }]}>Email Address</Text>
+                                                        <Text style={[styles.brandsubtitle2, { color: '#7D7D7D', fontSize: 12 }]}>{t('email')}</Text>
                                                         <Text style={{ ...FONTS.fontMedium, fontSize: 14, color: colors.title, marginTop: 0 }}>{userDetail?.email}</Text>
                                                     </View>
                                                 </View>
