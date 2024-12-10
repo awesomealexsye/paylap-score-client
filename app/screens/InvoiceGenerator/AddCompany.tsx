@@ -14,6 +14,8 @@ import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
 import Divider from '../../components/Dividers/Divider';
 import { MessagesService } from '../../lib/MessagesService';
+import { IMAGES } from '../../constants/Images';
+import useImagePicker from '../../customHooks/ImagePickerHook';
 
 interface Customer {
     id: string;
@@ -37,7 +39,7 @@ export const AddCompany = ({ navigation }: AddCompanyProps) => {
     const [isLoading, setIsLoading] = useState<any>(false);
     const [isRefreshing, setIsRefreshing] = useState<any>(false);
 
-
+    const { image, pickImage, takePhoto }: any = useImagePicker();
     const [companyName, setCompanyName] = useState('');
     const [address, setAdress] = useState('');
     const [zipcode, setZipcode] = useState('');
@@ -48,6 +50,7 @@ export const AddCompany = ({ navigation }: AddCompanyProps) => {
     const [website, setWebsite] = useState('');
     const [email, setEmail] = useState('');
     const [invoiceInit, setInvoiceInit] = useState('1000');
+
 
 
     const handelRefresh = async () => {
@@ -83,6 +86,7 @@ export const AddCompany = ({ navigation }: AddCompanyProps) => {
                 email: email,
                 website: website,
                 invoice_init_number: invoiceInit,
+                image: image
             }).then((res) => {
                 MessagesService.commonMessage(res.message, res.status ? "SUCCESS" : "ERROR");
                 if (res.status) {
@@ -116,6 +120,57 @@ export const AddCompany = ({ navigation }: AddCompanyProps) => {
                     <RefreshControl refreshing={isRefreshing} onRefresh={handelRefresh} />
                 }
             >
+                <TouchableOpacity
+                    onPress={pickImage}
+                >
+
+
+                    {image === null ? <View style={
+                        {
+                            justifyContent: "center",
+                            alignItems: "center",
+                            margin: 20,
+                            padding: 30,
+                            borderStyle: "dashed",
+                            borderColor: COLORS.primary,
+                            borderWidth: 1,
+                            borderRadius: 10
+                        }
+                    }>
+                        <Image source={IMAGES.upload}
+                            style={{
+                                height: 30,
+                                width: 30,
+                                objectFit: "contain",
+                                tintColor: colors.title
+                            }} />
+                        <Text style={{
+                            ...FONTS.fontSemiBold,
+                            textAlign: 'center',
+                            color: colors.title,
+                            fontSize: SIZES.fontXs,
+                            paddingVertical: 10
+                        }}>
+                            Upload Company Image
+                        </Text>
+                    </View>
+                        :
+                        <View style={{ justifyContent: "center", alignItems: "center", paddingVertical: 15 }}>
+                            <Image src={image}
+                                style={{
+                                    height: 150,
+                                    width: 300,
+                                    objectFit: "fill",
+
+                                }} />
+                        </View>
+                    }
+
+                </TouchableOpacity>
+
+
+
+
                 <View style={[GlobalStyleSheet.container]}>
                     <View style={{ marginTop: 10 }}>
                         <Input
@@ -126,9 +181,14 @@ export const AddCompany = ({ navigation }: AddCompanyProps) => {
                             maxlength={20}
                         />
                     </View>
-                    <View style={{ marginTop: 10 }}>
+                    <View style={{ gap: 10 }}>
                         <Divider dashed color={COLORS.primary} />
-                        <Text style={{ textAlign: 'center' }}>Address</Text>
+                        <Text style={{
+                            ...FONTS.fontSemiBold,
+                            textAlign: 'center',
+                            color: colors.title,
+                            fontSize: SIZES.font
+                        }}>Address</Text>
                         <Input
                             inputRounded
                             placeholder={t('companyAddress')}
@@ -168,7 +228,7 @@ export const AddCompany = ({ navigation }: AddCompanyProps) => {
                         <Divider dashed color={COLORS.primary} />
 
                     </View>
-                    <View style={{ marginTop: 20 }}>
+                    <View style={{ marginTop: 10 }}>
                         <Input
                             inputRounded
                             placeholder={t('gst')}
@@ -177,7 +237,7 @@ export const AddCompany = ({ navigation }: AddCompanyProps) => {
                             maxlength={25}
                         />
                     </View>
-                    <View style={{ marginTop: 20 }}>
+                    <View style={{ marginTop: 10 }}>
                         <Input
                             inputRounded
                             placeholder={t('phone')}
@@ -188,7 +248,7 @@ export const AddCompany = ({ navigation }: AddCompanyProps) => {
 
                         />
                     </View>
-                    <View style={{ marginTop: 20 }}>
+                    <View style={{ marginTop: 10 }}>
                         <Input
                             inputRounded
                             placeholder={t('website')}
@@ -197,7 +257,7 @@ export const AddCompany = ({ navigation }: AddCompanyProps) => {
                             maxlength={25}
                         />
                     </View>
-                    <View style={{ marginTop: 10 }}>
+                    <View style={{ marginVertical: 10 }}>
                         <Input
                             inputRounded
                             placeholder={t('email')}

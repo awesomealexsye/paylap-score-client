@@ -319,7 +319,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                     </View>
                 </View>
 
-                <SliderModal />
+
                 {/* search Box Start */}
 
                 <View style={[GlobalStyleSheet.container, { paddingHorizontal: 30, paddingTop: 30 }]}>

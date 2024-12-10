@@ -126,7 +126,7 @@ export const ListCompany = ({ navigation }: ListCompanyProps) => {
 
                 {/* search Box Start */}
 
-                <View style={[GlobalStyleSheet.container, { paddingHorizontal: 30, paddingTop: 0 }]}>
+                <View style={[GlobalStyleSheet.container, { paddingHorizontal: 30, paddingTop: 10 }]}>
                     <View>
                         <TextInput
                             placeholder={t('searchCompany')}
@@ -152,7 +152,7 @@ export const ListCompany = ({ navigation }: ListCompanyProps) => {
                         data={filteredCompanies}
                         renderItem={renderCustomer}
                         keyExtractor={(item, index) => index.toString()}
-                        contentContainerStyle={{}} /> : <View style={{ flex: 1, justifyContent: 'center' }}
+                        contentContainerStyle={{}} /> : <View style={{ flex: 1, justifyContent: 'center', alignItems: "center" }}
                         >
                         <ActivityIndicator color={colors.title} size={'large'}></ActivityIndicator>
                     </View>

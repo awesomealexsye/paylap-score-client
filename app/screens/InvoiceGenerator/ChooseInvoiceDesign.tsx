@@ -84,7 +84,7 @@ export const ChooseInvoiceDesign = ({ navigation, route }: ChooseInvoiceDesignPr
                             key={item.id}
                             style={[
                                 styles.gridItem,
-                                selectedTemplate === item.id && styles.selectedTemplate
+                                // selectedTemplate === item.id && styles.selectedTemplate
                             ]}
                         >
                             <TouchableOpacity onPress={() => handleImageClick(item.url)}>
@@ -94,7 +94,7 @@ export const ChooseInvoiceDesign = ({ navigation, route }: ChooseInvoiceDesignPr
 
                             {/* Add Select Button */}
                             <TouchableOpacity
-                                style={styles.selectButton}
+                                style={[styles.selectButton, { backgroundColor: selectedTemplate === item.id ? COLORS.info : COLORS.primary }]}
                                 onPress={() => handleTemplateSelection(item.id, item.headline)}
                             >
                                 <Text style={styles.selectButtonText}>Select</Text>

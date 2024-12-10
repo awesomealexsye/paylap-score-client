@@ -118,6 +118,7 @@ export const IMAGES = {
     cup: require('../assets/images/icons/cup.png'),
     share: require('../assets/images/icons/share.png'),
     information: require('../assets/images/icons/information.png'),
+    upload: require('../assets/images/icons/upload.png'),
 
     // welcome2: require('../assets/images/onbording/welcome.png'),
     welcome: require('../assets/images/splash/splash.png'),

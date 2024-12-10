@@ -107,9 +107,9 @@ export const AddInvoiceDetails = ({ navigation, route }: AddInvoiceDetailsProps)
                             maxlength={20}
                         />
                     </View>
-                    <View style={{ marginTop: 10 }}>
+                    <View style={{ marginTop: 10, gap: 10 }}>
                         <Divider dashed color={COLORS.primary} />
-                        <Text style={{ textAlign: 'center' }}>Customer info</Text>
+                        <Text style={{ ...FONTS.fontSemiBold, textAlign: 'center', color: colors.title, paddingVertical: 5, }}>Customer info</Text>
 
                         <Input
                             inputRounded
@@ -185,13 +185,13 @@ export const AddInvoiceDetails = ({ navigation, route }: AddInvoiceDetailsProps)
                                     </View>
                                 ))
                             ) : (
-                                <Text style={styles.emptyText}>No Items Found</Text>
+                                <Text style={[styles.emptyText, { color: colors.title }]}>No Items Found</Text>
                             )}
                         </View>
                         <ButtonIcon
                             iconDirection="left"
                             text={COLORS.background}
-                            color={COLORS.danger}
+                            color={COLORS.info}
                             icon={<FontAwesome name='list' size={20} color={COLORS.background} />}
 
                             title={t('addItem')} onPress={() => {
@@ -282,14 +282,14 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        padding: 16,
-        backgroundColor: COLORS.white,
+        // padding: 5,
+        // backgroundColor: COLORS.white,
     },
     itemContainer: {
         padding: 16,
-        marginBottom: 12,
+        marginVertical: 12,
         borderRadius: 8,
-        backgroundColor: COLORS.danger,
+        backgroundColor: COLORS.primary,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
@@ -299,24 +299,24 @@ const styles = StyleSheet.create({
     itemName: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: COLORS.primary,
+        color: COLORS.background,
         marginBottom: 6,
     },
     itemDetail: {
         fontSize: 14,
-        color: COLORS.info,
+        color: COLORS.secondary,
         marginBottom: 4,
     },
     itemAmount: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: COLORS.success,
+        color: COLORS.background,
     },
     emptyText: {
         textAlign: 'center',
         fontSize: 16,
         color: COLORS.primary,
-        marginTop: 20,
+        marginVertical: 20,
     },
 })
 

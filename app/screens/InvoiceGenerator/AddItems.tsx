@@ -156,13 +156,21 @@ export const AddItems = ({ navigation, route }: AddItemsProps) => {
                                 />
                             </View>
                             <View style={{ marginTop: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <Input
-                                    inputRounded
+
+                                <View style={{ backgroundColor: COLORS.primary, padding: 15, borderRadius: 8 }}>
+                                    <Text style={{ ...FONTS.fontSemiBold, color: COLORS.background, }}>{`₹ ${item.itemAmount}`}
+
+                                    </Text>
+                                </View>
+
+
+                                {/* <Input
+                                    // inputRounded
                                     placeholder={`Amount ${index + 1}`}
                                     value={`₹${item.itemAmount}`}
                                     editable={false} // Read-only
                                     style={{ backgroundColor: COLORS.primary, flex: 1 }} // Optional: Gray background for read-only
-                                />
+                                /> */}
                                 <TouchableOpacity
                                     onPress={() => handleDeleteItem(item.id)}
                                     style={{
@@ -175,7 +183,7 @@ export const AddItems = ({ navigation, route }: AddItemsProps) => {
                                     <FontAwesome name="trash" size={18} color={COLORS.background} />
                                 </TouchableOpacity>
                             </View>
-                            <Divider dashed={'solid'} color={COLORS.info} />
+                            <Divider dashed={'solid'} color={COLORS.primary} />
                         </View>
                     ))}
                     <ButtonIcon
