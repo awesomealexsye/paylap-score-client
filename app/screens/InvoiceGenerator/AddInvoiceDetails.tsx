@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, RefreshControl, ActivityIndicator } from 'react-native';
-import { useTheme } from '@react-navigation/native';
+import { useFocusEffect, useTheme } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { COLORS, FONTS, SIZES } from '../../constants/theme';
 import { FontAwesome } from '@expo/vector-icons';
@@ -21,7 +21,8 @@ type AddInvoiceDetailsProps = StackScreenProps<RootStackParamList, 'AddInvoiceDe
 
 export const AddInvoiceDetails = ({ navigation, route }: AddInvoiceDetailsProps) => {
     const { t } = useTranslation();
-    const { items } = route.params;
+    const items = route.params.items;
+    const company_id = route.params.data.company_id;
 
     const [isLoading, setIsLoading] = useState<any>(false);
 
@@ -34,13 +35,40 @@ export const AddInvoiceDetails = ({ navigation, route }: AddInvoiceDetailsProps)
     const [phone, setPhone] = useState('');
 
     const [notes, setNotes] = useState('');
+    const [receivedAmount, setReceivedAmount] = useState('');
+    const [invoiceTotalAmount, setInvoiceTotalAmount] = useState(0);
 
 
 
 
+    const handleAllitemAmount = () => {
+        setInvoiceTotalAmount(0);
+        let allitemsAmount = 0;
+        // console.log("handleAllitemamount callin....")
+        if (items.length > 0) {
+            items.map((item: any) => {
+                allitemsAmount += item.ratePerItem * item.quantity;
+            })
+            setInvoiceTotalAmount(allitemsAmount);
+        }
+    }
+
+    // useFocusEffect(
+    //     useCallback(() => {
+    //         handleAllitemAmount();
+    //         console.log("invoice total amount::", invoiceTotalAmount);
+
+    //     }, [])
+    // );
+
+    useEffect(() => {
+        // setReceivedAmount(`${invoiceTotalAmount}`)
+        handleAllitemAmount();
+    }, [items]);
 
 
     const handleFormSubmission = () => {
+        // console.log(company_id)
         // Basic validation
         if (!invoiceName) {
             MessagesService.commonMessage("Invoice Name is Required.", "ERROR")
@@ -53,10 +81,13 @@ export const AddInvoiceDetails = ({ navigation, route }: AddInvoiceDetailsProps)
 
         } else if (items.length <= 0) {
             MessagesService.commonMessage("1 item is required.", "ERROR")
+        }
+        else if (Number(receivedAmount) > invoiceTotalAmount) {
+            MessagesService.commonMessage("Received Amount should be smaller than Total Amount.", "ERROR")
         } else {
             const data = {
                 name: invoiceName,
-                company_id: 1,
+                company_id: company_id,
                 // template_id: 1,
                 customer_info: {
                     customerName: customerName,
@@ -68,9 +99,10 @@ export const AddInvoiceDetails = ({ navigation, route }: AddInvoiceDetailsProps)
 
                 },
                 item_info: items,
+                amount_info: { total_amount: invoiceTotalAmount, received_amount: Number(receivedAmount) },
                 notes: notes
             }
-            console.log(data, "data");
+            // console.log(data, "dataapi");
 
             navigation.navigate("ChooseInvoiceDesign", { data: data });
         }
@@ -116,21 +148,21 @@ export const AddInvoiceDetails = ({ navigation, route }: AddInvoiceDetailsProps)
                             placeholder={t('customerName')}
                             value={customerName}
                             onChangeText={setCustomerName}
-                            maxlength={20}
+                            maxlength={60}
                         />
                         <Input
                             inputRounded
                             placeholder={t('phone')}
                             value={phone}
                             onChangeText={setPhone}
-                            maxlength={25}
+                            maxlength={10}
                         />
                         <Input
                             inputRounded
                             placeholder={t('address')}
                             value={address}
                             onChangeText={setAdress}
-                            maxlength={20}
+                            maxlength={100}
                         />
                         {/* </View>
                     <View style={{ marginTop: 10 }}> */}
@@ -139,7 +171,7 @@ export const AddInvoiceDetails = ({ navigation, route }: AddInvoiceDetailsProps)
                             placeholder={t('zipcode')}
                             value={zipcode}
                             onChangeText={setZipcode}
-                            maxlength={20}
+                            maxlength={7}
                             keyboardType={'number-pad'}
 
                         />
@@ -150,7 +182,7 @@ export const AddInvoiceDetails = ({ navigation, route }: AddInvoiceDetailsProps)
                             placeholder={t('city')}
                             value={city}
                             onChangeText={setCity}
-                            maxlength={20}
+                            maxlength={30}
                         />
                         {/* </View>
                     <View style={{ marginTop: 10 }}> */}
@@ -159,7 +191,7 @@ export const AddInvoiceDetails = ({ navigation, route }: AddInvoiceDetailsProps)
                             placeholder={t('state')}
                             value={state}
                             onChangeText={setState}
-                            maxlength={25}
+                            maxlength={30}
                         />
                         <Divider dashed color={COLORS.primary} />
 
@@ -170,10 +202,11 @@ export const AddInvoiceDetails = ({ navigation, route }: AddInvoiceDetailsProps)
                             placeholder={t('notes')}
                             value={notes}
                             onChangeText={setNotes}
-                            maxlength={25}
+                            maxlength={150}
                         />
                     </View>
                     <View style={{ marginTop: 10 }}>
+
                         <View style={styles.container}>
                             {items.length > 0 ? (
                                 items.map((item: any, index: number) => (
@@ -195,8 +228,29 @@ export const AddInvoiceDetails = ({ navigation, route }: AddInvoiceDetailsProps)
                             icon={<FontAwesome name='list' size={20} color={COLORS.background} />}
 
                             title={t('addItem')} onPress={() => {
-                                navigation.navigate("AddItems", { items: items })
+                                navigation.navigate("AddItems", { items: items, data: { company_id: company_id } })
                             }} />
+                    </View>
+                    <View style={{ marginTop: 20 }}>
+                        <Text>{t('enterReceivedAmount')}</Text>
+                        <Input
+                            inputRounded
+                            // placeholder={t('receivedAmount')}
+                            value={receivedAmount}
+                            onChangeText={(value) => {
+                                value = Number(value)
+                                if (invoiceTotalAmount >= value) {
+                                    setReceivedAmount(`${value}`)
+                                }
+                            }}
+                            maxlength={150}
+                            keyboardType={'number-pad'}
+                        />
+                    </View>
+                    <View>
+                        <Text style={[styles.emptyText, { color: COLORS.info }]}>{t('totalInvoiceAmount')}: ₹{invoiceTotalAmount}</Text>
+                        <Text style={[styles.emptyText, { color: COLORS.info }]}>{t('pendingAmount')}: ₹{invoiceTotalAmount - Number(receivedAmount)}</Text>
+
                     </View>
                     <View style={{ marginTop: 12 }}>
 

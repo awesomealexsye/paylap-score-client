@@ -11,10 +11,13 @@ import { ApiService } from '../../lib/ApiService';
 // import { MessagesService } from '../../lib/MessagesService';
 import { useTranslation } from 'react-i18next';
 import Header from '../../layout/Header';
+import * as WebBrowser from 'expo-web-browser';
+
 interface InvoiceList {
     id: string;
     name: string;
     image: string;
+    pdf_url: string;
     created_at_new: string;
 }
 
@@ -23,7 +26,7 @@ interface InvoiceList {
 type InvoiceGenListProps = StackScreenProps<RootStackParamList, 'InvoiceGenList'>
 
 export const InvoiceGenList = ({ navigation, route }: InvoiceGenListProps) => {
-    const company_id = route.params?.item;
+    const company_id = route.params?.item.id;
     const { t } = useTranslation();
 
     const [searchText, setSearchText] = useState('');
@@ -41,6 +44,9 @@ export const InvoiceGenList = ({ navigation, route }: InvoiceGenListProps) => {
         }, [])
     );
 
+    const handleOpenWebPage = async (pdf_url: string) => {
+        await WebBrowser.openBrowserAsync(pdf_url);
+    };
 
     const handleSearch = (text: string) => {
         setSearchText(text);
@@ -77,6 +83,9 @@ export const InvoiceGenList = ({ navigation, route }: InvoiceGenListProps) => {
 
     const renderCustomer = ({ item }: { item: InvoiceList }) => (
         <TouchableOpacity onPress={() => {
+            handleOpenWebPage(item.pdf_url);
+            // console.log(item.pdf_url)
+
             // navigation.navigate("CustomerTransations", { item: item }) 
         }}>
 
@@ -115,7 +124,7 @@ export const InvoiceGenList = ({ navigation, route }: InvoiceGenListProps) => {
         <View style={{ backgroundColor: colors.card, flex: 1 }}>
             {/* AppBar Start */}
             <Header
-                title={t('Generated Invoices')}
+                title={t('generatedInvoice')}
                 leftIcon={'back'}
                 titleRight
             />
@@ -137,7 +146,7 @@ export const InvoiceGenList = ({ navigation, route }: InvoiceGenListProps) => {
                 <View style={[GlobalStyleSheet.container, { paddingHorizontal: 30, paddingTop: 0 }]}>
                     <View>
                         <TextInput
-                            placeholder={t('searchCompany')}
+                            placeholder={t('searchInvoice')}
                             style={[styles.TextInput,
                             {
                                 color: colors.title,
@@ -167,7 +176,7 @@ export const InvoiceGenList = ({ navigation, route }: InvoiceGenListProps) => {
                 }
 
             </ScrollView >
-            <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("AddInvoiceDetails", { items: [] })}>
+            <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("AddInvoiceDetails", { data: { company_id: company_id }, items: [] })}>
                 <FontAwesome style={{ marginRight: 6, color: COLORS.white }} name={'user-plus'} size={20} />
                 <Text style={styles.addButtonText}>{t('generateNew')}</Text>
             </TouchableOpacity>

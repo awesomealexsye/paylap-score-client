@@ -8,6 +8,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { ApiService } from '../../lib/ApiService';
 import { MessagesService } from '../../lib/MessagesService';
+import { ActivityIndicator } from 'react-native-paper';
 
 const { width } = Dimensions.get('window');
 
@@ -18,7 +19,10 @@ export const ChooseInvoiceDesign = ({ navigation, route }: ChooseInvoiceDesignPr
 
     const data = route.params?.data;
 
+    const [isLoading, setIsLoading] = useState(false)
     const [imageData, setImageData] = useState<any>([]);
+    const [imageURL, setImageURL] = useState<any>([]);
+
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
@@ -28,14 +32,16 @@ export const ChooseInvoiceDesign = ({ navigation, route }: ChooseInvoiceDesignPr
     }, []);
 
     const fetchImageList = async () => {
-        // Mock API response for demo
-        const mockData = [
-            { id: 1, url: 'https://via.placeholder.com/150', headline: 'Template 1' },
-            { id: 2, url: 'https://via.placeholder.com/150', headline: 'Template 2' },
-            { id: 3, url: 'https://via.placeholder.com/150', headline: 'Template 3' },
-            { id: 4, url: 'https://via.placeholder.com/150', headline: 'Template 4' },
-        ];
-        setImageData(mockData);
+        setIsLoading(true);
+        ApiService.postWithToken("api/banner/all", { type: 'pdf-template' }).then((res: any) => {
+            setIsLoading(false);
+            if (res.status) {
+                setImageURL(res.image_url);
+                setImageData(res.data)
+            } else {
+                MessagesService.commonMessage(res.message)
+            }
+        });
     };
 
     const handleImageClick = (url: string) => {
@@ -52,10 +58,12 @@ export const ChooseInvoiceDesign = ({ navigation, route }: ChooseInvoiceDesignPr
         if (selectedTemplate) {
             let newApiData = data;
             newApiData['template_id'] = selectedTemplate
+            console.log("newApiData", newApiData);
             ApiService.postWithToken("api/invoice-generator/invoice/add", newApiData).then((res: any) => {
+                console.log(res, "res")
                 MessagesService.commonMessage(res.message, res.status ? "SUCCESS" : "ERROR");
                 if (res.status) {
-                    navigation.replace('FinalInvoiceResult', { data: "https:paynest.co.in/" });
+                    navigation.replace('FinalInvoiceResult', { data: { pdf_url: res.pdf_url } });
                 }
             })
 
@@ -78,30 +86,34 @@ export const ChooseInvoiceDesign = ({ navigation, route }: ChooseInvoiceDesignPr
             {/* AppBar End */}
 
             <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={[GlobalStyleSheet.container, styles.gridContainer]}>
-                    {imageData.map((item: any, index: number) => (
-                        <View
-                            key={item.id}
-                            style={[
-                                styles.gridItem,
-                                // selectedTemplate === item.id && styles.selectedTemplate
-                            ]}
-                        >
-                            <TouchableOpacity onPress={() => handleImageClick(item.url)}>
-                                <Image source={{ uri: item.url }} style={styles.image} />
-                                <Text style={styles.headline}>{item.headline}</Text>
-                            </TouchableOpacity>
+                {
+                    isLoading ? <ActivityIndicator size={'large'} /> :
+                        <View style={[GlobalStyleSheet.container, styles.gridContainer]}>
+                            {imageData.map((item: any, index: number) => (
+                                <View
+                                    key={item.id}
+                                    style={[
+                                        styles.gridItem,
+                                        // selectedTemplate === item.id && styles.selectedTemplate
+                                    ]}
+                                >
+                                    <TouchableOpacity onPress={() => handleImageClick(imageURL + "/" + item.image)}>
+                                        <Image source={{ uri: imageURL + "/" + item.image }} style={styles.image} />
+                                        <Text style={styles.headline}>{item.name}</Text>
+                                    </TouchableOpacity>
 
-                            {/* Add Select Button */}
-                            <TouchableOpacity
-                                style={[styles.selectButton, { backgroundColor: selectedTemplate === item.id ? COLORS.info : COLORS.primary }]}
-                                onPress={() => handleTemplateSelection(item.id, item.headline)}
-                            >
-                                <Text style={styles.selectButtonText}>Select</Text>
-                            </TouchableOpacity>
+                                    {/* Add Select Button */}
+                                    <TouchableOpacity
+                                        style={[styles.selectButton, { backgroundColor: selectedTemplate === item.id ? COLORS.info : COLORS.primary }]}
+                                        onPress={() => handleTemplateSelection(item.id, item.name)}
+                                    >
+                                        <Text style={styles.selectButtonText}>Select</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            ))}
                         </View>
-                    ))}
-                </View>
+                }
+
             </ScrollView>
 
             {/* Modal for Full-Screen Image */}

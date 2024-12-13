@@ -108,7 +108,7 @@ export const AddCompany = ({ navigation }: AddCompanyProps) => {
         <View style={{ backgroundColor: colors.card, flex: 1 }}>
             {/* AppBar Start */}
             <Header
-                title={t('AddCompany')}
+                title={t('addCompany')}
                 leftIcon={'back'}
                 titleRight
             />
@@ -178,7 +178,7 @@ export const AddCompany = ({ navigation }: AddCompanyProps) => {
                             placeholder={t('companyName')}
                             value={companyName}
                             onChangeText={setCompanyName}
-                            maxlength={20}
+                            maxlength={30}
                         />
                     </View>
                     <View style={{ gap: 10 }}>
@@ -194,7 +194,7 @@ export const AddCompany = ({ navigation }: AddCompanyProps) => {
                             placeholder={t('companyAddress')}
                             value={address}
                             onChangeText={setAdress}
-                            maxlength={20}
+                            maxlength={60}
                         />
                         {/* </View>
                     <View style={{ marginTop: 10 }}> */}
@@ -203,7 +203,7 @@ export const AddCompany = ({ navigation }: AddCompanyProps) => {
                             placeholder={t('zipcode')}
                             value={zipcode}
                             onChangeText={setZipcode}
-                            maxlength={20}
+                            maxlength={7}
                             keyboardType={'number-pad'}
 
                         />
@@ -214,7 +214,7 @@ export const AddCompany = ({ navigation }: AddCompanyProps) => {
                             placeholder={t('city')}
                             value={city}
                             onChangeText={setCity}
-                            maxlength={20}
+                            maxlength={30}
                         />
                         {/* </View>
                     <View style={{ marginTop: 10 }}> */}
@@ -223,7 +223,7 @@ export const AddCompany = ({ navigation }: AddCompanyProps) => {
                             placeholder={t('state')}
                             value={state}
                             onChangeText={setState}
-                            maxlength={25}
+                            maxlength={40}
                         />
                         <Divider dashed color={COLORS.primary} />
 
@@ -234,7 +234,7 @@ export const AddCompany = ({ navigation }: AddCompanyProps) => {
                             placeholder={t('gst')}
                             value={gst}
                             onChangeText={setGst}
-                            maxlength={25}
+                            maxlength={15}
                         />
                     </View>
                     <View style={{ marginTop: 10 }}>
@@ -243,7 +243,7 @@ export const AddCompany = ({ navigation }: AddCompanyProps) => {
                             placeholder={t('phone')}
                             value={phone}
                             onChangeText={setPhone}
-                            maxlength={25}
+                            maxlength={10}
                             keyboardType={'number-pad'}
 
                         />
@@ -254,7 +254,7 @@ export const AddCompany = ({ navigation }: AddCompanyProps) => {
                             placeholder={t('website')}
                             value={website}
                             onChangeText={setWebsite}
-                            maxlength={25}
+                            maxlength={40}
                         />
                     </View>
                     <View style={{ marginVertical: 10 }}>

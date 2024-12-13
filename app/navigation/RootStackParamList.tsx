@@ -104,11 +104,11 @@ export type RootStackParamList = {
     AddCompany: any;
     ListCompany: any;
     InvoiceGenList: any;
-    AddInvoiceDetails: { items: any };
-    AddItems: { items: any };
+    AddInvoiceDetails: { data: any, items: any };
+    AddItems: { items: any, data: any, };
     ChooseInvoiceDesign: any;
 
-    FinalInvoiceResult: any;
+    FinalInvoiceResult: { data: { pdf_url: string } };
 
 
 };

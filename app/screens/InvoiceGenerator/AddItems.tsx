@@ -39,7 +39,8 @@ type AddItemsProps = StackScreenProps<RootStackParamList, 'AddItems'>
 export const AddItems = ({ navigation, route }: AddItemsProps) => {
 
     const itemsRouteParam = route.params.items;
-    console.log("ItemParams", itemsRouteParam)
+    const company_id = route.params.data.company_id;
+    // console.log("ItemParams", itemsRouteParam)
     const mainItemChoose = itemsRouteParam.length > 0 ? itemsRouteParam : [
         { id: 1, itemName: '', ratePerItem: '', quantity: '', itemAmount: '0' },
     ];
@@ -106,7 +107,7 @@ export const AddItems = ({ navigation, route }: AddItemsProps) => {
 
         // If all fields are valid, navigate back and pass the items
         navigation.goBack();
-        navigation.navigate("AddInvoiceDetails", { items: items });
+        navigation.navigate("AddInvoiceDetails", { items: items, data: { company_id: company_id } });
     };
 
     const theme = useTheme();
