@@ -40,6 +40,7 @@ export const AddItems = ({ navigation, route }: AddItemsProps) => {
 
     const itemsRouteParam = route.params.items;
     const company_id = route.params.data.company_id;
+    const dataParams = route.params.data;
     // console.log("ItemParams", itemsRouteParam)
     const mainItemChoose = itemsRouteParam.length > 0 ? itemsRouteParam : [
         { id: 1, itemName: '', ratePerItem: '', quantity: '', itemAmount: '0' },
@@ -107,7 +108,7 @@ export const AddItems = ({ navigation, route }: AddItemsProps) => {
 
         // If all fields are valid, navigate back and pass the items
         navigation.goBack();
-        navigation.navigate("AddInvoiceDetails", { items: items, data: { company_id: company_id } });
+        navigation.navigate("AddInvoiceDetails", { items: items, data: dataParams });
     };
 
     const theme = useTheme();
@@ -133,7 +134,7 @@ export const AddItems = ({ navigation, route }: AddItemsProps) => {
                                     placeholder={`Item Name ${index + 1}`}
                                     value={item.itemName}
                                     onChangeText={(text) => handleInputChange(item.id, 'itemName', text)}
-                                    maxlength={20}
+                                    maxlength={250}
                                 />
                             </View>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 10, marginTop: 12 }}>
@@ -151,7 +152,7 @@ export const AddItems = ({ navigation, route }: AddItemsProps) => {
                                     placeholder={`Quantity ${index + 1}`}
                                     value={item.quantity}
                                     onChangeText={(text) => handleInputChange(item.id, 'quantity', text)}
-                                    maxlength={25}
+                                    maxlength={20}
                                     style={{ flex: 1 }}
                                     keyboardType="numeric"
                                 />

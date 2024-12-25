@@ -85,6 +85,8 @@ import AddItems from '../screens/InvoiceGenerator/AddItems';
 import ChooseInvoiceDesign from '../screens/InvoiceGenerator/ChooseInvoiceDesign';
 import FinalInvoiceResult from '../screens/InvoiceGenerator/FinalInvoiceResult';
 import AddInvoiceDetails from '../screens/InvoiceGenerator/AddInvoiceDetails';
+import { AddCompanyCustomer } from '../screens/InvoiceGenerator/AddCompanyCustomer';
+import CompanyCustomerList from '../screens/InvoiceGenerator/CompanyCustomerList';
 
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -189,6 +191,8 @@ const StackNavigator = () => {
 				<Stack.Screen name="AddItems" component={AddItems} />
 				<Stack.Screen name="ChooseInvoiceDesign" component={ChooseInvoiceDesign} />
 				<Stack.Screen name="FinalInvoiceResult" component={FinalInvoiceResult} />
+				<Stack.Screen name="AddCompanyCustomer" component={AddCompanyCustomer} />
+				<Stack.Screen name="CompanyCustomerList" component={CompanyCustomerList} />
 
 			</Stack.Navigator>
 		</View>

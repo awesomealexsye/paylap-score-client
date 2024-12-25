@@ -66,14 +66,14 @@ const DrawerMenu = () => {
             id: "6",
             icon: IMAGES.list,
             name: t('Invoice'),
-            navigate: "ListCompany",
+            navigate: "CompanyCustomerList",
         },
         {
             id: "7",
             icon: IMAGES.logout,
             name: t('logout'),
             navigate: 'MobileSignIn',
-        },
+        }
     ];
 
     const { OS } = Platform;

@@ -137,5 +137,12 @@
     "addItem": "Add Item",
     "chooseTemplate": "Choose Template",
     "downloadPDF": "Download PDF",
-    "showPDF": "Show PDF"
+    "showPDF": "Show PDF",
+    "selectCompany": "Select Company",
+    "invoiceCustomer": "Invoice Customer",
+    "createNewCompany": "Create New Company",
+    "enterReceivedAmount": "Enter Received Amount",
+    "totalInvoiceAmount": "Total Invoice Amount",
+    "pendingAmount": "Pending Amount",
+    "noCompanyCreated": "Created company To use this Feature"
 }

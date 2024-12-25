@@ -26,7 +26,9 @@ interface InvoiceList {
 type InvoiceGenListProps = StackScreenProps<RootStackParamList, 'InvoiceGenList'>
 
 export const InvoiceGenList = ({ navigation, route }: InvoiceGenListProps) => {
-    const company_id = route.params?.item.id;
+    const items = route.params?.item;
+    const user_invoice_customers_id = items.id;
+    const company_id = items.company_id;
     const { t } = useTranslation();
 
     const [searchText, setSearchText] = useState('');
@@ -45,7 +47,8 @@ export const InvoiceGenList = ({ navigation, route }: InvoiceGenListProps) => {
     );
 
     const handleOpenWebPage = async (pdf_url: string) => {
-        await WebBrowser.openBrowserAsync(pdf_url);
+        navigation.replace('FinalInvoiceResult', { data: { pdf_url: pdf_url }, previous_screen: "InvoiceGenList" });
+        // await WebBrowser.openBrowserAsync(pdf_url);
     };
 
     const handleSearch = (text: string) => {
@@ -58,10 +61,12 @@ export const InvoiceGenList = ({ navigation, route }: InvoiceGenListProps) => {
 
     const fetchCustomerList = async () => {
         setIsLoading(true);
+        // console.log(items, "sisd")
         const homeApiRes = await ApiService.postWithToken("api/invoice-generator/invoice/list", {
+            user_invoice_customers_id: user_invoice_customers_id,
             company_id: company_id
         });
-        console.log(homeApiRes)
+        // console.log(homeApiRes)
         if (homeApiRes?.status == true) {
             setInvoiceGenData(homeApiRes?.data);
             setFilteredCustomers(homeApiRes?.data);
@@ -162,21 +167,32 @@ export const InvoiceGenList = ({ navigation, route }: InvoiceGenListProps) => {
                     </View>
                 </View>
 
-                {/* Search box ends */}
-
-                {isLoading === false ?
-                    <FlatList scrollEnabled={false}
-                        data={filteredCustomers}
-                        renderItem={renderCustomer}
-                        keyExtractor={(item, index) => index.toString()}
-                        contentContainerStyle={{}} /> : <View style={{ flex: 1, justifyContent: 'center' }}
-                        >
-                        <ActivityIndicator color={colors.title} size={'large'}></ActivityIndicator>
-                    </View>
+                {
+                    filteredCustomers.length > 0 ?
+                        <View>
+                            {isLoading === false ?
+                                <FlatList scrollEnabled={false}
+                                    data={filteredCustomers}
+                                    renderItem={renderCustomer}
+                                    keyExtractor={(item, index) => index.toString()}
+                                    contentContainerStyle={{}} />
+                                :
+                                <View style={{ flex: 1, justifyContent: 'center' }}>
+                                    <ActivityIndicator color={colors.title} size={'large'}></ActivityIndicator>
+                                </View>
+                            }
+                        </View>
+                        :
+                        <Text style={{ textAlign: 'center', marginTop: 20 }}>{t('noDataFound')}</Text>
                 }
-
             </ScrollView >
-            <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("AddInvoiceDetails", { data: { company_id: company_id }, items: [] })}>
+            <TouchableOpacity style={styles.addButton} onPress={() => {
+                console.log(items, "hsdjls")
+                navigation.navigate("AddInvoiceDetails", { data: items, items: [] })
+            }
+            }
+            >
+
                 <FontAwesome style={{ marginRight: 6, color: COLORS.white }} name={'user-plus'} size={20} />
                 <Text style={styles.addButtonText}>{t('generateNew')}</Text>
             </TouchableOpacity>

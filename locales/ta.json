@@ -136,5 +136,11 @@
     "addItem": "ਆਈਟਮ ਜੋੜੋ",
     "chooseTemplate": "ਟੈਮਪਲੇਟ ਚੁਣੋ",
     "downloadPDF": "ਪੀਡੀਐਫ ਡਾਊਨਲੋਡ ਕਰੋ",
-    "showPDF": "ਪੀਡੀਐਫ ਦਿਖਾਓ"
+    "showPDF": "ਪੀਡੀਐਫ ਦਿਖਾਓ",
+    "selectCompany": "ਕੰਪਨੀ ਚੁਣੋ",
+    "invoiceCustomer": "ਚਲਾਨ ਗਾਹਕ",
+    "createNewCompany": "ਨਵੀਂ ਕੰਪਨੀ ਬਣਾਓ",
+    "enterReceivedAmount": "ਪ੍ਰਾਪਤ ਰਕਮ ਦਰਜ ਕਰੋ",
+    "totalInvoiceAmount": "ਕੁੱਲ ਚਲਾਨ ਰਕਮ",
+    "pendingAmount": "ਬਕਾਇਆ ਰਕਮ"
 }

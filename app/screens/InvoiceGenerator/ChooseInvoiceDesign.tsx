@@ -18,6 +18,7 @@ export const ChooseInvoiceDesign = ({ navigation, route }: ChooseInvoiceDesignPr
     const { colors }: { colors: any } = theme;
 
     const data = route.params?.data;
+    console.log("dataparsss,", data)
 
     const [isLoading, setIsLoading] = useState(false)
     const [imageData, setImageData] = useState<any>([]);
@@ -63,11 +64,9 @@ export const ChooseInvoiceDesign = ({ navigation, route }: ChooseInvoiceDesignPr
                 console.log(res, "res")
                 MessagesService.commonMessage(res.message, res.status ? "SUCCESS" : "ERROR");
                 if (res.status) {
-                    navigation.replace('FinalInvoiceResult', { data: { pdf_url: res.pdf_url } });
+                    navigation.replace('FinalInvoiceResult', { data: { pdf_url: res.pdf_url }, previous_screen: "ChooseInvoiceDesign" });
                 }
             })
-
-            // navigation.navigate('FinalInvoiceResult');
         } else {
             Alert.alert("Error", "Please choose any template first..");
         }

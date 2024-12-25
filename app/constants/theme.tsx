@@ -36,6 +36,10 @@ export const COLORS = {
 	darkBorder: "rgba(255,255,255,.2)",
 	darkInput: "rgba(255,255,255,.05)",
 	darkinputborder: "#C1CDD9",
+
+	// shadow
+	shadowColor: '#000', // Black shadow color
+
 }
 
 export const SIZES = {

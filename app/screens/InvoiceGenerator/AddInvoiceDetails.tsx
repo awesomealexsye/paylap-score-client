@@ -18,22 +18,16 @@ import { MessagesService } from '../../lib/MessagesService';
 import Divider from '../../components/Dividers/Divider';
 
 type AddInvoiceDetailsProps = StackScreenProps<RootStackParamList, 'AddInvoiceDetails'>
-
 export const AddInvoiceDetails = ({ navigation, route }: AddInvoiceDetailsProps) => {
     const { t } = useTranslation();
     const items = route.params.items;
-    const company_id = route.params.data.company_id;
+    // const company_id = route.params.data.company_id;
+    const dataParam = route.params.data;
+    console.log("asssqwsdsd..", dataParam);
 
     const [isLoading, setIsLoading] = useState<any>(false);
 
-    const [customerName, setCustomerName] = useState('');
     const [invoiceName, setInvoiceName] = useState('');
-    const [address, setAdress] = useState('');
-    const [zipcode, setZipcode] = useState('');
-    const [city, setCity] = useState('');
-    const [state, setState] = useState('');
-    const [phone, setPhone] = useState('');
-
     const [notes, setNotes] = useState('');
     const [receivedAmount, setReceivedAmount] = useState('');
     const [invoiceTotalAmount, setInvoiceTotalAmount] = useState(0);
@@ -72,13 +66,6 @@ export const AddInvoiceDetails = ({ navigation, route }: AddInvoiceDetailsProps)
         // Basic validation
         if (!invoiceName) {
             MessagesService.commonMessage("Invoice Name is Required.", "ERROR")
-        }
-        else if (!address) {
-            MessagesService.commonMessage("Address is required.", "ERROR")
-        }
-        else if (!phone) {
-            MessagesService.commonMessage("Phone Number is required.", "ERROR")
-
         } else if (items.length <= 0) {
             MessagesService.commonMessage("1 item is required.", "ERROR")
         }
@@ -87,23 +74,14 @@ export const AddInvoiceDetails = ({ navigation, route }: AddInvoiceDetailsProps)
         } else {
             const data = {
                 name: invoiceName,
-                company_id: company_id,
-                // template_id: 1,
-                customer_info: {
-                    customerName: customerName,
-                    phone: phone,
-                    address: address,
-                    zipcode: zipcode,
-                    city: city,
-                    state: state,
-
-                },
+                company_id: dataParam.company_id,
+                user_invoice_customers_id: dataParam.id,//user_invoice_customers_id id
                 item_info: items,
                 amount_info: { total_amount: invoiceTotalAmount, received_amount: Number(receivedAmount) },
                 notes: notes
             }
             // console.log(data, "dataapi");
-
+            // console.log("dataparamssss122", dataParam, "Secpmd", data);
             navigation.navigate("ChooseInvoiceDesign", { data: data });
         }
 
@@ -140,60 +118,6 @@ export const AddInvoiceDetails = ({ navigation, route }: AddInvoiceDetailsProps)
                         />
                     </View>
                     <View style={{ marginTop: 10, gap: 10 }}>
-                        <Divider dashed color={COLORS.primary} />
-                        <Text style={{ ...FONTS.fontSemiBold, textAlign: 'center', color: colors.title, paddingVertical: 5, }}>Customer info</Text>
-
-                        <Input
-                            inputRounded
-                            placeholder={t('customerName')}
-                            value={customerName}
-                            onChangeText={setCustomerName}
-                            maxlength={60}
-                        />
-                        <Input
-                            inputRounded
-                            placeholder={t('phone')}
-                            value={phone}
-                            onChangeText={setPhone}
-                            maxlength={10}
-                        />
-                        <Input
-                            inputRounded
-                            placeholder={t('address')}
-                            value={address}
-                            onChangeText={setAdress}
-                            maxlength={100}
-                        />
-                        {/* </View>
-                    <View style={{ marginTop: 10 }}> */}
-                        <Input
-                            inputRounded
-                            placeholder={t('zipcode')}
-                            value={zipcode}
-                            onChangeText={setZipcode}
-                            maxlength={7}
-                            keyboardType={'number-pad'}
-
-                        />
-                        {/* </View>
-                    <View style={{ marginTop: 10 }}> */}
-                        <Input
-                            inputRounded
-                            placeholder={t('city')}
-                            value={city}
-                            onChangeText={setCity}
-                            maxlength={30}
-                        />
-                        {/* </View>
-                    <View style={{ marginTop: 10 }}> */}
-                        <Input
-                            inputRounded
-                            placeholder={t('state')}
-                            value={state}
-                            onChangeText={setState}
-                            maxlength={30}
-                        />
-                        <Divider dashed color={COLORS.primary} />
 
                     </View>
                     <View style={{ marginTop: 20 }}>
@@ -228,7 +152,7 @@ export const AddInvoiceDetails = ({ navigation, route }: AddInvoiceDetailsProps)
                             icon={<FontAwesome name='list' size={20} color={COLORS.background} />}
 
                             title={t('addItem')} onPress={() => {
-                                navigation.navigate("AddItems", { items: items, data: { company_id: company_id } })
+                                navigation.navigate("AddItems", { items: items, data: dataParam })
                             }} />
                     </View>
                     <View style={{ marginTop: 20 }}>

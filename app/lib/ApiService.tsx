@@ -45,10 +45,8 @@ const ApiService = {
         data = { ...common_payload, ...data }
         headers = { ...authHeader, ...headers }
         // console.log("Request body ", api_url, data, headers);
-        // console.log("consoleloo  ", api_url, data, headers);
         try {
             const res: any = await axios.post(api_url, data, { headers: headers });
-            // console.log("Response ", res.data, res.data.message);
             if (res.data.logout_user === true) {
                 const is_logout = await StorageService.logOut();
                 if (is_logout) {

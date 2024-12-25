@@ -6,6 +6,7 @@ const CONFIG = {
         JWT_TOKEN: 'jwt_token',
         AUTH_KEY: 'auth_key',
         USER_DETAIL: 'user_detail',
+        INVOICE_COMPANY: 'invoice_company_id',
         THEME_MODE: {
             THEME_MODE: 'THEME_MODE',
             LIGHT: 'LIGHT',

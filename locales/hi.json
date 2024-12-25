@@ -136,5 +136,11 @@
     "addItem": "वस्तु जोड़ें",
     "chooseTemplate": "टेम्पलेट चुनें",
     "downloadPDF": "पीडीएफ डाउनलोड करें",
-    "showPDF": "पीडीएफ दिखाएं"
+    "showPDF": "पीडीएफ दिखाएं",
+    "selectCompany": "कंपनी चुनें",
+    "invoiceCustomer": "इनवॉइस ग्राहक",
+    "createNewCompany": "नई कंपनी बनाएं",
+    "enterReceivedAmount": "प्राप्त राशि दर्ज करें",
+    "totalInvoiceAmount": "कुल इनवॉइस राशि",
+    "pendingAmount": "बकाया राशि"
 }

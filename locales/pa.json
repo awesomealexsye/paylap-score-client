@@ -136,5 +136,11 @@
     "addItem": "பொருள் சேர்க்கவும்",
     "chooseTemplate": "டெம்ப்ளேட் தேர்வு செய்க",
     "downloadPDF": "PDF பதிவிறக்கம் செய்க",
-    "showPDF": "PDF காண்க"
+    "showPDF": "பீடிஎஃப் காட்டு",
+    "selectCompany": "நிறுவனத்தை தேர்ந்தெடுக்கவும்",
+    "invoiceCustomer": "வாடிக்கையாளர் கட்டணம்",
+    "createNewCompany": "புதிய நிறுவனம் உருவாக்கு",
+    "enterReceivedAmount": "பெறப்பட்ட தொகையை உள்ளிடவும்",
+    "totalInvoiceAmount": "மொத்த கட்டண தொகை",
+    "pendingAmount": "நிலுவை தொகை"
 }
