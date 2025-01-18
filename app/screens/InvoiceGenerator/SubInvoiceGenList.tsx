@@ -17,9 +17,6 @@ interface InvoiceList {
     id: string;
     parent_id: number,
     name: string;
-    total_amount: number,
-    received_amount: number,
-
     image: string;
     pdf_url: string;
     created_at_new: string;
@@ -27,9 +24,9 @@ interface InvoiceList {
 
 
 
-type InvoiceGenListProps = StackScreenProps<RootStackParamList, 'InvoiceGenList'>
+type SubInvoiceGenListProps = StackScreenProps<RootStackParamList, 'SubInvoiceGenList'>
 
-export const InvoiceGenList = ({ navigation, route }: InvoiceGenListProps) => {
+export const SubInvoiceGenList = ({ navigation, route }: SubInvoiceGenListProps) => {
     const items = route.params?.item;
     const user_invoice_customers_id = items.id;
     const company_id = items.company_id;
@@ -46,13 +43,13 @@ export const InvoiceGenList = ({ navigation, route }: InvoiceGenListProps) => {
 
     useFocusEffect(
         useCallback(() => {
+            console.log("first call", items)
             fetchCustomerList();
         }, [])
     );
 
     const handleOpenWebPage = async (pdf_url: string) => {
-        // navigation.replace('FinalInvoiceResult', { data: { pdf_url: pdf_url }, previous_screen: "InvoiceGenList" });
-        navigation.navigate('FinalInvoiceResult', { data: { pdf_url: pdf_url }, previous_screen: "InvoiceGenList" });
+        navigation.replace('FinalInvoiceResult', { data: { pdf_url: pdf_url }, previous_screen: "InvoiceGenList" });
         // await WebBrowser.openBrowserAsync(pdf_url);
     };
 
@@ -69,7 +66,8 @@ export const InvoiceGenList = ({ navigation, route }: InvoiceGenListProps) => {
         // console.log(items, "sisd")
         const homeApiRes = await ApiService.postWithToken("api/invoice-generator/invoice/list", {
             user_invoice_customers_id: user_invoice_customers_id,
-            company_id: company_id
+            company_id: company_id,
+            parent_id: items.parent_id
         });
         // console.log(homeApiRes)
         if (homeApiRes?.status == true) {
@@ -93,15 +91,10 @@ export const InvoiceGenList = ({ navigation, route }: InvoiceGenListProps) => {
 
     const renderCustomer = ({ item }: { item: InvoiceList }) => (
         <TouchableOpacity onPress={() => {
-            let pending_amount = item.total_amount - item.received_amount;
-            console.log("pending_amount", item, pending_amount)
-            if (pending_amount == 0) {
-                handleOpenWebPage(item.pdf_url);
-            } else {
-                navigation.navigate("SubInvoiceGenList", { item: item })
-            }
+            handleOpenWebPage(item.pdf_url);
             // console.log(item.pdf_url)
 
+            // navigation.navigate("CustomerTransations", { item: item }) 
         }}>
 
             <View style={[styles.customerItem, { backgroundColor: colors.card, marginBottom: 10 }]}>
@@ -139,7 +132,7 @@ export const InvoiceGenList = ({ navigation, route }: InvoiceGenListProps) => {
         <View style={{ backgroundColor: colors.card, flex: 1 }}>
             {/* AppBar Start */}
             <Header
-                title={t('generatedInvoice')}
+                title={t('subInvoiceGenList')}
                 leftIcon={'back'}
                 titleRight
             />
@@ -198,7 +191,7 @@ export const InvoiceGenList = ({ navigation, route }: InvoiceGenListProps) => {
             </ScrollView >
             <TouchableOpacity style={styles.addButton} onPress={() => {
                 // console.log(items, "hsdjls")
-                navigation.navigate("AddInvoiceDetails", { data: items, items: [], parent_id: 0 })
+                navigation.navigate("AddInvoiceDetails", { data: items, items: [], parent_id: items.id })
             }
             }
             >
@@ -280,5 +273,5 @@ const styles = StyleSheet.create({
     },
 })
 
-export default InvoiceGenList;
+export default SubInvoiceGenList;
 
