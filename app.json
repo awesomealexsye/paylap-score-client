@@ -2,7 +2,7 @@
   "expo": {
     "name": "PaylapScore",
     "slug": "paylap-score",
-    "version": "1.0.36",
+    "version": "1.0.38",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -22,11 +22,16 @@
         "resizeMode": "cover",
         "backgroundColor": "#70747D"
       },
-      "bundleIdentifier": "com.paylap.paylapscore"
+      "bundleIdentifier": "com.paylap.paylapscore",
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "remote-notification"
+        ]
+      }
     },
     "android": {
-      "versionCode": 36,
-      "versionName": "1.0.36",
+      "versionCode": 38,
+      "versionName": "1.0.38",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -41,7 +46,8 @@
         "googleMaps": {
           "apiKey": "YOUR_GOOGLE_MAPS_API_KEY"
         }
-      }
+      },
+      "useNextNotificationsApi": true
     },
     "web": {
       "favicon": "./assets/favicon.png"

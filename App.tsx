@@ -15,28 +15,6 @@ import './i18n';
 export default function App() {
 
 
-  const theme = useTheme();
-  const { colors }: { colors: any } = theme;
-
-  // useEffect(() => {
-  //   const handleDeepLink = async () => {
-  //     const initialUrl = await Linking.getInitialURL();
-  //     if (initialUrl) {
-  //       const urlParams = new URL(initialUrl);
-  //       const referralCode = urlParams.searchParams.get("referralCode");
-  //       // const referralCode = "PAYLAP00125"
-  //       if (referralCode) {
-  //         // console.log("App Referral Code:", referralCode);
-  //         // StorageService.removeAllStorageValue([referralCode]);
-  //         StorageService.setStorage('referralCode', referralCode);
-  //         // Save or use the referral code as needed
-  //       }
-  //     }
-  //   };
-
-  //   handleDeepLink();
-  // }, []);
-
   const [loaded] = useFonts({
     PoppinsBold: require('./app/assets/fonts/Poppins-Bold.ttf'),
     PoppinsSemiBold: require('./app/assets/fonts/Poppins-SemiBold.ttf'),

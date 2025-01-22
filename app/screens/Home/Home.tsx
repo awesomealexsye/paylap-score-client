@@ -17,6 +17,7 @@ import StorageService from '../../lib/StorageService';
 import ImageSwiper from '../../components/ImageSwiper';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../../i18n';
+import NotificationService from '../../lib/NotificationService';
 interface Customer {
     id: string;
     customer_id: string;
@@ -47,6 +48,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
 
     useEffect(() => {
+        NotificationService.updateDeviceTokenToServer()
         StorageService.isLanguageSet().then((res) => {
             if (res != null) {
                 i18n.changeLanguage(res);
