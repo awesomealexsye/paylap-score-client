@@ -87,6 +87,15 @@ import FinalInvoiceResult from '../screens/InvoiceGenerator/FinalInvoiceResult';
 import AddInvoiceDetails from '../screens/InvoiceGenerator/AddInvoiceDetails';
 import { AddCompanyCustomer } from '../screens/InvoiceGenerator/AddCompanyCustomer';
 import CompanyCustomerList from '../screens/InvoiceGenerator/CompanyCustomerList';
+import InvoiceLists from '../screens/Invoice/InvoiceLists';
+import InvoiceCreate from '../screens/Invoice/InvoiceCreate';
+import InvoiceAddItems from '../screens/Invoice/InvoiceAddItems';
+import InvoiceEditItem from '../screens/Invoice/InvoiceEditItem';
+import InvoiceOrganizations from '../screens/Invoice/InvoiceOrganizations';
+import InvoiceAddOrganization from '../screens/Invoice/InvoiceAddOrganization';
+import InvoiceClients from '../screens/Invoice/InvoiceClients';
+import InvoiceAddClient from '../screens/Invoice/InvoiceAddClient';
+import InvoiceAddNewItems from '../screens/Invoice/InvoiceAddNewItem';
 
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -193,6 +202,23 @@ const StackNavigator = () => {
 				<Stack.Screen name="FinalInvoiceResult" component={FinalInvoiceResult} />
 				<Stack.Screen name="AddCompanyCustomer" component={AddCompanyCustomer} />
 				<Stack.Screen name="CompanyCustomerList" component={CompanyCustomerList} />
+
+
+
+
+				{/* // INVOICE */}
+
+
+				<Stack.Screen name="InvoiceLists" component={InvoiceLists} />
+				<Stack.Screen name="InvoiceAddItems" component={InvoiceAddItems} />
+				<Stack.Screen name="InvoiceAddNewItems" component={InvoiceAddNewItems} />
+				<Stack.Screen name="InvoiceCreate" component={InvoiceCreate} />
+				<Stack.Screen name="InvoiceEditItem" component={InvoiceEditItem} />
+				<Stack.Screen name="InvoiceOrganizations" component={InvoiceOrganizations} />
+				<Stack.Screen name="InvoiceAddOrganization" component={InvoiceAddOrganization} />
+				<Stack.Screen name="InvoiceClients" component={InvoiceClients} />
+				<Stack.Screen name="InvoiceAddClient" component={InvoiceAddClient} />
+
 
 			</Stack.Navigator>
 		</View>

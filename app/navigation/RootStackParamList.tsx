@@ -112,5 +112,19 @@ export type RootStackParamList = {
     AddCompanyCustomer: { data: { company_id: number }, items: any }
     CompanyCustomerList: any;
 
+    // INVOICE 2
+
+    InvoiceLists: any;
+    InvoiceCreate: any;
+    InvoiceAddItems: any;
+    InvoiceAddNewItems: any;
+    InvoiceEditItem: any;
+    InvoiceOrganizations: any;
+    InvoiceAddOrganization: any;
+    InvoiceClients: any;
+    InvoiceAddClient: any;
+
+
+
 
 };

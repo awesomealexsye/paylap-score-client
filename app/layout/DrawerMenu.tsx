@@ -71,6 +71,12 @@ const DrawerMenu = () => {
         {
             id: "7",
             icon: IMAGES.logout,
+            name: t('INVOICE 2'),
+            navigate: 'InvoiceLists',
+        },
+        {
+            id: "7",
+            icon: IMAGES.logout,
             name: t('logout'),
             navigate: 'MobileSignIn',
         }
