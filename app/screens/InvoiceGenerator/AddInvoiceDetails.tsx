@@ -23,7 +23,8 @@ export const AddInvoiceDetails = ({ navigation, route }: AddInvoiceDetailsProps)
     const items = route.params.items;
     // const company_id = route.params.data.company_id;
     const dataParam = route.params.data;
-    console.log("asssqwsdsd..", dataParam);
+    const parent_id = route.params.parent_id;
+    // console.log("parent_idparent_id..", parent_id);
 
     const [isLoading, setIsLoading] = useState<any>(false);
 
@@ -78,7 +79,8 @@ export const AddInvoiceDetails = ({ navigation, route }: AddInvoiceDetailsProps)
                 user_invoice_customers_id: dataParam.id,//user_invoice_customers_id id
                 item_info: items,
                 amount_info: { total_amount: invoiceTotalAmount, received_amount: Number(receivedAmount) },
-                notes: notes
+                notes: notes,
+                parent_id: parent_id
             }
             // console.log(data, "dataapi");
             // console.log("dataparamssss122", dataParam, "Secpmd", data);
