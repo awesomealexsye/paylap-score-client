@@ -38,7 +38,7 @@ const NotificationService = {
             token = (await Notifications.getExpoPushTokenAsync()).data;
             // console.log('Expo Push Token:', token);
         } else {
-            MessagesService.commonMessage('Must use a physical device for Push Notifications');
+            // MessagesService.commonMessage('Must use a physical device for Push Notifications');
         }
 
         if (Platform.OS === 'android') {

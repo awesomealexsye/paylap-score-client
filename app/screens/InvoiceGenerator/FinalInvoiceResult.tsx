@@ -32,7 +32,7 @@ export const FinalInvoiceResult = ({ navigation, route }: FinalInvoiceResultProp
         // Handle hardware back press
         const onBackPress = () => {
             if (previous_screen == "ChooseInvoiceDesign") {
-                navigation.navigate('CompanyCustomerList');
+                navigation.navigate('InvoiceLists');
             } else {
                 navigation.goBack();
             }
@@ -44,6 +44,7 @@ export const FinalInvoiceResult = ({ navigation, route }: FinalInvoiceResultProp
     }, [navigation]);
 
     const handleOpenWebPage = async () => {
+        // console.log("pdfurl/.", pdf_url)
         await WebBrowser.openBrowserAsync(pdf_url);
     };
 
@@ -61,11 +62,10 @@ export const FinalInvoiceResult = ({ navigation, route }: FinalInvoiceResultProp
                 // Handle header back button press
                 leftAction={() => {
                     if (previous_screen == "ChooseInvoiceDesign") {
-                        navigation.navigate('CompanyCustomerList');
+                        navigation.navigate('InvoiceLists');
                     } else {
                         navigation.goBack();
                     }
-                    // navigation.navigate('CompanyCustomerList')
                 }
                 }
             />

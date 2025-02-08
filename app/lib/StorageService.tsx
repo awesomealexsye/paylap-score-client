@@ -24,7 +24,8 @@ const StorageService = {
   },
 
   async logOut() {
-    await this.removeAllStorageValue([CONFIG.HARDCODE_VALUES.USER_ID, CONFIG.HARDCODE_VALUES.AUTH_KEY, CONFIG.HARDCODE_VALUES.JWT_TOKEN, CONFIG.HARDCODE_VALUES.USER_DETAIL, CONFIG.HARDCODE_VALUES.SET_LANGUAGE])
+    // await this.removeAllStorageValue([CONFIG.HARDCODE_VALUES.USER_ID, CONFIG.HARDCODE_VALUES.AUTH_KEY, CONFIG.HARDCODE_VALUES.JWT_TOKEN, CONFIG.HARDCODE_VALUES.USER_DETAIL, CONFIG.HARDCODE_VALUES.SET_LANGUAGE])
+    await AsyncStorage.clear()
     const is_login = await this.isLoggedIn();
     if (!is_login) {
       return true;

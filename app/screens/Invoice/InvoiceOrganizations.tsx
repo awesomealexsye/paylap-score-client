@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
 	View,
 	Text,
@@ -6,46 +6,96 @@ import {
 	FlatList,
 	TouchableOpacity,
 	StyleSheet,
+	Image,
+	Platform,
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import Header from '../../layout/Header';
 import BottomSheet from '@gorhom/bottom-sheet';
+import { ApiService } from '../../lib/ApiService';
+import { COLORS } from '../../constants/theme';
+import CONFIG from '../../constants/config';
+import StorageService from '../../lib/StorageService';
+import { useFocusEffect } from '@react-navigation/native';
+import { ActivityIndicator } from 'react-native-paper';
 
 type InvoiceOrganizationsProps = StackScreenProps<RootStackParamList, 'InvoiceOrganizations'>;
 
 export const InvoiceOrganizations = ({ navigation }: InvoiceOrganizationsProps) => {
+	// Reference for BottomSheet
+	const bottomSheetRef = useRef<BottomSheet>(null);
+	// State for the selected organization (to show in the bottom sheet)
+	const [selectedItem, setSelectedItem] = useState<any>(null);
+	// State for company data from the API
+	const [companyData, setCompanyData] = useState({ status: false, image_path: '', message: '', data: [] });
+	// State for search input
+	const [searchQuery, setSearchQuery] = useState('');
+	const [isLoading, setIsLoading] = useState<any>(false);
 
-	const bottomSheetRef = useRef(null);
-	const [selectedItem, setSelectedItem] = useState(null);
+	// Fetch the company list whenever the screen is focused
+	useFocusEffect(
+		useCallback(() => {
+			fetchCompanyList();
+		}, [])
+	);
 
-	const openBottomSheet = (item: any) => {
-		setSelectedItem(item);
-		bottomSheetRef.current?.expand();
+	const fetchCompanyList = () => {
+		setIsLoading(true)
+		ApiService.postWithToken('api/invoice-generator/companies/list', {}).then((res) => {
+			if (res.status) {
+				setCompanyData(res);
+			}
+			setIsLoading(false);
+		});
 	};
 
+	// When an organization is selected, save its info and navigate to the InvoiceCreate screen
+	const selectOrganization = async (organization_item: any) => {
+		StorageService.setStorage(
+			CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.ORGANIZATION_INFO,
+			JSON.stringify(organization_item)
+		);
+		navigation.navigate('InvoiceCreate');
+	};
 
+	// Open the bottom sheet when the three-dot icon is pressed
+	const openBottomSheet = (item: any) => {
+		setSelectedItem(item);
+		// Using snapToIndex to open the bottom sheet to the first snap point (30%)
+		bottomSheetRef.current?.snapToIndex(0);
+	};
 
+	// Close the bottom sheet and clear the selected item
+	const closeBottomSheet = () => {
+		bottomSheetRef.current?.close();
+		setSelectedItem(null);
+	};
 
-	const organizations = Array(1).fill({
-		name: 'Name of the Organization',
-		email: 'support@lucodeia.com',
+	// Filter companies based on the search query (searching by name or email)
+	const filteredCompanies = companyData.data.filter((item: any) => {
+		const query = searchQuery.toLowerCase();
+		return item.name.toLowerCase().includes(query) || item.email.toLowerCase().includes(query);
 	});
 
-	const renderItem = ({ item }) => (
-		<View style={styles.organizationRow}>
-			<View style={styles.organizationInfo}>
+	// Render each organization item as a card with improved spacing, shadows, and layout
+	const renderItem = ({ item }: any) => (
+		<View style={styles.organizationCard}>
+			<TouchableOpacity style={styles.organizationInfo} onPress={() => selectOrganization(item)}>
 				<View style={styles.avatar}>
-					<Text style={styles.avatarText}>A</Text>
+					<Image
+						style={styles.avatarImage}
+						source={{ uri: `${companyData.image_path}${item.image}` }}
+					/>
 				</View>
-				<View>
+				<View style={styles.textContainer}>
 					<Text style={styles.organizationName}>{item.name}</Text>
-					<Text style={styles.organizationEmail}>{item.email}</Text>
+					<Text style={styles.organizationEmail}>{item.email.toLowerCase()}</Text>
 				</View>
-			</View>
-			<TouchableOpacity onPress={openBottomSheet}>
-				<MaterialIcons name="more-vert" size={24} color="gray" />
+			</TouchableOpacity>
+			<TouchableOpacity onPress={() => openBottomSheet(item)}>
+				<MaterialIcons name="more-vert" size={24} color="#666" />
 			</TouchableOpacity>
 		</View>
 	);
@@ -53,55 +103,68 @@ export const InvoiceOrganizations = ({ navigation }: InvoiceOrganizationsProps) 
 	return (
 		<View style={styles.container}>
 			{/* Header */}
-			<Header
-				leftIcon={'back'}
-				title={'Organizatios'}
-				titleRight
-			/>
+			<Header leftIcon={'back'} title={'Organizations'} titleRight />
 
 			{/* Search Bar */}
-			<TextInput
-				style={styles.searchBar}
-				placeholder="Find organization"
-				placeholderTextColor="#999"
-			/>
+			<View style={styles.searchContainer}>
+				<MaterialIcons name="search" size={22} color="#888" style={styles.searchIcon} />
+				<TextInput
+					style={styles.searchBar}
+					placeholder="Search organizations"
+					placeholderTextColor="#888"
+					value={searchQuery}
+					onChangeText={setSearchQuery}
+				/>
+			</View>
 
-			{/* New Organization */}
-			<TouchableOpacity onPress={() => {
-				navigation.navigate("InvoiceAddOrganization");
-			}} style={styles.newOrganizationButton}>
+			{/* New Organization Button */}
+			<TouchableOpacity
+				onPress={() => navigation.navigate('InvoiceAddOrganization')}
+				style={styles.newOrganizationButton}
+			>
 				<Text style={styles.newOrganizationText}>+ New Organization</Text>
 			</TouchableOpacity>
 
-			{/* All Organizations */}
-			<Text style={styles.sectionTitle}>All Organizations</Text>
+			{/* Organization List */}
 
-			{/* List */}
-			<FlatList
-				data={organizations}
-				renderItem={renderItem}
-				keyExtractor={(item, index) => index.toString()}
-			/>
+			{isLoading === false ?
+				<FlatList
+					data={filteredCompanies}
+					renderItem={renderItem}
+					keyExtractor={(item, index) => index.toString()}
+					contentContainerStyle={styles.listContent}
+				/> :
+				<ActivityIndicator color={COLORS.title} size={'large'}></ActivityIndicator>
+			}
+
+			{/* Bottom Sheet (Manage Organization) */}
 			<BottomSheet
 				ref={bottomSheetRef}
+				index={-1} // Starts off closed
 				snapPoints={['30%', '50%']}
-				enablePanDownToClose
+				enablePanDownToClose={true}
 				backgroundStyle={styles.bottomSheetBackground}
 			>
 				<View style={styles.bottomSheetContent}>
-					<Text style={styles.sheetTitle}>Manage Item</Text>
+					<Text style={styles.sheetTitle}>Manage Organization</Text>
 					{selectedItem && (
 						<Text style={styles.selectedItemText}>
-							{selectedItem.name} - {selectedItem.price}
+							{selectedItem.name} - {selectedItem.email}
 						</Text>
 					)}
-					<TouchableOpacity onPress={() => { navigation.navigate("InvoiceEditItem") }} style={styles.sheetButton}>
+					<TouchableOpacity
+						onPress={() => {
+							closeBottomSheet();
+							navigation.navigate('InvoiceEditItem');
+						}}
+						style={styles.sheetButton}
+					>
 						<MaterialIcons name="edit" size={24} color="#555" />
-						<Text style={styles.sheetButtonText}>Edit Item</Text>
+						<Text style={styles.sheetButtonText}>Edit</Text>
 					</TouchableOpacity>
 					<TouchableOpacity style={[styles.sheetButton, styles.removeButton]}>
-						<MaterialIcons name="delete" size={24} color="#555" />
-						<Text style={[styles.sheetButtonText, { color: '#F44336' }]}>Remove Item</Text>
+						<MaterialIcons name="delete" size={24} color="#F44336" />
+						<Text style={[styles.sheetButtonText, { color: '#F44336' }]}>Remove</Text>
 					</TouchableOpacity>
 				</View>
 			</BottomSheet>
@@ -112,65 +175,92 @@ export const InvoiceOrganizations = ({ navigation }: InvoiceOrganizationsProps) 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-
 	},
-
-	searchBar: {
-		backgroundColor: '#F7F7F7',
-		borderRadius: 8,
+	searchContainer: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		backgroundColor: '#fff',
+		borderRadius: 12,
 		paddingHorizontal: 15,
-		paddingVertical: 10,
-		marginBottom: 15,
-		borderColor: '#ccc',
-		borderWidth: 1,
+		paddingVertical: 8,
+		marginBottom: 20,
+		shadowColor: '#000',
+		shadowOpacity: 0.1,
+		shadowRadius: 5,
+		elevation: 3,
+	},
+	searchIcon: {
+		marginRight: 8,
+	},
+	searchBar: {
+		flex: 1,
+		fontSize: 16,
+		color: '#333',
 	},
 	newOrganizationButton: {
-		marginBottom: 15,
+		backgroundColor: COLORS.primary,
+		paddingVertical: 15,
+		borderRadius: 12,
+		alignItems: 'center',
+		marginBottom: 20,
+		shadowColor: COLORS.primary,
+		shadowOpacity: 0.3,
+		shadowRadius: 5,
+		elevation: 3,
 	},
 	newOrganizationText: {
-		color: '#007BFF',
-		fontSize: 16,
-		fontWeight: 'bold',
-	},
-	sectionTitle: {
-		fontSize: 16,
+		color: '#fff',
+		fontSize: 18,
 		fontWeight: '600',
-		marginBottom: 10,
 	},
-	organizationRow: {
+	listContent: {
+		paddingBottom: 100,
+	},
+	organizationCard: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
+		backgroundColor: '#fff',
+		padding: 15,
+		borderRadius: 12,
 		marginBottom: 15,
-		paddingVertical: 10,
-		borderBottomWidth: 1,
-		borderBottomColor: '#F0F0F0',
+		shadowColor: '#000',
+		shadowOpacity: 0.05,
+		shadowRadius: 4,
+		elevation: 2,
 	},
 	organizationInfo: {
 		flexDirection: 'row',
 		alignItems: 'center',
+		flex: 1,
 	},
 	avatar: {
-		width: 40,
-		height: 40,
-		borderRadius: 20,
-		backgroundColor: '#F0F0F0',
+		width: 50,
+		height: 50,
+		borderRadius: 25,
+		backgroundColor: '#e0e0e0',
 		justifyContent: 'center',
 		alignItems: 'center',
-		marginRight: 10,
+		marginRight: 15,
 	},
-	avatarText: {
-		fontSize: 18,
-		fontWeight: 'bold',
-		color: '#666',
+	avatarImage: {
+		width: 45,
+		height: 45,
+		resizeMode: 'cover',
+		borderRadius: 25,
+	},
+	textContainer: {
+		flex: 1,
 	},
 	organizationName: {
-		fontSize: 16,
-		fontWeight: 'bold',
+		fontSize: 18,
+		fontWeight: '600',
+		color: '#333',
+		marginBottom: 4,
 	},
 	organizationEmail: {
 		fontSize: 14,
-		color: '#666',
+		color: '#777',
 	},
 	bottomSheetBackground: {
 		borderTopLeftRadius: 20,
@@ -182,9 +272,10 @@ const styles = StyleSheet.create({
 		padding: 20,
 	},
 	sheetTitle: {
-		fontSize: 18,
-		fontWeight: 'bold',
-		marginBottom: 10,
+		fontSize: 20,
+		fontWeight: '700',
+		marginBottom: 15,
+		color: '#333',
 	},
 	selectedItemText: {
 		fontSize: 16,

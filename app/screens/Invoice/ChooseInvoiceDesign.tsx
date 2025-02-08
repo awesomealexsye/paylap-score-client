@@ -9,6 +9,8 @@ import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { ApiService } from '../../lib/ApiService';
 import { MessagesService } from '../../lib/MessagesService';
 import { ActivityIndicator } from 'react-native-paper';
+import StorageService from '../../lib/StorageService';
+import CONFIG from '../../constants/config';
 
 const { width } = Dimensions.get('window');
 
@@ -18,7 +20,6 @@ export const ChooseInvoiceDesign = ({ navigation, route }: ChooseInvoiceDesignPr
     const { colors }: { colors: any } = theme;
 
     const data = route.params?.data;
-    console.log("dataparsss,", data)
 
     const [isLoading, setIsLoading] = useState(false)
     const [imageData, setImageData] = useState<any>([]);
@@ -27,7 +28,7 @@ export const ChooseInvoiceDesign = ({ navigation, route }: ChooseInvoiceDesignPr
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
-
+    const [prepareData, setPrepareData] = useState(data || { company_id: null, client_id: null, template_id: 0, item_info: '', grand_total_amount: '', received_amount: '', expected_given_data: null });
     useEffect(() => {
         fetchImageList();
     }, []);
@@ -55,15 +56,20 @@ export const ChooseInvoiceDesign = ({ navigation, route }: ChooseInvoiceDesignPr
         setIsModalVisible(false);
     };
 
-    const handleChooseTemplate = () => {
+    const handleChooseTemplate = async () => {
         if (selectedTemplate) {
-            let newApiData = data;
-            newApiData['template_id'] = selectedTemplate
-            console.log("newApiData", newApiData);
-            ApiService.postWithToken("api/invoice-generator/invoice/add", newApiData).then((res: any) => {
-                console.log(res, "res")
+            // setPrepareData({ ...prepareData, template_id: Number(selectedTemplate) });
+            prepareData['template_id'] = selectedTemplate
+            console.log("newApiData", prepareData);
+            ApiService.postWithToken("api/invoice-generator/invoice/add", prepareData).then((res: any) => {
                 MessagesService.commonMessage(res.message, res.status ? "SUCCESS" : "ERROR");
+                // console.log(res);
                 if (res.status) {
+                    StorageService.removeAllStorageValue([
+                        // CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.CLIENT_INFO,
+                        CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.ITEM_INFO,
+                        // CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.ORGANIZATION_INFO
+                    ]);
                     navigation.replace('FinalInvoiceResult', { data: { pdf_url: res.pdf_url }, previous_screen: "ChooseInvoiceDesign" });
                 }
             })

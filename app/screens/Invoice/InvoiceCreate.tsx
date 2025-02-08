@@ -1,204 +1,333 @@
-import React, { useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import {
 	View,
 	Text,
 	StyleSheet,
-	TextInput,
 	TouchableOpacity,
 	SafeAreaView,
-	FlatList,
 	ScrollView,
+	Switch,
+	TextInput,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import Header from "../../layout/Header";
+import { useFocusEffect, useTheme } from "@react-navigation/native";
+import StorageService from "../../lib/StorageService";
+import CONFIG from "../../constants/config";
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/RootStackParamList";
+import { MessagesService } from "../../lib/MessagesService";
 
-import { COLORS, FONTS } from '../../constants/theme';
-import { useTheme } from "@react-navigation/native";
-
-interface InvoiceItem {
-	id: string;
-	title: string;
-	price: number;
-	quantity: number;
-}
-
-type InvoiceCreateProps = StackScreenProps<RootStackParamList, 'InvoiceCreate'>;
+type InvoiceCreateProps = StackScreenProps<RootStackParamList, 'InvoiceCreate'>
 
 export const InvoiceCreate = ({ navigation }: InvoiceCreateProps) => {
 	const theme = useTheme();
-	const { colors }: { colors: any } = theme;
+	const { colors } = theme;
 
-	const [items, setItems] = useState([
-		{ id: "1", title: "Item title will be here", price: 6.95, quantity: 15 },
-	]);
+	const [items, setItems] = useState([]);
+	const [invoiceName, setInvoiceName] = useState("#1");
+	const [organization, setOrganization] = useState({ id: 0, name: '', email: '' });
+	const [client, setClient] = useState({ id: 0, name: '', email: '', phone: '' });
+	const [isFullPaymentReceived, setIsFullPaymentReceived] = useState(true);
+	const [showReceivedAmount, setShowReceivedAmount] = useState(false);
+	const [receivedAmount, setReceivedAmount] = useState('');
+	const [expectedDate, setExpectedDate] = useState(null);
+	const [showDatePicker, setShowDatePicker] = useState(false);
 
-	const handleRemoveItem = (id: string) => {
-		setItems(items.filter((item) => item.id !== id));
+	useEffect(() => {
+		if (isFullPaymentReceived) {
+			setReceivedAmount(calculateTotal());
+			setExpectedDate(null);
+			setShowReceivedAmount(false);
+		} else {
+			setReceivedAmount('');
+		}
+	}, [isFullPaymentReceived]);
+
+	useFocusEffect(
+		useCallback(() => {
+			getAllSessionValue();
+		}, [])
+	);
+	const getAllSessionValue = async () => {
+		const organizationObj = await StorageService.getStorage(CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.ORGANIZATION_INFO);
+		const clientObj = await StorageService.getStorage(CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.CLIENT_INFO);
+		const itemObj = await StorageService.getStorage(CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.ITEM_INFO);
+		if (organizationObj != null) {
+			const organization = JSON.parse(organizationObj);
+			setOrganization(organization);
+		}
+		// const organizationObj = await StorageService.getStorage(CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.ORGANIZATION_INFO);
+		if (clientObj != null) {
+			const client = JSON.parse(clientObj);
+			setClient(client);
+		}
+		if (itemObj != null) {
+			const items = JSON.parse(itemObj);
+			setItems(items);
+		}
+
+	}
+
+	// Handle item removal
+	const handleRemoveItem = (id: any) => {
+		const updatedItems = items.filter((item) => item.id !== id);
+		setItems(updatedItems);
 	};
 
-	const handleAddItem = () => {
-		const newItem: InvoiceItem = {
-			id: Math.random().toString(),
-			title: "New Item",
-			price: 0,
-			quantity: 1,
-		};
-		setItems([...items, newItem]);
+	// Calculate total price per item
+	const calculateItemTotal = (item: any) => {
+		const basePrice = parseFloat(item.price || "0") * parseInt(item.quantity || "0");
+		return basePrice;
+		// const discountAmount = (basePrice * parseFloat(item.discount || "0")) / 100;
+		// const priceAfterDiscount = basePrice - discountAmount;
+		// const taxAmount = (priceAfterDiscount * parseFloat(item.tax || "0")) / 100;
+		// return item.includeTax ? priceAfterDiscount + taxAmount : priceAfterDiscount;
 	};
 
+	// Calculate subtotal (sum of all items)
 	const calculateSubtotal = () => {
-		return items.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
+		return items
+			.reduce((total, item) => total + calculateItemTotal(item), 0)
+			.toFixed(2);
 	};
 
+	// Calculate total discount
 	const calculateDiscount = () => {
-		return (parseFloat(calculateSubtotal()) * 0.1).toFixed(2); // Example 10% discount
+		return items
+			.reduce((total, item) => {
+				const basePrice = parseFloat(item.price || "0") * parseInt(item.quantity || "0");
+				return total + (basePrice * parseFloat(item.discount || "0")) / 100;
+			}, 0)
+			.toFixed(2);
 	};
 
-	const calculateShipping = () => {
-		return 20.0.toFixed(2); // Example flat shipping rate
-	};
-
+	// Calculate total tax
 	const calculateTax = () => {
-		return (parseFloat(calculateSubtotal()) * 0.15).toFixed(2); // Example 15% tax
+		return items
+			.reduce((total, item) => {
+				const basePrice = parseFloat(item.price || "0") * parseInt(item.quantity || "0");
+				const discountAmount = (basePrice * parseFloat(item.discount || "0")) / 100;
+				const priceAfterDiscount = basePrice - discountAmount;
+				return total + (priceAfterDiscount * parseFloat(item.tax || "0")) / 100;
+			}, 0)
+			.toFixed(2);
 	};
 
+	// Grand total = subtotal + tax - discount
 	const calculateTotal = () => {
 		return (
 			parseFloat(calculateSubtotal()) +
-			parseFloat(calculateShipping()) +
 			parseFloat(calculateTax()) -
 			parseFloat(calculateDiscount())
 		).toFixed(2);
 	};
 
+
+	const handleDateChange = (event: any, selectedDate: any) => {
+		setShowDatePicker(false);
+		if (selectedDate) {
+			setExpectedDate(selectedDate.toISOString().split('T')[0]);
+		}
+	};
+
+	const generateInvoice = async () => {
+		if (organization.id == 0) {
+			MessagesService.commonMessage("Please Select Organization");
+		} else if (client.id == 0) {
+			MessagesService.commonMessage("Please Select Client");
+		} else if (items.length == 0) {
+			MessagesService.commonMessage("Please Select Items");
+		} else {
+			let api_info = { name: invoiceName, company_id: organization.id, client_id: client.id, item_info: items, grand_total_amount: calculateTotal(), received_amount: receivedAmount, expected_given_data: expectedDate };
+			navigation.navigate('ChooseInvoiceDesign', { data: api_info });
+		}
+	}
+
+	// Existing item handling and calculation functions...
+
+	const calculatePendingAmount = () => {
+		const total = parseFloat(calculateTotal());
+		const received = parseFloat(receivedAmount) || 0;
+		return (total - received).toFixed(2);
+	};
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<ScrollView>
-				{/* Header */}
-				<Header
-					leftIcon={'back'}
-					title={'Create Invoice'}
-					titleRight
-				/>
+				<Header leftIcon="back" title="Create Invoice" />
 
-				{/* Billed From */}
+				{/* Existing organization, client, and items sections... */}
 				<View style={styles.section}>
-					<Text style={[styles.sectionTitle, { color: colors.title }]}>Billed from</Text>
-					<TouchableOpacity onPress={() => { navigation.navigate("InvoiceOrganizations") }} style={[styles.card, { backgroundColor: colors.card }]}>
-						<MaterialIcons name="business" size={24} style={{ color: colors.title }} />
-						<View style={styles.cardContent}>
-							<Text style={[styles.cardTitle, { color: colors.title }]}>Name</Text>
-							<Text style={[styles.cardSubtitle, { color: colors.title }]}>support@lucodeia.com</Text>
+					<Text style={styles.sectionTitle}>Organization</Text>
+					<TouchableOpacity
+						style={styles.orgClientCard}
+						onPress={() => navigation.navigate("InvoiceOrganizations")}
+					>
+						<MaterialIcons name="business" size={24} color="#007bff" />
+						<View style={styles.cardDetails}>
+							<Text style={styles.cardTitle}>{organization.name}</Text>
+							<Text style={styles.cardSubtitle}>{organization.email}</Text>
 						</View>
-						<MaterialIcons name="keyboard-arrow-right" size={24} style={{ color: colors.title }} />
+						<MaterialIcons name="keyboard-arrow-right" size={24} color="#aaa" />
 					</TouchableOpacity>
 				</View>
 
-				{/* Billed To */}
+				{/* Client Section */}
 				<View style={styles.section}>
-					<Text style={[styles.sectionTitle, { color: colors.title }]}>Billed to</Text>
-					<TouchableOpacity onPress={() => { navigation.navigate("InvoiceClients") }} style={[styles.card, { backgroundColor: colors.card }]}>
-						<MaterialIcons name="person" size={24} style={{ color: colors.title }} />
-						<View style={styles.cardContent}>
-							<Text style={[styles.cardTitle, { color: colors.title }]}>Name</Text>
-							<Text style={[styles.cardSubtitle, { color: colors.title }]}>support@lucodeia.com</Text>
+					<Text style={styles.sectionTitle}>Client</Text>
+					<TouchableOpacity
+						style={styles.orgClientCard}
+						onPress={() => navigation.navigate("InvoiceClients")}
+					>
+						<MaterialIcons name="person" size={24} color="#28a745" />
+						<View style={styles.cardDetails}>
+							<Text style={styles.cardTitle}>{client.name}</Text>
+							<Text style={styles.cardSubtitle}>{client.email}</Text>
 						</View>
-						<MaterialIcons name="keyboard-arrow-right" size={24} style={{ color: colors.title }} />
+						<MaterialIcons name="keyboard-arrow-right" size={24} color="#aaa" />
 					</TouchableOpacity>
 				</View>
 
-				{/* General */}
+				{/* Items Section */}
 				<View style={styles.section}>
-					<Text style={[styles.sectionTitle, { color: colors.title }]}>General</Text>
-					<View style={styles.row}>
-						<TextInput placeholder="Currency" style={styles.input} />
-						<TextInput placeholder="Invoice Number" style={styles.input} />
-					</View>
-					<View style={styles.row}>
-						<TextInput placeholder="Issue Date" style={styles.input} />
-						<TextInput placeholder="Due Date" style={styles.input} />
-					</View>
-				</View>
+					<Text style={styles.sectionTitle}>Items</Text>
 
-				{/* Items */}
-				<View style={styles.section}>
-					<View style={styles.itemsHeader}>
-						<Text style={[styles.sectionTitle, { color: colors.title }]}>Items</Text>
-					</View>
-					<FlatList
-						data={items}
-						keyExtractor={(item) => item.id}
-						renderItem={({ item }) => (
-							<View style={[styles.item, { backgroundColor: colors.card }]}>
-								<View style={styles.itemContent}>
-									<Text style={[styles.itemTitle, { color: colors.title }]}>{item.title}</Text>
-									<Text style={[styles.itemSubtitle, { color: colors.title }]}>
-										${item.price.toFixed(2)} x {item.quantity}
-									</Text>
-								</View>
-								<View style={styles.itemActions}>
-									<Text style={[styles.itemPrice, { color: colors.title }]}>
-										${(item.price * item.quantity).toFixed(2)}
-									</Text>
-									<TouchableOpacity onPress={() => handleRemoveItem(item.id)}>
-										<MaterialIcons name="edit" size={20} color="#007bff" />
-									</TouchableOpacity>
-								</View>
+					{items.map((item: any) => (
+						<View key={item.id} style={styles.card}>
+							<View style={styles.cardContent}>
+								<Text style={styles.itemTitle}>{item.title}</Text>
+								<Text style={styles.itemSubtitle}>
+									₹{item.price} x {item.quantity}
+								</Text>
+								<Text style={styles.itemDiscount}>
+									Discount: {item.discount}%
+								</Text>
+								<Text style={styles.itemTax}>
+									Tax: {item.tax}% {item.includeTax ? "(Included)" : "(Excluded)"}
+								</Text>
+								<Text style={styles.itemTotal}>
+									Total: ₹{calculateItemTotal(item).toFixed(2)}
+								</Text>
 							</View>
-						)}
-						ListFooterComponent={() => (
-							<TouchableOpacity style={styles.addItemButton} onPress={() => { navigation.navigate("InvoiceAddItems"); }}>
-								<MaterialIcons name="add-circle" size={20} color="#007bff" />
-								<Text style={[styles.addItemText,]}>Add Item</Text>
+							<TouchableOpacity onPress={() => handleRemoveItem(item.id)}>
+								<MaterialIcons name="delete" size={24} color="#ff4d4d" />
 							</TouchableOpacity>
-						)}
-					/>
+						</View>
+					))}
+
+					<TouchableOpacity
+						style={styles.addItemButton}
+						onPress={() => navigation.navigate("InvoiceAddItems")}
+					>
+						<MaterialIcons name="add-circle" size={20} color="#007bff" />
+						<Text style={styles.addItemText}>Add New Item</Text>
+					</TouchableOpacity>
 				</View>
 
-				{/* Totals */}
+				{/* Totals Section */}
 				<View style={styles.section}>
 					<View style={styles.rowBetween}>
-						<Text style={[styles.totalLabel, { color: colors.title }]}>Subtotal</Text>
-						<Text style={[styles.totalValue, { color: colors.title }]}>${calculateSubtotal()}</Text>
+						<Text style={styles.totalLabel}>Subtotal</Text>
+						<Text style={styles.totalValue}>₹{calculateSubtotal()}</Text>
 					</View>
 					<View style={styles.rowBetween}>
-						<Text style={[styles.totalLabel, { color: colors.title }]}>Discount</Text>
-						<Text style={[styles.totalValue, { color: colors.title }]}>${calculateDiscount()}</Text>
+						<Text style={styles.totalLabel}>Discount</Text>
+						<Text style={styles.totalValue}>-₹{calculateDiscount()}</Text>
 					</View>
 					<View style={styles.rowBetween}>
-						<Text style={[styles.totalLabel, { color: colors.title }]}>Shipping & Handling</Text>
-						<Text style={[styles.totalValue, { color: colors.title }]}>${calculateShipping()}</Text>
+						<Text style={styles.totalLabel}>Tax</Text>
+						<Text style={styles.totalValue}>+₹{calculateTax()}</Text>
 					</View>
-					<View style={styles.rowBetween}>
-						<Text style={[styles.totalLabel, { color: colors.title }]}>Tax</Text>
-						<Text style={[styles.totalValue, { color: colors.title }]}>${calculateTax()}</Text>
-					</View>
-					<View style={styles.rowBetween}>
-						<Text style={[styles.totalLabel, styles.totalLabelBold, { color: colors.title }]}>Total</Text>
-						<Text style={[styles.totalValue, styles.totalValueBold, { color: colors.title }]}>${calculateTotal()}</Text>
+					<View style={[styles.rowBetween, styles.totalRow]}>
+						<Text style={styles.totalLabelBold}>Grand Total</Text>
+						<Text style={styles.totalAmount}>₹{calculateTotal()}</Text>
 					</View>
 				</View>
-
-				{/* Notes and T&C */}
+				{/* Totals Section */}
 				<View style={styles.section}>
-					<TextInput
-						placeholder="Notes"
-						style={styles.notesInput}
-						multiline
-					/>
-					<TextInput
-						placeholder="Terms and Conditions"
-						style={styles.notesInput}
-						multiline
-					/>
+					{/* Existing total calculations... */}
 				</View>
 
+				{/* Payment Section */}
+				<View style={styles.section}>
+					<Text style={styles.sectionTitle}>Payment Details</Text>
+					<View style={styles.rowBetween}>
+						<Text style={styles.totalLabel}>Full Payment Received?</Text>
+						<Switch
+							value={isFullPaymentReceived}
+							onValueChange={setIsFullPaymentReceived}
+						/>
+					</View>
+
+					{!isFullPaymentReceived && (
+						<View>
+							<View style={[styles.rowBetween, { marginTop: 10 }]}>
+								<Text style={styles.totalLabel}>Add Partial Payment?</Text>
+								<Switch
+									value={showReceivedAmount}
+									onValueChange={setShowReceivedAmount}
+								/>
+							</View>
+
+							{showReceivedAmount && (
+								<View>
+									<TextInput
+										style={styles.input}
+										placeholder="Received Amount"
+										keyboardType="numeric"
+										value={receivedAmount}
+										onChangeText={(val) => {
+											if (parseFloat(val) <= parseFloat(calculateTotal())) {
+												setReceivedAmount(val)
+											}
+										}}
+									/>
+									{/* {setReceivedAmount } */}
+
+									<TouchableOpacity
+										onPress={() => setShowDatePicker(true)}
+										style={styles.dateInputContainer}
+									>
+										<TextInput
+											style={styles.input}
+											placeholder="Select Expected Date"
+											value={expectedDate}
+											editable={false}
+										/>
+										<MaterialIcons
+											name="calendar-today"
+											size={20}
+											color="#666"
+											style={styles.dateIcon}
+										/>
+									</TouchableOpacity>
+
+									{showDatePicker && (
+										<DateTimePicker
+											value={expectedDate ? new Date(expectedDate) : new Date()}
+											mode="date"
+											display="default"
+											onChange={handleDateChange}
+										/>
+									)}
+
+									<View style={styles.amountSummary}>
+										<Text style={styles.amountLabel}>Pending Amount:</Text>
+										<Text style={styles.amountValue}>
+											₹{calculatePendingAmount()}
+										</Text>
+									</View>
+								</View>
+							)}
+						</View>
+					)}
+				</View>
 				{/* Generate Invoice Button */}
 				<View style={styles.footer}>
-					<TouchableOpacity style={[styles.footerButton, { backgroundColor: COLORS.primary }]}>
-						<Text style={[styles.footerButtonText, { color: colors.title }]}>Generate Invoice</Text>
+					<TouchableOpacity style={styles.footerButton} onPress={generateInvoice}>
+						<Text style={styles.footerButtonText}>Generate Invoice</Text>
 					</TouchableOpacity>
 				</View>
 			</ScrollView>
@@ -206,45 +335,34 @@ export const InvoiceCreate = ({ navigation }: InvoiceCreateProps) => {
 	);
 };
 
-
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-	},
-	header: {
-		padding: 20,
-		backgroundColor: "#fff",
-		borderBottomWidth: 1,
-		borderBottomColor: "#ddd",
-	},
-	headerTitle: {
-		fontSize: 20,
-		fontWeight: "bold",
-		color: "#333",
+		backgroundColor: "#f4f6f8",
 	},
 	section: {
 		marginVertical: 10,
 		paddingHorizontal: 20,
 	},
 	sectionTitle: {
-		fontSize: 16,
+		fontSize: 18,
 		fontWeight: "bold",
-
 		marginBottom: 10,
+		color: "#333",
 	},
-	card: {
+	orgClientCard: {
 		flexDirection: "row",
 		alignItems: "center",
 		backgroundColor: "#fff",
 		padding: 15,
 		borderRadius: 10,
-		marginBottom: 10,
+		elevation: 3,
 		shadowColor: "#000",
 		shadowOpacity: 0.1,
 		shadowRadius: 5,
-		elevation: 2,
+		marginBottom: 10,
 	},
-	cardContent: {
+	cardDetails: {
 		flex: 1,
 		marginLeft: 10,
 	},
@@ -255,46 +373,17 @@ const styles = StyleSheet.create({
 	},
 	cardSubtitle: {
 		fontSize: 14,
-		color: "#666",
+		color: "#777",
 	},
-	row: {
+	card: {
 		flexDirection: "row",
-		justifyContent: "space-between",
-	},
-	rowBetween: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		marginVertical: 5,
-	},
-	input: {
-		flex: 1,
+		alignItems: "center",
 		backgroundColor: "#fff",
-		borderRadius: 10,
-		padding: 10,
-		fontSize: 16,
-		marginHorizontal: 5,
-		borderWidth: 1,
-		borderColor: "#ddd",
-	},
-	itemsHeader: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-	},
-	item: {
-		flexDirection: "row",
-		alignItems: "center",
-		justifyContent: "space-between",
 		padding: 15,
-
 		borderRadius: 10,
 		marginBottom: 10,
-		shadowColor: "#000",
-		shadowOpacity: 0.1,
-		shadowRadius: 5,
-		elevation: 2,
 	},
-	itemContent: {
+	cardContent: {
 		flex: 1,
 	},
 	itemTitle: {
@@ -305,69 +394,109 @@ const styles = StyleSheet.create({
 	itemSubtitle: {
 		fontSize: 14,
 		color: "#666",
+		marginVertical: 4,
 	},
-	itemActions: {
-		alignItems: "flex-end",
+	itemDiscount: {
+		fontSize: 14,
+		color: "#ff9800",
 	},
-	itemPrice: {
-		fontSize: 16,
+	itemTax: {
+		fontSize: 14,
+		color: "#9c27b0",
+	},
+	itemTotal: {
+		fontSize: 14,
+		color: "#007bff",
 		fontWeight: "bold",
-		color: "#333",
-		marginBottom: 5,
+		marginTop: 5,
 	},
 	addItemButton: {
 		flexDirection: "row",
 		alignItems: "center",
 		justifyContent: "center",
-		paddingVertical: 10,
+		marginTop: 10,
 	},
 	addItemText: {
-		marginLeft: 5,
-		fontSize: 14,
 		color: "#007bff",
 		fontWeight: "bold",
+		marginLeft: 5,
+	},
+	rowBetween: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		marginVertical: 5,
 	},
 	totalLabel: {
-		fontSize: 14,
-		color: "#666",
+		fontSize: 16,
+		color: "#555",
 	},
 	totalLabelBold: {
 		fontWeight: "bold",
+		fontSize: 18,
 		color: "#333",
 	},
 	totalValue: {
-		fontSize: 14,
-		color: "#666",
-	},
-	totalValueBold: {
-		fontWeight: "bold",
-		color: "#333",
-	},
-	notesInput: {
-		backgroundColor: "#fff",
-		borderRadius: 10,
-		padding: 10,
 		fontSize: 16,
-		borderWidth: 1,
-		borderColor: "#ddd",
-		marginVertical: 10,
+		fontWeight: "bold",
+	},
+	totalAmount: {
+		fontSize: 20,
+		fontWeight: "bold",
+		color: "#007bff",
 	},
 	footer: {
 		padding: 20,
 	},
 	footerButton: {
-
-		borderRadius: 10,
+		backgroundColor: "#007bff",
 		padding: 15,
+		borderRadius: 12,
 		alignItems: "center",
 	},
 	footerButtonText: {
-		fontSize: 16,
+		color: "#fff",
+		fontSize: 18,
 		fontWeight: "bold",
-
 	},
+	input: {
+		height: 40,
+		borderColor: '#ddd',
+		borderWidth: 1,
+		borderRadius: 8,
+		paddingHorizontal: 12,
+		marginVertical: 8,
+		backgroundColor: '#fff',
+		fontSize: 16,
+	},
+	dateInputContainer: {
+		position: 'relative',
+	},
+	dateIcon: {
+		position: 'absolute',
+		right: 15,
+		top: 10,
+	},
+	amountSummary: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		marginVertical: 10,
+		padding: 12,
+		backgroundColor: '#f8f9fa',
+		borderRadius: 8,
+	},
+	amountLabel: {
+		fontSize: 16,
+		color: '#6c757d',
+	},
+	amountValue: {
+		fontSize: 16,
+		fontWeight: 'bold',
+		color: '#dc3545',
+	},
+	totalRow: {
+
+	}
+	// Add other existing styles...
 });
-
-
 
 export default InvoiceCreate;

@@ -82,7 +82,6 @@ import { AddCompany } from '../screens/InvoiceGenerator/AddCompany';
 import ListCompany from '../screens/InvoiceGenerator/ListCompany';
 import InvoiceGenList from '../screens/InvoiceGenerator/InvoiceGenList';
 import AddItems from '../screens/InvoiceGenerator/AddItems';
-import ChooseInvoiceDesign from '../screens/InvoiceGenerator/ChooseInvoiceDesign';
 import FinalInvoiceResult from '../screens/InvoiceGenerator/FinalInvoiceResult';
 import AddInvoiceDetails from '../screens/InvoiceGenerator/AddInvoiceDetails';
 import { AddCompanyCustomer } from '../screens/InvoiceGenerator/AddCompanyCustomer';
@@ -96,6 +95,8 @@ import InvoiceAddOrganization from '../screens/Invoice/InvoiceAddOrganization';
 import InvoiceClients from '../screens/Invoice/InvoiceClients';
 import InvoiceAddClient from '../screens/Invoice/InvoiceAddClient';
 import InvoiceAddNewItems from '../screens/Invoice/InvoiceAddNewItem';
+import ChooseInvoiceDesign from '../screens/Invoice/ChooseInvoiceDesign';
+import InvoiceDetail from '../screens/Invoice/InvoiceDetail';
 
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -198,7 +199,6 @@ const StackNavigator = () => {
 				<Stack.Screen name="InvoiceGenList" component={InvoiceGenList} />
 				<Stack.Screen name="AddInvoiceDetails" component={AddInvoiceDetails} />
 				<Stack.Screen name="AddItems" component={AddItems} />
-				<Stack.Screen name="ChooseInvoiceDesign" component={ChooseInvoiceDesign} />
 				<Stack.Screen name="FinalInvoiceResult" component={FinalInvoiceResult} />
 				<Stack.Screen name="AddCompanyCustomer" component={AddCompanyCustomer} />
 				<Stack.Screen name="CompanyCustomerList" component={CompanyCustomerList} />
@@ -218,6 +218,8 @@ const StackNavigator = () => {
 				<Stack.Screen name="InvoiceAddOrganization" component={InvoiceAddOrganization} />
 				<Stack.Screen name="InvoiceClients" component={InvoiceClients} />
 				<Stack.Screen name="InvoiceAddClient" component={InvoiceAddClient} />
+				<Stack.Screen name="ChooseInvoiceDesign" component={ChooseInvoiceDesign} />
+				<Stack.Screen name="InvoiceDetail" component={InvoiceDetail} />
 
 
 			</Stack.Navigator>

@@ -3,152 +3,353 @@ import React, { useState } from 'react';
 import {
 	View,
 	Text,
-	TextInput,
-	TouchableOpacity,
 	StyleSheet,
 	ScrollView,
+	TouchableOpacity,
+	Alert,
 } from 'react-native';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import Header from '../../layout/Header';
-
-import { COLORS, FONTS } from '../../constants/theme';
-import { useTheme } from '@react-navigation/native';
+import { COLORS } from '../../constants/theme';
 import Button from '../../components/Button/Button';
 import Input from '../../components/Input/Input';
-
-
+import { ApiService } from '../../lib/ApiService';
+import { MessagesService } from '../../lib/MessagesService';
+import StorageService from '../../lib/StorageService';
+import CONFIG from '../../constants/config';
+import { useTheme } from '@react-navigation/native';
+import { ActivityIndicator } from 'react-native-paper';
 
 type InvoiceAddClientProps = StackScreenProps<RootStackParamList, 'InvoiceAddClient'>;
+
 export const InvoiceAddClient = ({ navigation }: InvoiceAddClientProps) => {
-
 	const theme = useTheme();
-	const { colors }: { colors: any } = theme;
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
+	const { colors } = theme;
 
 	const [form, setForm] = useState({
-		fullName: '',
-		mobileNumber: '',
-		emailAddress: '',
+		name: '',
+		phone: '',
+		email: '',
+		zipcode: '',
+		district: '',
+		city: '',
+		state: '',
 		address: '',
-		notes: '',
+		company_id: '0',
+	});
+	const [errors, setErrors] = useState({
+		name: '',
+		phone: '',
+		email: '',
+		zipcode: '',
+		district: '',
+		city: '',
+		state: '',
+		address: '',
 	});
 
-	const handleChange = (key, value) => {
-		setForm({ ...form, [key]: value });
+	// Validate required fields for both sections and add email format validation.
+	const validateForm = () => {
+		let valid = true;
+		let newErrors: any = {};
+
+		// Client Information fields
+		if (!form.name.trim()) {
+			newErrors.name = "Name is required";
+			valid = false;
+		}
+		if (!form.phone.trim()) {
+			newErrors.phone = "Mobile number is required";
+			valid = false;
+		}
+		if (!form.email.trim()) {
+			newErrors.email = "Email is required";
+			valid = false;
+		} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+			newErrors.email = "Enter a valid email address";
+			valid = false;
+		}
+		// Address Information fields
+		if (!form.zipcode.trim()) {
+			newErrors.zipcode = "Pincode is required";
+			valid = false;
+		}
+		if (!form.district.trim()) {
+			newErrors.district = "District is required";
+			valid = false;
+		}
+		if (!form.city.trim()) {
+			newErrors.city = "City is required";
+			valid = false;
+		}
+		if (!form.state.trim()) {
+			newErrors.state = "State is required";
+			valid = false;
+		}
+		if (!form.address.trim()) {
+			newErrors.address = "Address is required";
+			valid = false;
+		}
+
+		setErrors(newErrors);
+		return valid;
 	};
 
-	const handleSubmit = () => {
-		console.log('Organization Details:', form);
-		// Add your form submission logic here
+	// Handle input changes. Email is forced to lowercase.
+	// When zipcode is 6 digits, automatically fetch address details.
+	const handleChange = (key: string, value: string) => {
+		if (key === 'email') {
+			value = value.toLowerCase();
+		}
+		setForm((prev) => ({ ...prev, [key]: value }));
+		setErrors((prev) => ({ ...prev, [key]: '' }));
+
+		if (key === 'zipcode') {
+			if (value.length === 6) {
+				fetchPincodeDetails(value);
+			} else {
+				// Clear auto‑filled address fields if pincode is not 6 digits
+				setForm((prev) => ({ ...prev, city: '', state: '', district: '' }));
+			}
+		}
+	};
+
+	// Call Postal Pincode API and update District, City, and State fields.
+	const fetchPincodeDetails = async (pincode: string) => {
+		try {
+			const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+			const data = await response.json();
+			if (
+				data &&
+				data[0].Status === 'Success' &&
+				data[0].PostOffice &&
+				data[0].PostOffice.length > 0
+			) {
+				const postOffice = data[0].PostOffice[0];
+				setForm((prev) => ({
+					...prev,
+					city: postOffice.Division || '',
+					state: postOffice.State || '',
+					district: postOffice.District || '',
+				}));
+			} else {
+				Alert.alert('Invalid Pincode', 'No details found for the entered pincode.');
+				setForm((prev) => ({ ...prev, city: '', state: '', district: '' }));
+			}
+		} catch (error) {
+			console.error('Error fetching pincode details', error);
+			Alert.alert('Error', 'Unable to fetch pincode details. Please try again later.');
+			setForm((prev) => ({ ...prev, city: '', state: '', district: '' }));
+		}
+	};
+
+	// Handle form submission
+	const handleSubmit = async () => {
+		if (validateForm()) {
+			const companyInfo = await StorageService.getStorage(CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.ORGANIZATION_INFO);
+			if (companyInfo != null) {
+				setIsLoading(true);
+				const companyInfoObj = JSON.parse(companyInfo);
+				form.company_id = companyInfoObj.id;
+				console.log("data...", form);
+				ApiService.postWithToken('api/invoice-generator/customer/add', form)
+					.then((res) => {
+						MessagesService.commonMessage(res.message, res.status ? 'SUCCESS' : 'ERROR');
+						if (res.status) {
+							navigation.navigate('InvoiceClients');
+						}
+						setIsLoading(false);
+					})
+					.catch((err) => {
+						setIsLoading(false);
+						MessagesService.commonMessage('Something went wrong', 'ERROR');
+					});
+			} else {
+				MessagesService.commonMessage("Invalid Company ID.")
+			}
+
+		} else {
+			MessagesService.commonMessage('Please fill all required fields', 'ERROR');
+		}
 	};
 
 	return (
-		<ScrollView contentContainerStyle={styles.container}>
-			{/* Header */}
-			<Header
-				leftIcon={'back'}
-				title={'Add Client'}
-				titleRight
-			/>
+		<ScrollView contentContainerStyle={styles.scrollContainer}>
+			<Header leftIcon={'back'} title={'Add Client'} titleRight />
 
-			{/* Form */}
+			{/* Client Information Section */}
+			<View style={styles.card}>
+				<Text style={styles.sectionTitle}>Client Information</Text>
 
-			<View style={{ padding: 15, }} >
-				<View style={styles.form}>
-					<View style={{ marginVertical: 10, }}>
-						<Input
-							placeholder='Full Name'
-							value={form.fullName}
-							onChangeText={(text) => handleChange('fullName', text)}
-						/>
-					</View>
-					<View style={{ marginVertical: 10, }}>
-						<Input
-							placeholder='Mobile Number'
-							keyboardType="phone-pad"
-							value={form.mobileNumber}
-							onChangeText={(text) => handleChange('mobileNumber', text)}
-						/>
-					</View>
-					<View style={{ marginVertical: 10, }}>
-						<Input
-							placeholder='Email Address'
-							keyboardType="email-address"
-							value={form.emailAddress}
-							onChangeText={(text) => handleChange('emailAddress', text)}
-						/>
-					</View><View style={{ marginVertical: 10, }}>
-						<Input
-							placeholder='Address'
-							value={form.address}
-							onChangeText={(text) => handleChange('address', text)}
-						/>
-
-					</View><View style={{ marginVertical: 10, }}>
-						<Input
-							placeholder='Note'
-							value={form.notes}
-							onChangeText={(text) => handleChange('notes', text)}
-
-						/>
-
-					</View>
-
-					<Text style={[styles.notesHint, { color: colors.title }]}>
-						These notes will not be visible to the organization
-					</Text>
+				<View style={styles.inputContainer}>
+					<Input
+						placeholder="Full Name"
+						value={form.name}
+						onChangeText={(text) => handleChange('name', text)}
+						style={styles.input}
+					/>
+					{errors.name ? <Text style={styles.errorText}>{errors.name}</Text> : null}
 				</View>
 
-				{/* Submit Button */}
-				<Button title='Add Client' onPress={handleSubmit}></Button>
+				<View style={styles.inputContainer}>
+					<Input
+						placeholder="Mobile Number"
+						keyboardType="phone-pad"
+						maxlength={10}
+						value={form.phone}
+						onChangeText={(text) => handleChange('phone', text)}
+						style={styles.input}
+					/>
+					{errors.phone ? <Text style={styles.errorText}>{errors.phone}</Text> : null}
+				</View>
+
+				<View style={styles.inputContainer}>
+					<Input
+						placeholder="Email Address"
+						keyboardType="email-address"
+						value={form.email}
+						onChangeText={(text) => handleChange('email', text)}
+						style={styles.input}
+					/>
+					{errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
+				</View>
 			</View>
+
+			{/* Address Information Section */}
+			<View style={[styles.card, { marginTop: 20 }]}>
+				<Text style={styles.sectionTitle}>Address Information</Text>
+
+				<View style={styles.inputContainer}>
+					<Input
+						placeholder="Pincode"
+						keyboardType="numeric"
+						value={form.zipcode}
+						onChangeText={(text) => handleChange('zipcode', text)}
+						style={styles.input}
+					/>
+					{errors.zipcode ? <Text style={styles.errorText}>{errors.zipcode}</Text> : null}
+				</View>
+
+				<View style={styles.inputContainer}>
+					<Input
+						placeholder="District"
+						value={form.district}
+						onChangeText={(text) => handleChange('district', text)}
+						style={styles.input}
+					/>
+					{errors.district ? <Text style={styles.errorText}>{errors.district}</Text> : null}
+				</View>
+
+				<View style={styles.inputContainer}>
+					<Input
+						placeholder="City"
+						value={form.city}
+						onChangeText={(text) => handleChange('city', text)}
+						style={styles.input}
+					/>
+					{errors.city ? <Text style={styles.errorText}>{errors.city}</Text> : null}
+				</View>
+
+				<View style={styles.inputContainer}>
+					<Input
+						placeholder="State"
+						value={form.state}
+						onChangeText={(text) => handleChange('state', text)}
+						style={styles.input}
+					/>
+					{errors.state ? <Text style={styles.errorText}>{errors.state}</Text> : null}
+				</View>
+
+				{/* Address field rendered as a textarea */}
+				<View style={styles.inputContainer}>
+					<Input
+						placeholder="Address"
+						value={form.address}
+						onChangeText={(text) => handleChange('address', text)}
+						style={[styles.input, styles.multilineInput]}
+						multiline={true}
+						numberOfLines={3}
+					/>
+					{errors.address ? <Text style={styles.errorText}>{errors.address}</Text> : null}
+				</View>
+			</View>
+
+			{/* Submit Button */}
+			{!isLoading ?
+				<TouchableOpacity style={styles.button} onPress={handleSubmit}>
+					<Text style={styles.buttonText}>Add Client</Text>
+				</TouchableOpacity>
+				:
+				<ActivityIndicator color={COLORS.title} size={'large'} />
+			}
+
 		</ScrollView>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
+	scrollContainer: {
 		flexGrow: 1,
+		// padding: 20,
+		// backgroundColor: COLORS.light,
 	},
-	header: {
-		fontSize: 18,
+	card: {
+		backgroundColor: '#fff',
+		padding: 20,
+		borderRadius: 15,
+		elevation: 6,
+		shadowColor: '#000',
+		shadowOpacity: 0.1,
+		shadowRadius: 6,
+	},
+	sectionTitle: {
+		fontSize: 22,
 		fontWeight: 'bold',
-		alignSelf: 'center',
-		marginBottom: 20,
+		marginBottom: 15,
+		color: COLORS.primary,
+		borderBottomWidth: 2,
+		borderBottomColor: COLORS.primary,
+		paddingBottom: 5,
 	},
-	form: {
-		marginBottom: 30,
+	inputContainer: {
+		marginBottom: 15,
 	},
 	input: {
-		backgroundColor: '#F7F7F7',
-		borderRadius: 8,
+		backgroundColor: '#f9f9f9',
+		borderColor: COLORS.primary,
+		borderWidth: 1,
+		borderRadius: 30,
 		paddingHorizontal: 15,
 		paddingVertical: 12,
-		marginBottom: 15,
-		borderColor: '#ccc',
-		borderWidth: 1,
 		fontSize: 16,
+		color: '#333',
 	},
-	notesInput: {
-		height: 100,
+	multilineInput: {
 		textAlignVertical: 'top',
+		minHeight: 90,
 	},
-	notesHint: {
+	errorText: {
+		color: 'red',
 		fontSize: 12,
-		color: '#999',
-		marginBottom: 15,
+		marginTop: 3,
 	},
-	submitButton: {
-		backgroundColor: '#007BFF',
-		borderRadius: 8,
+	button: {
+		backgroundColor: COLORS.primary,
 		paddingVertical: 15,
+		borderRadius: 12,
 		alignItems: 'center',
-		marginBottom: 20,
+		marginTop: 20,
+		shadowColor: COLORS.primary,
+		shadowOpacity: 0.3,
+		shadowRadius: 5,
+		elevation: 3,
 	},
-	submitButtonText: {
+	buttonText: {
 		color: '#fff',
-		fontSize: 16,
-		fontWeight: 'bold',
+		fontSize: 18,
+		fontWeight: '600',
 	},
 });
 

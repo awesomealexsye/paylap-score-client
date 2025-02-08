@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
 	View,
 	Text,
@@ -18,11 +18,17 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/RootStackParamList";
 import InvoiceCreate from "./InvoiceCreate";
+import { ApiService } from "../../lib/ApiService";
+import StorageService from "../../lib/StorageService";
+import CONFIG from "../../constants/config";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import Header from "../../layout/Header";
+import { MessagesService } from "../../lib/MessagesService";
 
 
 const { width } = Dimensions.get("window");
 
-const FilterModal = ({ isVisible, onClose }) => {
+const FilterModal = ({ isVisible, onClose }: any) => {
 	const slideAnim = useRef(new Animated.Value(width)).current; // Starts off-screen (right)
 
 	React.useEffect(() => {
@@ -90,16 +96,20 @@ const FilterModal = ({ isVisible, onClose }) => {
 };
 
 const invoices = [
-	{ id: "#123456789", status: "Unpaid", amount: "$3,520.00", dueDate: "Mar 31, 2024", items: "6 items" },
-	{ id: "#987654321", status: "Overdue", amount: "$4,200.00", dueDate: "Apr 15, 2024", items: "3 items" },
-	{ id: "#456123789", status: "Paid", amount: "$2,800.00", dueDate: "May 1, 2024", items: "5 items" },
-	{ id: "#789456123", status: "Paid", amount: "$1,200.00", dueDate: "Apr 10, 2024", items: "2 items" },
+	{ id: "#123456789", status: "Unpaid", amount: "₹ 3,520.00", dueDate: "Mar 31, 2024", items: "6 items" },
+	{ id: "#987654321", status: "Overdue", amount: "₹ 4,200.00", dueDate: "Apr 15, 2024", items: "3 items" },
+	{ id: "#456123789", status: "Paid", amount: "₹ 2,800.00", dueDate: "May 1, 2024", items: "5 items" },
+	{ id: "#789456123", status: "Paid", amount: "₹ 1,200.00", dueDate: "Apr 10, 2024", items: "2 items" },
 ];
 
-const companies = ["My Company", "Company A", "Company B", "Company C"];
+// const companies = ["My Company", "Company A", "Company B", "Company C"];
+// const companies = ["My Company", "Company A", "Company B", "Company C"];
 
-const Header = ({ selectedCompany, setSelectedCompany, onOpenFilter }) => {
+
+
+const TopBar = ({ selectedCompany, setSelectedCompany, onOpenFilter }: any) => {
 	const [menuVisible, setMenuVisible] = useState(false);
+	const [companies, setCompanies] = useState([]);
 
 	const openMenu = () => setMenuVisible(true);
 	const closeMenu = () => setMenuVisible(false);
@@ -109,12 +119,42 @@ const Header = ({ selectedCompany, setSelectedCompany, onOpenFilter }) => {
 	const openFilterModal = () => setFilterVisible(true);
 	const closeFilterModal = () => setFilterVisible(false);
 
+	useFocusEffect(
+		useCallback(() => {
+			getCompanyList();
+			headerCompanySet();
+		}, [])
+	);
+
+	const getCompanyList = async () => {
+		const res = await ApiService.postWithToken("api/invoice-generator/companies/list", {});
+		setCompanies(res?.data);
+	}
+
+	const changeCompany = async (company: any) => {
+		await StorageService.setStorage(CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.ORGANIZATION_INFO, JSON.stringify(company));
+		setSelectedCompany(company.name);
+	}
+
+	const headerCompanySet = async () => {
+		const companyInfoStr = await StorageService.getStorage(CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.ORGANIZATION_INFO);
+		// const company_name = JSON.parse(companyInfo);
+		if (companyInfoStr != null) {
+			const company = JSON.parse(companyInfoStr);
+			setSelectedCompany(company.name);
+		}
+	}
+	const backToHome = () => {
+		// navigator
+	}
+
 	return (
 		<LinearGradient colors={["#007bff", "#0056b3"]} style={styles.header}>
-			<TouchableOpacity onPress={() => { }}>
-				<Feather size={24} color={"blue"} name={'arrow-left'} />
+			<TouchableOpacity onPress={backToHome}>
+				{/* <Feather size={24} color={"blue"} name={'arrow-left'} /> */}
+
 			</TouchableOpacity>
-			<Text style={styles.headerTitle}>Invoices</Text>
+			<Text style={styles.headerTitle}>Business</Text>
 			<View style={styles.headerRight}>
 				<Menu
 					visible={menuVisible}
@@ -126,14 +166,15 @@ const Header = ({ selectedCompany, setSelectedCompany, onOpenFilter }) => {
 						</TouchableOpacity>
 					}
 				>
-					{companies.map((company, index) => (
+					{companies.map((company: any, index) => (
 						<Menu.Item
 							key={index}
 							onPress={() => {
-								setSelectedCompany(company);
+								changeCompany(company);
+								// setSelectedCompany(company.name);
 								closeMenu();
 							}}
-							title={company}
+							title={company?.name}
 						/>
 					))}
 				</Menu>
@@ -147,7 +188,7 @@ const Header = ({ selectedCompany, setSelectedCompany, onOpenFilter }) => {
 	);
 };
 
-const FilterTabs = ({ activeTab, setActiveTab }) => {
+const FilterTabs = ({ activeTab, setActiveTab }: any) => {
 	const tabs = ["All", "Paid", "Unpaid", "Overdue"];
 
 	return (
@@ -175,25 +216,33 @@ const FilterTabs = ({ activeTab, setActiveTab }) => {
 	);
 };
 
-const InvoiceCard = ({ invoice }) => {
-	const statusColors = {
+const InvoiceCard = ({ invoice }: any) => {
+	const navigation = useNavigation();
+	const statusColors: any = {
 		Unpaid: "#FEC564",
 		Overdue: "#F28B82",
 		Paid: "#81C995",
 	};
+	const showPDFDetail = (data: any) => {
+		// navigation.navigate('FinalInvoiceResult', { data: { pdf_url: pdf_url }, previous_screen: 'InvoiceList' })
+		// navigation.replace('FinalInvoiceResult', { data: { pdf_url: res.pdf_url }, previous_screen: "ChooseInvoiceDesign" });
+		navigation.navigate('InvoiceDetail', { invoice_id: data.id });
+	}
 
 	return (
-		<View style={[styles.card, styles.shadow]}>
-			<View style={[styles.statusTag, { backgroundColor: statusColors[invoice.status] }]}>
-				<Text style={styles.statusText}>{invoice.status}</Text>
+		<TouchableOpacity onPress={() => { showPDFDetail(invoice) }}>
+			<View style={[styles.card, styles.shadow]}>
+				<View style={[styles.statusTag, { backgroundColor: statusColors[invoice?.invoice_status] }]}>
+					<Text style={styles.statusText}>{invoice.invoice_status}</Text>
+				</View>
+				<Text style={styles.invoiceId}>#{invoice.id}</Text>
+				<View style={styles.row}>
+					<Text style={styles.dueDate}>{invoice.created_at_new}</Text>
+					<Text style={styles.items}>{invoice.item_count}</Text>
+				</View>
+				<Text style={styles.amount}>{invoice.grand_total_amount}</Text>
 			</View>
-			<Text style={styles.invoiceId}>{invoice.id}</Text>
-			<View style={styles.row}>
-				<Text style={styles.dueDate}>{invoice.dueDate}</Text>
-				<Text style={styles.items}>{invoice.items}</Text>
-			</View>
-			<Text style={styles.amount}>{invoice.amount}</Text>
-		</View>
+		</TouchableOpacity>
 	);
 };
 
@@ -203,23 +252,55 @@ const InvoicesScreen = () => {
 
 	const openFilterModal = () => setFilterVisible(true);
 	const closeFilterModal = () => setFilterVisible(false);
+	const [invoiceList, setInvoiceList] = useState([{
+		id: 0,
+		company_id: 0,
+		grand_total_amount: 0.00,
+		received_amount: 0.00,
+		expected_given_data: "",
+		full_amount_received: 0,
+		created_at_new: "2025-02-06 16:52",
+		item_count: 1,
+		invoice_status: "Unpaid",
+		pdf_url: "https://paynest.co.in/api/invoice?invoice_id=Nw=="
+	}]);
 
-
-	const [selectedCompany, setSelectedCompany] = useState("My Company");
+	const [selectedCompany, setSelectedCompany] = useState("Default");
 	const [activeTab, setActiveTab] = useState("All");
 
+	useFocusEffect(
+		useCallback(() => {
+			fetchInvoiceList();
+		}, [])
+	);
+
+	const fetchInvoiceList = async () => {
+		const companyInfo = await StorageService.getStorage(CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.ORGANIZATION_INFO);
+		if (companyInfo != null) {
+			const companyInfoObj = JSON.parse(companyInfo);
+			const res = await ApiService.postWithToken('api/invoice-generator/invoice/list', { company_id: companyInfoObj.id })
+			if (res.status) {
+				setInvoiceList(res.data);
+				console.log("rsss", res)
+			}
+		} else {
+			MessagesService.commonMessage("Invalid Company ID.")
+		}
+
+	}
 	const filteredInvoices =
 		activeTab === "All"
-			? invoices
-			: invoices.filter((invoice) => invoice.status === activeTab);
+			? invoiceList
+			: invoiceList.filter((invoice: any) => invoice.invoice_status === activeTab);
 
 	return (
 		<SafeAreaView style={styles.container}>
 
-			<Header
+			<TopBar
 				selectedCompany={selectedCompany}
 				setSelectedCompany={setSelectedCompany}
 				onOpenFilter={openFilterModal}
+
 			/>
 
 			<Text style={styles.companyMessage}>
@@ -228,7 +309,7 @@ const InvoicesScreen = () => {
 			<FilterTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 			<FlatList
 				data={filteredInvoices}
-				keyExtractor={(item) => item.id}
+				keyExtractor={(item: any) => item.id}
 				renderItem={({ item }) => <InvoiceCard invoice={item} />}
 				contentContainerStyle={styles.listContainer}
 			/>
@@ -288,11 +369,6 @@ export const InvoiceLists = ({ navigation }: InvoiceListsProps) => {
 				<Tab.Screen
 					name="Create"
 					component={InvoiceCreate}
-					options={{ headerShown: false }}
-				/>
-				<Tab.Screen
-					name="Settings"
-					component={SettingsScreen}
 					options={{ headerShown: false }}
 				/>
 			</Tab.Navigator>
@@ -471,10 +547,6 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 		color: "#333",
 		marginBottom: 10,
-	},
-	row: {
-		flexDirection: "row",
-		justifyContent: "space-between",
 	},
 	input: {
 		flex: 1,

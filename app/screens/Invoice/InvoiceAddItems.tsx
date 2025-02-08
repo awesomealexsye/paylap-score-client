@@ -1,125 +1,193 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	View,
 	Text,
 	StyleSheet,
 	TextInput,
-	FlatList,
 	TouchableOpacity,
 	SafeAreaView,
+	Switch,
+	ScrollView,
+	Alert,
 } from "react-native";
-import { MaterialIcons, Entypo } from "@expo/vector-icons";
-import { StackScreenProps } from "@react-navigation/stack";
-import { RootStackParamList } from "../../navigation/RootStackParamList";
 import Header from "../../layout/Header";
+import StorageService from "../../lib/StorageService";
+import CONFIG from "../../constants/config";
 
-import BottomSheet from '@gorhom/bottom-sheet';
+export const InvoiceAddItems = ({ navigation }) => {
+	const [items, setItems] = useState([
+		{ id: 0, title: "", quantity: "", price: "", tax: "10", discount: "0", includeTax: false },
+	]);
 
+	useEffect(() => {
 
-interface Item {
-	id: string;
-	name: string;
-	price: string;
-}
-type InvoiceAddItemsProps = StackScreenProps<RootStackParamList, 'InvoiceAddItems'>;
+	}, []);
 
-export const InvoiceAddItems = ({ navigation }: InvoiceAddItemsProps) => {
-	const bottomSheetRef = useRef(null);
-	const [selectedItem, setSelectedItem] = useState(null);
-	const [item, setItem] = useState(null);
-
-	const openBottomSheet = (item: any) => {
-		setSelectedItem(item);
-		bottomSheetRef.current?.expand();
-	};
-	const items = [
-		{ id: '1', name: 'Item 1', price: '$15.99' },
-		{ id: '2', name: 'Item 2', price: '$20.00' },
-		{ id: '3', name: 'Item 3', price: '$12.50' },
-		{ id: '4', name: 'Item 4', price: '$18.75' },
-	];
-
-
-
-	const handleNewItem = () => {
-		const newItem: Item = {
-			id: Math.random().toString(),
-			name: "New Item",
-			price: "$0.00",
+	const handleAddItem = () => {
+		const newItem = {
+			id: items.length,
+			title: "",
+			quantity: "",
+			price: "",
+			tax: "10",
+			discount: "0",
+			includeTax: false,
 		};
-		// setItems((prevItems) => [newItem, ...prevItems]);
+		setItems([...items, newItem]);
 	};
 
-	const renderItem = ({ item }: { item: Item }) => (
-		<TouchableOpacity style={styles.itemContainer}>
-			<View style={styles.itemDetails}>
-				<Text style={styles.itemName}>{item.name}</Text>
-				<Text style={styles.itemPrice}>{item.price}</Text>
-			</View>
-			<TouchableOpacity onPress={openBottomSheet}>
-				<Entypo name="dots-three-vertical" size={20} color="#555" />
-			</TouchableOpacity>
-		</TouchableOpacity>
-	);
+	const handleRemoveItem = (id) => {
+		if (items.length === 1) {
+			Alert.alert("Error", "At least one item is required.");
+			return;
+		}
+		const updatedItems = items.filter((item) => item.id !== id);
+		setItems(updatedItems);
+	};
+
+	const handleChange = (id, field, value) => {
+		const updatedItems = items.map((item) =>
+			item.id === id ? { ...item, [field]: value } : item
+		);
+		setItems(updatedItems);
+	};
+
+	useEffect(() => {
+		getitemsFromStorage();
+	}, []);
+	useEffect(() => {
+		setItemsFromStorage(items);
+	}, [items])
+	const calculateTotalPrice = (item) => {
+		const basePrice = parseFloat(item.price || "0") * parseInt(item.quantity || "0");
+		const discountAmount = (basePrice * parseFloat(item.discount || "0")) / 100;
+		const priceAfterDiscount = basePrice - discountAmount;
+		const taxAmount = (priceAfterDiscount * parseFloat(item.tax || "0")) / 100;
+		return item.includeTax ? priceAfterDiscount + taxAmount : priceAfterDiscount;
+	};
+
+	const handleSubmit = async () => {
+		const isEmpty = items.some(
+			(item) => !item.title || !item.quantity || !item.price || !item.tax
+		);
+
+		if (isEmpty) {
+			Alert.alert("Error", "Please fill all required fields.");
+			return;
+		}
+
+		const data = items.map((item) => ({
+			...item,
+			totalPrice: calculateTotalPrice(item),
+		}));
+
+		await StorageService.setStorage(CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.ITEM_INFO, JSON.stringify(data));
+		navigation.navigate("InvoiceCreate");
+	};
+
+	const getitemsFromStorage = async () => {
+		const itemObj = await StorageService.getStorage(CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.ITEM_INFO);
+		if (itemObj != null) {
+			const items = JSON.parse(itemObj);
+			setItems(items);
+		}
+	}
+	const setItemsFromStorage = async (items: any) => {
+		const itemObj = await StorageService.setStorage(CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.ITEM_INFO, JSON.stringify(items));
+		if (itemObj != null) {
+			const items = JSON.parse(itemObj);
+			setItems(items);
+		}
+	}
 
 	return (
 		<SafeAreaView style={styles.container}>
-			{/* Header */}
-			<Header
-				leftIcon={'back'}
-				title={'Items'}
-				titleRight
-			/>
+			<Header leftIcon="back" title="Add New Items" />
+			<ScrollView contentContainerStyle={styles.scrollContainer}>
+				{items.map((item) => (
+					<View key={item.id} style={styles.card}>
+						<View style={styles.headerRow}>
+							<Text style={styles.cardTitle}>Item {item.id + 1}</Text>
+							<TouchableOpacity
+								onPress={() => handleRemoveItem(item.id)}
+								style={styles.removeButton}
+							>
+								<Text style={styles.removeText}>✕</Text>
+							</TouchableOpacity>
+						</View>
 
-			{/* Search Bar */}
-			<View style={styles.searchBar}>
-				<MaterialIcons name="search" size={24} color="#666" />
-				<TextInput
-					placeholder="Find item"
-					placeholderTextColor="#aaa"
-					style={styles.searchInput}
-				/>
-			</View>
+						<Text style={styles.label}>Item Title</Text>
+						<TextInput
+							style={styles.input}
+							placeholder="Enter item title"
+							value={item.title}
+							onChangeText={(text) => handleChange(item.id, "title", text)}
+						/>
 
-			{/* New Item Button */}
-			<TouchableOpacity style={styles.newItemButton} onPress={() => { navigation.navigate("InvoiceAddNewItems") }}>
-				<MaterialIcons name="add-circle-outline" size={20} color="#fff" />
-				<Text style={styles.newItemText}>New Item</Text>
-			</TouchableOpacity>
+						<View style={styles.row}>
+							<View style={styles.halfInputContainer}>
+								<Text style={styles.label}>Quantity</Text>
+								<TextInput
+									style={styles.input}
+									placeholder="Enter quantity"
+									value={item.quantity}
+									onChangeText={(text) => handleChange(item.id, "quantity", text)}
+									keyboardType="numeric"
+								/>
+							</View>
 
-			{/* Items List */}
-			<View style={styles.itemsList}>
-				<Text style={styles.itemsListTitle}>All Items</Text>
-				<FlatList
-					data={items}
-					keyExtractor={(item) => item.id}
-					renderItem={renderItem}
-					contentContainerStyle={styles.itemsListContent}
-				/>
-				<BottomSheet
-					ref={bottomSheetRef}
-					snapPoints={['30%', '50%']}
-					enablePanDownToClose
-					backgroundStyle={styles.bottomSheetBackground}
-				>
-					<View style={styles.bottomSheetContent}>
-						<Text style={styles.sheetTitle}>Manage Item</Text>
-						{selectedItem && (
-							<Text style={styles.selectedItemText}>
-								{selectedItem.name} - {selectedItem.price}
-							</Text>
-						)}
-						<TouchableOpacity onPress={() => { navigation.navigate("InvoiceEditItem") }} style={styles.sheetButton}>
-							<MaterialIcons name="edit" size={24} color="#555" />
-							<Text style={styles.sheetButtonText}>Edit Item</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={[styles.sheetButton, styles.removeButton]}>
-							<MaterialIcons name="delete" size={24} color="#555" />
-							<Text style={[styles.sheetButtonText, { color: '#F44336' }]}>Remove Item</Text>
-						</TouchableOpacity>
+							<View style={styles.halfInputContainer}>
+								<Text style={styles.label}>Price</Text>
+								<TextInput
+									style={styles.input}
+									placeholder="Enter price"
+									value={item.price}
+									onChangeText={(text) => handleChange(item.id, "price", text)}
+									keyboardType="numeric"
+								/>
+							</View>
+						</View>
+
+						<Text style={styles.label}>Discount (%)</Text>
+						<TextInput
+							style={styles.input}
+							placeholder="Enter discount"
+							value={item.discount}
+							onChangeText={(text) => handleChange(item.id, "discount", text)}
+							keyboardType="numeric"
+						/>
+
+						<Text style={styles.label}>Tax (%)</Text>
+						<TextInput
+							style={styles.input}
+							placeholder="Enter tax"
+							value={item.tax}
+							onChangeText={(text) => handleChange(item.id, "tax", text)}
+							keyboardType="numeric"
+						/>
+
+						<View style={styles.switchContainer}>
+							<Text style={styles.switchLabel}>Include Tax in Price?</Text>
+							<Switch
+								value={item.includeTax}
+								onValueChange={(value) => handleChange(item.id, "includeTax", value)}
+							/>
+						</View>
+
+						<Text style={styles.totalPrice}>
+							Total: ₹{calculateTotalPrice(item).toFixed(2)}
+						</Text>
 					</View>
-				</BottomSheet>
-			</View>
+				))}
+
+				<TouchableOpacity style={styles.addButton} onPress={handleAddItem}>
+					<Text style={styles.addButtonText}>+ Add New Item</Text>
+				</TouchableOpacity>
+
+				<TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+					<Text style={styles.submitButtonText}>Submit Invoice</Text>
+				</TouchableOpacity>
+			</ScrollView>
 		</SafeAreaView>
 	);
 };
@@ -127,137 +195,109 @@ export const InvoiceAddItems = ({ navigation }: InvoiceAddItemsProps) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		backgroundColor: "#f0f4f7",
+	},
+	scrollContainer: {
+		padding: 20,
+	},
+	card: {
 		backgroundColor: "#fff",
-	},
-	header: {
-		flexDirection: "row",
-		alignItems: "center",
-		justifyContent: "space-between",
+		borderRadius: 15,
 		padding: 20,
-		borderBottomWidth: 1,
-		borderBottomColor: "#ddd",
+		marginBottom: 15,
+		elevation: 4,
+		shadowColor: "#000",
+		shadowOffset: { width: 0, height: 4 },
+		shadowOpacity: 0.1,
+		shadowRadius: 8,
 	},
-	headerTitle: {
+	headerRow: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+		marginBottom: 10,
+	},
+	cardTitle: {
 		fontSize: 18,
 		fontWeight: "bold",
 		color: "#333",
-	},
-	searchBar: {
-		flexDirection: "row",
-		alignItems: "center",
-		backgroundColor: "#f5f5f5",
-		marginHorizontal: 20,
-		borderRadius: 10,
-		paddingHorizontal: 10,
-		paddingVertical: 8,
-		marginTop: 10,
-		elevation: 3,
-		shadowColor: "#000",
-		shadowOpacity: 0.1,
-		shadowRadius: 5,
-	},
-	searchInput: {
-		flex: 1,
-		fontSize: 16,
-		color: "#333",
-		marginLeft: 10,
-	},
-	newItemButton: {
-		flexDirection: "row",
-		alignItems: "center",
-		justifyContent: "center",
-		backgroundColor: "#007bff",
-		paddingVertical: 10,
-		paddingHorizontal: 20,
-		borderRadius: 10,
-		marginHorizontal: 20,
-		marginTop: 15,
-	},
-	newItemText: {
-		marginLeft: 5,
-		fontSize: 16,
-		fontWeight: "bold",
-		color: "#fff",
-	},
-	itemsList: {
-		flex: 1,
-		marginTop: 15,
-		paddingHorizontal: 20,
-	},
-	itemsListTitle: {
-		fontSize: 16,
-		fontWeight: "bold",
-		color: "#333",
-		marginBottom: 10,
-	},
-	itemsListContent: {
-		paddingBottom: 20,
-	},
-	itemContainer: {
-		flexDirection: "row",
-		alignItems: "center",
-		justifyContent: "space-between",
-		padding: 15,
-		backgroundColor: "#f5f5f5",
-		borderRadius: 10,
-		marginBottom: 10,
-		elevation: 2,
-		shadowColor: "#000",
-		shadowOpacity: 0.1,
-		shadowRadius: 5,
-	},
-	itemDetails: {
-		flex: 1,
-	},
-	itemName: {
-		fontSize: 16,
-		fontWeight: "bold",
-		color: "#333",
-	},
-	itemPrice: {
-		fontSize: 14,
-		color: "#666",
-		marginTop: 5,
-	},
-	bottomSheetBackground: {
-		borderTopLeftRadius: 20,
-		borderTopRightRadius: 20,
-		backgroundColor: '#fff',
-	},
-	bottomSheetContent: {
-		flex: 1,
-		padding: 20,
-	},
-	sheetTitle: {
-		fontSize: 18,
-		fontWeight: 'bold',
-		marginBottom: 10,
-	},
-	selectedItemText: {
-		fontSize: 16,
-		color: '#555',
-		marginBottom: 20,
-	},
-	sheetButton: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		backgroundColor: '#f0f0f0',
-		borderRadius: 10,
-		padding: 15,
-		marginBottom: 10,
 	},
 	removeButton: {
-		backgroundColor: '#fff',
-		borderWidth: 1,
-		borderColor: '#F44336',
+		backgroundColor: "#ff4d4d",
+		padding: 5,
+		borderRadius: 50,
+		width: 30,
+		height: 30,
+		alignItems: "center",
+		justifyContent: "center",
 	},
-	sheetButtonText: {
+	removeText: {
+		color: "#fff",
 		fontSize: 16,
-		marginLeft: 10,
-		color: '#333',
+		fontWeight: "bold",
+	},
+	label: {
+		fontSize: 14,
+		color: "#555",
+		marginBottom: 5,
+	},
+	input: {
+		borderWidth: 1,
+		borderColor: "#ddd",
+		borderRadius: 10,
+		padding: 12,
+		marginBottom: 10,
+		fontSize: 16,
+		backgroundColor: "#fafafa",
+	},
+	row: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+	},
+	halfInputContainer: {
+		width: "48%",
+	},
+	switchContainer: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+		marginVertical: 10,
+	},
+	switchLabel: {
+		fontSize: 16,
+		color: "#555",
+	},
+	totalPrice: {
+		fontSize: 18,
+		fontWeight: "bold",
+		color: "#007bff",
+		textAlign: "center",
+		marginVertical: 10,
+	},
+	addButton: {
+		backgroundColor: "#007bff",
+		padding: 15,
+		borderRadius: 10,
+		alignItems: "center",
+		marginVertical: 10,
+	},
+	addButtonText: {
+		color: "#fff",
+		fontSize: 16,
+		fontWeight: "bold",
+	},
+	submitButton: {
+		backgroundColor: "#28a745",
+		padding: 18,
+		borderRadius: 12,
+		alignItems: "center",
+		marginVertical: 20,
+	},
+	submitButtonText: {
+		color: "#fff",
+		fontSize: 18,
+		fontWeight: "bold",
 	},
 });
-
-
 
 export default InvoiceAddItems;
