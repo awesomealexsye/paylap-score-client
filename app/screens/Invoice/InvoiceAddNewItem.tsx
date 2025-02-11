@@ -15,6 +15,8 @@ import Header from "../../layout/Header";
 
 import BottomSheet from '@gorhom/bottom-sheet';
 
+import { useTheme } from '@react-navigation/native';
+
 
 interface Item {
 	id: string;
@@ -24,6 +26,13 @@ interface Item {
 type InvoiceAddNewItemsProps = StackScreenProps<RootStackParamList, 'InvoiceAddNewItems'>;
 
 export const InvoiceAddNewItems = ({ navigation }: InvoiceAddNewItemsProps) => {
+
+
+
+	const theme = useTheme();
+	const { colors }: { colors: any } = theme;
+
+
 	const bottomSheetRef = useRef(null);
 	const [selectedItem, setSelectedItem] = useState(null);
 	const [item, setItem] = useState(null);
@@ -51,7 +60,7 @@ export const InvoiceAddNewItems = ({ navigation }: InvoiceAddNewItemsProps) => {
 	};
 
 	const renderItem = ({ item }: { item: Item }) => (
-		<TouchableOpacity style={styles.itemContainer}>
+		<TouchableOpacity style={[styles.itemContainer, { backgroundColor: colors.card }]}>
 			<View style={styles.itemDetails}>
 				<Text style={styles.itemName}>{item.name}</Text>
 				<Text style={styles.itemPrice}>{item.price}</Text>
@@ -63,64 +72,69 @@ export const InvoiceAddNewItems = ({ navigation }: InvoiceAddNewItemsProps) => {
 	);
 
 	return (
-		<SafeAreaView style={styles.container}>
-			{/* Header */}
+
+		<>
 			<Header
 				leftIcon={'back'}
 				title={'Add New Items'}
 				titleRight
 			/>
 
-			{/* Search Bar */}
-			<View style={styles.searchBar}>
-				<MaterialIcons name="search" size={24} color="#666" />
-				<TextInput
-					placeholder="Find item"
-					placeholderTextColor="#aaa"
-					style={styles.searchInput}
-				/>
-			</View>
+			<SafeAreaView style={styles.container}>
+				{/* Header */}
 
-			{/* New Item Button */}
-			<TouchableOpacity style={styles.newItemButton} onPress={handleNewItem}>
-				<MaterialIcons name="add-circle-outline" size={20} color="#fff" />
-				<Text style={styles.newItemText}>New Item</Text>
-			</TouchableOpacity>
 
-			{/* Items List */}
-			<View style={styles.itemsList}>
-				<Text style={styles.itemsListTitle}>All Items</Text>
-				<FlatList
-					data={items}
-					keyExtractor={(item) => item.id}
-					renderItem={renderItem}
-					contentContainerStyle={styles.itemsListContent}
-				/>
-				<BottomSheet
-					ref={bottomSheetRef}
-					snapPoints={['30%', '50%']}
-					enablePanDownToClose
-					backgroundStyle={styles.bottomSheetBackground}
-				>
-					<View style={styles.bottomSheetContent}>
-						<Text style={styles.sheetTitle}>Manage Item</Text>
-						{selectedItem && (
-							<Text style={styles.selectedItemText}>
-								{selectedItem.name} - {selectedItem.price}
-							</Text>
-						)}
-						<TouchableOpacity onPress={() => { navigation.navigate("InvoiceEditItem") }} style={styles.sheetButton}>
-							<MaterialIcons name="edit" size={24} color="#555" />
-							<Text style={styles.sheetButtonText}>Edit Item</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={[styles.sheetButton, styles.removeButton]}>
-							<MaterialIcons name="delete" size={24} color="#555" />
-							<Text style={[styles.sheetButtonText, { color: '#F44336' }]}>Remove Item</Text>
-						</TouchableOpacity>
-					</View>
-				</BottomSheet>
-			</View>
-		</SafeAreaView>
+				{/* Search Bar */}
+				<View style={styles.searchBar}>
+					<MaterialIcons name="search" size={24} color="#666" />
+					<TextInput
+						placeholder="Find item"
+						placeholderTextColor="#aaa"
+						style={styles.searchInput}
+					/>
+				</View>
+
+				{/* New Item Button */}
+				<TouchableOpacity style={styles.newItemButton} onPress={handleNewItem}>
+					<MaterialIcons name="add-circle-outline" size={20} color="#fff" />
+					<Text style={styles.newItemText}>New Item</Text>
+				</TouchableOpacity>
+
+				{/* Items List */}
+				<View style={styles.itemsList}>
+					<Text style={styles.itemsListTitle}>All Items</Text>
+					<FlatList
+						data={items}
+						keyExtractor={(item) => item.id}
+						renderItem={renderItem}
+						contentContainerStyle={styles.itemsListContent}
+					/>
+					<BottomSheet
+						ref={bottomSheetRef}
+						snapPoints={['30%', '50%']}
+						enablePanDownToClose
+						backgroundStyle={styles.bottomSheetBackground}
+					>
+						<View style={styles.bottomSheetContent}>
+							<Text style={styles.sheetTitle}>Manage Item</Text>
+							{selectedItem && (
+								<Text style={styles.selectedItemText}>
+									{selectedItem.name} - {selectedItem.price}
+								</Text>
+							)}
+							<TouchableOpacity onPress={() => { navigation.navigate("InvoiceEditItem") }} style={styles.sheetButton}>
+								<MaterialIcons name="edit" size={24} color="#555" />
+								<Text style={styles.sheetButtonText}>Edit Item</Text>
+							</TouchableOpacity>
+							<TouchableOpacity style={[styles.sheetButton, styles.removeButton]}>
+								<MaterialIcons name="delete" size={24} color="#555" />
+								<Text style={[styles.sheetButtonText, { color: '#F44336' }]}>Remove Item</Text>
+							</TouchableOpacity>
+						</View>
+					</BottomSheet>
+				</View>
+			</SafeAreaView>
+		</>
 	);
 };
 
@@ -151,10 +165,7 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 10,
 		paddingVertical: 8,
 		marginTop: 10,
-		elevation: 3,
-		shadowColor: "#000",
-		shadowOpacity: 0.1,
-		shadowRadius: 5,
+
 	},
 	searchInput: {
 		flex: 1,
@@ -201,10 +212,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "#f5f5f5",
 		borderRadius: 10,
 		marginBottom: 10,
-		elevation: 2,
-		shadowColor: "#000",
-		shadowOpacity: 0.1,
-		shadowRadius: 5,
+
 	},
 	itemDetails: {
 		flex: 1,

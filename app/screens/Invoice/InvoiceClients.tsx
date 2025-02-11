@@ -20,9 +20,17 @@ import { useFocusEffect } from '@react-navigation/native';
 import { ActivityIndicator } from 'react-native-paper';
 import { COLORS } from '../../constants/theme';
 
+import { useTheme } from '@react-navigation/native';
+
 type InvoiceClientsProps = StackScreenProps<RootStackParamList, 'InvoiceClients'>;
 
 export const InvoiceClients = ({ navigation }: InvoiceClientsProps) => {
+
+	const theme = useTheme();
+	const { colors }: { colors: any } = theme;
+
+
+
 	// Reference for BottomSheet
 	const bottomSheetRef = useRef<BottomSheet>(null);
 	// State for the selected client (to display in the bottom sheet)
@@ -91,14 +99,14 @@ export const InvoiceClients = ({ navigation }: InvoiceClientsProps) => {
 
 	// Render each client item as a card with enhanced styling
 	const renderItem = ({ item }: any) => (
-		<View style={styles.clientCard}>
+		<View style={[styles.clientCard, { backgroundColor: colors.card }]}>
 			<TouchableOpacity style={styles.clientInfo} onPress={() => selectClient(item)}>
 				<View style={styles.avatar}>
-					<Text style={styles.avatarText}>{item.name.charAt(0)}</Text>
+					<Text style={[styles.avatarText]}>{item.name.charAt(0)}</Text>
 				</View>
 				<View>
-					<Text style={styles.clientName}>{item.name}</Text>
-					<Text style={styles.clientEmail}>{item.email}</Text>
+					<Text style={[styles.clientName, { color: colors.title }]}>{item.name}</Text>
+					<Text style={[styles.clientEmail, { color: colors.title }]}>{item.email}</Text>
 				</View>
 			</TouchableOpacity>
 			<TouchableOpacity onPress={() => openBottomSheet(item)} style={styles.optionsButton}>
@@ -108,75 +116,82 @@ export const InvoiceClients = ({ navigation }: InvoiceClientsProps) => {
 	);
 
 	return (
-		<View style={styles.container}>
-			{/* Header */}
-			<Header leftIcon={'back'} title={'Clients'} titleRight />
+		<>
+			<Header leftIcon={'back'}
+				title={'Clients'}
+				titleRight />
+			<View style={[styles.container, { paddingHorizontal: 10, paddingVertical: 10 }]}>
+				{/* Header */}
 
-			{/* Search Bar */}
-			<View style={styles.searchContainer}>
-				<MaterialIcons name="search" size={22} color="#888" style={styles.searchIcon} />
-				<TextInput
-					style={styles.searchBar}
-					placeholder="Find client"
-					placeholderTextColor="#888"
-					value={searchQuery}
-					onChangeText={setSearchQuery}
-				/>
-			</View>
 
-			{/* New Client Button */}
-			<TouchableOpacity
-				onPress={() => navigation.navigate("InvoiceAddClient")}
-				style={styles.newClientButton}
-			>
-				<Text style={styles.newClientText}>+ New Client</Text>
-			</TouchableOpacity>
+				{/* Search Bar */}
+				<View style={[styles.searchContainer, { backgroundColor: colors.card }]}>
+					<MaterialIcons name="search" size={22} color="#888" style={styles.searchIcon} />
+					<TextInput
+						style={[styles.searchBar, { color: colors.title }]}
+						placeholder="Find client"
+						placeholderTextColor={colors.title
 
-			{/* Clients List */}
-			{isLoading ? (
-				<ActivityIndicator color={COLORS.title} size={'large'} />
-			) : (
-				<FlatList
-					data={filteredCustomers}
-					keyExtractor={(item) => item.id}
-					renderItem={renderItem}
-					contentContainerStyle={styles.listContent}
-				/>
-			)}
-
-			{/* Bottom Sheet */}
-			<BottomSheet
-				ref={bottomSheetRef}
-				index={-1} // Starts off collapsed
-				snapPoints={['30%', '50%']}
-				enablePanDownToClose={true}
-				backgroundStyle={styles.bottomSheetBackground}
-			>
-				<View style={styles.bottomSheetContent}>
-					{selectedItem && (
-						<Text style={styles.sheetTitle}>
-							{selectedItem.name} - {selectedItem.email}
-						</Text>
-					)}
-					<TouchableOpacity
-						onPress={() => {
-							closeBottomSheet();
-							navigation.navigate("InvoiceEditItem");
-						}}
-						style={styles.sheetButton}
-					>
-						<MaterialIcons name="edit" size={24} color="#555" />
-						<Text style={styles.sheetButtonText}>Edit Client</Text>
-					</TouchableOpacity>
-					<TouchableOpacity style={[styles.sheetButton, styles.removeButton]}>
-						<MaterialIcons name="delete" size={24} color="#F44336" />
-						<Text style={[styles.sheetButtonText, { color: '#F44336' }]}>
-							Remove Client
-						</Text>
-					</TouchableOpacity>
+						}
+						value={searchQuery}
+						onChangeText={setSearchQuery}
+					/>
 				</View>
-			</BottomSheet>
-		</View>
+
+				{/* New Client Button */}
+				<TouchableOpacity
+					onPress={() => navigation.navigate("InvoiceAddClient")}
+					style={styles.newClientButton}
+				>
+					<Text style={styles.newClientText}>+ New Client</Text>
+				</TouchableOpacity>
+
+				{/* Clients List */}
+				{isLoading ? (
+					<ActivityIndicator color={COLORS.title} size={'large'} />
+				) : (
+					<FlatList
+						data={filteredCustomers}
+						keyExtractor={(item) => item.id}
+						renderItem={renderItem}
+						contentContainerStyle={styles.listContent}
+					/>
+				)}
+
+				{/* Bottom Sheet */}
+				<BottomSheet
+					ref={bottomSheetRef}
+					index={-1} // Starts off collapsed
+					snapPoints={['30%', '50%']}
+					enablePanDownToClose={true}
+					backgroundStyle={[styles.bottomSheetBackground, { backgroundColor: colors.card }]}
+				>
+					<View style={styles.bottomSheetContent}>
+						{selectedItem && (
+							<Text style={[styles.sheetTitle, { color: colors.title }]}>
+								{selectedItem.name} - {selectedItem.email}
+							</Text>
+						)}
+						<TouchableOpacity
+							onPress={() => {
+								closeBottomSheet();
+								navigation.navigate("InvoiceEditItem");
+							}}
+							style={[styles.sheetButton, { backgroundColor: COLORS.primary }]}
+						>
+							<MaterialIcons name="edit" size={24} color={COLORS.background} />
+							<Text style={[styles.sheetButtonText, { color: COLORS.background }]}>Edit Client</Text>
+						</TouchableOpacity>
+						<TouchableOpacity style={[styles.sheetButton, styles.removeButton, { backgroundColor: COLORS.danger }]}>
+							<MaterialIcons name="delete" size={24} color={COLORS.background} />
+							<Text style={[styles.sheetButtonText, , { color: COLORS.background }]}>
+								Remove Client
+							</Text>
+						</TouchableOpacity>
+					</View>
+				</BottomSheet>
+			</View>
+		</>
 	);
 };
 
@@ -195,10 +210,7 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 15,
 		paddingVertical: 8,
 		marginBottom: 20,
-		shadowColor: '#000',
-		shadowOpacity: 0.1,
-		shadowRadius: 5,
-		elevation: 3,
+
 	},
 	searchIcon: {
 		marginRight: 8,
@@ -214,10 +226,7 @@ const styles = StyleSheet.create({
 		borderRadius: 12,
 		alignItems: 'center',
 		marginBottom: 20,
-		shadowColor: COLORS.primary,
-		shadowOpacity: 0.3,
-		shadowRadius: 5,
-		elevation: 3,
+
 	},
 	newClientText: {
 		color: '#fff',
@@ -234,10 +243,7 @@ const styles = StyleSheet.create({
 		padding: 15,
 		borderRadius: 12,
 		marginBottom: 15,
-		shadowColor: '#000',
-		shadowOpacity: 0.05,
-		shadowRadius: 4,
-		elevation: 2,
+
 	},
 	clientInfo: {
 		flexDirection: 'row',
@@ -295,7 +301,7 @@ const styles = StyleSheet.create({
 		marginBottom: 10,
 	},
 	removeButton: {
-		backgroundColor: '#fff',
+
 		borderWidth: 1,
 		borderColor: '#F44336',
 	},

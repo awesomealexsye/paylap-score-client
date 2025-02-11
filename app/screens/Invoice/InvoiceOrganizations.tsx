@@ -21,9 +21,16 @@ import StorageService from '../../lib/StorageService';
 import { useFocusEffect } from '@react-navigation/native';
 import { ActivityIndicator } from 'react-native-paper';
 
+import { useTheme } from '@react-navigation/native';
+
 type InvoiceOrganizationsProps = StackScreenProps<RootStackParamList, 'InvoiceOrganizations'>;
 
 export const InvoiceOrganizations = ({ navigation }: InvoiceOrganizationsProps) => {
+
+	const theme = useTheme();
+	const { colors }: { colors: any } = theme;
+
+
 	// Reference for BottomSheet
 	const bottomSheetRef = useRef<BottomSheet>(null);
 	// State for the selected organization (to show in the bottom sheet)
@@ -81,7 +88,7 @@ export const InvoiceOrganizations = ({ navigation }: InvoiceOrganizationsProps) 
 
 	// Render each organization item as a card with improved spacing, shadows, and layout
 	const renderItem = ({ item }: any) => (
-		<View style={styles.organizationCard}>
+		<View style={[styles.organizationCard, { backgroundColor: colors.card }]}>
 			<TouchableOpacity style={styles.organizationInfo} onPress={() => selectOrganization(item)}>
 				<View style={styles.avatar}>
 					<Image
@@ -90,7 +97,7 @@ export const InvoiceOrganizations = ({ navigation }: InvoiceOrganizationsProps) 
 					/>
 				</View>
 				<View style={styles.textContainer}>
-					<Text style={styles.organizationName}>{item.name}</Text>
+					<Text style={[styles.organizationName, { color: colors.title }]}>{item.name}</Text>
 					<Text style={styles.organizationEmail}>{item.email.toLowerCase()}</Text>
 				</View>
 			</TouchableOpacity>
@@ -100,18 +107,18 @@ export const InvoiceOrganizations = ({ navigation }: InvoiceOrganizationsProps) 
 		</View>
 	);
 
-	return (
+	return (<><Header leftIcon={'back'} title={'Organizations'} titleRight />
 		<View style={styles.container}>
 			{/* Header */}
-			<Header leftIcon={'back'} title={'Organizations'} titleRight />
+
 
 			{/* Search Bar */}
-			<View style={styles.searchContainer}>
+			<View style={[styles.searchContainer, { backgroundColor: colors.background, elevation: 4 }]}>
 				<MaterialIcons name="search" size={22} color="#888" style={styles.searchIcon} />
 				<TextInput
-					style={styles.searchBar}
+					style={[styles.searchBar, { color: colors.title }]}
 					placeholder="Search organizations"
-					placeholderTextColor="#888"
+					placeholderTextColor={colors.title}
 					value={searchQuery}
 					onChangeText={setSearchQuery}
 				/>
@@ -132,7 +139,7 @@ export const InvoiceOrganizations = ({ navigation }: InvoiceOrganizationsProps) 
 					data={filteredCompanies}
 					renderItem={renderItem}
 					keyExtractor={(item, index) => index.toString()}
-					contentContainerStyle={styles.listContent}
+					contentContainerStyle={[styles.listContent, {}]}
 				/> :
 				<ActivityIndicator color={COLORS.title} size={'large'}></ActivityIndicator>
 			}
@@ -143,12 +150,12 @@ export const InvoiceOrganizations = ({ navigation }: InvoiceOrganizationsProps) 
 				index={-1} // Starts off closed
 				snapPoints={['30%', '50%']}
 				enablePanDownToClose={true}
-				backgroundStyle={styles.bottomSheetBackground}
+				backgroundStyle={[styles.bottomSheetBackground, { backgroundColor: colors.card }]}
 			>
 				<View style={styles.bottomSheetContent}>
-					<Text style={styles.sheetTitle}>Manage Organization</Text>
+					<Text style={[styles.sheetTitle, { color: colors.title }]}>Manage Organization</Text>
 					{selectedItem && (
-						<Text style={styles.selectedItemText}>
+						<Text style={[styles.selectedItemText, { color: colors.title }]}>
 							{selectedItem.name} - {selectedItem.email}
 						</Text>
 					)}
@@ -157,24 +164,28 @@ export const InvoiceOrganizations = ({ navigation }: InvoiceOrganizationsProps) 
 							closeBottomSheet();
 							navigation.navigate('InvoiceEditItem');
 						}}
-						style={styles.sheetButton}
+						style={[styles.sheetButton, { backgroundColor: COLORS.primary }]}
 					>
-						<MaterialIcons name="edit" size={24} color="#555" />
-						<Text style={styles.sheetButtonText}>Edit</Text>
+						<MaterialIcons name="edit" size={24} color={COLORS.background} />
+						<Text style={[styles.sheetButtonText, { color: COLORS.background }]}>Edit</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={[styles.sheetButton, styles.removeButton]}>
-						<MaterialIcons name="delete" size={24} color="#F44336" />
-						<Text style={[styles.sheetButtonText, { color: '#F44336' }]}>Remove</Text>
+					<TouchableOpacity style={[styles.sheetButton, styles.removeButton, { backgroundColor: COLORS.danger }]}>
+						<MaterialIcons name="delete" size={24} color={COLORS.background} />
+						<Text style={[styles.sheetButtonText, { color: COLORS.background }]}>Remove</Text>
 					</TouchableOpacity>
 				</View>
 			</BottomSheet>
 		</View>
+	</>
+
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		padding: 10
+
 	},
 	searchContainer: {
 		flexDirection: 'row',
@@ -195,7 +206,7 @@ const styles = StyleSheet.create({
 	searchBar: {
 		flex: 1,
 		fontSize: 16,
-		color: '#333',
+
 	},
 	newOrganizationButton: {
 		backgroundColor: COLORS.primary,

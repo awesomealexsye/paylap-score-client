@@ -154,184 +154,187 @@ export const InvoiceCreate = ({ navigation }: InvoiceCreateProps) => {
 	};
 
 	return (
-		<SafeAreaView style={styles.container}>
-			<ScrollView>
-				<Header leftIcon="back" title="Create Invoice" />
+		<>
+			<Header leftIcon="back" title="Create Invoice" />
+			<SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+				<ScrollView>
 
-				{/* Existing organization, client, and items sections... */}
-				<View style={styles.section}>
-					<Text style={styles.sectionTitle}>Organization</Text>
-					<TouchableOpacity
-						style={styles.orgClientCard}
-						onPress={() => navigation.navigate("InvoiceOrganizations")}
-					>
-						<MaterialIcons name="business" size={24} color="#007bff" />
-						<View style={styles.cardDetails}>
-							<Text style={styles.cardTitle}>{organization.name}</Text>
-							<Text style={styles.cardSubtitle}>{organization.email}</Text>
-						</View>
-						<MaterialIcons name="keyboard-arrow-right" size={24} color="#aaa" />
-					</TouchableOpacity>
-				</View>
 
-				{/* Client Section */}
-				<View style={styles.section}>
-					<Text style={styles.sectionTitle}>Client</Text>
-					<TouchableOpacity
-						style={styles.orgClientCard}
-						onPress={() => navigation.navigate("InvoiceClients")}
-					>
-						<MaterialIcons name="person" size={24} color="#28a745" />
-						<View style={styles.cardDetails}>
-							<Text style={styles.cardTitle}>{client.name}</Text>
-							<Text style={styles.cardSubtitle}>{client.email}</Text>
-						</View>
-						<MaterialIcons name="keyboard-arrow-right" size={24} color="#aaa" />
-					</TouchableOpacity>
-				</View>
-
-				{/* Items Section */}
-				<View style={styles.section}>
-					<Text style={styles.sectionTitle}>Items</Text>
-
-					{items.map((item: any) => (
-						<View key={item.id} style={styles.card}>
-							<View style={styles.cardContent}>
-								<Text style={styles.itemTitle}>{item.title}</Text>
-								<Text style={styles.itemSubtitle}>
-									₹{item.price} x {item.quantity}
-								</Text>
-								<Text style={styles.itemDiscount}>
-									Discount: {item.discount}%
-								</Text>
-								<Text style={styles.itemTax}>
-									Tax: {item.tax}% {item.includeTax ? "(Included)" : "(Excluded)"}
-								</Text>
-								<Text style={styles.itemTotal}>
-									Total: ₹{calculateItemTotal(item).toFixed(2)}
-								</Text>
+					{/* Existing organization, client, and items sections... */}
+					<View style={styles.section}>
+						<Text style={[styles.sectionTitle, { color: colors.title }]}>Organization</Text>
+						<TouchableOpacity
+							style={[styles.orgClientCard, { backgroundColor: colors.card }]}
+							onPress={() => navigation.navigate("InvoiceOrganizations")}
+						>
+							<MaterialIcons name="business" size={24} color="#007bff" />
+							<View style={styles.cardDetails}>
+								<Text style={[styles.cardTitle, { color: colors.title }]}>{organization.name}</Text>
+								<Text style={styles.cardSubtitle}>{organization.email}</Text>
 							</View>
-							<TouchableOpacity onPress={() => handleRemoveItem(item.id)}>
-								<MaterialIcons name="delete" size={24} color="#ff4d4d" />
-							</TouchableOpacity>
-						</View>
-					))}
-
-					<TouchableOpacity
-						style={styles.addItemButton}
-						onPress={() => navigation.navigate("InvoiceAddItems")}
-					>
-						<MaterialIcons name="add-circle" size={20} color="#007bff" />
-						<Text style={styles.addItemText}>Add New Item</Text>
-					</TouchableOpacity>
-				</View>
-
-				{/* Totals Section */}
-				<View style={styles.section}>
-					<View style={styles.rowBetween}>
-						<Text style={styles.totalLabel}>Subtotal</Text>
-						<Text style={styles.totalValue}>₹{calculateSubtotal()}</Text>
-					</View>
-					<View style={styles.rowBetween}>
-						<Text style={styles.totalLabel}>Discount</Text>
-						<Text style={styles.totalValue}>-₹{calculateDiscount()}</Text>
-					</View>
-					<View style={styles.rowBetween}>
-						<Text style={styles.totalLabel}>Tax</Text>
-						<Text style={styles.totalValue}>+₹{calculateTax()}</Text>
-					</View>
-					<View style={[styles.rowBetween, styles.totalRow]}>
-						<Text style={styles.totalLabelBold}>Grand Total</Text>
-						<Text style={styles.totalAmount}>₹{calculateTotal()}</Text>
-					</View>
-				</View>
-				{/* Totals Section */}
-				<View style={styles.section}>
-					{/* Existing total calculations... */}
-				</View>
-
-				{/* Payment Section */}
-				<View style={styles.section}>
-					<Text style={styles.sectionTitle}>Payment Details</Text>
-					<View style={styles.rowBetween}>
-						<Text style={styles.totalLabel}>Full Payment Received?</Text>
-						<Switch
-							value={isFullPaymentReceived}
-							onValueChange={setIsFullPaymentReceived}
-						/>
+							<MaterialIcons name="keyboard-arrow-right" size={24} color="#aaa" />
+						</TouchableOpacity>
 					</View>
 
-					{!isFullPaymentReceived && (
-						<View>
-							<View style={[styles.rowBetween, { marginTop: 10 }]}>
-								<Text style={styles.totalLabel}>Add Partial Payment?</Text>
-								<Switch
-									value={showReceivedAmount}
-									onValueChange={setShowReceivedAmount}
-								/>
+					{/* Client Section */}
+					<View style={styles.section}>
+						<Text style={[styles.sectionTitle, { color: colors.title }]}>Client</Text>
+						<TouchableOpacity
+							style={[styles.orgClientCard, { backgroundColor: colors.card }]}
+							onPress={() => navigation.navigate("InvoiceClients")}
+						>
+							<MaterialIcons name="person" size={24} color="#28a745" />
+							<View style={styles.cardDetails}>
+								<Text style={[styles.cardTitle, { color: colors.title }]}>{client.name}</Text>
+								<Text style={styles.cardSubtitle}>{client.email}</Text>
 							</View>
+							<MaterialIcons name="keyboard-arrow-right" size={24} color="#aaa" />
+						</TouchableOpacity>
+					</View>
 
-							{showReceivedAmount && (
-								<View>
-									<TextInput
-										style={styles.input}
-										placeholder="Received Amount"
-										keyboardType="numeric"
-										value={receivedAmount}
-										onChangeText={(val) => {
-											if (parseFloat(val) <= parseFloat(calculateTotal())) {
-												setReceivedAmount(val)
-											}
-										}}
+					{/* Items Section */}
+					<View style={styles.section}>
+						<Text style={[styles.sectionTitle, { color: colors.title }]}>Items</Text>
+
+						{items.map((item: any) => (
+							<View key={item.id} style={[styles.card, { backgroundColor: colors.card }]}>
+								<View style={styles.cardContent}>
+									<Text style={[styles.itemTitle, { color: colors.title }]}>{item.title}</Text>
+									<Text style={[, { color: colors.title }]}>
+										₹{item.price} x {item.quantity}
+									</Text>
+									<Text style={styles.itemDiscount}>
+										Discount: {item.discount}%
+									</Text>
+									<Text style={[styles.itemTax, { color: colors.title }]}>
+										Tax: {item.tax}% {item.includeTax ? "(Included)" : "(Excluded)"}
+									</Text>
+									<Text style={styles.itemTotal}>
+										Total: ₹{calculateItemTotal(item).toFixed(2)}
+									</Text>
+								</View>
+								<TouchableOpacity onPress={() => handleRemoveItem(item.id)}>
+									<MaterialIcons name="delete" size={24} color="#ff4d4d" />
+								</TouchableOpacity>
+							</View>
+						))}
+
+						<TouchableOpacity
+							style={styles.addItemButton}
+							onPress={() => navigation.navigate("InvoiceAddItems")}
+						>
+							<MaterialIcons name="add-circle" size={20} color="#007bff" />
+							<Text style={styles.addItemText}>Add New Item</Text>
+						</TouchableOpacity>
+					</View>
+
+					{/* Totals Section */}
+					<View style={styles.section}>
+						<View style={styles.rowBetween}>
+							<Text style={[styles.totalLabel, { color: colors.title }]}>Subtotal</Text>
+							<Text style={[styles.totalValue, { color: colors.title }]}>₹{calculateSubtotal()}</Text>
+						</View>
+						<View style={styles.rowBetween}>
+							<Text style={[styles.totalLabel, { color: colors.title }]}>Discount</Text>
+							<Text style={[styles.totalValue, { color: colors.title }]}>-₹{calculateDiscount()}</Text>
+						</View>
+						<View style={styles.rowBetween}>
+							<Text style={[styles.totalLabel, { color: colors.title }]}>Tax</Text>
+							<Text style={[styles.totalValue, { color: colors.title }]}>+₹{calculateTax()}</Text>
+						</View>
+						<View style={[styles.rowBetween, styles.totalRow]}>
+							<Text style={[styles.totalLabelBold, { color: colors.title }]}>Grand Total</Text>
+							<Text style={styles.totalAmount}>₹{calculateTotal()}</Text>
+						</View>
+					</View>
+					{/* Totals Section */}
+					<View style={styles.section}>
+						{/* Existing total calculations... */}
+					</View>
+
+					{/* Payment Section */}
+					<View style={styles.section}>
+						<Text style={[styles.sectionTitle, { color: colors.title }]}>Payment Details</Text>
+						<View style={styles.rowBetween}>
+							<Text style={[styles.totalLabel, { color: colors.title }]}>Full Payment Received?</Text>
+							<Switch
+								value={isFullPaymentReceived}
+								onValueChange={setIsFullPaymentReceived}
+							/>
+						</View>
+
+						{!isFullPaymentReceived && (
+							<View>
+								<View style={[styles.rowBetween, { marginTop: 10 }]}>
+									<Text style={styles.totalLabel}>Add Partial Payment?</Text>
+									<Switch
+										value={showReceivedAmount}
+										onValueChange={setShowReceivedAmount}
 									/>
-									{/* {setReceivedAmount } */}
+								</View>
 
-									<TouchableOpacity
-										onPress={() => setShowDatePicker(true)}
-										style={styles.dateInputContainer}
-									>
+								{showReceivedAmount && (
+									<View>
 										<TextInput
 											style={styles.input}
-											placeholder="Select Expected Date"
-											value={expectedDate}
-											editable={false}
+											placeholder="Received Amount"
+											keyboardType="numeric"
+											value={receivedAmount}
+											onChangeText={(val) => {
+												if (parseFloat(val) <= parseFloat(calculateTotal())) {
+													setReceivedAmount(val)
+												}
+											}}
 										/>
-										<MaterialIcons
-											name="calendar-today"
-											size={20}
-											color="#666"
-											style={styles.dateIcon}
-										/>
-									</TouchableOpacity>
+										{/* {setReceivedAmount } */}
 
-									{showDatePicker && (
-										<DateTimePicker
-											value={expectedDate ? new Date(expectedDate) : new Date()}
-											mode="date"
-											display="default"
-											onChange={handleDateChange}
-										/>
-									)}
+										<TouchableOpacity
+											onPress={() => setShowDatePicker(true)}
+											style={styles.dateInputContainer}
+										>
+											<TextInput
+												style={styles.input}
+												placeholder="Select Expected Date"
+												value={expectedDate}
+												editable={false}
+											/>
+											<MaterialIcons
+												name="calendar-today"
+												size={20}
+												color="#666"
+												style={styles.dateIcon}
+											/>
+										</TouchableOpacity>
 
-									<View style={styles.amountSummary}>
-										<Text style={styles.amountLabel}>Pending Amount:</Text>
-										<Text style={styles.amountValue}>
-											₹{calculatePendingAmount()}
-										</Text>
+										{showDatePicker && (
+											<DateTimePicker
+												value={expectedDate ? new Date(expectedDate) : new Date()}
+												mode="date"
+												display="default"
+												onChange={handleDateChange}
+											/>
+										)}
+
+										<View style={styles.amountSummary}>
+											<Text style={styles.amountLabel}>Pending Amount:</Text>
+											<Text style={styles.amountValue}>
+												₹{calculatePendingAmount()}
+											</Text>
+										</View>
 									</View>
-								</View>
-							)}
-						</View>
-					)}
-				</View>
-				{/* Generate Invoice Button */}
-				<View style={styles.footer}>
-					<TouchableOpacity style={styles.footerButton} onPress={generateInvoice}>
-						<Text style={styles.footerButtonText}>Generate Invoice</Text>
-					</TouchableOpacity>
-				</View>
-			</ScrollView>
-		</SafeAreaView>
+								)}
+							</View>
+						)}
+					</View>
+					{/* Generate Invoice Button */}
+					<View style={styles.footer}>
+						<TouchableOpacity style={styles.footerButton} onPress={generateInvoice}>
+							<Text style={styles.footerButtonText}>Generate Invoice</Text>
+						</TouchableOpacity>
+					</View>
+				</ScrollView>
+			</SafeAreaView>
+		</>
 	);
 };
 
@@ -356,10 +359,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "#fff",
 		padding: 15,
 		borderRadius: 10,
-		elevation: 3,
-		shadowColor: "#000",
-		shadowOpacity: 0.1,
-		shadowRadius: 5,
+
 		marginBottom: 10,
 	},
 	cardDetails: {

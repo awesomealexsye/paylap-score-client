@@ -104,7 +104,7 @@ export const ChooseInvoiceDesign = ({ navigation, route }: ChooseInvoiceDesignPr
                                 >
                                     <TouchableOpacity onPress={() => handleImageClick(imageURL + "/" + item.image)}>
                                         <Image source={{ uri: imageURL + "/" + item.image }} style={styles.image} />
-                                        <Text style={styles.headline}>{item.name}</Text>
+                                        <Text style={[styles.headline, { color: colors.title }]}>{item.name}</Text>
                                     </TouchableOpacity>
 
                                     {/* Add Select Button */}
@@ -162,6 +162,7 @@ const styles = StyleSheet.create({
     gridItem: {
         width: (width / 2) - 16, // Half the screen width minus padding
         marginBottom: 16,
+        padding: 5
     },
     image: {
         width: '100%',
@@ -200,7 +201,6 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         padding: 16,
-        backgroundColor: COLORS.card,
     },
     chooseButton: {
         backgroundColor: COLORS.primary,

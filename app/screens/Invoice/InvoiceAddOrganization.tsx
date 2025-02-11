@@ -21,10 +21,20 @@ import { ActivityIndicator } from 'react-native-paper';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { StackScreenProps } from '@react-navigation/stack';
 import Header from '../../layout/Header';
+import { useTheme } from '@react-navigation/native';
+
 
 type InvoiceAddOrganizationProps = StackScreenProps<RootStackParamList, 'InvoiceAddOrganization'>;
 
 export const InvoiceAddOrganization = ({ navigation }: InvoiceAddOrganizationProps) => {
+
+
+	const theme = useTheme();
+	const { colors }: { colors: any } = theme;
+
+
+
+
 	const [form, setForm] = useState<any>({
 		name: '',
 		company_address: '',
@@ -179,152 +189,160 @@ export const InvoiceAddOrganization = ({ navigation }: InvoiceAddOrganizationPro
 		});
 	};
 
+
+	const CustomInput = ({ label, icon, error, style, ...props }: any) => (
+		<View style={[styles.inputContainer]}>
+			{label ? <Text style={[styles.label, { color: colors.title }]} > {label}</Text > : null}
+			<View style={[styles.inputWrapper, style, { backgroundColor: colors.card }]}>
+				<Ionicons name={icon} size={20} color={colors.title} style={styles.icon} />
+				<TextInput {...props} style={[styles.input, style, { backgroundColor: colors.card, color: colors.title, paddingLeft: 8 }]} />
+			</View>
+			{error ? <Text style={styles.errorText}>{error}</Text> : null}
+		</View >
+	);
+
 	return (
-		<KeyboardAvoidingView
-			behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-			style={styles.container}
-		>
+		<>
+
 			<Header leftIcon={'back'} title={'Add Organization'} titleRight />
-			<ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-				{/* Header */}
+			<KeyboardAvoidingView
+				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+				style={styles.container}
+			>
 
-				{/* <Text style={styles.headerText}>Add Organization</Text> */}
+				<ScrollView contentContainerStyle={[styles.scrollContainer, { backgroundColor: colors.background }]} showsVerticalScrollIndicator={false}>
 
-				{/* Company Logo */}
-				<TouchableOpacity style={styles.logoContainer} onPress={pickImage}>
-					{imageUri ? (
-						<Image source={{ uri: imageUri }} style={styles.logo} />
-					) : (
-						<Ionicons name="camera-outline" size={60} color={COLORS.primary} />
-					)}
-				</TouchableOpacity>
-				<Text style={styles.labelCenter}>Upload Company Logo</Text>
 
-				<View style={styles.card}>
-					{/* Basic Information Section */}
-					<Text style={styles.sectionTitle}>Basic Information</Text>
-					<CustomInput
-						label="Name"
-						icon="business-outline"
-						placeholder="Enter Name"
-						value={form.name}
-						onChangeText={(text: string) => handleChange('name', text)}
-						error={errors.name}
-					/>
-					<CustomInput
-						label="GST Number"
-						icon="pricetag-outline"
-						placeholder="Enter GST Number"
-						value={form.gst}
-						onChangeText={(text: string) => handleChange('gst', text)}
-						error={errors.gst}
-					/>
-					<CustomInput
-						maxLength={10}
-						label="Phone"
-						icon="call-outline"
-						placeholder="Enter Phone"
-						keyboardType="phone-pad"
-						value={form.phone}
-						onChangeText={(text: string) => handleChange('phone', text)}
-						error={errors.phone}
-					/>
-					<CustomInput
-						label="Email"
-						icon="mail-outline"
-						placeholder="Enter Email"
-						keyboardType="email-address"
-						value={form.email}
-						onChangeText={(text: string) => handleChange('email', text)}
-						error={errors.email}
-					/>
-					<CustomInput
-						label="Website"
-						icon="globe-outline"
-						placeholder="Enter Website URL"
-						value={form.website}
-						onChangeText={(text: string) => handleChange('website', text)}
-						error={errors.website}
-					/>
+					{/* <Text style={styles.headerText}>Add Organization</Text> */}
 
-					{/* Address Information Section */}
-					<Text style={styles.sectionTitle}>Address Information</Text>
-					<CustomInput
-						label="Pincode"
-						icon="pin-outline"
-						placeholder="Enter Pincode"
-						keyboardType="numeric"
-						value={form.zipcode}
-						onChangeText={(text: string) => handleChange('zipcode', text)}
-						error={errors.zipcode}
-						maxLength={6}
-					/>
+					{/* Company Logo */}
+					<TouchableOpacity style={[styles.logoContainer, { backgroundColor: colors.background }]} onPress={pickImage}>
+						{imageUri ? (
+							<Image source={{ uri: imageUri }} style={styles.logo} />
+						) : (
+							<Ionicons name="camera-outline" size={60} color={COLORS.primary} />
+						)}
+					</TouchableOpacity>
+					<Text style={[styles.labelCenter, { color: colors.title }]}>Upload Company Logo</Text>
 
-					<CustomInput
-						label="District"
-						icon="location-outline"
-						placeholder="District"
-						value={form.district}
-						onChangeText={(text: string) => handleChange('district', text)}
-						error={errors.district}
-					/>
-					<CustomInput
-						label="City"
-						icon="home-outline"
-						placeholder="City"
-						value={form.city}
-						onChangeText={(text: string) => handleChange('city', text)}
-						error={errors.city}
-					/>
-					<CustomInput
-						label="State"
-						icon="flag-outline"
-						placeholder="State"
-						value={form.state}
-						onChangeText={(text: string) => handleChange('state', text)}
-						error={errors.state}
-					/>
+					<View style={[styles.card, { backgroundColor: colors.background }]}>
+						{/* Basic Information Section */}
+						<Text style={[styles.sectionTitle, { color: colors.title }]}>Basic Information</Text>
+						<CustomInput
+							label="Name"
+							icon="business-outline"
+							placeholder="Enter Name"
+							value={form.name}
+							onChangeText={(text: string) => handleChange('name', text)}
+							error={errors.name}
 
-					<CustomInput
-						label="Company Address"
-						icon="location-outline"
-						placeholder="Enter Address"
-						value={form.company_address}
-						onChangeText={(text: string) => handleChange('company_address', text)}
-						error={errors.company_address}
-						multiline={true}
-						numberOfLines={3}
-						style={[styles.input, styles.multilineInput]}
-					/>
+						/>
+						<CustomInput
+							label="GST Number"
+							icon="pricetag-outline"
+							placeholder="Enter GST Number"
+							value={form.gst}
+							onChangeText={(text: string) => handleChange('gst', text)}
+							error={errors.gst}
+						/>
+						<CustomInput
+							maxLength={10}
+							label="Phone"
+							icon="call-outline"
+							placeholder="Enter Phone"
+							keyboardType="phone-pad"
+							value={form.phone}
+							onChangeText={(text: string) => handleChange('phone', text)}
+							error={errors.phone}
+						/>
+						<CustomInput
+							label="Email"
+							icon="mail-outline"
+							placeholder="Enter Email"
+							keyboardType="email-address"
+							value={form.email}
+							onChangeText={(text: string) => handleChange('email', text)}
+							error={errors.email}
+						/>
+						<CustomInput
+							label="Website"
+							icon="globe-outline"
+							placeholder="Enter Website URL"
+							value={form.website}
+							onChangeText={(text: string) => handleChange('website', text)}
+							error={errors.website}
+						/>
 
-					{/* Submit Button */}
-					{!isLoading ? (
-						<Button title="Add Organization" onPress={handleSubmit} style={styles.button} />
-					) : (
-						<ActivityIndicator color={COLORS.title} size={'large'} />
-					)}
-				</View>
-			</ScrollView>
-		</KeyboardAvoidingView>
+						{/* Address Information Section */}
+						<Text style={[styles.sectionTitle, { color: colors.title }]}>Address Information</Text>
+						<CustomInput
+							label="Pincode"
+							icon="pin-outline"
+							placeholder="Enter Pincode"
+							keyboardType="numeric"
+							value={form.zipcode}
+							onChangeText={(text: string) => handleChange('zipcode', text)}
+							error={errors.zipcode}
+							maxLength={6}
+						/>
+
+						<CustomInput
+							label="District"
+							icon="location-outline"
+							placeholder="District"
+							value={form.district}
+							onChangeText={(text: string) => handleChange('district', text)}
+							error={errors.district}
+						/>
+						<CustomInput
+							label="City"
+							icon="home-outline"
+							placeholder="City"
+							value={form.city}
+							onChangeText={(text: string) => handleChange('city', text)}
+							error={errors.city}
+						/>
+						<CustomInput
+							label="State"
+							icon="flag-outline"
+							placeholder="State"
+							value={form.state}
+							onChangeText={(text: string) => handleChange('state', text)}
+							error={errors.state}
+						/>
+
+						<CustomInput
+							label="Company Address"
+							icon="location-outline"
+							placeholder="Enter Address"
+							value={form.company_address}
+							onChangeText={(text: string) => handleChange('company_address', text)}
+							error={errors.company_address}
+							multiline={true}
+							numberOfLines={3}
+
+						/>
+
+						{/* Submit Button */}
+						{!isLoading ? (
+							<Button title="Add Organization" onPress={handleSubmit} style={styles.button} />
+						) : (
+							<ActivityIndicator color={COLORS.title} size={'large'} />
+						)}
+					</View>
+				</ScrollView>
+			</KeyboardAvoidingView>
+		</>
 	);
 };
 
 // Custom Input Component with updated styling
-const CustomInput = ({ label, icon, error, style, ...props }: any) => (
-	<View style={styles.inputContainer}>
-		{label ? <Text style={styles.label}>{label}</Text> : null}
-		<View style={[styles.inputWrapper, style]}>
-			<Ionicons name={icon} size={20} color={COLORS.primary} style={styles.icon} />
-			<TextInput {...props} style={[styles.input, style]} />
-		</View>
-		{error ? <Text style={styles.errorText}>{error}</Text> : null}
-	</View>
-);
+
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: COLORS.light,
+
 	},
 	scrollContainer: {
 		flexGrow: 1,
@@ -343,10 +361,7 @@ const styles = StyleSheet.create({
 		padding: 15,
 		borderRadius: 75,
 		marginBottom: 10,
-		elevation: 3,
-		shadowColor: '#000',
-		shadowOpacity: 0.2,
-		shadowRadius: 5,
+
 	},
 	logo: {
 		width: 100,
@@ -356,17 +371,13 @@ const styles = StyleSheet.create({
 	labelCenter: {
 		textAlign: 'center',
 		fontSize: 14,
-		color: '#666',
+
 		marginBottom: 15,
 	},
 	card: {
-		backgroundColor: '#fff',
 		padding: 20,
 		borderRadius: 15,
-		elevation: 5,
-		shadowColor: '#000',
-		shadowOpacity: 0.1,
-		shadowRadius: 5,
+
 	},
 	sectionTitle: {
 		fontSize: 20,
@@ -380,16 +391,17 @@ const styles = StyleSheet.create({
 	label: {
 		fontSize: 16,
 		marginBottom: 5,
-		color: '#333',
+
 	},
 	inputWrapper: {
 		flexDirection: 'row',
 		alignItems: 'center',
 		borderWidth: 1,
 		borderColor: COLORS.primary,
-		borderRadius: 30,
-		paddingHorizontal: 15,
-		backgroundColor: '#f9f9f9',
+		borderRadius: 12,
+		paddingLeft: 12,
+
+
 	},
 	icon: {
 		marginRight: 10,
@@ -398,7 +410,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		paddingVertical: 12,
 		fontSize: 16,
-		color: '#333',
+
 	},
 	errorText: {
 		color: 'red',

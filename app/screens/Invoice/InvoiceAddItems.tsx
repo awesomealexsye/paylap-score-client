@@ -13,8 +13,18 @@ import {
 import Header from "../../layout/Header";
 import StorageService from "../../lib/StorageService";
 import CONFIG from "../../constants/config";
+import { useTheme } from '@react-navigation/native';
+
+
 
 export const InvoiceAddItems = ({ navigation }) => {
+
+
+
+	const theme = useTheme();
+	const { colors }: { colors: any } = theme;
+
+
 	const [items, setItems] = useState([
 		{ id: 0, title: "", quantity: "", price: "", tax: "10", discount: "0", includeTax: false },
 	]);
@@ -101,94 +111,101 @@ export const InvoiceAddItems = ({ navigation }) => {
 	}
 
 	return (
-		<SafeAreaView style={styles.container}>
+		<>
 			<Header leftIcon="back" title="Add New Items" />
-			<ScrollView contentContainerStyle={styles.scrollContainer}>
-				{items.map((item) => (
-					<View key={item.id} style={styles.card}>
-						<View style={styles.headerRow}>
-							<Text style={styles.cardTitle}>Item {item.id + 1}</Text>
-							<TouchableOpacity
-								onPress={() => handleRemoveItem(item.id)}
-								style={styles.removeButton}
-							>
-								<Text style={styles.removeText}>✕</Text>
-							</TouchableOpacity>
-						</View>
-
-						<Text style={styles.label}>Item Title</Text>
-						<TextInput
-							style={styles.input}
-							placeholder="Enter item title"
-							value={item.title}
-							onChangeText={(text) => handleChange(item.id, "title", text)}
-						/>
-
-						<View style={styles.row}>
-							<View style={styles.halfInputContainer}>
-								<Text style={styles.label}>Quantity</Text>
-								<TextInput
-									style={styles.input}
-									placeholder="Enter quantity"
-									value={item.quantity}
-									onChangeText={(text) => handleChange(item.id, "quantity", text)}
-									keyboardType="numeric"
-								/>
+			<SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+				<ScrollView contentContainerStyle={[styles.scrollContainer, { backgroundColor: colors.background }]}>
+					{items.map((item) => (
+						<View key={item.id} style={[styles.card, { backgroundColor: colors.card }]}>
+							<View style={styles.headerRow}>
+								<Text style={[styles.cardTitle, { color: colors.title }]}>Item {item.id + 1}</Text>
+								<TouchableOpacity
+									onPress={() => handleRemoveItem(item.id)}
+									style={styles.removeButton}
+								>
+									<Text style={[styles.removeText, { color: colors.title }]}>✕</Text>
+								</TouchableOpacity>
 							</View>
 
-							<View style={styles.halfInputContainer}>
-								<Text style={styles.label}>Price</Text>
-								<TextInput
-									style={styles.input}
-									placeholder="Enter price"
-									value={item.price}
-									onChangeText={(text) => handleChange(item.id, "price", text)}
-									keyboardType="numeric"
-								/>
-							</View>
-						</View>
-
-						<Text style={styles.label}>Discount (%)</Text>
-						<TextInput
-							style={styles.input}
-							placeholder="Enter discount"
-							value={item.discount}
-							onChangeText={(text) => handleChange(item.id, "discount", text)}
-							keyboardType="numeric"
-						/>
-
-						<Text style={styles.label}>Tax (%)</Text>
-						<TextInput
-							style={styles.input}
-							placeholder="Enter tax"
-							value={item.tax}
-							onChangeText={(text) => handleChange(item.id, "tax", text)}
-							keyboardType="numeric"
-						/>
-
-						<View style={styles.switchContainer}>
-							<Text style={styles.switchLabel}>Include Tax in Price?</Text>
-							<Switch
-								value={item.includeTax}
-								onValueChange={(value) => handleChange(item.id, "includeTax", value)}
+							<Text style={[styles.label, { color: colors.title }]}>Item Title</Text>
+							<TextInput
+								style={[styles.input, { backgroundColor: colors.card, color: colors.title }]}
+								placeholder="Enter item title"
+								placeholderTextColor={colors.title}
+								value={item.title}
+								onChangeText={(text) => handleChange(item.id, "title", text)}
 							/>
+
+							<View style={styles.row}>
+								<View style={styles.halfInputContainer}>
+									<Text style={[styles.label, { color: colors.title }]}>Quantity</Text>
+									<TextInput
+										style={[styles.input, , { color: colors.title, backgroundColor: colors.card }]}
+										placeholder="Enter quantity"
+										placeholderTextColor={colors.title}
+										value={item.quantity}
+										onChangeText={(text) => handleChange(item.id, "quantity", text)}
+										keyboardType="numeric"
+									/>
+								</View>
+
+								<View style={styles.halfInputContainer}>
+									<Text style={[styles.label, { color: colors.title }]}>Price</Text>
+									<TextInput
+										style={[styles.input, { color: colors.title, backgroundColor: colors.card }]}
+										placeholder="Enter price"
+										placeholderTextColor={colors.title}
+										value={item.price}
+										onChangeText={(text) => handleChange(item.id, "price", text)}
+										keyboardType="numeric"
+									/>
+								</View>
+							</View>
+
+							<Text style={[styles.label, { color: colors.title }]}>Discount (%)</Text>
+							<TextInput
+								style={[styles.input, { color: colors.title, backgroundColor: colors.card }]}
+								placeholder="Enter discount"
+								placeholderTextColor={colors.title}
+								value={item.discount}
+								onChangeText={(text) => handleChange(item.id, "discount", text)}
+								keyboardType="numeric"
+							/>
+
+							<Text style={[styles.label, { color: colors.title }]}>Tax (%)</Text>
+							<TextInput
+								style={[styles.input, { color: colors.title, backgroundColor: colors.card }]}
+								placeholder="Enter tax"
+								placeholderTextColor={colors.card}
+								value={item.tax}
+								onChangeText={(text) => handleChange(item.id, "tax", text)}
+								keyboardType="numeric"
+							/>
+
+							<View style={styles.switchContainer}>
+								<Text style={[styles.switchLabel, { color: colors.title }]}>Include Tax in Price?</Text>
+								<Switch
+									value={item.includeTax}
+									onValueChange={(value) => handleChange(item.id, "includeTax", value)}
+								/>
+							</View>
+
+							<Text style={styles.totalPrice}>
+								Total: ₹{calculateTotalPrice(item).toFixed(2)}
+							</Text>
 						</View>
+					))}
 
-						<Text style={styles.totalPrice}>
-							Total: ₹{calculateTotalPrice(item).toFixed(2)}
-						</Text>
-					</View>
-				))}
+					<TouchableOpacity style={styles.addButton} onPress={handleAddItem}>
+						<Text style={styles.addButtonText}>+ Add New Item</Text>
+					</TouchableOpacity>
 
-				<TouchableOpacity style={styles.addButton} onPress={handleAddItem}>
-					<Text style={styles.addButtonText}>+ Add New Item</Text>
-				</TouchableOpacity>
-
-				<TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-					<Text style={styles.submitButtonText}>Submit Invoice</Text>
-				</TouchableOpacity>
-			</ScrollView>
-		</SafeAreaView>
+					<TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+						<Text style={styles.submitButtonText}>Submit Invoice</Text>
+					</TouchableOpacity>
+				</ScrollView>
+			</SafeAreaView>
+		</>
 	);
 };
 
@@ -205,11 +222,8 @@ const styles = StyleSheet.create({
 		borderRadius: 15,
 		padding: 20,
 		marginBottom: 15,
-		elevation: 4,
-		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 4 },
-		shadowOpacity: 0.1,
-		shadowRadius: 8,
+
+
 	},
 	headerRow: {
 		flexDirection: "row",

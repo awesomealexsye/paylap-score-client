@@ -4,7 +4,7 @@ import {
     ScrollView,
     StyleSheet,
     BackHandler,
-    Linking
+    Linking, Image
 } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
@@ -16,6 +16,8 @@ import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { COLORS } from '../../constants/theme';
 import Header from '../../layout/Header';
 import ButtonIcon from '../../components/Button/ButtonIcon';
+import { GlobalStyleSheet } from '../../constants/StyleSheet';
+import { IMAGES } from '../../constants/Images';
 
 type FinalInvoiceResultProps = StackScreenProps<RootStackParamList, 'FinalInvoiceResult'>;
 
@@ -75,12 +77,22 @@ export const FinalInvoiceResult = ({ navigation, route }: FinalInvoiceResultProp
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.scrollContent}
             >
+
                 <View style={styles.buttonWrapper}>
+                    <View style={{ borderBottomColor: COLORS.inputborder, justifyContent: "flex-start", alignItems: "center", marginBottom: 30 }}>
+
+                        <Image source={theme.dark ? IMAGES.appnamedark : IMAGES.appname}
+                            style={{
+                                height: 110,
+                                width: 150,
+                                objectFit: "contain",
+                            }} />
+                    </View>
                     <ButtonIcon
                         iconDirection="left"
                         text={COLORS.background}
                         color={COLORS.info}
-                        icon={<FontAwesome name="list" size={20} color={COLORS.background} />}
+                        icon={<FontAwesome name="file-pdf-o" size={20} color={COLORS.background} />}
                         title={t('showPDF')}
                         onPress={handleOpenWebPage}
                         style={styles.buttonSpacing}
@@ -89,8 +101,8 @@ export const FinalInvoiceResult = ({ navigation, route }: FinalInvoiceResultProp
                     <ButtonIcon
                         iconDirection="left"
                         text={COLORS.background}
-                        color={COLORS.danger}
-                        icon={<FontAwesome name="list" size={20} color={COLORS.background} />}
+                        color={COLORS.primary}
+                        icon={<FontAwesome name="download" size={20} color={COLORS.background} />}
                         title={t('downloadPDF')}
                         onPress={handleDownloadPDF}
                         style={styles.buttonSpacing}
@@ -108,15 +120,13 @@ const styles = StyleSheet.create({
         flex: 1
     },
     scrollContent: {
-        flexGrow: 1,
-        justifyContent: 'center',   // Centers vertically
-        alignItems: 'center',       // Centers horizontally
+        flexGrow: 1,      // Centers horizontally
         paddingHorizontal: 16,
-        paddingVertical: 16
+        paddingVertical: 40
     },
     buttonWrapper: {
         width: '100%',
-        maxWidth: 400
+
     },
     buttonSpacing: {
         marginVertical: 12
