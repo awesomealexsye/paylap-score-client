@@ -8,6 +8,7 @@ import {
 	ScrollView,
 	Switch,
 	TextInput,
+	Alert,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -133,17 +134,47 @@ export const InvoiceCreate = ({ navigation }: InvoiceCreateProps) => {
 	};
 
 	const generateInvoice = async () => {
-		if (organization.id == 0) {
-			MessagesService.commonMessage("Please Select Organization");
-		} else if (client.id == 0) {
-			MessagesService.commonMessage("Please Select Client");
-		} else if (items.length == 0) {
-			MessagesService.commonMessage("Please Select Items");
-		} else {
-			let api_info = { name: invoiceName, company_id: organization.id, client_id: client.id, item_info: items, grand_total_amount: calculateTotal(), received_amount: receivedAmount, expected_given_data: expectedDate };
-			navigation.navigate('ChooseInvoiceDesign', { data: api_info });
+		let totalGrandNum = Number(calculateTotal());
+		if (organization.id === 0) {
+			Alert.alert("Error", "Please Select Organization", [{ text: "OK" }], {
+				cancelable: false,
+			});
+		} else if (client.id === 0) {
+			Alert.alert("Error", "Please Select Client", [{ text: "OK" }], {
+				cancelable: false,
+			});
+		} else if (items.length === 0) {
+			Alert.alert("Error", "Please Select Items", [{ text: "OK" }], {
+				cancelable: false,
+			});
+		} else if (totalGrandNum <= 0) {
+			Alert.alert("Error", "Invalid Item", [{ text: "OK" }], {
+				cancelable: false,
+			});
 		}
-	}
+		else if (!isFullPaymentReceived && Number(receivedAmount) <= 0) {
+			Alert.alert("Error", "Received Amount is required", [{ text: "OK" }], {
+				cancelable: false,
+			});
+		}
+		else if (!isFullPaymentReceived && expectedDate == null) {
+			Alert.alert("Error", "Expected Date is required", [{ text: "OK" }], {
+				cancelable: false,
+			});
+		}
+		else {
+			let api_info = {
+				name: invoiceName,
+				company_id: organization.id,
+				client_id: client.id,
+				item_info: items,
+				grand_total_amount: calculateTotal(),
+				received_amount: receivedAmount,
+				expected_given_data: expectedDate,
+			};
+			navigation.navigate("ChooseInvoiceDesign", { data: api_info });
+		}
+	};
 
 	// Existing item handling and calculation functions...
 
@@ -221,7 +252,7 @@ export const InvoiceCreate = ({ navigation }: InvoiceCreateProps) => {
 
 						<TouchableOpacity
 							style={styles.addItemButton}
-							onPress={() => navigation.navigate("InvoiceAddItems")}
+							onPress={() => navigation.replace("InvoiceAddItems")}
 						>
 							<MaterialIcons name="add-circle" size={20} color="#007bff" />
 							<Text style={styles.addItemText}>Add New Item</Text>
@@ -265,64 +296,67 @@ export const InvoiceCreate = ({ navigation }: InvoiceCreateProps) => {
 
 						{!isFullPaymentReceived && (
 							<View>
-								<View style={[styles.rowBetween, { marginTop: 10 }]}>
+								{/* <View style={[styles.rowBetween, { marginTop: 10 }]}>
 									<Text style={styles.totalLabel}>Add Partial Payment?</Text>
 									<Switch
 										value={showReceivedAmount}
 										onValueChange={setShowReceivedAmount}
 									/>
-								</View>
+								</View> */}
 
-								{showReceivedAmount && (
-									<View>
+								<View>
+									<TextInput
+										style={styles.input}
+										placeholder="Received Amount"
+										keyboardType="numeric"
+										value={receivedAmount}
+										onChangeText={(val) => {
+											console.log("valss", val)
+											if (parseFloat(val) <= parseFloat(calculateTotal())) {
+												setReceivedAmount(val)
+											} else if (val == "" || val == null) {
+												setReceivedAmount('')
+
+											}
+										}}
+									/>
+									{/* {setReceivedAmount } */}
+
+									<TouchableOpacity
+										onPress={() => setShowDatePicker(true)}
+										style={styles.dateInputContainer}
+									>
 										<TextInput
 											style={styles.input}
-											placeholder="Received Amount"
-											keyboardType="numeric"
-											value={receivedAmount}
-											onChangeText={(val) => {
-												if (parseFloat(val) <= parseFloat(calculateTotal())) {
-													setReceivedAmount(val)
-												}
-											}}
+											placeholder="Select Expected Date"
+											value={expectedDate}
+											editable={false}
 										/>
-										{/* {setReceivedAmount } */}
+										<MaterialIcons
+											name="calendar-today"
+											size={20}
+											color="#666"
+											style={styles.dateIcon}
+										/>
+									</TouchableOpacity>
 
-										<TouchableOpacity
-											onPress={() => setShowDatePicker(true)}
-											style={styles.dateInputContainer}
-										>
-											<TextInput
-												style={styles.input}
-												placeholder="Select Expected Date"
-												value={expectedDate}
-												editable={false}
-											/>
-											<MaterialIcons
-												name="calendar-today"
-												size={20}
-												color="#666"
-												style={styles.dateIcon}
-											/>
-										</TouchableOpacity>
+									{showDatePicker && (
+										<DateTimePicker
+											value={expectedDate ? new Date(expectedDate) : new Date()}
+											mode="date"
+											display="default"
+											onChange={handleDateChange}
+										/>
+									)}
 
-										{showDatePicker && (
-											<DateTimePicker
-												value={expectedDate ? new Date(expectedDate) : new Date()}
-												mode="date"
-												display="default"
-												onChange={handleDateChange}
-											/>
-										)}
-
-										<View style={styles.amountSummary}>
-											<Text style={styles.amountLabel}>Pending Amount:</Text>
-											<Text style={styles.amountValue}>
-												₹{calculatePendingAmount()}
-											</Text>
-										</View>
+									<View style={styles.amountSummary}>
+										<Text style={styles.amountLabel}>Pending Amount:</Text>
+										<Text style={styles.amountValue}>
+											₹{calculatePendingAmount()}
+										</Text>
 									</View>
-								)}
+								</View>
+
 							</View>
 						)}
 					</View>

@@ -21,6 +21,7 @@ import { ActivityIndicator } from 'react-native-paper';
 import { COLORS } from '../../constants/theme';
 
 import { useTheme } from '@react-navigation/native';
+import { MessagesService } from '../../lib/MessagesService';
 
 type InvoiceClientsProps = StackScreenProps<RootStackParamList, 'InvoiceClients'>;
 
@@ -41,6 +42,7 @@ export const InvoiceClients = ({ navigation }: InvoiceClientsProps) => {
 	const [searchQuery, setSearchQuery] = useState('');
 	// Loading state
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [isLoadingForDelete, setIsLoadingForDelete] = useState<any>(false);
 
 	// Fetch the clients list whenever the screen is focused
 	useFocusEffect(
@@ -96,6 +98,22 @@ export const InvoiceClients = ({ navigation }: InvoiceClientsProps) => {
 			item.email.toLowerCase().includes(query)
 		);
 	});
+
+	const handleDelete = () => {
+		setIsLoadingForDelete(true)
+		if (selectedItem.id) {
+			ApiService.postWithToken(`api/invoice-generator/customer/delete/${selectedItem.id}`, {}).then((res) => {
+				MessagesService.commonMessage(res.message, res.status ? "SUCCESS" : "ERROR")
+				setIsLoadingForDelete(false);
+				if (res.status) {
+					fetchCustomerList();
+					closeBottomSheet();
+				}
+			});
+		} else {
+			MessagesService.commonMessage("Customer not selected");
+		}
+	}
 
 	// Render each client item as a card with enhanced styling
 	const renderItem = ({ item }: any) => (
@@ -172,7 +190,7 @@ export const InvoiceClients = ({ navigation }: InvoiceClientsProps) => {
 								{selectedItem.name} - {selectedItem.email}
 							</Text>
 						)}
-						<TouchableOpacity
+						{/* <TouchableOpacity
 							onPress={() => {
 								closeBottomSheet();
 								navigation.navigate("InvoiceEditItem");
@@ -181,13 +199,18 @@ export const InvoiceClients = ({ navigation }: InvoiceClientsProps) => {
 						>
 							<MaterialIcons name="edit" size={24} color={COLORS.background} />
 							<Text style={[styles.sheetButtonText, { color: COLORS.background }]}>Edit Client</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={[styles.sheetButton, styles.removeButton, { backgroundColor: COLORS.danger }]}>
-							<MaterialIcons name="delete" size={24} color={COLORS.background} />
-							<Text style={[styles.sheetButtonText, , { color: COLORS.background }]}>
-								Remove Client
-							</Text>
-						</TouchableOpacity>
+						</TouchableOpacity> */}
+						{
+							!isLoadingForDelete ?
+								<TouchableOpacity onPress={handleDelete} style={[styles.sheetButton, styles.removeButton, { backgroundColor: COLORS.danger }]}>
+									<MaterialIcons name="delete" size={24} color={COLORS.background} />
+									<Text style={[styles.sheetButtonText, , { color: COLORS.background }]}>
+										Remove Client
+									</Text>
+								</TouchableOpacity>
+								:
+								<ActivityIndicator color={COLORS.title} size={'large'}></ActivityIndicator>
+						}
 					</View>
 				</BottomSheet>
 			</View>

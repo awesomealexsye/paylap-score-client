@@ -130,7 +130,7 @@ export const InvoiceAddClient = ({ navigation }: InvoiceAddClientProps) => {
 				const postOffice = data[0].PostOffice[0];
 				setForm((prev) => ({
 					...prev,
-					city: postOffice.Division || '',
+					city: postOffice.Block || '',
 					state: postOffice.State || '',
 					district: postOffice.District || '',
 				}));
@@ -153,7 +153,6 @@ export const InvoiceAddClient = ({ navigation }: InvoiceAddClientProps) => {
 				setIsLoading(true);
 				const companyInfoObj = JSON.parse(companyInfo);
 				form.company_id = companyInfoObj.id;
-				console.log("data...", form);
 				ApiService.postWithToken('api/invoice-generator/customer/add', form)
 					.then((res) => {
 						MessagesService.commonMessage(res.message, res.status ? 'SUCCESS' : 'ERROR');
@@ -233,15 +232,7 @@ export const InvoiceAddClient = ({ navigation }: InvoiceAddClientProps) => {
 						{errors.zipcode ? <Text style={styles.errorText}>{errors.zipcode}</Text> : null}
 					</View>
 
-					<View style={styles.inputContainer}>
-						<Input
-							placeholder="District"
-							value={form.district}
-							onChangeText={(text) => handleChange('district', text)}
-							style={[styles.input, { color: colors.title }]}
-						/>
-						{errors.district ? <Text style={styles.errorText}>{errors.district}</Text> : null}
-					</View>
+
 
 					<View style={styles.inputContainer}>
 						<Input
@@ -251,6 +242,15 @@ export const InvoiceAddClient = ({ navigation }: InvoiceAddClientProps) => {
 							style={[styles.input, { color: colors.title }]}
 						/>
 						{errors.city ? <Text style={styles.errorText}>{errors.city}</Text> : null}
+					</View>
+					<View style={styles.inputContainer}>
+						<Input
+							placeholder="District"
+							value={form.district}
+							onChangeText={(text) => handleChange('district', text)}
+							style={[styles.input, { color: colors.title }]}
+						/>
+						{errors.district ? <Text style={styles.errorText}>{errors.district}</Text> : null}
 					</View>
 
 					<View style={styles.inputContainer}>

@@ -24,7 +24,9 @@ import { MessagesService } from '../../lib/MessagesService';
 
 type InvoiceDetailProps = StackScreenProps<RootStackParamList, 'InvoiceDetail'>;
 
-export const InvoiceDetail = ({ navigation, route }: InvoiceDetailProps) => {
+export const InvoiceDetail = ({ navigation, route
+
+}: InvoiceDetailProps) => {
     const theme = useTheme();
     const { colors } = theme;
     const [isLoading, setIsLoading] = useState(false);
@@ -175,7 +177,7 @@ export const InvoiceDetail = ({ navigation, route }: InvoiceDetailProps) => {
 
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
-            <Header title="Invoice" leftIcon="back" titleRight />
+            <Header title="Invoice Detail" leftIcon="back" titleRight />
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
                 {/* Conditionally render Payment Amount Icon Button (top right) only if full_amount_received is zero */}
                 {parseFloat(invoice.full_amount_received) === 0 && (
@@ -220,7 +222,7 @@ export const InvoiceDetail = ({ navigation, route }: InvoiceDetailProps) => {
                 <View style={styles.divider} />
 
                 {/* Amount Details */}
-                <View style={styles.amountContainer}>
+                <View style={styles.itemCard}>
                     <View style={styles.amountRow}>
                         <Text style={styles.label}>Grand Total:</Text>
                         <Text style={styles.value}>₹ {invoice.grand_total_amount}</Text>
@@ -269,7 +271,7 @@ export const InvoiceDetail = ({ navigation, route }: InvoiceDetailProps) => {
                         </View>
                         <View style={styles.itemDetailsRow}>
                             <Text style={styles.itemLabel}>Total:</Text>
-                            <Text style={styles.itemValue}>₹ {item.totalPrice}</Text>
+                            <Text style={styles.itemValue}>₹ {item.totalPrice?.toFixed(2)}</Text>
                         </View>
                     </View>
                 ))}

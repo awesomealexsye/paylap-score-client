@@ -13,39 +13,42 @@ import {
 import Header from "../../layout/Header";
 import StorageService from "../../lib/StorageService";
 import CONFIG from "../../constants/config";
-import { useTheme } from '@react-navigation/native';
-
-
+import { useTheme } from "@react-navigation/native";
 
 export const InvoiceAddItems = ({ navigation }) => {
-
-
-
 	const theme = useTheme();
-	const { colors }: { colors: any } = theme;
+	const { colors } = theme;
 
-
+	// Initialize with one blank item
 	const [items, setItems] = useState([
-		{ id: 0, title: "", quantity: "", price: "", tax: "10", discount: "0", includeTax: false },
+		{ id: 0, title: "", quantity: "", price: "", tax: "0", discount: "0", includeTax: false },
 	]);
 
+	// Get stored items on mount
 	useEffect(() => {
-
+		getItemsFromStorage();
 	}, []);
 
+	// Save items to storage on change
+	// useEffect(() => {
+	// 	setItemsToStorage(items);
+	// }, [items]);
+
+	// Add new blank item
 	const handleAddItem = () => {
 		const newItem = {
 			id: items.length,
 			title: "",
 			quantity: "",
 			price: "",
-			tax: "10",
+			tax: "0",
 			discount: "0",
 			includeTax: false,
 		};
 		setItems([...items, newItem]);
 	};
 
+	// Remove an item (ensure at least one item remains)
 	const handleRemoveItem = (id) => {
 		if (items.length === 1) {
 			Alert.alert("Error", "At least one item is required.");
@@ -55,6 +58,7 @@ export const InvoiceAddItems = ({ navigation }) => {
 		setItems(updatedItems);
 	};
 
+	// Update a specific field in an item
 	const handleChange = (id, field, value) => {
 		const updatedItems = items.map((item) =>
 			item.id === id ? { ...item, [field]: value } : item
@@ -62,12 +66,7 @@ export const InvoiceAddItems = ({ navigation }) => {
 		setItems(updatedItems);
 	};
 
-	useEffect(() => {
-		getitemsFromStorage();
-	}, []);
-	useEffect(() => {
-		setItemsFromStorage(items);
-	}, [items])
+	// Calculate total price per item
 	const calculateTotalPrice = (item) => {
 		const basePrice = parseFloat(item.price || "0") * parseInt(item.quantity || "0");
 		const discountAmount = (basePrice * parseFloat(item.discount || "0")) / 100;
@@ -76,6 +75,7 @@ export const InvoiceAddItems = ({ navigation }) => {
 		return item.includeTax ? priceAfterDiscount + taxAmount : priceAfterDiscount;
 	};
 
+	// Validate and submit items
 	const handleSubmit = async () => {
 		const isEmpty = items.some(
 			(item) => !item.title || !item.quantity || !item.price || !item.tax
@@ -91,58 +91,73 @@ export const InvoiceAddItems = ({ navigation }) => {
 			totalPrice: calculateTotalPrice(item),
 		}));
 
-		await StorageService.setStorage(CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.ITEM_INFO, JSON.stringify(data));
-		navigation.navigate("InvoiceCreate");
+		await StorageService.setStorage(
+			CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.ITEM_INFO,
+			JSON.stringify(data)
+		);
+		navigation.replace("InvoiceCreate");
 	};
 
-	const getitemsFromStorage = async () => {
-		const itemObj = await StorageService.getStorage(CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.ITEM_INFO);
+	// Get items from storage
+	const getItemsFromStorage = async () => {
+		const itemObj = await StorageService.getStorage(
+			CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.ITEM_INFO
+		);
 		if (itemObj != null) {
-			const items = JSON.parse(itemObj);
-			setItems(items);
+			const storedItems = JSON.parse(itemObj);
+			setItems(storedItems);
 		}
-	}
-	const setItemsFromStorage = async (items: any) => {
-		const itemObj = await StorageService.setStorage(CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.ITEM_INFO, JSON.stringify(items));
-		if (itemObj != null) {
-			const items = JSON.parse(itemObj);
-			setItems(items);
-		}
-	}
+	};
+
+	// Save items to storage (without re‑setting state)
+	const setItemsToStorage = async (items) => {
+		await StorageService.setStorage(
+			CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.ITEM_INFO,
+			JSON.stringify(items)
+		);
+	};
 
 	return (
 		<>
 			<Header leftIcon="back" title="Add New Items" />
 			<SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-				<ScrollView contentContainerStyle={[styles.scrollContainer, { backgroundColor: colors.background }]}>
-					{items.map((item) => (
+				<ScrollView contentContainerStyle={styles.scrollContainer}>
+					{items.map((item, index) => (
 						<View key={item.id} style={[styles.card, { backgroundColor: colors.card }]}>
 							<View style={styles.headerRow}>
-								<Text style={[styles.cardTitle, { color: colors.title }]}>Item {item.id + 1}</Text>
+								<Text style={[styles.cardTitle, { color: colors.text }]}>
+									Item {index + 1}
+								</Text>
 								<TouchableOpacity
 									onPress={() => handleRemoveItem(item.id)}
 									style={styles.removeButton}
 								>
-									<Text style={[styles.removeText, { color: colors.title }]}>✕</Text>
+									<Text style={styles.removeText}>✕</Text>
 								</TouchableOpacity>
 							</View>
 
-							<Text style={[styles.label, { color: colors.title }]}>Item Title</Text>
+							<Text style={[styles.label, { color: colors.text }]}>Item Title</Text>
 							<TextInput
-								style={[styles.input, { backgroundColor: colors.card, color: colors.title }]}
+								style={[
+									styles.input,
+									{ backgroundColor: colors.inputBackground, color: colors.text },
+								]}
 								placeholder="Enter item title"
-								placeholderTextColor={colors.title}
+								placeholderTextColor={colors.placeholder}
 								value={item.title}
 								onChangeText={(text) => handleChange(item.id, "title", text)}
 							/>
 
 							<View style={styles.row}>
 								<View style={styles.halfInputContainer}>
-									<Text style={[styles.label, { color: colors.title }]}>Quantity</Text>
+									<Text style={[styles.label, { color: colors.text }]}>Quantity</Text>
 									<TextInput
-										style={[styles.input, , { color: colors.title, backgroundColor: colors.card }]}
+										style={[
+											styles.input,
+											{ backgroundColor: colors.inputBackground, color: colors.text },
+										]}
 										placeholder="Enter quantity"
-										placeholderTextColor={colors.title}
+										placeholderTextColor={colors.placeholder}
 										value={item.quantity}
 										onChangeText={(text) => handleChange(item.id, "quantity", text)}
 										keyboardType="numeric"
@@ -150,11 +165,14 @@ export const InvoiceAddItems = ({ navigation }) => {
 								</View>
 
 								<View style={styles.halfInputContainer}>
-									<Text style={[styles.label, { color: colors.title }]}>Price</Text>
+									<Text style={[styles.label, { color: colors.text }]}>Price</Text>
 									<TextInput
-										style={[styles.input, { color: colors.title, backgroundColor: colors.card }]}
+										style={[
+											styles.input,
+											{ backgroundColor: colors.inputBackground, color: colors.text },
+										]}
 										placeholder="Enter price"
-										placeholderTextColor={colors.title}
+										placeholderTextColor={colors.placeholder}
 										value={item.price}
 										onChangeText={(text) => handleChange(item.id, "price", text)}
 										keyboardType="numeric"
@@ -162,45 +180,63 @@ export const InvoiceAddItems = ({ navigation }) => {
 								</View>
 							</View>
 
-							<Text style={[styles.label, { color: colors.title }]}>Discount (%)</Text>
+							<Text style={[styles.label, { color: colors.text }]}>Discount (%)</Text>
 							<TextInput
-								style={[styles.input, { color: colors.title, backgroundColor: colors.card }]}
+								style={[
+									styles.input,
+									{ backgroundColor: colors.inputBackground, color: colors.text },
+								]}
 								placeholder="Enter discount"
-								placeholderTextColor={colors.title}
+								placeholderTextColor={colors.placeholder}
 								value={item.discount}
 								onChangeText={(text) => handleChange(item.id, "discount", text)}
 								keyboardType="numeric"
 							/>
 
-							<Text style={[styles.label, { color: colors.title }]}>Tax (%)</Text>
+							<Text style={[styles.label, { color: colors.text }]}>Tax (%)</Text>
 							<TextInput
-								style={[styles.input, { color: colors.title, backgroundColor: colors.card }]}
+								style={[
+									styles.input,
+									{ backgroundColor: colors.inputBackground, color: colors.text },
+								]}
 								placeholder="Enter tax"
-								placeholderTextColor={colors.card}
+								placeholderTextColor={colors.placeholder}
 								value={item.tax}
 								onChangeText={(text) => handleChange(item.id, "tax", text)}
 								keyboardType="numeric"
 							/>
 
 							<View style={styles.switchContainer}>
-								<Text style={[styles.switchLabel, { color: colors.title }]}>Include Tax in Price?</Text>
+								<Text style={[styles.switchLabel, { color: colors.text }]}>
+									Include Tax in Price?
+								</Text>
 								<Switch
 									value={item.includeTax}
-									onValueChange={(value) => handleChange(item.id, "includeTax", value)}
+									onValueChange={(value) =>
+										handleChange(item.id, "includeTax", value)
+									}
+									trackColor={{ false: "#ccc", true: colors.primary }}
+									thumbColor={item.includeTax ? colors.primary : "#f4f3f4"}
 								/>
 							</View>
 
-							<Text style={styles.totalPrice}>
+							<Text style={[styles.totalPrice, { color: colors.primary }]}>
 								Total: ₹{calculateTotalPrice(item).toFixed(2)}
 							</Text>
 						</View>
 					))}
 
-					<TouchableOpacity style={styles.addButton} onPress={handleAddItem}>
+					<TouchableOpacity
+						style={[styles.addButton, { backgroundColor: colors.primary }]}
+						onPress={handleAddItem}
+					>
 						<Text style={styles.addButtonText}>+ Add New Item</Text>
 					</TouchableOpacity>
 
-					<TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+					<TouchableOpacity
+						style={[styles.submitButton, { backgroundColor: colors.success || "#28a745" }]}
+						onPress={handleSubmit}
+					>
 						<Text style={styles.submitButtonText}>Submit Invoice</Text>
 					</TouchableOpacity>
 				</ScrollView>
@@ -212,18 +248,22 @@ export const InvoiceAddItems = ({ navigation }) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#f0f4f7",
 	},
 	scrollContainer: {
 		padding: 20,
+		paddingBottom: 40,
 	},
 	card: {
-		backgroundColor: "#fff",
 		borderRadius: 15,
 		padding: 20,
 		marginBottom: 15,
-
-
+		// Shadow for iOS
+		shadowColor: "#000",
+		shadowOffset: { width: 0, height: 2 },
+		shadowOpacity: 0.1,
+		shadowRadius: 4,
+		// Elevation for Android
+		elevation: 3,
 	},
 	headerRow: {
 		flexDirection: "row",
@@ -234,11 +274,10 @@ const styles = StyleSheet.create({
 	cardTitle: {
 		fontSize: 18,
 		fontWeight: "bold",
-		color: "#333",
 	},
 	removeButton: {
 		backgroundColor: "#ff4d4d",
-		padding: 5,
+		padding: 6,
 		borderRadius: 50,
 		width: 30,
 		height: 30,
@@ -252,7 +291,6 @@ const styles = StyleSheet.create({
 	},
 	label: {
 		fontSize: 14,
-		color: "#555",
 		marginBottom: 5,
 	},
 	input: {
@@ -262,7 +300,6 @@ const styles = StyleSheet.create({
 		padding: 12,
 		marginBottom: 10,
 		fontSize: 16,
-		backgroundColor: "#fafafa",
 	},
 	row: {
 		flexDirection: "row",
@@ -279,17 +316,14 @@ const styles = StyleSheet.create({
 	},
 	switchLabel: {
 		fontSize: 16,
-		color: "#555",
 	},
 	totalPrice: {
 		fontSize: 18,
 		fontWeight: "bold",
-		color: "#007bff",
 		textAlign: "center",
 		marginVertical: 10,
 	},
 	addButton: {
-		backgroundColor: "#007bff",
 		padding: 15,
 		borderRadius: 10,
 		alignItems: "center",
@@ -301,7 +335,6 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 	},
 	submitButton: {
-		backgroundColor: "#28a745",
 		padding: 18,
 		borderRadius: 12,
 		alignItems: "center",

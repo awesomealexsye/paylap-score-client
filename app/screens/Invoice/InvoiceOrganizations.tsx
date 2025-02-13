@@ -22,6 +22,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { ActivityIndicator } from 'react-native-paper';
 
 import { useTheme } from '@react-navigation/native';
+import { MessagesService } from '../../lib/MessagesService';
 
 type InvoiceOrganizationsProps = StackScreenProps<RootStackParamList, 'InvoiceOrganizations'>;
 
@@ -40,6 +41,7 @@ export const InvoiceOrganizations = ({ navigation }: InvoiceOrganizationsProps) 
 	// State for search input
 	const [searchQuery, setSearchQuery] = useState('');
 	const [isLoading, setIsLoading] = useState<any>(false);
+	const [isLoadingForDelete, setIsLoadingForDelete] = useState<any>(false);
 
 	// Fetch the company list whenever the screen is focused
 	useFocusEffect(
@@ -85,6 +87,22 @@ export const InvoiceOrganizations = ({ navigation }: InvoiceOrganizationsProps) 
 		const query = searchQuery.toLowerCase();
 		return item.name.toLowerCase().includes(query) || item.email.toLowerCase().includes(query);
 	});
+
+	const handleDelete = () => {
+		setIsLoadingForDelete(true)
+		if (selectedItem.id) {
+			ApiService.postWithToken(`api/invoice-generator/companies/delete/${selectedItem.id}`, {}).then((res) => {
+				MessagesService.commonMessage(res.message, res.status ? "SUCCESS" : "ERROR")
+				setIsLoadingForDelete(false);
+				if (res.status) {
+					fetchCompanyList();
+					closeBottomSheet();
+				}
+			});
+		} else {
+			MessagesService.commonMessage("Item not selected");
+		}
+	}
 
 	// Render each organization item as a card with improved spacing, shadows, and layout
 	const renderItem = ({ item }: any) => (
@@ -159,7 +177,7 @@ export const InvoiceOrganizations = ({ navigation }: InvoiceOrganizationsProps) 
 							{selectedItem.name} - {selectedItem.email}
 						</Text>
 					)}
-					<TouchableOpacity
+					{/* <TouchableOpacity
 						onPress={() => {
 							closeBottomSheet();
 							navigation.navigate('InvoiceEditItem');
@@ -168,11 +186,20 @@ export const InvoiceOrganizations = ({ navigation }: InvoiceOrganizationsProps) 
 					>
 						<MaterialIcons name="edit" size={24} color={COLORS.background} />
 						<Text style={[styles.sheetButtonText, { color: COLORS.background }]}>Edit</Text>
-					</TouchableOpacity>
-					<TouchableOpacity style={[styles.sheetButton, styles.removeButton, { backgroundColor: COLORS.danger }]}>
+					</TouchableOpacity> */}
+					{
+						!isLoadingForDelete ?
+							<TouchableOpacity onPress={handleDelete} style={[styles.sheetButton, styles.removeButton, { backgroundColor: COLORS.danger }]}>
+								<MaterialIcons name="delete" size={24} color={COLORS.background} />
+								<Text style={[styles.sheetButtonText, { color: COLORS.background }]}>Remove</Text>
+							</TouchableOpacity>
+							:
+							<ActivityIndicator color={COLORS.title} size={'large'}></ActivityIndicator>
+					}
+					{/* <TouchableOpacity onPress={handleDelete} style={[styles.sheetButton, styles.removeButton, { backgroundColor: COLORS.danger }]}>
 						<MaterialIcons name="delete" size={24} color={COLORS.background} />
 						<Text style={[styles.sheetButtonText, { color: COLORS.background }]}>Remove</Text>
-					</TouchableOpacity>
+					</TouchableOpacity> */}
 				</View>
 			</BottomSheet>
 		</View>

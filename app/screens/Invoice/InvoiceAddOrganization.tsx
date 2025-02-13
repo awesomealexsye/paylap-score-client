@@ -22,18 +22,13 @@ import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { StackScreenProps } from '@react-navigation/stack';
 import Header from '../../layout/Header';
 import { useTheme } from '@react-navigation/native';
-
+import Input from '../../components/Input/Input';
 
 type InvoiceAddOrganizationProps = StackScreenProps<RootStackParamList, 'InvoiceAddOrganization'>;
 
 export const InvoiceAddOrganization = ({ navigation }: InvoiceAddOrganizationProps) => {
-
-
 	const theme = useTheme();
 	const { colors }: { colors: any } = theme;
-
-
-
 
 	const [form, setForm] = useState<any>({
 		name: '',
@@ -73,6 +68,9 @@ export const InvoiceAddOrganization = ({ navigation }: InvoiceAddOrganizationPro
 			}
 		}
 	};
+	const handleBasicChanges = (key: string, value: string) => {
+		setForm((prev: any) => ({ ...prev, [key]: value }));
+	};
 
 	// Fetch pincode details from the API and update the city, state, and district fields
 	const fetchPincodeDetails = async (pincode: string) => {
@@ -88,7 +86,7 @@ export const InvoiceAddOrganization = ({ navigation }: InvoiceAddOrganizationPro
 				const postOffice = data[0].PostOffice[0];
 				setForm((prev: any) => ({
 					...prev,
-					city: postOffice.Division || '',
+					city: postOffice.Block || '',
 					state: postOffice.State || '',
 					district: postOffice.District || '',
 				}));
@@ -189,32 +187,18 @@ export const InvoiceAddOrganization = ({ navigation }: InvoiceAddOrganizationPro
 		});
 	};
 
-
-	const CustomInput = ({ label, icon, error, style, ...props }: any) => (
-		<View style={[styles.inputContainer]}>
-			{label ? <Text style={[styles.label, { color: colors.title }]} > {label}</Text > : null}
-			<View style={[styles.inputWrapper, style, { backgroundColor: colors.card }]}>
-				<Ionicons name={icon} size={20} color={colors.title} style={styles.icon} />
-				<TextInput {...props} style={[styles.input, style, { backgroundColor: colors.card, color: colors.title, paddingLeft: 8 }]} />
-			</View>
-			{error ? <Text style={styles.errorText}>{error}</Text> : null}
-		</View >
-	);
-
 	return (
 		<>
-
 			<Header leftIcon={'back'} title={'Add Organization'} titleRight />
 			<KeyboardAvoidingView
 				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
 				style={styles.container}
 			>
-
-				<ScrollView contentContainerStyle={[styles.scrollContainer, { backgroundColor: colors.background }]} showsVerticalScrollIndicator={false}>
-
-
-					{/* <Text style={styles.headerText}>Add Organization</Text> */}
-
+				<ScrollView
+					keyboardShouldPersistTaps="handled"
+					contentContainerStyle={[styles.scrollContainer, { backgroundColor: colors.background }]}
+					showsVerticalScrollIndicator={false}
+				>
 					{/* Company Logo */}
 					<TouchableOpacity style={[styles.logoContainer, { backgroundColor: colors.background }]} onPress={pickImage}>
 						{imageUri ? (
@@ -228,100 +212,125 @@ export const InvoiceAddOrganization = ({ navigation }: InvoiceAddOrganizationPro
 					<View style={[styles.card, { backgroundColor: colors.background }]}>
 						{/* Basic Information Section */}
 						<Text style={[styles.sectionTitle, { color: colors.title }]}>Basic Information</Text>
-						<CustomInput
-							label="Name"
-							icon="business-outline"
-							placeholder="Enter Name"
-							value={form.name}
-							onChangeText={(text: string) => handleChange('name', text)}
-							error={errors.name}
+						<View style={styles.inputContainer}>
+							<Text style={[styles.label, { color: colors.title }]}>Name</Text>
+							<Input
+								placeholder="Name"
+								value={form.name}
+								onChangeText={(text) => handleChange('name', text)}
+								style={[styles.inputText, { color: colors.title }]}
+							/>
+							{errors.name ? <Text style={styles.errorText}>{errors.name}</Text> : null}
+						</View>
 
-						/>
-						<CustomInput
-							label="GST Number"
-							icon="pricetag-outline"
-							placeholder="Enter GST Number"
-							value={form.gst}
-							onChangeText={(text: string) => handleChange('gst', text)}
-							error={errors.gst}
-						/>
-						<CustomInput
-							maxLength={10}
-							label="Phone"
-							icon="call-outline"
-							placeholder="Enter Phone"
-							keyboardType="phone-pad"
-							value={form.phone}
-							onChangeText={(text: string) => handleChange('phone', text)}
-							error={errors.phone}
-						/>
-						<CustomInput
-							label="Email"
-							icon="mail-outline"
-							placeholder="Enter Email"
-							keyboardType="email-address"
-							value={form.email}
-							onChangeText={(text: string) => handleChange('email', text)}
-							error={errors.email}
-						/>
-						<CustomInput
-							label="Website"
-							icon="globe-outline"
-							placeholder="Enter Website URL"
-							value={form.website}
-							onChangeText={(text: string) => handleChange('website', text)}
-							error={errors.website}
-						/>
+						<View style={styles.inputContainer}>
+							<Text style={[styles.label, { color: colors.title }]}>GST Number</Text>
+							<Input
+								placeholder="Enter GST Number"
+								value={form.gst}
+								onChangeText={(text) => handleChange('gst', text)}
+								style={[styles.inputText, { color: colors.title }]}
+							/>
+							{errors.gst ? <Text style={styles.errorText}>{errors.gst}</Text> : null}
+						</View>
+
+						<View style={styles.inputContainer}>
+							<Text style={[styles.label, { color: colors.title }]}>Phone</Text>
+							<Input
+								placeholder="Enter Phone"
+								value={form.phone}
+								onChangeText={(text) => handleChange('phone', text)}
+								style={[styles.inputText, { color: colors.title }]}
+								keyboardType="phone-pad"
+								maxlength={10}
+							/>
+							{errors.phone ? <Text style={styles.errorText}>{errors.phone}</Text> : null}
+						</View>
+
+						<View style={styles.inputContainer}>
+							<Text style={[styles.label, { color: colors.title }]}>Email</Text>
+							<Input
+								placeholder="Enter Email"
+								value={form.email}
+								onChangeText={(text) => handleChange('email', text)}
+								style={[styles.inputText, { color: colors.title }]}
+								keyboardType="email-address"
+							/>
+							{errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
+						</View>
+
+						<View style={styles.inputContainer}>
+							<Text style={[styles.label, { color: colors.title }]}>Website</Text>
+							<Input
+								placeholder="Enter Website URL"
+								value={form.website}
+								onChangeText={(text) => handleChange('website', text)}
+								style={[styles.inputText, { color: colors.title }]}
+							/>
+							{errors.website ? <Text style={styles.errorText}>{errors.website}</Text> : null}
+						</View>
 
 						{/* Address Information Section */}
 						<Text style={[styles.sectionTitle, { color: colors.title }]}>Address Information</Text>
-						<CustomInput
-							label="Pincode"
-							icon="pin-outline"
-							placeholder="Enter Pincode"
-							keyboardType="numeric"
-							value={form.zipcode}
-							onChangeText={(text: string) => handleChange('zipcode', text)}
-							error={errors.zipcode}
-							maxLength={6}
-						/>
+						<View style={styles.inputContainer}>
+							<Text style={[styles.label, { color: colors.title }]}>Pincode</Text>
+							<Input
+								placeholder="Enter Pincode"
+								value={form.zipcode}
+								onChangeText={(text) => handleChange('zipcode', text)}
+								style={[styles.inputText, { color: colors.title }]}
+								keyboardType="numeric"
+								maxlength={6}
+							/>
+							{errors.zipcode ? <Text style={styles.errorText}>{errors.zipcode}</Text> : null}
+						</View>
+						<View style={styles.inputContainer}>
+							<Text style={[styles.label, { color: colors.title }]}>City</Text>
+							<Input
+								placeholder="City"
+								value={form.city}
+								onChangeText={(text) => handleChange('city', text)}
+								style={[styles.inputText, { color: colors.title }]}
+							/>
+							{errors.city ? <Text style={styles.errorText}>{errors.city}</Text> : null}
+						</View>
 
-						<CustomInput
-							label="District"
-							icon="location-outline"
-							placeholder="District"
-							value={form.district}
-							onChangeText={(text: string) => handleChange('district', text)}
-							error={errors.district}
-						/>
-						<CustomInput
-							label="City"
-							icon="home-outline"
-							placeholder="City"
-							value={form.city}
-							onChangeText={(text: string) => handleChange('city', text)}
-							error={errors.city}
-						/>
-						<CustomInput
-							label="State"
-							icon="flag-outline"
-							placeholder="State"
-							value={form.state}
-							onChangeText={(text: string) => handleChange('state', text)}
-							error={errors.state}
-						/>
+						<View style={styles.inputContainer}>
+							<Text style={[styles.label, { color: colors.title }]}>District</Text>
+							<Input
+								placeholder="District"
+								value={form.district}
+								onChangeText={(text) => handleChange('district', text)}
+								style={[styles.inputText, { color: colors.title }]}
+							/>
+							{errors.district ? <Text style={styles.errorText}>{errors.district}</Text> : null}
+						</View>
 
-						<CustomInput
-							label="Company Address"
-							icon="location-outline"
-							placeholder="Enter Address"
-							value={form.company_address}
-							onChangeText={(text: string) => handleChange('company_address', text)}
-							error={errors.company_address}
-							multiline={true}
-							numberOfLines={3}
 
-						/>
+
+						<View style={styles.inputContainer}>
+							<Text style={[styles.label, { color: colors.title }]}>State</Text>
+							<Input
+								placeholder="State"
+								value={form.state}
+								onChangeText={(text) => handleChange('state', text)}
+								style={[styles.inputText, { color: colors.title }]}
+							/>
+							{errors.state ? <Text style={styles.errorText}>{errors.state}</Text> : null}
+						</View>
+
+						<View style={styles.inputContainer}>
+							<Text style={[styles.label, { color: colors.title }]}>Company Address</Text>
+							<Input
+								placeholder="Enter Address"
+								value={form.company_address}
+								onChangeText={(text) => handleChange('company_address', text)}
+								style={[styles.inputText, { color: colors.title }]}
+								multiline={true}
+								numberOfLines={3}
+							/>
+							{errors.company_address ? <Text style={styles.errorText}>{errors.company_address}</Text> : null}
+						</View>
 
 						{/* Submit Button */}
 						{!isLoading ? (
@@ -336,17 +345,12 @@ export const InvoiceAddOrganization = ({ navigation }: InvoiceAddOrganizationPro
 	);
 };
 
-// Custom Input Component with updated styling
-
-
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-
 	},
 	scrollContainer: {
 		flexGrow: 1,
-		// padding: 20,
 	},
 	headerText: {
 		fontSize: 28,
@@ -361,7 +365,6 @@ const styles = StyleSheet.create({
 		padding: 15,
 		borderRadius: 75,
 		marginBottom: 10,
-
 	},
 	logo: {
 		width: 100,
@@ -371,13 +374,11 @@ const styles = StyleSheet.create({
 	labelCenter: {
 		textAlign: 'center',
 		fontSize: 14,
-
 		marginBottom: 15,
 	},
 	card: {
 		padding: 20,
 		borderRadius: 15,
-
 	},
 	sectionTitle: {
 		fontSize: 20,
@@ -391,26 +392,11 @@ const styles = StyleSheet.create({
 	label: {
 		fontSize: 16,
 		marginBottom: 5,
-
 	},
-	inputWrapper: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		borderWidth: 1,
-		borderColor: COLORS.primary,
-		borderRadius: 12,
-		paddingLeft: 12,
-
-
-	},
-	icon: {
-		marginRight: 10,
-	},
-	input: {
+	inputText: {
 		flex: 1,
 		paddingVertical: 12,
 		fontSize: 16,
-
 	},
 	errorText: {
 		color: 'red',

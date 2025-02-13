@@ -24,9 +24,8 @@ import CONFIG from "../../constants/config";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Header from "../../layout/Header";
 import { MessagesService } from "../../lib/MessagesService";
-import { COLORS } from '../../constants/theme';
-
-import { useTheme } from '@react-navigation/native';
+import { COLORS } from "../../constants/theme";
+import { useTheme } from "@react-navigation/native";
 
 const { width } = Dimensions.get("window");
 
@@ -59,54 +58,98 @@ const FilterModal = ({ isVisible, onClose }: any) => {
 	const { colors }: { colors: any } = theme;
 
 	return (
-		<Animated.View style={[styles.modalContainer, { transform: [{ translateX: slideAnim }] }, { backgroundColor: colors.background }]}>
+		<Animated.View
+			style={[
+				styles.modalContainer,
+				{ transform: [{ translateX: slideAnim }] },
+				{ backgroundColor: colors.background },
+			]}
+		>
 			<View style={styles.modalHeader}>
 				<TouchableOpacity onPress={onClose}>
-					<Feather size={24} color={colors.title} name={'arrow-left'} />
+					<Feather size={24} color={colors.title} name={"arrow-left"} />
 				</TouchableOpacity>
-				<Text style={[styles.modalTitle, { color: colors.title }]}>Filter Invoices</Text>
+				<Text style={[styles.modalTitle, { color: colors.title }]}>
+					Filter Invoices
+				</Text>
 				<TouchableOpacity onPress={handleReset}>
 					<Text style={styles.resetText}>Reset</Text>
 				</TouchableOpacity>
 			</View>
 			<ScrollView>
 				<View style={styles.filterGroup}>
-					<Text style={[styles.filterLabel, { color: colors.title }]}>Filter by total</Text>
+					<Text style={[styles.filterLabel, { color: colors.title }]}>
+						Filter by total
+					</Text>
 					<View style={styles.row}>
-						<TextInput placeholder="From amount"
+						<TextInput
+							placeholder="From amount"
 							placeholderTextColor={colors.title}
-							style={[styles.input, { backgroundColor: colors.card, color: colors.title }]} keyboardType="numeric" />
-						<TextInput placeholder="To amount"
+							style={[
+								styles.input,
+								{ backgroundColor: colors.card, color: colors.title },
+							]}
+							keyboardType="numeric"
+						/>
+						<TextInput
+							placeholder="To amount"
 							placeholderTextColor={colors.title}
-							style={[styles.input, { backgroundColor: colors.card, color: colors.title }]} keyboardType="numeric" />
+							style={[
+								styles.input,
+								{ backgroundColor: colors.card, color: colors.title },
+							]}
+							keyboardType="numeric"
+						/>
 					</View>
 				</View>
 				<View style={styles.filterGroup}>
-					<Text style={[styles.filterLabel, { color: colors.title }]}>Filter by date</Text>
+					<Text style={[styles.filterLabel, { color: colors.title }]}>
+						Filter by date
+					</Text>
 					<View style={styles.row}>
 						<TextInput
 							placeholderTextColor={colors.title}
 							placeholder="Issue Date"
-							style={[styles.input, { backgroundColor: colors.card, color: colors.title }]} />
+							style={[
+								styles.input,
+								{ backgroundColor: colors.card, color: colors.title },
+							]}
+						/>
 						<TextInput
 							placeholder="Due Date"
 							placeholderTextColor={colors.title}
-							style={[styles.input, { backgroundColor: colors.card, color: colors.title }]} />
+							style={[
+								styles.input,
+								{ backgroundColor: colors.card, color: colors.title },
+							]}
+						/>
 					</View>
 				</View>
 				<View style={styles.filterGroup}>
-					<Text style={[styles.filterLabel, { color: colors.title }]}>Filter by status</Text>
+					<Text style={[styles.filterLabel, { color: colors.title }]}>
+						Filter by status
+					</Text>
 					<TextInput
 						placeholder="Invoice Status"
 						placeholderTextColor={colors.title}
-						style={[styles.input, { backgroundColor: colors.card, color: colors.title }]} />
+						style={[
+							styles.input,
+							{ backgroundColor: colors.card, color: colors.title },
+						]}
+					/>
 				</View>
 				<View style={styles.filterGroup}>
-					<Text style={[styles.filterLabel, { color: colors.title }]}>Filter by customer</Text>
+					<Text style={[styles.filterLabel, { color: colors.title }]}>
+						Filter by customer
+					</Text>
 					<TextInput
 						placeholder="Customer"
 						placeholderTextColor={colors.title}
-						style={[styles.input, { backgroundColor: colors.card, color: colors.title }]} />
+						style={[
+							styles.input,
+							{ backgroundColor: colors.card, color: colors.title },
+						]}
+					/>
 				</View>
 				<TouchableOpacity style={styles.filterButton} onPress={() => onClose()}>
 					<Text style={styles.filterButtonText}>Filter Invoices</Text>
@@ -117,19 +160,42 @@ const FilterModal = ({ isVisible, onClose }: any) => {
 };
 
 const invoices = [
-	{ id: "#123456789", status: "Unpaid", amount: "₹ 3,520.00", dueDate: "Mar 31, 2024", items: "6 items" },
-	{ id: "#987654321", status: "Overdue", amount: "₹ 4,200.00", dueDate: "Apr 15, 2024", items: "3 items" },
-	{ id: "#456123789", status: "Paid", amount: "₹ 2,800.00", dueDate: "May 1, 2024", items: "5 items" },
-	{ id: "#789456123", status: "Paid", amount: "₹ 1,200.00", dueDate: "Apr 10, 2024", items: "2 items" },
+	{
+		id: "#123456789",
+		status: "Unpaid",
+		amount: "₹ 3,520.00",
+		dueDate: "Mar 31, 2024",
+		items: "6 items",
+	},
+	{
+		id: "#987654321",
+		status: "Overdue",
+		amount: "₹ 4,200.00",
+		dueDate: "Apr 15, 2024",
+		items: "3 items",
+	},
+	{
+		id: "#456123789",
+		status: "Paid",
+		amount: "₹ 2,800.00",
+		dueDate: "May 1, 2024",
+		items: "5 items",
+	},
+	{
+		id: "#789456123",
+		status: "Paid",
+		amount: "₹ 1,200.00",
+		dueDate: "Apr 10, 2024",
+		items: "2 items",
+	},
 ];
 
-// const companies = ["My Company", "Company A", "Company B", "Company C"];
-// const companies = ["My Company", "Company A", "Company B", "Company C"];
-
-
-
-const TopBar = ({ selectedCompany, setSelectedCompany, onOpenFilter }: any) => {
-
+const TopBar = ({
+	selectedCompany,
+	setSelectedCompany,
+	onOpenFilter,
+	onCompanyChange, // Added callback prop
+}: any) => {
 	const navigation = useNavigation<any>();
 
 	const theme = useTheme();
@@ -154,58 +220,89 @@ const TopBar = ({ selectedCompany, setSelectedCompany, onOpenFilter }: any) => {
 	);
 
 	const getCompanyList = async () => {
-		const res = await ApiService.postWithToken("api/invoice-generator/companies/list", {});
+		const res = await ApiService.postWithToken(
+			"api/invoice-generator/companies/list",
+			{}
+		);
 		setCompanies(res?.data);
-	}
+	};
 
 	const changeCompany = async (company: any) => {
-		await StorageService.setStorage(CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.ORGANIZATION_INFO, JSON.stringify(company));
+		await StorageService.setStorage(
+			CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.ORGANIZATION_INFO,
+			JSON.stringify(company)
+		);
 		setSelectedCompany(company.name);
-	}
+		// Call the callback to refresh invoice list
+		if (onCompanyChange) {
+			onCompanyChange();
+		}
+	};
 
 	const headerCompanySet = async () => {
-		const companyInfoStr = await StorageService.getStorage(CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.ORGANIZATION_INFO);
-		// const company_name = JSON.parse(companyInfo);
+		const companyInfoStr = await StorageService.getStorage(
+			CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.ORGANIZATION_INFO
+		);
 		if (companyInfoStr != null) {
 			const company = JSON.parse(companyInfoStr);
 			setSelectedCompany(company.name);
 		}
-	}
+	};
 	const backToHome = () => {
-		navigation.goBack()
-	}
+		// navigation.goBack();
+		navigation.replace('DrawerNavigation');
+	};
 
 	return (
 		<>
-			<View style={{
-				backgroundColor: colors.card,
-				display: "flex",
-				flexDirection: "row",
-				paddingVertical: 20,
-				paddingHorizontal: 10,
-				alignItems: "center",
-				justifyContent: "space-between"
-
-			}}>
-
+			<View
+				style={{
+					backgroundColor: colors.card,
+					display: "flex",
+					flexDirection: "row",
+					paddingVertical: 20,
+					paddingHorizontal: 10,
+					alignItems: "center",
+					justifyContent: "space-between",
+				}}
+			>
 				<TouchableOpacity onPress={backToHome}>
-					<Feather size={24} color={colors.title} name={'arrow-left'} />
-
+					<Feather size={24} color={colors.title} name={"arrow-left"} />
 				</TouchableOpacity>
-				<Text style={[styles.headerTitle, { color: colors.title }]}>Business</Text>
+				<Text style={[styles.headerTitle, { color: colors.title }]}>
+					Business
+				</Text>
 				<View style={styles.headerRight}>
 					<Menu
 						visible={menuVisible}
 						onDismiss={closeMenu}
 						anchor={
-							<TouchableOpacity onPress={openMenu} style={[styles.companyDropdown, {
-								backgroundColor: colors.title, padding: 8,
-								borderRadius: 20, justifyContent: "center", alignItems: "center"
-							}]}>
-								<Text style={[styles.companyName, { color: colors.background, marginRight: 4 }]}>{selectedCompany}
-
+							<TouchableOpacity
+								onPress={openMenu}
+								style={[
+									styles.companyDropdown,
+									{
+										backgroundColor: colors.title,
+										padding: 8,
+										borderRadius: 20,
+										justifyContent: "center",
+										alignItems: "center",
+									},
+								]}
+							>
+								<Text
+									style={[
+										styles.companyName,
+										{ color: colors.background, marginRight: 4 },
+									]}
+								>
+									{selectedCompany}
 								</Text>
-								<AntDesign name="caretdown" size={14} color={colors.background} />
+								<AntDesign
+									name="caretdown"
+									size={14}
+									color={colors.background}
+								/>
 							</TouchableOpacity>
 						}
 					>
@@ -214,7 +311,6 @@ const TopBar = ({ selectedCompany, setSelectedCompany, onOpenFilter }: any) => {
 								key={index}
 								onPress={() => {
 									changeCompany(company);
-									// setSelectedCompany(company.name);
 									closeMenu();
 								}}
 								title={company?.name}
@@ -223,15 +319,16 @@ const TopBar = ({ selectedCompany, setSelectedCompany, onOpenFilter }: any) => {
 					</Menu>
 
 					<TouchableOpacity onPress={onOpenFilter}>
-						<MaterialIcons name="filter-list" size={28} color={colors.title} style={styles.filterIcon} />
+						<MaterialIcons
+							name="filter-list"
+							size={28}
+							color={colors.title}
+							style={styles.filterIcon}
+						/>
 					</TouchableOpacity>
-
 				</View>
 			</View>
-
-
 		</>
-
 	);
 };
 
@@ -245,10 +342,7 @@ const FilterTabs = ({ activeTab, setActiveTab }: any) => {
 			{tabs.map((tab) => (
 				<TouchableOpacity
 					key={tab}
-					style={[
-						styles.tabButton,
-						activeTab === tab && styles.activeTab,
-					]}
+					style={[styles.tabButton, activeTab === tab && styles.activeTab]}
 					onPress={() => setActiveTab(tab)}
 				>
 					<Text
@@ -273,49 +367,52 @@ const InvoiceCard = ({ invoice }: any) => {
 		Paid: COLORS.primary,
 	};
 	const showPDFDetail = (data: any) => {
-		// navigation.navigate('FinalInvoiceResult', { data: { pdf_url: pdf_url }, previous_screen: 'InvoiceList' })
-		// navigation.replace('FinalInvoiceResult', { data: { pdf_url: res.pdf_url }, previous_screen: "ChooseInvoiceDesign" });
-		navigation.navigate('InvoiceDetail', { invoice_id: data.id });
-	}
+		navigation.navigate("InvoiceDetail", { invoice_id: data.id });
+	};
 
 	const theme = useTheme();
 	const { colors }: { colors: any } = theme;
 
 	return (
-		<TouchableOpacity onPress={() => { showPDFDetail(invoice) }}>
+		<TouchableOpacity onPress={() => showPDFDetail(invoice)}>
 			<View style={[styles.card, { backgroundColor: colors.card }]}>
-				<View style={[styles.statusTag, { backgroundColor: statusColors[invoice?.invoice_status] }]}>
-					<Text style={[styles.statusText, { color: COLORS.background }]}>{invoice.invoice_status}</Text>
+				<View
+					style={[
+						styles.statusTag,
+						{ backgroundColor: statusColors[invoice?.invoice_status] },
+					]}
+				>
+					<Text style={[styles.statusText, { color: COLORS.background }]}>
+						{invoice.invoice_status}
+					</Text>
 				</View>
-				<Text style={[styles.invoiceId, { color: colors.title }]}>#{invoice.id}</Text>
+				<Text style={[styles.invoiceId, { color: colors.title }]}>
+					#{invoice.id}
+				</Text>
+				<Text style={[styles.invoiceId, { color: colors.title, fontSize: 13 }]}>
+					{invoice.client_info.name}
+				</Text>
 				<View style={styles.row}>
-					<Text style={[styles.dueDate, { color: colors.title }]}>{invoice.created_at_new}</Text>
-					<Text style={[styles.items, { color: colors.title }]}>{invoice.item_count}</Text>
+					<Text style={[styles.dueDate, { color: colors.title }]}>
+						{invoice.created_at_new}
+					</Text>
+					<Text style={[styles.items, { color: colors.title }]}>
+						{invoice.item_count}
+					</Text>
 				</View>
-				<Text style={[styles.amount, { color: colors.title }]}>{invoice.grand_total_amount}</Text>
+				<Text style={[styles.amount, { color: colors.title }]}>
+					{invoice.grand_total_amount}
+				</Text>
 			</View>
 		</TouchableOpacity>
 	);
 };
 
 const InvoicesScreen = () => {
-
 	const [isFilterVisible, setFilterVisible] = useState(false);
-
 	const openFilterModal = () => setFilterVisible(true);
 	const closeFilterModal = () => setFilterVisible(false);
-	const [invoiceList, setInvoiceList] = useState([{
-		id: 0,
-		company_id: 0,
-		grand_total_amount: 0.00,
-		received_amount: 0.00,
-		expected_given_data: "",
-		full_amount_received: 0,
-		created_at_new: "2025-02-06 16:52",
-		item_count: 1,
-		invoice_status: "Unpaid",
-		pdf_url: "https://paynest.co.in/api/invoice?invoice_id=Nw=="
-	}]);
+	const [invoiceList, setInvoiceList] = useState([]);
 
 	const [selectedCompany, setSelectedCompany] = useState("Default");
 	const [activeTab, setActiveTab] = useState("All");
@@ -327,53 +424,71 @@ const InvoicesScreen = () => {
 	);
 
 	const fetchInvoiceList = async () => {
-		const companyInfo = await StorageService.getStorage(CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.ORGANIZATION_INFO);
+		const companyInfo = await StorageService.getStorage(
+			CONFIG.HARDCODE_VALUES.INVOICE_GEN_SESSION.ORGANIZATION_INFO
+		);
 		if (companyInfo != null) {
 			const companyInfoObj = JSON.parse(companyInfo);
-			const res = await ApiService.postWithToken('api/invoice-generator/invoice/list', { company_id: companyInfoObj.id })
+			const res = await ApiService.postWithToken(
+				"api/invoice-generator/invoice/list",
+				{ company_id: companyInfoObj.id }
+			);
 			if (res.status) {
 				setInvoiceList(res.data);
-				console.log("rsss", res)
 			}
 		} else {
-			MessagesService.commonMessage("Invalid Company ID.")
+			MessagesService.commonMessage("Invalid Company ID.");
 		}
+	};
 
-	}
 	const filteredInvoices =
 		activeTab === "All"
 			? invoiceList
-			: invoiceList.filter((invoice: any) => invoice.invoice_status === activeTab);
+			: invoiceList.filter(
+				(invoice: any) => invoice.invoice_status === activeTab
+			);
 
 	const theme = useTheme();
 	const { colors }: { colors: any } = theme;
 
 	return (
-		<SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-
+		<SafeAreaView
+			style={[styles.container, { backgroundColor: colors.background }]}
+		>
 			<TopBar
 				selectedCompany={selectedCompany}
 				setSelectedCompany={setSelectedCompany}
 				onOpenFilter={openFilterModal}
-
+				onCompanyChange={fetchInvoiceList} // Pass the callback here
 			/>
 
 			<Text style={[styles.companyMessage, { color: colors.title }]}>
 				Showing invoices for: {selectedCompany}
 			</Text>
 			<FilterTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-			<FlatList
-				data={filteredInvoices}
-				keyExtractor={(item: any) => item.id}
-				renderItem={({ item }) => <InvoiceCard invoice={item} />}
-				contentContainerStyle={styles.listContainer}
-			/>
-			{isFilterVisible && <FilterModal isVisible={isFilterVisible} onClose={closeFilterModal} />}
+			{invoiceList.length > 0 ? (
+				<FlatList
+					data={filteredInvoices}
+					keyExtractor={(item: any) => item.id}
+					renderItem={({ item }) => <InvoiceCard invoice={item} />}
+					contentContainerStyle={styles.listContainer}
+				/>
+			) : (
+				<Text
+					style={[
+						styles.companyMessage,
+						{ color: colors.title, textAlign: "center", marginTop: 12 },
+					]}
+				>
+					No Result Found
+				</Text>
+			)}
+			{isFilterVisible && (
+				<FilterModal isVisible={isFilterVisible} onClose={closeFilterModal} />
+			)}
 		</SafeAreaView>
 	);
 };
-
-
 
 const SettingsScreen = () => (
 	<View style={styles.centeredView}>
@@ -383,10 +498,9 @@ const SettingsScreen = () => (
 
 const Tab = createBottomTabNavigator();
 
-type InvoiceListsProps = StackScreenProps<RootStackParamList, 'InvoiceLists'>;
+type InvoiceListsProps = StackScreenProps<RootStackParamList, "InvoiceLists">;
 
 export const InvoiceLists = ({ navigation }: InvoiceListsProps) => {
-
 	const theme = useTheme();
 	const { colors }: { colors: any } = theme;
 
@@ -405,8 +519,6 @@ export const InvoiceLists = ({ navigation }: InvoiceListsProps) => {
 					},
 					tabBarActiveTintColor: colors.title,
 					tabBarInactiveTintColor: COLORS.primary,
-
-
 					tabBarStyle: { height: 90, backgroundColor: colors.card },
 					tabBarLabelStyle: {
 						fontSize: 14,
@@ -425,7 +537,6 @@ export const InvoiceLists = ({ navigation }: InvoiceListsProps) => {
 					options={{ headerShown: false }}
 				/>
 			</Tab.Navigator>
-
 		</Provider>
 	);
 };
@@ -443,8 +554,6 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
-		// borderBottomLeftRadius: 15,
-		// borderBottomRightRadius: 15,
 	},
 	headerTitle: {
 		fontSize: 24,
@@ -505,7 +614,6 @@ const styles = StyleSheet.create({
 		marginVertical: 10,
 		marginHorizontal: 10,
 	},
-
 	statusTag: {
 		alignSelf: "flex-start",
 		paddingVertical: 4,
@@ -563,8 +671,6 @@ const styles = StyleSheet.create({
 		width: "80%",
 		backgroundColor: "#fff",
 		padding: 20,
-
-
 	},
 	modalHeader: {
 		flexDirection: "row",
@@ -615,5 +721,4 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 	},
-
 });

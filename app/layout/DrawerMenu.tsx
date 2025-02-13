@@ -65,7 +65,7 @@ const DrawerMenu = () => {
         {
             id: "7",
             icon: IMAGES.list,
-            name: t('Invoice'),
+            name: t('Business'),
             navigate: 'InvoiceLists',
         },
         {
