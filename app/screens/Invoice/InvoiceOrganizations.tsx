@@ -177,16 +177,16 @@ export const InvoiceOrganizations = ({ navigation }: InvoiceOrganizationsProps) 
 							{selectedItem.name} - {selectedItem.email}
 						</Text>
 					)}
-					{/* <TouchableOpacity
+					<TouchableOpacity
 						onPress={() => {
 							closeBottomSheet();
-							navigation.navigate('InvoiceEditItem');
+							navigation.navigate('InvoiceAddOrganization', { orgranisationData: { ...selectedItem, imagepath: companyData.image_path } });
 						}}
 						style={[styles.sheetButton, { backgroundColor: COLORS.primary }]}
 					>
 						<MaterialIcons name="edit" size={24} color={COLORS.background} />
 						<Text style={[styles.sheetButtonText, { color: COLORS.background }]}>Edit</Text>
-					</TouchableOpacity> */}
+					</TouchableOpacity>
 					{
 						!isLoadingForDelete ?
 							<TouchableOpacity onPress={handleDelete} style={[styles.sheetButton, styles.removeButton, { backgroundColor: COLORS.danger }]}>

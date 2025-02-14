@@ -79,7 +79,7 @@ export const FinalInvoiceResult = ({ navigation, route }: FinalInvoiceResultProp
             >
 
                 <View style={styles.buttonWrapper}>
-                    <View style={{ borderBottomColor: COLORS.inputborder, justifyContent: "flex-start", alignItems: "center", marginBottom: 30 }}>
+                    {/* <View style={{ borderBottomColor: COLORS.inputborder, justifyContent: "flex-start", alignItems: "center", marginBottom: 30 }}>
 
                         <Image source={theme.dark ? IMAGES.appnamedark : IMAGES.appname}
                             style={{
@@ -87,7 +87,7 @@ export const FinalInvoiceResult = ({ navigation, route }: FinalInvoiceResultProp
                                 width: 150,
                                 objectFit: "contain",
                             }} />
-                    </View>
+                    </View> */}
                     <ButtonIcon
                         iconDirection="left"
                         text={COLORS.background}

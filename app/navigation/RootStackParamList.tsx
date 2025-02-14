@@ -121,7 +121,7 @@ export type RootStackParamList = {
     InvoiceAddNewItems: any;
     InvoiceEditItem: any;
     InvoiceOrganizations: any;
-    InvoiceAddOrganization: any;
+    InvoiceAddOrganization: { orgranisationData: object } | undefined;
     InvoiceClients: any;
     InvoiceAddClient: any;
     InvoiceDetail: any;

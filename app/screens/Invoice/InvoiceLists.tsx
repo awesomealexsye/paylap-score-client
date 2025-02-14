@@ -372,6 +372,9 @@ const InvoiceCard = ({ invoice }: any) => {
 
 	const theme = useTheme();
 	const { colors }: { colors: any } = theme;
+	// if (invoice?.invoice_status == 'Unpaid') {
+	// 	console.log("invoic card", invoice)
+	// }
 
 	return (
 		<TouchableOpacity onPress={() => showPDFDetail(invoice)}>
@@ -386,12 +389,20 @@ const InvoiceCard = ({ invoice }: any) => {
 						{invoice.invoice_status}
 					</Text>
 				</View>
-				<Text style={[styles.invoiceId, { color: colors.title }]}>
-					#{invoice.id}
-				</Text>
-				<Text style={[styles.invoiceId, { color: colors.title, fontSize: 13 }]}>
+				<Text style={[styles.invoiceId, { color: colors.title, }]}>
 					{invoice.client_info.name}
 				</Text>
+				<Text style={[styles.invoiceId, { color: colors.title, fontSize: 13 }]}>
+					#{invoice.id}
+				</Text>
+				{
+					invoice.full_amount_received == 0 &&
+					<Text style={[styles.invoiceId, { color: COLORS.danger, fontSize: 13 }]}>
+						Pending: ₹{(Number(invoice.grand_total_amount) - Number(invoice.received_amount)).toFixed(2)}
+					</Text>
+				}
+
+
 				<View style={styles.row}>
 					<Text style={[styles.dueDate, { color: colors.title }]}>
 						{invoice.created_at_new}

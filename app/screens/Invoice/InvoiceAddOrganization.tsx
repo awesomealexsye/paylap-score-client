@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	View,
 	Text,
@@ -26,9 +26,14 @@ import Input from '../../components/Input/Input';
 
 type InvoiceAddOrganizationProps = StackScreenProps<RootStackParamList, 'InvoiceAddOrganization'>;
 
-export const InvoiceAddOrganization = ({ navigation }: InvoiceAddOrganizationProps) => {
+export const InvoiceAddOrganization = ({ navigation, route }: InvoiceAddOrganizationProps) => {
 	const theme = useTheme();
 	const { colors }: { colors: any } = theme;
+	// Safely destructure orgranisationData in case route.params is undefined (add case)
+	const { orgranisationData } = route.params || {};
+
+	// Determine if we are in edit mode based on the presence of orgranisationData.id
+	const isEditMode = orgranisationData && orgranisationData.id;
 
 	const [form, setForm] = useState<any>({
 		name: '',
@@ -47,6 +52,31 @@ export const InvoiceAddOrganization = ({ navigation }: InvoiceAddOrganizationPro
 	const [errors, setErrors] = useState<any>({});
 	const [imageUri, setImageUri] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+
+	// Populate form with orgranisationData if in edit mode
+	useEffect(() => {
+		if (orgranisationData && orgranisationData.id) {
+			setForm({
+				name: orgranisationData.name || '',
+				company_address: orgranisationData.company_address || '',
+				gst: orgranisationData.gst || '',
+				phone: orgranisationData.phone || '',
+				email: orgranisationData.email || '',
+				website: orgranisationData.website || '',
+				invoice_init_number: orgranisationData.invoice_init_number ? String(orgranisationData.invoice_init_number) : '1000',
+				zipcode: orgranisationData.zipcode || '',
+				city: orgranisationData.city || '',
+				state: orgranisationData.state || '',
+				district: orgranisationData.district || '',
+				image: orgranisationData.image || '',
+				id: orgranisationData.id, // include id for edit case
+			});
+			// If image is available in edit mode, show it using the provided imagepath
+			if (orgranisationData.image && orgranisationData.imagepath) {
+				setImageUri(orgranisationData.imagepath + orgranisationData.image);
+			}
+		}
+	}, [orgranisationData]);
 
 	// Handle input changes.
 	// For email and website, automatically convert the value to lowercase.
@@ -68,6 +98,7 @@ export const InvoiceAddOrganization = ({ navigation }: InvoiceAddOrganizationPro
 			}
 		}
 	};
+
 	const handleBasicChanges = (key: string, value: string) => {
 		setForm((prev: any) => ({ ...prev, [key]: value }));
 	};
@@ -111,7 +142,7 @@ export const InvoiceAddOrganization = ({ navigation }: InvoiceAddOrganizationPro
 		}
 	};
 
-	// Image Picker Function
+	// Image Picker Function with Base64 prefix handling
 	const pickImage = async () => {
 		let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 		if (!permissionResult.granted) {
@@ -128,8 +159,23 @@ export const InvoiceAddOrganization = ({ navigation }: InvoiceAddOrganizationPro
 		});
 
 		if (!result.canceled) {
-			setImageUri(result.assets[0].uri);
-			setForm((prev: any) => ({ ...prev, image: result.assets[0].base64 }));
+			const asset = result.assets[0];
+			let base64Image = asset.base64;
+			// If base64 string exists and doesn't already have a prefix, add one.
+			if (base64Image && !base64Image.startsWith('data:image/')) {
+				// Determine the MIME type from the file extension in the URI
+				let uri = asset.uri;
+				const extension = uri.split('.').pop()?.toLowerCase();
+				let mimeType = 'image/jpeg'; // default mime type
+				if (extension === 'png') {
+					mimeType = 'image/png';
+				} else if (extension === 'webp') {
+					mimeType = 'image/webp';
+				}
+				base64Image = `data:${mimeType};base64,` + base64Image;
+			}
+			setImageUri(asset.uri);
+			setForm((prev: any) => ({ ...prev, image: base64Image }));
 		}
 	};
 
@@ -189,7 +235,11 @@ export const InvoiceAddOrganization = ({ navigation }: InvoiceAddOrganizationPro
 
 	return (
 		<>
-			<Header leftIcon={'back'} title={'Add Organization'} titleRight />
+			<Header
+				leftIcon={'back'}
+				title={isEditMode ? 'Edit Organization' : 'Add Organization'}
+				titleRight
+			/>
 			<KeyboardAvoidingView
 				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
 				style={styles.container}
@@ -306,8 +356,6 @@ export const InvoiceAddOrganization = ({ navigation }: InvoiceAddOrganizationPro
 							{errors.district ? <Text style={styles.errorText}>{errors.district}</Text> : null}
 						</View>
 
-
-
 						<View style={styles.inputContainer}>
 							<Text style={[styles.label, { color: colors.title }]}>State</Text>
 							<Input
@@ -334,7 +382,7 @@ export const InvoiceAddOrganization = ({ navigation }: InvoiceAddOrganizationPro
 
 						{/* Submit Button */}
 						{!isLoading ? (
-							<Button title="Add Organization" onPress={handleSubmit} style={styles.button} />
+							<Button title={isEditMode ? 'Edit Organization' : 'Add Organization'} onPress={handleSubmit} style={styles.button} />
 						) : (
 							<ActivityIndicator color={COLORS.title} size={'large'} />
 						)}

@@ -30,7 +30,7 @@ export const InvoiceCreate = ({ navigation }: InvoiceCreateProps) => {
 	const [invoiceName, setInvoiceName] = useState("#1");
 	const [organization, setOrganization] = useState({ id: 0, name: '', email: '' });
 	const [client, setClient] = useState({ id: 0, name: '', email: '', phone: '' });
-	const [isFullPaymentReceived, setIsFullPaymentReceived] = useState(true);
+	const [isFullPaymentReceived, setIsFullPaymentReceived] = useState(false);
 	const [showReceivedAmount, setShowReceivedAmount] = useState(false);
 	const [receivedAmount, setReceivedAmount] = useState('');
 	const [expectedDate, setExpectedDate] = useState(null);

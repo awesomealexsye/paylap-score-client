@@ -44,7 +44,7 @@ const ApiService = {
         let authHeader = { Authorization: `Bearer ${jwt_token}` };
         data = { ...common_payload, ...data }
         headers = { ...authHeader, ...headers }
-        // console.log("Request body ", api_url, headers);
+        console.log("Log ", api_url, headers, data);
         try {
             const res: any = await axios.post(api_url, data, { headers: headers });
             if (res.data.logout_user === true) {

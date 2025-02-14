@@ -45,7 +45,7 @@ export const InvoiceDetail = ({ navigation, route
     const [invoice, setInvoice] = useState<any>(null);
     // State for received amount logs
     const [receivedLogs, setReceivedLogs] = useState<
-        { id: number; amount: number; created_at: string; created_at_new: string }[]
+        { id: number; amount: number; created_at: string; created_at_new: string, pdf_url: string }[]
     >([]);
     // State for pending amount modal/input
     const [modalVisible, setModalVisible] = useState(false);
@@ -122,16 +122,7 @@ export const InvoiceDetail = ({ navigation, route
 
     // Function to open the PDF if needed.
     const openPDF = async () => {
-        // navigation.navigate('FinalInvoiceResult',{})
         navigation.replace('FinalInvoiceResult', { data: { pdf_url: invoice.pdf_url }, previous_screen: "InvoiceDetail" });
-
-        // try {
-        //     if (invoice && invoice.pdf_url) {
-        //         await WebBrowser.openBrowserAsync(invoice.pdf_url);
-        //     }
-        // } catch (error) {
-        //     console.error("Error opening PDF", error);
-        // }
     };
 
     // Parse item_info string into an array.
@@ -174,6 +165,12 @@ export const InvoiceDetail = ({ navigation, route
     }
 
     const items = parseItems();
+    const showPdf = (item: object) => {
+        console.log("itemss", item);
+        navigation.navigate('FinalInvoiceResult', { data: { pdf_url: item.pdf_url }, previous_screen: "ChooseInvoiceDesign" });
+
+
+    }
 
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -284,6 +281,9 @@ export const InvoiceDetail = ({ navigation, route
                             <View key={log.id} style={styles.logRow}>
                                 <Text style={styles.logText}>₹ {log.amount}</Text>
                                 <Text style={styles.logTimestamp}>{log.created_at_new}</Text>
+                                <TouchableOpacity onPress={() => showPdf(log)} style={styles.pendingButton}>
+                                    <FontAwesome name="file-pdf-o" size={12} color="#fff" />
+                                </TouchableOpacity>
                             </View>
                         ))}
                     </View>

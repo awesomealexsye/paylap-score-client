@@ -102,7 +102,7 @@ export const ChooseInvoiceDesign = ({ navigation, route }: ChooseInvoiceDesignPr
                                         // selectedTemplate === item.id && styles.selectedTemplate
                                     ]}
                                 >
-                                    <TouchableOpacity onPress={() => handleImageClick(imageURL + "/" + item.image)}>
+                                    <TouchableOpacity onPress={() => handleTemplateSelection(item.id, item.name)}>
                                         <Image source={{ uri: imageURL + "/" + item.image }} style={styles.image} />
                                         <Text style={[styles.headline, { color: colors.title }]}>{item.name}</Text>
                                     </TouchableOpacity>
