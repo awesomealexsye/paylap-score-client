@@ -304,10 +304,11 @@ export const InvoiceCreate = ({ navigation }: InvoiceCreateProps) => {
 									/>
 								</View> */}
 
-								<View>
+								<View style={{gap:10}}>
 									<TextInput
-										style={styles.input}
+										style={[styles.input,{backgroundColor: colors.card, color: colors.title}]}
 										placeholder="Received Amount"
+										placeholderTextColor={colors.title}
 										keyboardType="numeric"
 										value={receivedAmount}
 										onChangeText={(val) => {
@@ -327,7 +328,9 @@ export const InvoiceCreate = ({ navigation }: InvoiceCreateProps) => {
 										style={styles.dateInputContainer}
 									>
 										<TextInput
-											style={styles.input}
+											style={[styles.input,{backgroundColor:colors.card,color:colors.title}]}
+											
+                                            placeholderTextColor={colors.title}
 											placeholder="Select Expected Date"
 											value={expectedDate}
 											editable={false}
@@ -336,7 +339,7 @@ export const InvoiceCreate = ({ navigation }: InvoiceCreateProps) => {
 											name="calendar-today"
 											size={20}
 											color="#666"
-											style={styles.dateIcon}
+											style={[styles.dateIcon,{color:colors.title}]}
 										/>
 									</TouchableOpacity>
 
@@ -349,8 +352,8 @@ export const InvoiceCreate = ({ navigation }: InvoiceCreateProps) => {
 										/>
 									)}
 
-									<View style={styles.amountSummary}>
-										<Text style={styles.amountLabel}>Pending Amount:</Text>
+									<View style={[styles.amountSummary,{backgroundColor:colors.card}]}>
+										<Text style={[styles.amountLabel,{color:colors.title}]}>Pending Amount:</Text>
 										<Text style={styles.amountValue}>
 											₹{calculatePendingAmount()}
 										</Text>
@@ -493,13 +496,12 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 	},
 	input: {
-		height: 40,
+		height: 50,
 		borderColor: '#ddd',
 		borderWidth: 1,
 		borderRadius: 8,
 		paddingHorizontal: 12,
-		marginVertical: 8,
-		backgroundColor: '#fff',
+		
 		fontSize: 16,
 	},
 	dateInputContainer: {
@@ -509,6 +511,7 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		right: 15,
 		top: 10,
+		color: "#fff",
 	},
 	amountSummary: {
 		flexDirection: 'row',
