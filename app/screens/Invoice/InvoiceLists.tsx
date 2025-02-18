@@ -451,6 +451,7 @@ const InvoicesScreen = () => {
   const openFilterModal = () => setFilterVisible(true);
   const closeFilterModal = () => setFilterVisible(false);
   const [invoiceList, setInvoiceList] = useState([]);
+  const [headerInfo, setHeaderInfo] = useState({ total_amount: 0, pending_amount: 0 });
 
   const [selectedCompany, setSelectedCompany] = useState("Default");
   const [activeTab, setActiveTab] = useState("All");
@@ -473,9 +474,10 @@ const InvoicesScreen = () => {
       );
       if (res.status) {
         setInvoiceList(res.data);
+        setHeaderInfo(res.header_data);
       }
     } else {
-      MessagesService.commonMessage("Invalid Company ID.");
+      // MessagesService.commonMessage("Add New Company To Use this feature.", "SUCCESS");
     }
   };
 
@@ -483,8 +485,8 @@ const InvoicesScreen = () => {
     activeTab === "All"
       ? invoiceList
       : invoiceList.filter(
-          (invoice: any) => invoice.invoice_status === activeTab
-        );
+        (invoice: any) => invoice.invoice_status === activeTab
+      );
 
   const theme = useTheme();
   const { colors }: { colors: any } = theme;
@@ -559,7 +561,7 @@ const InvoicesScreen = () => {
                   color: COLORS.white,
                 }}
               >
-                ₹ {100}
+                ₹ {headerInfo.total_amount.toFixed(2)}
               </Text>
             </View>
             <View
@@ -586,7 +588,7 @@ const InvoicesScreen = () => {
                   left: 5,
                 }}
               >
-                ₹ {100}
+                ₹ {headerInfo.pending_amount.toFixed(2)}
               </Text>
             </View>
           </View>

@@ -32,6 +32,7 @@ export const InvoiceAddClient = ({ navigation }: InvoiceAddClientProps) => {
 		name: '',
 		phone: '',
 		email: '',
+		gst: '',
 		zipcode: '',
 		district: '',
 		city: '',
@@ -102,6 +103,9 @@ export const InvoiceAddClient = ({ navigation }: InvoiceAddClientProps) => {
 	const handleChange = (key: string, value: string) => {
 		if (key === 'email') {
 			value = value.toLowerCase();
+		}
+		if (key === 'gst') {
+			value = value.toUpperCase();
 		}
 		setForm((prev) => ({ ...prev, [key]: value }));
 		setErrors((prev) => ({ ...prev, [key]: '' }));
@@ -212,6 +216,16 @@ export const InvoiceAddClient = ({ navigation }: InvoiceAddClientProps) => {
 							value={form.email}
 							onChangeText={(text) => handleChange('email', text)}
 							style={[styles.input, { color: colors.title }]}
+						/>
+						{errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
+					</View>
+					<View style={styles.inputContainer}>
+						<Input
+							placeholder="GST Number(If Any)"
+							value={form.gst}
+							onChangeText={(text) => handleChange('gst', text)}
+							style={[styles.input, { color: colors.title }]}
+							maxlength={12}
 						/>
 						{errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
 					</View>
