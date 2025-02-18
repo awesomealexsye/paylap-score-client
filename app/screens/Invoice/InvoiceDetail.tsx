@@ -405,7 +405,7 @@ export const InvoiceDetail = ({ navigation, route }: InvoiceDetailProps) => {
 
         {/* Received Amount Log */}
         {receivedLogs.length > 0 ? (
-          <View style={[styles.logContainer, { backgroundColor: colors.card }]}>
+          <View style={[styles.logContainer, { backgroundColor: colors.card, marginBottom: 40 }]}>
             <Text style={styles.sectionHeader}>Received Amount Log</Text>
             {receivedLogs.map((log) => (
               <View
