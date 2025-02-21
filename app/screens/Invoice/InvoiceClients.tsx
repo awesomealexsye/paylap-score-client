@@ -165,7 +165,23 @@ export const InvoiceClients = ({ navigation }: InvoiceClientsProps) => {
 				</TouchableOpacity>
 
 				{/* Clients List */}
-				{isLoading ? (
+				{
+					customer.length > 0 ? (
+						isLoading ? (
+							<ActivityIndicator color={COLORS.title} size={'large'} />
+						) : (
+							<FlatList
+								data={filteredCustomers}
+								keyExtractor={(item) => item.id}
+								renderItem={renderItem}
+								contentContainerStyle={styles.listContent}
+							/>
+						)
+					) : (
+						<Text style={{ textAlign: 'center', fontSize: 12, marginTop: 40 }}>No Client Found</Text>
+					)
+				}
+				{/* {isLoading ? (
 					<ActivityIndicator color={COLORS.title} size={'large'} />
 				) : (
 					<FlatList
@@ -174,7 +190,7 @@ export const InvoiceClients = ({ navigation }: InvoiceClientsProps) => {
 						renderItem={renderItem}
 						contentContainerStyle={styles.listContent}
 					/>
-				)}
+				)} */}
 
 				{/* Bottom Sheet */}
 				<BottomSheet

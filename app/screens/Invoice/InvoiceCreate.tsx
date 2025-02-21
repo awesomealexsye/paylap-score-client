@@ -9,6 +9,9 @@ import {
 	Switch,
 	TextInput,
 	Alert,
+	KeyboardAvoidingView,
+	Platform,
+	Keyboard,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -19,6 +22,7 @@ import CONFIG from "../../constants/config";
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/RootStackParamList";
 import { MessagesService } from "../../lib/MessagesService";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 type InvoiceCreateProps = StackScreenProps<RootStackParamList, 'InvoiceCreate'>
 
@@ -187,116 +191,122 @@ export const InvoiceCreate = ({ navigation }: InvoiceCreateProps) => {
 	return (
 		<>
 			<Header leftIcon="back" title="Create Invoice" />
-			<SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-				<ScrollView>
+			<KeyboardAvoidingView
+				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+				style={{ flex: 1 }}
+				keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0} // Adjust as needed for your header height
+			>
+				<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+					<ScrollView>
 
 
-					{/* Existing organization, client, and items sections... */}
-					<View style={styles.section}>
-						<Text style={[styles.sectionTitle, { color: colors.title }]}>Organization</Text>
-						<TouchableOpacity
-							style={[styles.orgClientCard, { backgroundColor: colors.card }]}
-							onPress={() => navigation.navigate("InvoiceOrganizations")}
-						>
-							<MaterialIcons name="business" size={24} color="#007bff" />
-							<View style={styles.cardDetails}>
-								<Text style={[styles.cardTitle, { color: colors.title }]}>{organization.name}</Text>
-								<Text style={styles.cardSubtitle}>{organization.email}</Text>
-							</View>
-							<MaterialIcons name="keyboard-arrow-right" size={24} color="#aaa" />
-						</TouchableOpacity>
-					</View>
-
-					{/* Client Section */}
-					<View style={styles.section}>
-						<Text style={[styles.sectionTitle, { color: colors.title }]}>Client</Text>
-						<TouchableOpacity
-							style={[styles.orgClientCard, { backgroundColor: colors.card }]}
-							onPress={() => navigation.navigate("InvoiceClients")}
-						>
-							<MaterialIcons name="person" size={24} color="#28a745" />
-							<View style={styles.cardDetails}>
-								<Text style={[styles.cardTitle, { color: colors.title }]}>{client.name}</Text>
-								<Text style={styles.cardSubtitle}>{client.email}</Text>
-							</View>
-							<MaterialIcons name="keyboard-arrow-right" size={24} color="#aaa" />
-						</TouchableOpacity>
-					</View>
-
-					{/* Items Section */}
-					<View style={styles.section}>
-						<Text style={[styles.sectionTitle, { color: colors.title }]}>Items</Text>
-
-						{items.map((item: any) => (
-							<View key={item.id} style={[styles.card, { backgroundColor: colors.card }]}>
-								<View style={styles.cardContent}>
-									<Text style={[styles.itemTitle, { color: colors.title }]}>{item.title}</Text>
-									<Text style={[, { color: colors.title }]}>
-										₹{item.price} x {item.quantity}
-									</Text>
-									<Text style={styles.itemDiscount}>
-										Discount: {item.discount}%
-									</Text>
-									<Text style={[styles.itemTax, { color: colors.title }]}>
-										Tax: {item.tax}% {item.includeTax ? "(Included)" : "(Excluded)"}
-									</Text>
-									<Text style={styles.itemTotal}>
-										Total: ₹{calculateItemTotal(item).toFixed(2)}
-									</Text>
+						{/* Existing organization, client, and items sections... */}
+						<View style={styles.section}>
+							<Text style={[styles.sectionTitle, { color: colors.title }]}>Organization</Text>
+							<TouchableOpacity
+								style={[styles.orgClientCard, { backgroundColor: colors.card }]}
+								onPress={() => navigation.navigate("InvoiceOrganizations")}
+							>
+								<MaterialIcons name="business" size={24} color="#007bff" />
+								<View style={styles.cardDetails}>
+									<Text style={[styles.cardTitle, { color: colors.title }]}>{organization.name}</Text>
+									<Text style={styles.cardSubtitle}>{organization.email}</Text>
 								</View>
-								<TouchableOpacity onPress={() => handleRemoveItem(item.id)}>
-									<MaterialIcons name="delete" size={24} color="#ff4d4d" />
-								</TouchableOpacity>
+								<MaterialIcons name="keyboard-arrow-right" size={24} color="#aaa" />
+							</TouchableOpacity>
+						</View>
+
+						{/* Client Section */}
+						<View style={styles.section}>
+							<Text style={[styles.sectionTitle, { color: colors.title }]}>Client</Text>
+							<TouchableOpacity
+								style={[styles.orgClientCard, { backgroundColor: colors.card }]}
+								onPress={() => navigation.navigate("InvoiceClients")}
+							>
+								<MaterialIcons name="person" size={24} color="#28a745" />
+								<View style={styles.cardDetails}>
+									<Text style={[styles.cardTitle, { color: colors.title }]}>{client.name}</Text>
+									<Text style={styles.cardSubtitle}>{client.email}</Text>
+								</View>
+								<MaterialIcons name="keyboard-arrow-right" size={24} color="#aaa" />
+							</TouchableOpacity>
+						</View>
+
+						{/* Items Section */}
+						<View style={styles.section}>
+							<Text style={[styles.sectionTitle, { color: colors.title }]}>Items</Text>
+
+							{items.map((item: any) => (
+								<View key={item.id} style={[styles.card, { backgroundColor: colors.card }]}>
+									<View style={styles.cardContent}>
+										<Text style={[styles.itemTitle, { color: colors.title }]}>{item.title}</Text>
+										<Text style={[, { color: colors.title }]}>
+											₹{item.price} x {item.quantity}
+										</Text>
+										<Text style={styles.itemDiscount}>
+											Discount: {item.discount}%
+										</Text>
+										<Text style={[styles.itemTax, { color: colors.title }]}>
+											Tax: {item.tax}% {item.includeTax ? "(Included)" : "(Excluded)"}
+										</Text>
+										<Text style={styles.itemTotal}>
+											Total: ₹{calculateItemTotal(item).toFixed(2)}
+										</Text>
+									</View>
+									<TouchableOpacity onPress={() => handleRemoveItem(item.id)}>
+										<MaterialIcons name="delete" size={24} color="#ff4d4d" />
+									</TouchableOpacity>
+								</View>
+							))}
+
+							<TouchableOpacity
+								style={styles.addItemButton}
+								onPress={() => navigation.replace("InvoiceAddItems")}
+							>
+								<MaterialIcons name="add-circle" size={20} color="#007bff" />
+								<Text style={styles.addItemText}>Add New Item</Text>
+							</TouchableOpacity>
+						</View>
+
+						{/* Totals Section */}
+						<View style={styles.section}>
+							<View style={styles.rowBetween}>
+								<Text style={[styles.totalLabel, { color: colors.title }]}>Subtotal</Text>
+								<Text style={[styles.totalValue, { color: colors.title }]}>₹{calculateSubtotal()}</Text>
 							</View>
-						))}
-
-						<TouchableOpacity
-							style={styles.addItemButton}
-							onPress={() => navigation.replace("InvoiceAddItems")}
-						>
-							<MaterialIcons name="add-circle" size={20} color="#007bff" />
-							<Text style={styles.addItemText}>Add New Item</Text>
-						</TouchableOpacity>
-					</View>
-
-					{/* Totals Section */}
-					<View style={styles.section}>
-						<View style={styles.rowBetween}>
-							<Text style={[styles.totalLabel, { color: colors.title }]}>Subtotal</Text>
-							<Text style={[styles.totalValue, { color: colors.title }]}>₹{calculateSubtotal()}</Text>
+							<View style={styles.rowBetween}>
+								<Text style={[styles.totalLabel, { color: colors.title }]}>Discount</Text>
+								<Text style={[styles.totalValue, { color: colors.title }]}>-₹{calculateDiscount()}</Text>
+							</View>
+							<View style={styles.rowBetween}>
+								<Text style={[styles.totalLabel, { color: colors.title }]}>Tax</Text>
+								<Text style={[styles.totalValue, { color: colors.title }]}>+₹{calculateTax()}</Text>
+							</View>
+							<View style={[styles.rowBetween, styles.totalRow]}>
+								<Text style={[styles.totalLabelBold, { color: colors.title }]}>Grand Total</Text>
+								<Text style={styles.totalAmount}>₹{calculateTotal()}</Text>
+							</View>
 						</View>
-						<View style={styles.rowBetween}>
-							<Text style={[styles.totalLabel, { color: colors.title }]}>Discount</Text>
-							<Text style={[styles.totalValue, { color: colors.title }]}>-₹{calculateDiscount()}</Text>
-						</View>
-						<View style={styles.rowBetween}>
-							<Text style={[styles.totalLabel, { color: colors.title }]}>Tax</Text>
-							<Text style={[styles.totalValue, { color: colors.title }]}>+₹{calculateTax()}</Text>
-						</View>
-						<View style={[styles.rowBetween, styles.totalRow]}>
-							<Text style={[styles.totalLabelBold, { color: colors.title }]}>Grand Total</Text>
-							<Text style={styles.totalAmount}>₹{calculateTotal()}</Text>
-						</View>
-					</View>
-					{/* Totals Section */}
-					<View style={styles.section}>
-						{/* Existing total calculations... */}
-					</View>
-
-					{/* Payment Section */}
-					<View style={styles.section}>
-						<Text style={[styles.sectionTitle, { color: colors.title }]}>Payment Details</Text>
-						<View style={styles.rowBetween}>
-							<Text style={[styles.totalLabel, { color: colors.title }]}>Full Payment Received?</Text>
-							<Switch
-								value={isFullPaymentReceived}
-								onValueChange={setIsFullPaymentReceived}
-							/>
+						{/* Totals Section */}
+						<View style={styles.section}>
+							{/* Existing total calculations... */}
 						</View>
 
-						{!isFullPaymentReceived && (
-							<View>
-								{/* <View style={[styles.rowBetween, { marginTop: 10 }]}>
+						{/* Payment Section */}
+						<View style={styles.section}>
+							<Text style={[styles.sectionTitle, { color: colors.title }]}>Payment Details</Text>
+							<View style={styles.rowBetween}>
+								<Text style={[styles.totalLabel, { color: colors.title }]}>Full Payment Received?</Text>
+								<Switch
+									value={isFullPaymentReceived}
+									onValueChange={setIsFullPaymentReceived}
+
+								/>
+							</View>
+
+							{!isFullPaymentReceived && (
+								<View>
+									{/* <View style={[styles.rowBetween, { marginTop: 10 }]}>
 									<Text style={styles.totalLabel}>Add Partial Payment?</Text>
 									<Switch
 										value={showReceivedAmount}
@@ -304,73 +314,76 @@ export const InvoiceCreate = ({ navigation }: InvoiceCreateProps) => {
 									/>
 								</View> */}
 
-								<View style={{gap:10}}>
-									<TextInput
-										style={[styles.input,{backgroundColor: colors.card, color: colors.title}]}
-										placeholder="Received Amount"
-										placeholderTextColor={colors.title}
-										keyboardType="numeric"
-										value={receivedAmount}
-										onChangeText={(val) => {
-											console.log("valss", val)
-											if (parseFloat(val) <= parseFloat(calculateTotal())) {
-												setReceivedAmount(val)
-											} else if (val == "" || val == null) {
-												setReceivedAmount('')
-
-											}
-										}}
-									/>
-									{/* {setReceivedAmount } */}
-
-									<TouchableOpacity
-										onPress={() => setShowDatePicker(true)}
-										style={styles.dateInputContainer}
-									>
+									<View style={{ gap: 10 }}>
 										<TextInput
-											style={[styles.input,{backgroundColor:colors.card,color:colors.title}]}
-											
-                                            placeholderTextColor={colors.title}
-											placeholder="Select Expected Date"
-											value={expectedDate}
-											editable={false}
-										/>
-										<MaterialIcons
-											name="calendar-today"
-											size={20}
-											color="#666"
-											style={[styles.dateIcon,{color:colors.title}]}
-										/>
-									</TouchableOpacity>
+											style={[styles.input, { backgroundColor: colors.card, color: colors.title }]}
+											placeholder="Received Amount"
+											placeholderTextColor={colors.title}
+											keyboardType="numeric"
+											value={receivedAmount}
+											returnKeyType="done"
+											onChangeText={(val) => {
+												console.log("valss", val)
+												if (parseFloat(val) <= parseFloat(calculateTotal())) {
+													setReceivedAmount(val)
+												} else if (val == "" || val == null) {
+													setReceivedAmount('')
 
-									{showDatePicker && (
-										<DateTimePicker
-											value={expectedDate ? new Date(expectedDate) : new Date()}
-											mode="date"
-											display="default"
-											onChange={handleDateChange}
+												}
+											}}
 										/>
-									)}
+										{/* {setReceivedAmount } */}
 
-									<View style={[styles.amountSummary,{backgroundColor:colors.card}]}>
-										<Text style={[styles.amountLabel,{color:colors.title}]}>Pending Amount:</Text>
-										<Text style={styles.amountValue}>
-											₹{calculatePendingAmount()}
-										</Text>
+										<TouchableOpacity
+											onPress={() => setShowDatePicker(true)}
+											style={styles.dateInputContainer}
+										>
+											<TextInput
+												style={[styles.input, { backgroundColor: colors.card, color: colors.title }]}
+
+												placeholderTextColor={colors.title}
+												placeholder="Select Expected Date"
+												value={expectedDate}
+												editable={false}
+												returnKeyType="done"
+											/>
+											<MaterialIcons
+												name="calendar-today"
+												size={20}
+												color="#666"
+												style={[styles.dateIcon, { color: colors.title }]}
+											/>
+										</TouchableOpacity>
+
+										{showDatePicker && (
+											<DateTimePicker
+												value={expectedDate ? new Date(expectedDate) : new Date()}
+												mode="date"
+												display="default"
+												onChange={handleDateChange}
+											/>
+										)}
+
+										<View style={[styles.amountSummary, { backgroundColor: colors.card }]}>
+											<Text style={[styles.amountLabel, { color: colors.title }]}>Pending Amount:</Text>
+											<Text style={styles.amountValue}>
+												₹{calculatePendingAmount()}
+											</Text>
+										</View>
 									</View>
-								</View>
 
-							</View>
-						)}
-					</View>
-					{/* Generate Invoice Button */}
-					<View style={styles.footer}>
-						<TouchableOpacity style={styles.footerButton} onPress={generateInvoice}>
-							<Text style={styles.footerButtonText}>Generate Invoice</Text>
-						</TouchableOpacity>
-					</View>
-				</ScrollView>
-			</SafeAreaView>
+								</View>
+							)}
+						</View>
+						{/* Generate Invoice Button */}
+						<View style={styles.footer}>
+							<TouchableOpacity style={styles.footerButton} onPress={generateInvoice}>
+								<Text style={styles.footerButtonText}>Generate Invoice</Text>
+							</TouchableOpacity>
+						</View>
+					</ScrollView>
+				</TouchableWithoutFeedback>
+			</KeyboardAvoidingView >
 		</>
 	);
 };
@@ -501,7 +514,7 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderRadius: 8,
 		paddingHorizontal: 12,
-		
+
 		fontSize: 16,
 	},
 	dateInputContainer: {

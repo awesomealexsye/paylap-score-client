@@ -7,6 +7,10 @@ import {
 	ScrollView,
 	TouchableOpacity,
 	Alert,
+	KeyboardAvoidingView,
+	Platform,
+	TouchableWithoutFeedback,
+	Keyboard,
 } from 'react-native';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import Header from '../../layout/Header';
@@ -24,9 +28,8 @@ type InvoiceAddClientProps = StackScreenProps<RootStackParamList, 'InvoiceAddCli
 
 export const InvoiceAddClient = ({ navigation }: InvoiceAddClientProps) => {
 	const theme = useTheme();
-	const [isLoading, setIsLoading] = useState<boolean>(false);
-
 	const { colors } = theme;
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const [form, setForm] = useState({
 		name: '',
@@ -170,9 +173,8 @@ export const InvoiceAddClient = ({ navigation }: InvoiceAddClientProps) => {
 						MessagesService.commonMessage('Something went wrong', 'ERROR');
 					});
 			} else {
-				MessagesService.commonMessage("Invalid Company ID.")
+				MessagesService.commonMessage("Invalid Company ID.");
 			}
-
 		} else {
 			MessagesService.commonMessage('Please fill all required fields', 'ERROR');
 		}
@@ -181,126 +183,135 @@ export const InvoiceAddClient = ({ navigation }: InvoiceAddClientProps) => {
 	return (
 		<>
 			<Header leftIcon={'back'} title={'Add Client'} titleRight />
-			<ScrollView contentContainerStyle={[styles.scrollContainer, { backgroundColor: colors.background }]}>
+			<KeyboardAvoidingView
+				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+				style={{ flex: 1 }}
+				keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0} // Adjust as needed for your header height
+			>
+				<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+					<ScrollView
+						contentContainerStyle={[
+							styles.scrollContainer,
+							{ backgroundColor: colors.background },
+						]}
+					>
+						{/* Client Information Section */}
+						<View style={[styles.card, { backgroundColor: colors.card }]}>
+							<Text style={[styles.sectionTitle, { color: colors.title }]}>Client Information</Text>
 
-				{/* Client Information Section */}
-				<View style={[styles.card, { backgroundColor: colors.card }]}>
-					<Text style={[styles.sectionTitle, { color: colors.title }]}>Client Information</Text>
+							<View style={styles.inputContainer}>
+								<Input
+									placeholder="Full Name"
+									value={form.name}
+									onChangeText={(text) => handleChange('name', text)}
+									style={[styles.input, { color: colors.title }]}
+								/>
+								{errors.name ? <Text style={styles.errorText}>{errors.name}</Text> : null}
+							</View>
 
-					<View style={styles.inputContainer}>
-						<Input
-							placeholder="Full Name"
-							value={form.name}
-							onChangeText={(text) => handleChange('name', text)}
-							style={[styles.input, { color: colors.title }]}
-						/>
-						{errors.name ? <Text style={styles.errorText}>{errors.name}</Text> : null}
-					</View>
+							<View style={styles.inputContainer}>
+								<Input
+									placeholder="Mobile Number"
+									keyboardType="phone-pad"
+									maxlength={10}
+									value={form.phone}
+									onChangeText={(text) => handleChange('phone', text)}
+									style={[styles.input, { color: colors.title }]}
+								/>
+								{errors.phone ? <Text style={styles.errorText}>{errors.phone}</Text> : null}
+							</View>
 
-					<View style={styles.inputContainer}>
-						<Input
-							placeholder="Mobile Number"
-							keyboardType="phone-pad"
-							maxlength={10}
-							value={form.phone}
-							onChangeText={(text) => handleChange('phone', text)}
-							style={[styles.input, { color: colors.title }]}
-						/>
-						{errors.phone ? <Text style={styles.errorText}>{errors.phone}</Text> : null}
-					</View>
+							<View style={styles.inputContainer}>
+								<Input
+									placeholder="Email Address"
+									keyboardType="email-address"
+									value={form.email}
+									onChangeText={(text) => handleChange('email', text)}
+									style={[styles.input, { color: colors.title }]}
+								/>
+								{errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
+							</View>
+							<View style={styles.inputContainer}>
+								<Input
+									placeholder="GST Number(If any)"
+									value={form.gst}
+									onChangeText={(text) => handleChange('gst', text)}
+									style={[styles.input, { color: colors.title }]}
+									maxlength={12}
+								/>
+								{errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
+							</View>
+						</View>
 
-					<View style={styles.inputContainer}>
-						<Input
-							placeholder="Email Address"
-							keyboardType="email-address"
-							value={form.email}
-							onChangeText={(text) => handleChange('email', text)}
-							style={[styles.input, { color: colors.title }]}
-						/>
-						{errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
-					</View>
-					<View style={styles.inputContainer}>
-						<Input
-							placeholder="GST Number(If Any)"
-							value={form.gst}
-							onChangeText={(text) => handleChange('gst', text)}
-							style={[styles.input, { color: colors.title }]}
-							maxlength={12}
-						/>
-						{errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
-					</View>
-				</View>
+						{/* Address Information Section */}
+						<View style={[styles.card, { marginTop: 20, backgroundColor: colors.card }]}>
+							<Text style={[styles.sectionTitle, { color: colors.title }]}>Address Information</Text>
 
-				{/* Address Information Section */}
-				<View style={[styles.card, { marginTop: 20, backgroundColor: colors.card }]}>
-					<Text style={[styles.sectionTitle, { color: colors.title }]}>Address Information</Text>
+							<View style={styles.inputContainer}>
+								<Input
+									placeholder="Pincode"
+									keyboardType="numeric"
+									value={form.zipcode}
+									onChangeText={(text) => handleChange('zipcode', text)}
+									style={[styles.input, { color: colors.title }]}
+								/>
+								{errors.zipcode ? <Text style={styles.errorText}>{errors.zipcode}</Text> : null}
+							</View>
 
-					<View style={[styles.inputContainer]}>
-						<Input
-							placeholder="Pincode"
-							keyboardType="numeric"
-							value={form.zipcode}
-							onChangeText={(text) => handleChange('zipcode', text)}
-							style={[styles.input, { color: colors.title }]}
-						/>
-						{errors.zipcode ? <Text style={styles.errorText}>{errors.zipcode}</Text> : null}
-					</View>
+							<View style={styles.inputContainer}>
+								<Input
+									placeholder="City"
+									value={form.city}
+									onChangeText={(text) => handleChange('city', text)}
+									style={[styles.input, { color: colors.title }]}
+								/>
+								{errors.city ? <Text style={styles.errorText}>{errors.city}</Text> : null}
+							</View>
+							<View style={styles.inputContainer}>
+								<Input
+									placeholder="District"
+									value={form.district}
+									onChangeText={(text) => handleChange('district', text)}
+									style={[styles.input, { color: colors.title }]}
+								/>
+								{errors.district ? <Text style={styles.errorText}>{errors.district}</Text> : null}
+							</View>
 
+							<View style={styles.inputContainer}>
+								<Input
+									placeholder="State"
+									value={form.state}
+									onChangeText={(text) => handleChange('state', text)}
+									style={[styles.input, { color: colors.title }]}
+								/>
+								{errors.state ? <Text style={styles.errorText}>{errors.state}</Text> : null}
+							</View>
 
+							{/* Address field rendered as a textarea */}
+							<View style={styles.inputContainer}>
+								<Input
+									placeholder="Address"
+									value={form.address}
+									onChangeText={(text) => handleChange('address', text)}
+									style={[styles.input, styles.multilineInput]}
+									multiline={true}
+									numberOfLines={3}
+								/>
+								{errors.address ? <Text style={styles.errorText}>{errors.address}</Text> : null}
+							</View>
+						</View>
 
-					<View style={styles.inputContainer}>
-						<Input
-							placeholder="City"
-							value={form.city}
-							onChangeText={(text) => handleChange('city', text)}
-							style={[styles.input, { color: colors.title }]}
-						/>
-						{errors.city ? <Text style={styles.errorText}>{errors.city}</Text> : null}
-					</View>
-					<View style={styles.inputContainer}>
-						<Input
-							placeholder="District"
-							value={form.district}
-							onChangeText={(text) => handleChange('district', text)}
-							style={[styles.input, { color: colors.title }]}
-						/>
-						{errors.district ? <Text style={styles.errorText}>{errors.district}</Text> : null}
-					</View>
-
-					<View style={styles.inputContainer}>
-						<Input
-							placeholder="State"
-							value={form.state}
-							onChangeText={(text) => handleChange('state', text)}
-							style={[styles.input, { color: colors.title }]}
-						/>
-						{errors.state ? <Text style={styles.errorText}>{errors.state}</Text> : null}
-					</View>
-
-					{/* Address field rendered as a textarea */}
-					<View style={styles.inputContainer}>
-						<Input
-							placeholder="Address"
-							value={form.address}
-							onChangeText={(text) => handleChange('address', text)}
-							style={[styles.input, styles.multilineInput]}
-							multiline={true}
-							numberOfLines={3}
-						/>
-						{errors.address ? <Text style={styles.errorText}>{errors.address}</Text> : null}
-					</View>
-				</View>
-
-				{/* Submit Button */}
-				{!isLoading ?
-					<TouchableOpacity style={styles.button} onPress={handleSubmit}>
-						<Text style={styles.buttonText}>Add Client</Text>
-					</TouchableOpacity>
-					:
-					<ActivityIndicator color={COLORS.title} size={'large'} />
-				}
-
-			</ScrollView>
+						{/* Submit Button */}
+						{!isLoading ? (
+							<TouchableOpacity style={styles.button} onPress={handleSubmit}>
+								<Text style={styles.buttonText}>Add Client</Text>
+							</TouchableOpacity>
+						) : (
+							<ActivityIndicator color={COLORS.title} size={'large'} />
+						)}
+					</ScrollView>
+				</TouchableWithoutFeedback>
+			</KeyboardAvoidingView>
 		</>
 	);
 };
@@ -309,13 +320,11 @@ const styles = StyleSheet.create({
 	scrollContainer: {
 		flexGrow: 1,
 		padding: 10,
-		// backgroundColor: COLORS.light,
 	},
 	card: {
 		backgroundColor: '#fff',
 		padding: 20,
 		borderRadius: 15,
-
 	},
 	sectionTitle: {
 		fontSize: 22,
@@ -353,7 +362,6 @@ const styles = StyleSheet.create({
 		borderRadius: 12,
 		alignItems: 'center',
 		marginTop: 20,
-
 	},
 	buttonText: {
 		color: '#fff',
