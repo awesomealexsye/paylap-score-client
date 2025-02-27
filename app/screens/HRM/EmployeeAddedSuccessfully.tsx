@@ -1,0 +1,106 @@
+import React from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Linking,
+} from "react-native";
+import { AntDesign } from "@expo/vector-icons";
+
+import Header from "../../layout/Header";
+import { useTheme } from "@react-navigation/native";
+import { StackScreenProps } from "@react-navigation/stack";
+import { RootStackParamList } from "../../navigation/RootStackParamList";
+
+type EmployeeSuccessScreenProps = StackScreenProps<
+  RootStackParamList,
+  "EmployeeSuccessScreen"
+>;
+
+export const EmployeeSuccessScreen = ({
+  navigation,
+}: EmployeeSuccessScreenProps) => {
+  return (
+    <>
+      <Header leftIcon="back" title="Employee Added Successfully " />
+      <View style={styles.container}>
+        {/* App Download Section */}
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>
+            Please download app from Playstore
+          </Text>
+          <Text style={styles.cardText}>Please click on the below link:</Text>
+          <TouchableOpacity
+            onPress={() => Linking.openURL("http://bit.ly/hryu3a")}
+          >
+            <Text style={styles.link}>http://bit.ly/hryu3a</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Login Details Section */}
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Employee Login details</Text>
+          <Text style={styles.loginText}>
+            <Text style={styles.bold}>User:</Text> +1452 4521 5412
+          </Text>
+          <Text style={styles.loginText}>
+            <Text style={styles.bold}>Password:</Text> D5z145destg
+          </Text>
+        </View>
+
+        {/* Share Button */}
+        <TouchableOpacity style={styles.shareButton}>
+          <Text style={styles.shareButtonText}>
+            Share Details With Employee
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </>
+  );
+};
+
+export default EmployeeSuccessScreen;
+
+const styles = StyleSheet.create({
+  container: { flex: 1, paddingHorizontal: 20 },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#478DFF",
+    padding: 15,
+    paddingTop: 40,
+  },
+  headerTitle: { fontSize: 18, color: "white", marginLeft: 15 },
+  card: {
+    backgroundColor: "white",
+    borderRadius: 15,
+    padding: 15,
+    marginVertical: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  cardTitle: { fontSize: 16, fontWeight: "bold", color: "#333" },
+  cardText: { fontSize: 14, color: "#555", marginTop: 5 },
+  link: {
+    fontSize: 14,
+    color: "#478DFF",
+    marginTop: 5,
+    textDecorationLine: "underline",
+  },
+  loginText: { fontSize: 14, color: "#555", marginTop: 5 },
+  bold: { fontWeight: "bold", color: "#333" },
+  shareButton: {
+    backgroundColor: "#478DFF",
+    padding: 15,
+    borderRadius: 10,
+    alignItems: "center",
+    marginTop: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+  },
+  shareButtonText: { color: "white", fontSize: 16, fontWeight: "bold" },
+});
