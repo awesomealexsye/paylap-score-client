@@ -188,7 +188,7 @@ export const AddCompany = ({ navigation }: AddCompanyProps) => {
                             placeholder={t('gst')}
                             value={gst}
                             onChangeText={setGst}
-                            maxlength={15}
+                            maxlength={17}
                         />
                     </View>
                     <View style={{ marginTop: 10 }}>
