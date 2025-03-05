@@ -124,6 +124,7 @@ const Header = ({ title, leftIcon, leftAction, transparent, productId, titleLeft
                         style={[styles.actionBtn, {}]}
                     >
                         <FontAwesome size={22} color={colors.title} name={'home'} />
+                        <Text style={{ ...FONTS.fontSm, color: colors.title }}>Home</Text>
                     </TouchableOpacity>
                 }
                 {rightIcon5 == "close" &&

@@ -23,8 +23,7 @@ interface InstalledAppBuild {
 const DrawerMenu = () => {
 
     const { t } = useTranslation();
-
-    const MenuItems = [
+    const [MenuItems, setMenuItems] = useState([
         {
             id: "1",
             icon: IMAGES.home,
@@ -32,49 +31,109 @@ const DrawerMenu = () => {
             navigate: "Home",
         },
         {
-            id: "2",
+            id: "3",
             icon: IMAGES.wallet2,
             name: t('withdrawal'),
             navigate: 'WithdrawalAmount',
         },
         {
-            id: "3",
+            id: "4",
             icon: IMAGES.tachometerfast,
             name: t('myCibil'),
             navigate: 'CustomerScore',
         },
         {
-            id: "4",
+            id: "5",
             icon: IMAGES.help,
             name: t('support'),
             navigate: 'CustomerSupport',
         },
         {
-            id: "5",
+            id: "6",
             icon: IMAGES.termandCondition,
             name: t('ourPolicy'),
             navigate: 'TermsAndConditionsScreen',
         },
-
         {
-            id: "6",
+            id: "7",
             icon: IMAGES.share,
             name: t('share'),
             navigate: "ShareApp",
         },
         {
-            id: "7",
+            id: "8",
             icon: IMAGES.list,
             name: t('Business'),
             navigate: 'InvoiceLists',
         },
         {
-            id: "7",
+            id: "9",
             icon: IMAGES.logout,
             name: t('logout'),
             navigate: 'MobileSignIn',
         }
-    ];
+    ]);
+
+    // const MenuItems = [
+    //     {
+    //         id: "1",
+    //         icon: IMAGES.home,
+    //         name: t('home'),
+    //         navigate: "Home",
+    //     },
+
+    //     // {
+    //     //     id: "2",
+    //     //     icon: IMAGES.Category,
+    //     //     name: t('KYC'),
+    //     //     navigate: 'UserKyc',
+    //     // },
+    //     {
+    //         id: "3",
+    //         icon: IMAGES.wallet2,
+    //         name: t('withdrawal'),
+    //         navigate: 'WithdrawalAmount',
+    //     },
+
+    //     {
+    //         id: "4",
+    //         icon: IMAGES.tachometerfast,
+    //         name: t('myCibil'),
+    //         navigate: 'CustomerScore',
+    //     },
+    //     {
+    //         id: "5",
+    //         icon: IMAGES.help,
+    //         name: t('support'),
+    //         navigate: 'CustomerSupport',
+    //     },
+    //     {
+    //         id: "6",
+    //         icon: IMAGES.termandCondition,
+    //         name: t('ourPolicy'),
+    //         navigate: 'TermsAndConditionsScreen',
+    //     },
+
+    //     {
+    //         id: "7",
+    //         icon: IMAGES.share,
+    //         name: t('share'),
+    //         navigate: "ShareApp",
+    //     },
+    //     {
+    //         id: "8",
+    //         icon: IMAGES.list,
+    //         name: t('Business'),
+    //         navigate: 'InvoiceLists',
+    //     },
+    //     {
+    //         id: "9",
+    //         icon: IMAGES.logout,
+    //         name: t('logout'),
+    //         navigate: 'MobileSignIn',
+    //     }
+    // ];
+
 
     const { OS } = Platform;
     type AppConfig = {
@@ -117,6 +176,23 @@ const DrawerMenu = () => {
     const [installedAppBuild, setInstalledAppBuild] = useState<InstalledAppBuild>({ APP_VERSION: 0, APP_VERSION_NAME: '' });
     useEffect(() => {
         getAppversion();
+        CommonService.currentUserDetail().then((res) => {
+            // If aadhaar_card is empty, add the KYC menu item at the desired position.
+            if (res.aadhar_card === '') {
+                // Here, we're inserting the KYC menu item as the second item.
+                const updatedMenuItems = [
+                    MenuItems[0],
+                    {
+                        id: "2",
+                        icon: IMAGES.Category,
+                        name: t('KYC'),
+                        navigate: 'UserKyc',
+                    },
+                    ...MenuItems.slice(1)
+                ];
+                setMenuItems(updatedMenuItems);
+            }
+        });
     }, []);
 
     // useEffect(() => {
