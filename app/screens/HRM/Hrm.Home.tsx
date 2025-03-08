@@ -16,10 +16,13 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
+import { useTheme } from "@react-navigation/native";
 
 type HrmHomeScreenProps = StackScreenProps<RootStackParamList, "HrmHomeScreen">;
 
 export const HrmHomeScreen = ({ navigation }: HrmHomeScreenProps) => {
+  const theme = useTheme();
+  const { colors }: { colors: any } = theme;
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -29,17 +32,22 @@ export const HrmHomeScreen = ({ navigation }: HrmHomeScreenProps) => {
       {/* Main Content */}
       <ScrollView style={styles.content}>
         {/* Grid Section */}
-        <View style={styles.gridContainer}>
+        <View
+          style={[
+            styles.gridContainer,
+            { backgroundColor: colors.backgroundColor },
+          ]}
+        >
           {[
             {
               title: "Employee Management",
-              icon: "user-tie",
+              icon: "users",
               color: "#6A5ACD",
               route: "EmployeeManagementScreen",
             },
             {
               title: "Expenses Management",
-              icon: "cash-multiple",
+              icon: "wallet",
               color: "#FF5733",
             },
             {
@@ -52,18 +60,19 @@ export const HrmHomeScreen = ({ navigation }: HrmHomeScreenProps) => {
             <TouchableOpacity
               onPress={() => navigation.navigate(item?.route)}
               key={index}
-              style={[styles.card, { borderLeftColor: item.color }]}
+              style={[
+                styles.card,
+                { borderLeftColor: item.color, backgroundColor: colors.card },
+              ]}
             >
               <View
                 style={[styles.iconContainer, { backgroundColor: item.color }]}
               >
-                <MaterialCommunityIcons
-                  name={item.icon}
-                  size={30}
-                  color="white"
-                />
+                <FontAwesome5 name={item.icon} size={24} color="white" />
               </View>
-              <Text style={styles.cardText}>{item.title}</Text>
+              <Text style={[styles.cardText, { color: colors.title }]}>
+                {item.title}
+              </Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -73,7 +82,7 @@ export const HrmHomeScreen = ({ navigation }: HrmHomeScreenProps) => {
           { title: "Client Management", icon: "briefcase", color: "#1E90FF" },
           {
             title: "NOC/Ex Certificate",
-            icon: "file-certificate",
+            icon: "file-alt",
             color: "#FF8C00",
           },
           {
@@ -84,7 +93,10 @@ export const HrmHomeScreen = ({ navigation }: HrmHomeScreenProps) => {
           },
           { title: "Award", icon: "trophy", color: "#8A2BE2" },
         ].map((item, index) => (
-          <TouchableOpacity key={index} style={styles.listItem}>
+          <TouchableOpacity
+            key={index}
+            style={[styles.listItem, { backgroundColor: colors.card }]}
+          >
             <View
               style={[
                 styles.listIconContainer,
@@ -93,7 +105,9 @@ export const HrmHomeScreen = ({ navigation }: HrmHomeScreenProps) => {
             >
               <FontAwesome5 name={item.icon} size={20} color="white" />
             </View>
-            <Text style={styles.listText}>{item.title}</Text>
+            <Text style={[styles.listText, { color: colors.title }]}>
+              {item.title}
+            </Text>
             {item.notification && <View style={styles.notificationDot} />}
           </TouchableOpacity>
         ))}
@@ -142,25 +156,22 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: "#FFFFFF",
     width: "48%",
-    padding: 20,
+    padding: 10,
     borderRadius: 15,
     alignItems: "center",
     marginBottom: 15,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
     elevation: 3,
     borderLeftWidth: 4, // Colored border
   },
   iconContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 10,
+    width: 40,
+    height: 40,
+    borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
   },
   cardText: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: "500",
     color: "#444",
     marginTop: 10,
@@ -171,24 +182,21 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     flexDirection: "row",
     alignItems: "center",
-    padding: 15,
+    padding: 8,
     borderRadius: 10,
     marginBottom: 10,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
+    borderLeftWidth: 4, // Colored border
   },
   listIconContainer: {
     width: 40,
     height: 40,
-    borderRadius: 10,
+    borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
   },
   listText: {
     flex: 1,
-    fontSize: 15,
+    fontSize: 12,
     fontWeight: "500",
     color: "#333",
     marginLeft: 15,

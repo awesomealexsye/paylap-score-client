@@ -80,92 +80,6 @@ const employees = [
 ];
 
 // Status legend component
-const StatusLegend = () => (
-  <View style={styles.legendContainer}>
-    <View style={styles.legendItem}>
-      <View style={[styles.legendDot, { backgroundColor: "#4CAF50" }]} />
-      <Text style={styles.legendText}>Present</Text>
-    </View>
-    <View style={styles.legendItem}>
-      <View style={[styles.legendDot, { backgroundColor: "#FF9800" }]} />
-      <Text style={styles.legendText}>Absent</Text>
-    </View>
-    <View style={styles.legendItem}>
-      <View style={[styles.legendDot, { backgroundColor: "#FFC107" }]} />
-      <Text style={styles.legendText}>Half Day</Text>
-    </View>
-    <View style={styles.legendItem}>
-      <View style={[styles.legendDot, { backgroundColor: "#2196F3" }]} />
-      <Text style={styles.legendText}>Holiday</Text>
-    </View>
-  </View>
-);
-
-// Employee card component
-const EmployeeCard = ({ employee, onApprove, onReject, showActions }) => {
-  const getStatusLabel = (status) => {
-    switch (status) {
-      case "P":
-        return "Present";
-      case "A":
-        return "Absent";
-      case "H/D":
-        return "Half Day";
-      case "H":
-        return "Holiday";
-      default:
-        return status;
-    }
-  };
-
-  return (
-    <View style={styles.card}>
-      <View style={styles.cardHeader}>
-        <View style={styles.employeeInfo}>
-          <Image source={{ uri: employee.avatar }} style={styles.avatar} />
-          <View style={styles.nameContainer}>
-            <Text style={styles.name}>{employee.name}</Text>
-            <Text style={styles.role}>{employee.role}</Text>
-          </View>
-        </View>
-        <View
-          style={[
-            styles.statusBadge,
-            { backgroundColor: getStatusColor(employee.status) },
-          ]}
-        >
-          <Text style={styles.statusText}>
-            {getStatusLabel(employee.status)}
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.timeContainer}>
-        <Ionicons name="time-outline" size={16} color="#666" />
-        <Text style={styles.time}>{employee.time}</Text>
-      </View>
-
-      {showActions && (
-        <View style={styles.actionButtons}>
-          <TouchableOpacity
-            style={styles.approveButton}
-            onPress={() => onApprove(employee)}
-          >
-            <Ionicons name="checkmark-circle" size={16} color="#fff" />
-            <Text style={styles.buttonText}>Approve</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.rejectButton}
-            onPress={() => onReject(employee)}
-          >
-            <Ionicons name="close-circle" size={16} color="#fff" />
-            <Text style={styles.buttonText}>Reject</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-    </View>
-  );
-};
 
 type EmployeeAttendendsListProps = StackScreenProps<
   RootStackParamList,
@@ -175,6 +89,9 @@ type EmployeeAttendendsListProps = StackScreenProps<
 export const EmployeeAttendendsList = ({
   navigation,
 }: EmployeeAttendendsListProps) => {
+  const theme = useTheme();
+  const { colors }: { colors: any } = theme;
+
   const [selectedTab, setSelectedTab] = useState("Request");
   const [employeeData, setEmployeeData] = useState(employees);
 
@@ -222,16 +139,119 @@ export const EmployeeAttendendsList = ({
     selectedTab === "Approve" ? emp.approved : !emp.approved
   );
 
+  const StatusLegend = () => (
+    <View style={[styles.legendContainer, { backgroundColor: colors.card }]}>
+      <View style={styles.legendItem}>
+        <View style={[styles.legendDot, { backgroundColor: "#4CAF50" }]} />
+        <Text style={[styles.legendText, { color: colors.title }]}>
+          Present
+        </Text>
+      </View>
+      <View style={styles.legendItem}>
+        <View style={[styles.legendDot, { backgroundColor: "#FF9800" }]} />
+        <Text style={[styles.legendText, { color: colors.title }]}>Absent</Text>
+      </View>
+      <View style={styles.legendItem}>
+        <View style={[styles.legendDot, { backgroundColor: "#FFC107" }]} />
+        <Text style={[styles.legendText, { color: colors.title }]}>
+          Half Day
+        </Text>
+      </View>
+      <View style={styles.legendItem}>
+        <View style={[styles.legendDot, { backgroundColor: "#2196F3" }]} />
+        <Text style={[styles.legendText, { color: colors.title }]}>
+          Holiday
+        </Text>
+      </View>
+    </View>
+  );
+
+  // Employee card component
+  const EmployeeCard = ({ employee, onApprove, onReject, showActions }) => {
+    const getStatusLabel = (status) => {
+      switch (status) {
+        case "P":
+          return "Present";
+        case "A":
+          return "Absent";
+        case "H/D":
+          return "Half Day";
+        case "H":
+          return "Holiday";
+        default:
+          return status;
+      }
+    };
+
+    return (
+      <TouchableOpacity
+        onPress={navigation.navigate("EmployeeAttendanceDetails")}
+      >
+        <View style={[styles.card, { backgroundColor: colors.card }]}>
+          <View style={styles.cardHeader}>
+            <View style={styles.employeeInfo}>
+              <Image source={{ uri: employee.avatar }} style={styles.avatar} />
+              <View style={styles.nameContainer}>
+                <Text style={[styles.name, { color: colors.title }]}>
+                  {employee.name}
+                </Text>
+                <Text style={[styles.role, { color: colors.title }]}>
+                  {employee.role}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={[
+                styles.statusBadge,
+                { backgroundColor: getStatusColor(employee.status) },
+              ]}
+            >
+              <Text style={[styles.statusText]}>
+                {getStatusLabel(employee.status)}
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.timeContainer}>
+            <Ionicons name="time-outline" size={16} color={colors.title} />
+            <Text style={[styles.time, { color: colors.title }]}>
+              {employee.time}
+            </Text>
+          </View>
+
+          {showActions && (
+            <View style={styles.actionButtons}>
+              <TouchableOpacity
+                style={styles.approveButton}
+                onPress={() => onApprove(employee)}
+              >
+                <Ionicons name="checkmark-circle" size={16} color="#fff" />
+                <Text style={styles.buttonText}>Approve</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.rejectButton}
+                onPress={() => onReject(employee)}
+              >
+                <Ionicons name="close-circle" size={16} color="#fff" />
+                <Text style={styles.buttonText}>Reject</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#4A6EF5" />
+      <StatusBar barStyle="light-content" />
       {/* Header */}
 
       <Header leftIcon="back" title="Employee Attend List " />
 
       {/* Date display */}
-      <View style={styles.dateContainer}>
-        <Text style={styles.dateText}>
+      <View style={[styles.dateContainer, { backgroundColor: colors.card }]}>
+        <Text style={[styles.dateText, { color: colors.title }]}>
           {new Date().toLocaleDateString("en-US", {
             weekday: "long",
             year: "numeric",
@@ -245,18 +265,19 @@ export const EmployeeAttendendsList = ({
       <StatusLegend />
 
       {/* Tabs */}
-      <View style={styles.tabContainer}>
+      <View style={[styles.tabContainer, { backgroundColor: colors.card }]}>
         <TouchableOpacity
-          style={[styles.tab, selectedTab === "Request" && styles.activeTab]}
+          style={[styles.tab, { backgroundColor: colors.card }]}
           onPress={() => {
             setSelectedTab("Request");
-            navigation.navigate("EmployeeAttendanceDetails");
+            // navigation.navigate("EmployeeAttendanceDetails");
           }}
         >
           <Text
             style={[
               styles.tabText,
               selectedTab === "Request" && styles.activeTabText,
+              { color: colors.title },
             ]}
           >
             Request
@@ -264,7 +285,7 @@ export const EmployeeAttendendsList = ({
           {selectedTab === "Request" && <View style={styles.activeIndicator} />}
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.tab, selectedTab === "Approve" && styles.activeTab]}
+          style={[styles.tab, { backgroundColor: colors.card }]}
           onPress={() => setSelectedTab("Approve")}
         >
           <Text
@@ -292,13 +313,16 @@ export const EmployeeAttendendsList = ({
               showActions={selectedTab === "Request"}
             />
           )}
-          contentContainerStyle={styles.listContainer}
+          contentContainerStyle={[
+            styles.listContainer,
+            { backgroundColor: colors.background },
+          ]}
           showsVerticalScrollIndicator={false}
         />
       ) : (
         <View style={styles.emptyContainer}>
           <MaterialIcons name="event-busy" size={64} color="#ccc" />
-          <Text style={styles.emptyText}>
+          <Text style={[styles.emptyText, { color: colors.title }]}>
             No {selectedTab.toLowerCase()} records found
           </Text>
         </View>
@@ -325,28 +349,8 @@ const getStatusColor = (status: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8F9FD",
   },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "#4A6EF5",
-    padding: 16,
-    elevation: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-  },
-  headerButton: {
-    padding: 8,
-  },
-  headerTitle: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
+
   dateContainer: {
     paddingHorizontal: 16,
     paddingVertical: 12,
@@ -402,9 +406,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
   },
-  activeTab: {
-    backgroundColor: "#fff",
-  },
+
   activeIndicator: {
     position: "absolute",
     bottom: 0,

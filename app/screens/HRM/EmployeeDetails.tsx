@@ -15,6 +15,8 @@ type EmployeeDetailScreenProps = StackScreenProps<
 export const EmployeeDetailScreen = ({
   navigation,
 }: EmployeeDetailScreenProps) => {
+  const theme = useTheme();
+  const { colors }: { colors: any } = theme;
   return (
     <>
       <Header leftIcon="back" title=" Employee Details" />
@@ -29,34 +31,46 @@ export const EmployeeDetailScreen = ({
 
         {/* Salary & Employee ID */}
         <View style={styles.row}>
-          <View style={styles.box}>
-            <Text style={styles.label}>Per Day</Text>
-            <Text style={styles.value}>$570.00</Text>
+          <View style={[styles.box, { backgroundColor: colors.card }]}>
+            <Text style={[styles.label, { color: colors.title }]}>Per Day</Text>
+            <Text style={[styles.value, { color: colors.title }]}>$570.00</Text>
           </View>
-          <View style={styles.box}>
-            <Text style={styles.label}>Employee ID</Text>
-            <Text style={styles.value}>1234</Text>
+          <View style={[styles.box, { backgroundColor: colors.card }]}>
+            <Text style={[styles.label, { color: colors.title }]}>
+              Employee ID
+            </Text>
+            <Text style={[styles.value, , { color: colors.title }]}>1234</Text>
           </View>
         </View>
 
         {/* Joining Date, Reference & Contact */}
-        <View style={styles.infoCard}>
+        <View style={[styles.infoCard, { backgroundColor: colors.card }]}>
           <View style={styles.infoRow}>
             <Text style={styles.label}>Joining Date</Text>
             <Text style={styles.label}>Reference</Text>
             <Text style={styles.label}>Contact No</Text>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.value}>10-06-2021</Text>
-            <Text style={styles.value}>Ibne Riead</Text>
-            <Text style={styles.value}>+1254 2415 156</Text>
+            <Text style={[styles.value, { color: colors.title }]}>
+              10-06-2021
+            </Text>
+            <Text style={[styles.value, { color: colors.title }]}>
+              Ibne Riead
+            </Text>
+            <Text style={[styles.value, { color: colors.title }]}>
+              +1254 2415 156
+            </Text>
           </View>
         </View>
 
         {/* Working Days */}
-        <View style={styles.workingCard}>
-          <Text style={styles.label}>Working day</Text>
-          <Text style={styles.value}>Mon, Tue, Wed, Thu, San</Text>
+        <View style={[styles.workingCard, { backgroundColor: colors.card }]}>
+          <Text style={[styles.label, { color: colors.title }]}>
+            Working day
+          </Text>
+          <Text style={[styles.value, { color: colors.title }]}>
+            Mon, Tue, Wed, Thu, San
+          </Text>
         </View>
 
         {/* Buttons */}
@@ -101,7 +115,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   avatarText: { fontSize: 24, color: "white", fontWeight: "bold" },
-  role: { fontSize: 16, color: "#666", marginTop: 5 },
+  role: { fontSize: 14, color: "#888", marginTop: 5 },
   row: { flexDirection: "row", justifyContent: "space-between" },
   box: {
     flex: 1,
@@ -110,20 +124,14 @@ const styles = StyleSheet.create({
     margin: 5,
     borderRadius: 12,
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
   },
   label: { fontSize: 14, color: "#777", fontWeight: "bold" },
-  value: { fontSize: 16, fontWeight: "bold", color: "#333", marginTop: 5 },
+  value: { fontSize: 12, fontWeight: "bold", color: "#333", marginTop: 5 },
   infoCard: {
     backgroundColor: "white",
-    padding: 15,
+    padding: 10,
     borderRadius: 12,
     marginVertical: 10,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
   },
   infoRow: {
     flexDirection: "row",

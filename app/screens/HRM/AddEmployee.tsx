@@ -19,6 +19,9 @@ import { RootStackParamList } from "../../navigation/RootStackParamList";
 type AddEmployeeProps = StackScreenProps<RootStackParamList, "AddEmployee">;
 
 export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
+  const theme = useTheme();
+  const { colors }: { colors: any } = theme;
+
   const [joiningDate, setJoiningDate] = useState("01/10/2020");
   const [employeeId, setEmployeeId] = useState("1254");
   const [fullName, setFullName] = useState("Vishal ");
@@ -38,23 +41,34 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
         style={styles.formContainer}
       >
         <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={styles.profileSection}>
+          <View
+            style={[
+              styles.profileSection,
+              { backgroundColor: colors.background },
+            ]}
+          >
             <View style={styles.profileImageContainer}>
               <Image
                 // source={require('../../assets/profile.png')}
                 style={styles.profileImage}
               />
               <View style={styles.cameraIconContainer}>
-                <Ionicons name="camera" size={16} color="white" />
+                <Ionicons name="camera" size={16} color={colors.title} />
               </View>
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Joining Date</Text>
+              <Text style={[styles.inputLabel, { color: colors.title }]}>
+                Joining Date
+              </Text>
               <View style={styles.dateInputContainer}>
                 <TextInput
-                  style={styles.input}
+                  style={[
+                    styles.input,
+                    { color: colors.title, backgroundColor: colors.card },
+                  ]}
                   value={joiningDate}
+                  placeholderTextColor={colors.title}
                   onChangeText={setJoiningDate}
                 />
                 <TouchableOpacity style={styles.dateIcon}>
@@ -64,10 +78,16 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Employee ID</Text>
+              <Text style={[styles.inputLabel, { color: colors.title }]}>
+                Employee ID
+              </Text>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  { backgroundColor: colors.card, color: colors.title },
+                ]}
                 value={employeeId}
+                placeholderTextColor={colors.title}
                 onChangeText={setEmployeeId}
               />
             </View>
@@ -75,18 +95,28 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
 
           <View style={styles.formFields}>
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Full Name</Text>
+              <Text style={[styles.inputLabel, { color: colors.title }]}>
+                Full Name
+              </Text>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  { backgroundColor: colors.card, color: colors.title },
+                ]}
                 value={fullName}
                 onChangeText={setFullName}
               />
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Mobile Number</Text>
+              <Text style={[styles.inputLabel, { color: colors.title }]}>
+                Mobile Number
+              </Text>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  { backgroundColor: colors.card, color: colors.title },
+                ]}
                 value={mobileNumber}
                 onChangeText={setMobileNumber}
                 keyboardType="phone-pad"
@@ -94,10 +124,15 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Designation</Text>
+              <Text style={[styles.inputLabel, { color: colors.title }]}>
+                Designation
+              </Text>
               <TouchableOpacity style={styles.dropdownInput}>
                 <TextInput
-                  style={styles.input}
+                  style={[
+                    styles.input,
+                    { backgroundColor: colors.card, color: colors.title },
+                  ]}
                   value={designation}
                   onChangeText={setDesignation}
                   editable={false}
@@ -111,10 +146,15 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Working Day</Text>
+              <Text style={[styles.inputLabel, { color: colors.title }]}>
+                Working Day
+              </Text>
               <TouchableOpacity style={styles.dropdownInput}>
                 <TextInput
-                  style={styles.input}
+                  style={[
+                    styles.input,
+                    { backgroundColor: colors.card, color: colors.title },
+                  ]}
                   value={workingDay}
                   onChangeText={setWorkingDay}
                   editable={false}
@@ -128,10 +168,16 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Basic Pay</Text>
+              <Text style={[styles.inputLabel, { color: colors.title }]}>
+                Basic Pay
+              </Text>
               <View style={styles.paymentContainer}>
                 <TextInput
-                  style={[styles.input, styles.payInput]}
+                  style={[
+                    styles.input,
+                    styles.payInput,
+                    { backgroundColor: colors.card, color: colors.title },
+                  ]}
                   value={basicPay}
                   onChangeText={setBasicPay}
                   keyboardType="numeric"
@@ -149,6 +195,7 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
                         styles.paymentTypeText,
                         paymentType === "Per Day" &&
                           styles.activePaymentTypeText,
+                        { color: colors.title },
                       ]}
                     >
                       Per Day
@@ -166,6 +213,7 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
                         styles.paymentTypeText,
                         paymentType === "Monthly" &&
                           styles.activePaymentTypeText,
+                        { color: colors.title },
                       ]}
                     >
                       Monthly
@@ -176,10 +224,15 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Gender</Text>
+              <Text style={[styles.inputLabel, { color: colors.title }]}>
+                Gender
+              </Text>
               <TouchableOpacity style={styles.dropdownInput}>
                 <TextInput
-                  style={styles.input}
+                  style={[
+                    styles.input,
+                    { backgroundColor: colors.card, color: colors.title },
+                  ]}
                   value={gender}
                   onChangeText={setGender}
                   editable={false}
@@ -193,10 +246,15 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Add Reference</Text>
+              <Text style={[styles.inputLabel, { color: colors.title }]}>
+                Add Reference
+              </Text>
               <TouchableOpacity style={styles.referenceInput}>
                 <TextInput
-                  style={styles.input}
+                  style={[
+                    styles.input,
+                    { backgroundColor: colors.card, color: colors.title },
+                  ]}
                   value={reference}
                   onChangeText={setReference}
                   placeholder="Enter Reference Name"
@@ -225,7 +283,6 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
 
 const styles = StyleSheet.create({
   formContainer: {
-    backgroundColor: "white",
     paddingHorizontal: 16,
     paddingTop: 24,
     paddingBottom: 16,

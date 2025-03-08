@@ -56,18 +56,22 @@ export const EmployeeListScreen = ({ navigation }: EmployeeListScreenProps) => {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity
-              style={styles.card}
+              style={[styles.card, { backgroundColor: colors.card }]}
               onPress={() => {
                 setSelectedId(item.id);
                 navigation.navigate("EmployeeDetailScreen");
               }}
             >
               <View style={[styles.avatar, { backgroundColor: item.color }]}>
-                <Text style={styles.avatarText}>{item.name[0]}</Text>
+                <Text style={[styles.avatarText, { color: colors.title }]}>
+                  {item.name[0]}
+                </Text>
               </View>
               <View style={styles.info}>
-                <Text style={styles.name}>{item.name}</Text>
-                <Text style={styles.role}>{item.role}</Text>
+                <Text style={[styles.name, { color: colors.title }]}>
+                  {item.name}
+                </Text>
+                <Text style={[styles.role]}>{item.role}</Text>
               </View>
               {selectedId === item.id && (
                 <FontAwesome name="dot-circle-o" size={20} color="#478DFF" />
@@ -89,23 +93,6 @@ export const EmployeeListScreen = ({ navigation }: EmployeeListScreenProps) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-
-  // Header
-  header: {
-    backgroundColor: "#4A90E2",
-    paddingVertical: 18,
-    paddingHorizontal: 20,
-    flexDirection: "row",
-    alignItems: "center",
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 4,
-  },
-  backButton: { padding: 8, marginRight: 10 },
-  headerText: { fontSize: 18, fontWeight: "bold", color: "#FFFFFF" },
 
   // Content
   content: {
@@ -129,17 +116,13 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 5,
   },
   card: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "white",
-    padding: 15,
-    borderRadius: 15,
+    padding: 10,
+    borderRadius: 12,
     marginVertical: 5,
     marginHorizontal: 15,
     shadowColor: "#000",
@@ -156,8 +139,8 @@ const styles = StyleSheet.create({
   },
   avatarText: { color: "white", fontSize: 16, fontWeight: "bold" },
   info: { flex: 1, marginLeft: 15 },
-  name: { fontSize: 16, fontWeight: "bold", color: "#333" },
-  role: { fontSize: 14, color: "#777" },
+  name: { fontSize: 13, fontWeight: "bold", color: "#333" },
+  role: { fontSize: 12, color: "#777" },
 });
 
 export default EmployeeListScreen;

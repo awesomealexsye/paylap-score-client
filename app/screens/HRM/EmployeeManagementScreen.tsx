@@ -14,6 +14,7 @@ import {
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/RootStackParamList";
 import Header from "../../layout/Header";
+import { useTheme } from "@react-navigation/native";
 
 type EmployeeManagementScreenProps = StackScreenProps<
   RootStackParamList,
@@ -23,6 +24,9 @@ type EmployeeManagementScreenProps = StackScreenProps<
 export const EmployeeManagementScreen = ({
   navigation,
 }: EmployeeManagementScreenProps) => {
+  const theme = useTheme();
+  const { colors }: { colors: any } = theme;
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -46,12 +50,12 @@ export const EmployeeManagementScreen = ({
           },
           {
             title: "Leave Management",
-            icon: "calendar-remove",
+            icon: "calendar-minus",
             color: "#1E90FF",
           },
           {
             title: "Employees Overtime",
-            icon: "clock-outline",
+            icon: "business-time",
             color: "#FFD700",
           },
           {
@@ -64,13 +68,11 @@ export const EmployeeManagementScreen = ({
           <TouchableOpacity
             onPress={() => navigation.navigate(item?.route)}
             key={index}
-            style={styles.listItem}
+            style={[
+              styles.listItem,
+              { borderLeftColor: item.color, backgroundColor: colors.card },
+            ]}
           >
-            {/* Left Colored Border */}
-            <View
-              style={[styles.leftBorder, { backgroundColor: item.color }]}
-            />
-
             {/* Icon Container */}
             <View
               style={[
@@ -82,7 +84,9 @@ export const EmployeeManagementScreen = ({
             </View>
 
             {/* Text */}
-            <Text style={styles.listText}>{item.title}</Text>
+            <Text style={[styles.listText, { color: colors.title }]}>
+              {item.title}
+            </Text>
 
             {/* Arrow */}
             <Feather name="chevron-right" size={22} color="#999" />
@@ -96,45 +100,18 @@ export const EmployeeManagementScreen = ({
 const styles = StyleSheet.create({
   container: { flex: 1 },
 
-  // Header
-  header: {
-    backgroundColor: "#4A90E2",
-    paddingVertical: 18,
-    paddingHorizontal: 20,
-    flexDirection: "row",
-    alignItems: "center",
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 4,
-  },
-  backButton: { padding: 8, marginRight: 10 },
-  headerText: { fontSize: 18, fontWeight: "bold", color: "#FFFFFF" },
-
   // Content
   content: { padding: 15 },
 
   // List Items
   listItem: {
-    backgroundColor: "#FFFFFF",
     flexDirection: "row",
     alignItems: "center",
-    padding: 15,
+    padding: 8,
     borderRadius: 12,
     marginBottom: 10,
-    shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
+    borderLeftWidth: 4, // Colored border
     position: "relative",
-  },
-  leftBorder: {
-    width: 4,
-    height: "100%",
-    borderRadius: 10,
-    position: "absolute",
   },
   listIconContainer: {
     width: 40,
@@ -144,7 +121,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginRight: 15,
   },
-  listText: { flex: 1, fontSize: 15, fontWeight: "500", color: "#333" },
+  listText: { flex: 1, fontSize: 12, fontWeight: "500" },
 });
 
 export default EmployeeManagementScreen;

@@ -21,16 +21,21 @@ type EmployeeSuccessScreenProps = StackScreenProps<
 export const EmployeeSuccessScreen = ({
   navigation,
 }: EmployeeSuccessScreenProps) => {
+  const theme = useTheme();
+  const { colors }: { colors: any } = theme;
+
   return (
     <>
       <Header leftIcon="back" title="Employee Added Successfully " />
       <View style={styles.container}>
         {/* App Download Section */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>
+        <View style={[styles.card, { backgroundColor: colors.card }]}>
+          <Text style={[styles.cardTitle, { color: colors.title }]}>
             Please download app from Playstore
           </Text>
-          <Text style={styles.cardText}>Please click on the below link:</Text>
+          <Text style={[styles.cardText, { color: colors.title }]}>
+            Please click on the below link:
+          </Text>
           <TouchableOpacity
             onPress={() => Linking.openURL("http://bit.ly/hryu3a")}
           >
@@ -39,13 +44,19 @@ export const EmployeeSuccessScreen = ({
         </View>
 
         {/* Login Details Section */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Employee Login details</Text>
-          <Text style={styles.loginText}>
-            <Text style={styles.bold}>User:</Text> +1452 4521 5412
+        <View style={[styles.card, { backgroundColor: colors.card }]}>
+          <Text style={[styles.cardTitle, { color: colors.title }]}>
+            Employee Login details
           </Text>
-          <Text style={styles.loginText}>
-            <Text style={styles.bold}>Password:</Text> D5z145destg
+          <Text style={[styles.loginText, { color: colors.title }]}>
+            <Text style={[styles.bold, { color: colors.title }]}>User:</Text>{" "}
+            +1452 4521 5412
+          </Text>
+          <Text style={[styles.loginText, { color: colors.title }]}>
+            <Text style={[styles.bold, { color: colors.title }]}>
+              Password:
+            </Text>{" "}
+            D5z145destg
           </Text>
         </View>
 
@@ -64,16 +75,8 @@ export default EmployeeSuccessScreen;
 
 const styles = StyleSheet.create({
   container: { flex: 1, paddingHorizontal: 20 },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#478DFF",
-    padding: 15,
-    paddingTop: 40,
-  },
-  headerTitle: { fontSize: 18, color: "white", marginLeft: 15 },
+
   card: {
-    backgroundColor: "white",
     borderRadius: 15,
     padding: 15,
     marginVertical: 10,
