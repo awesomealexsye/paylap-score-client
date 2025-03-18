@@ -136,4 +136,5 @@ export type RootStackParamList = {
   EmployeeDetailScreen: any;
   EmployeeAttendendsList: any;
   EmployeeAttendanceDetails: any;
+  EditEmployee: any;
 };

@@ -17,19 +17,26 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/RootStackParamList";
 import StorageService from "../../lib/StorageService";
 import CONFIG from "../../constants/config";
-import { useCreateEmployeeMutation } from "../../redux/api/employee.api";
+import {
+  useUpdateEmployeeMutation,
+  useGetEmployeeDetailsQuery,
+} from "../../redux/api/employee.api";
 
-type AddEmployeeProps = StackScreenProps<RootStackParamList, "AddEmployee">;
+type EditEmployeeProps = StackScreenProps<RootStackParamList, "EditEmployee">;
 
-export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
+export const EditEmployee = ({ navigation, route }: EditEmployeeProps) => {
   const theme = useTheme();
-  const { colors }: { colors: any } = theme;
+  const { colors } = theme;
 
-  const [createEmployee] = useCreateEmployeeMutation();
+  // Assume employeeId is passed via route.params
+  const employee = route.params;
+
+  // RTK hook for updating employee details
+  const [updateEmployee] = useUpdateEmployeeMutation();
 
   // Combined state object for all employee fields
   const [formData, setFormData] = useState({
-    joining_date: "2025-01-01",
+    joining_date: "",
     name: "",
     email: "",
     mobile: "",
@@ -58,30 +65,49 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
     fetchCredentials();
   }, []);
 
-  const handleSave = async () => {
-    if (!credentials) return;
+  // Fetch employee details using employeeId and credentials
+  const { data, isLoading, error } = useGetEmployeeDetailsQuery(
+    {
+      id: employee?.id,
+      user_id: credentials?.user_id,
+      auth_key: credentials?.auth_key,
+    },
+    { skip: !credentials || !employee?.id }
+  );
 
-    // // Simple regex for a 10-digit number
-    // const mobileRegex = /^\d{10}$/;
-    // if (!mobileRegex.test(formData.mobile)) {
-    //   console.error(
-    //     "Invalid mobile number format. Please enter a 10-digit number."
-    //   );
-    //   return;
-    // }
+  // When data is loaded, update formData with the fetched employee details
+  useEffect(() => {
+    if (data?.data) {
+      const employee = data.data;
+      setFormData({
+        joining_date: employee.joining_date || "",
+        name: employee.name || "",
+        email: employee.email || "",
+        mobile: employee.mobile || "",
+        address: employee.address || "",
+        department: employee.department || "",
+        designation: employee.designation || "",
+        status: employee.status || "",
+      });
+    }
+  }, [data]);
+
+  const handleSave = async () => {
+    if (!credentials || !employee?.id) return;
 
     const payload = {
       user_id: credentials.user_id,
       auth_key: credentials.auth_key,
+      id: employee?.id,
       ...formData,
     };
 
     try {
-      const result = await createEmployee(payload).unwrap();
-      console.log("Employee created successfully:", result);
+      const result = await updateEmployee(payload).unwrap();
+      console.log("Employee updated successfully:", result);
       navigation.navigate("EmployeeSuccessScreen", payload);
     } catch (err: any) {
-      console.error("Error creating employee:", err);
+      console.error("Error updating employee:", err);
       if (err.error && err.error.data && err.error.data.message) {
         console.error(
           "Validation errors:",
@@ -91,9 +117,25 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>Loading employee details...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={{ color: "red" }}>Error loading employee details.</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={{ flex: 1 }}>
-      <Header leftIcon="back" title="Add Employee" />
+      <Header leftIcon="back" title="Edit Employee" />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.formContainer}
@@ -125,7 +167,7 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
                     styles.input,
                     { color: colors.title, backgroundColor: colors.card },
                   ]}
-                  placeholder="Enter joining Date"
+                  placeholder="Enter joining date"
                   value={formData.joining_date}
                   placeholderTextColor={colors.title}
                   onChangeText={(text) =>
@@ -149,7 +191,7 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
                   styles.input,
                   { backgroundColor: colors.card, color: colors.title },
                 ]}
-                placeholder="Enter Full name"
+                placeholder="Enter full name"
                 placeholderTextColor={colors.title}
                 value={formData.name}
                 onChangeText={(text) =>
@@ -168,7 +210,7 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
                   { backgroundColor: colors.card, color: colors.title },
                 ]}
                 value={formData.email}
-                placeholder="Enter Email Address"
+                placeholder="Enter email address"
                 placeholderTextColor={colors.title}
                 onChangeText={(text) =>
                   setFormData({ ...formData, email: text })
@@ -186,7 +228,7 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
                   styles.input,
                   { backgroundColor: colors.card, color: colors.title },
                 ]}
-                placeholder="Enter Mobile number"
+                placeholder="Enter mobile number"
                 placeholderTextColor={colors.title}
                 value={formData.mobile}
                 onChangeText={(text) =>
@@ -205,7 +247,7 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
                   styles.input,
                   { backgroundColor: colors.card, color: colors.title },
                 ]}
-                placeholder="Enter Your Address"
+                placeholder="Enter address"
                 placeholderTextColor={colors.title}
                 value={formData.address}
                 onChangeText={(text) =>
@@ -223,7 +265,7 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
                   styles.input,
                   { backgroundColor: colors.card, color: colors.title },
                 ]}
-                placeholder="Enter Department"
+                placeholder="Enter department"
                 placeholderTextColor={colors.title}
                 value={formData.department}
                 onChangeText={(text) =>
@@ -241,7 +283,7 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
                   styles.input,
                   { backgroundColor: colors.card, color: colors.title },
                 ]}
-                placeholder="Enter Desiganation"
+                placeholder="Enter designation"
                 placeholderTextColor={colors.title}
                 value={formData.designation}
                 onChangeText={(text) =>
@@ -250,9 +292,27 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
               />
             </View>
 
+            <View style={styles.inputGroup}>
+              <Text style={[styles.inputLabel, { color: colors.title }]}>
+                Status
+              </Text>
+              <TextInput
+                style={[
+                  styles.input,
+                  { backgroundColor: colors.card, color: colors.title },
+                ]}
+                placeholder="Enter status"
+                placeholderTextColor={colors.title}
+                value={formData.status}
+                onChangeText={(text) =>
+                  setFormData({ ...formData, status: text })
+                }
+              />
+            </View>
+
             <View style={{ padding: 20 }}>
               <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-                <Text style={styles.saveButtonText}>Save</Text>
+                <Text style={styles.saveButtonText}>Update</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -336,6 +396,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
+  loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
+  errorContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
 });
 
-export default AddEmployee;
+export default EditEmployee;

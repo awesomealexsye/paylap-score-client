@@ -20,7 +20,10 @@ type EmployeeSuccessScreenProps = StackScreenProps<
 
 export const EmployeeSuccessScreen = ({
   navigation,
+  route,
 }: EmployeeSuccessScreenProps) => {
+  const payload = route.params;
+  console.log("payload:", payload);
   const theme = useTheme();
   const { colors }: { colors: any } = theme;
 
@@ -49,19 +52,24 @@ export const EmployeeSuccessScreen = ({
             Employee Login details
           </Text>
           <Text style={[styles.loginText, { color: colors.title }]}>
-            <Text style={[styles.bold, { color: colors.title }]}>User:</Text>{" "}
-            +1452 4521 5412
+            <Text style={[styles.bold, { color: colors.title }]}>Name:</Text>{" "}
+            {payload.name}
           </Text>
           <Text style={[styles.loginText, { color: colors.title }]}>
             <Text style={[styles.bold, { color: colors.title }]}>
-              Password:
+              Department:
             </Text>{" "}
-            D5z145destg
+            {payload?.department} {payload?.designation}
           </Text>
         </View>
 
         {/* Share Button */}
-        <TouchableOpacity style={styles.shareButton}>
+        <TouchableOpacity
+          style={styles.shareButton}
+          onPress={() => {
+            navigation.navigate("EmployeeListScreen");
+          }}
+        >
           <Text style={styles.shareButtonText}>
             Share Details With Employee
           </Text>

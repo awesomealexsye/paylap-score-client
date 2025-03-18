@@ -109,6 +109,7 @@ import EmployeeSuccessScreen from "../screens/HRM/EmployeeAddedSuccessfully";
 import EmployeeDetailScreen from "../screens/HRM/EmployeeDetails";
 import { EmployeeAttendendsList } from "../screens/HRM/EmployeeAttendendsList";
 import EmployeeAttendanceDetails from "../screens/HRM/EmployeeAttendesDetails";
+import EditEmployee from "../screens/HRM/EditEmployee";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -296,6 +297,7 @@ const StackNavigator = () => {
           name="EmployeeAttendanceDetails"
           component={EmployeeAttendanceDetails}
         />
+        <Stack.Screen name="EditEmployee" component={EditEmployee} />
       </Stack.Navigator>
     </View>
   );

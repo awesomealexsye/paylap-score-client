@@ -81,7 +81,7 @@ const DrawerMenu = () => {
       id: "7",
       icon: IMAGES.list,
       name: t("HRM"),
-      navigate: "HrmHomeScreen",
+      navigate: "EmployeeManagementScreen",
     },
     {
       id: "7",
@@ -187,7 +187,7 @@ const DrawerMenu = () => {
         (OS == "ios" && res.IOS.VERSION_CODE > app_build.APP_VERSION) ||
         (OS == "android" && res.ANDROID.VERSION_CODE > app_build.APP_VERSION)
       ) {
-        setModalVisible(true);
+        // setModalVisible(true);
       } else {
         setModalVisible(false);
       }

@@ -185,7 +185,7 @@ export const EmployeeAttendendsList = ({
 
     return (
       <TouchableOpacity
-        onPress={navigation.navigate("EmployeeAttendanceDetails")}
+      // onPress={navigation.navigate("EmployeeAttendanceDetails")}
       >
         <View style={[styles.card, { backgroundColor: colors.card }]}>
           <View style={styles.cardHeader}>

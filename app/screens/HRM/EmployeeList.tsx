@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -12,6 +12,11 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/RootStackParamList";
 import Header from "../../layout/Header";
 import { useTheme } from "@react-navigation/native";
+import StorageService from "../../lib/StorageService";
+import CONFIG from "../../constants/config";
+import { useGetEmployeesQuery } from "../../redux/api/employee.api";
+import { COLORS } from "../../constants/theme";
+import { ActivityIndicator } from "react-native-paper";
 
 type EmployeeListScreenProps = StackScreenProps<
   RootStackParamList,
@@ -22,21 +27,62 @@ export const EmployeeListScreen = ({ navigation }: EmployeeListScreenProps) => {
   const theme = useTheme();
   const { colors }: { colors: any } = theme;
 
-  const employees = [
-    { id: "1", name: "Shaidul Islam", role: "Designer", color: "#F4B183" },
-    { id: "2", name: "Mehedii Mohammad", role: "Designer", color: "#5DADE2" },
-    { id: "3", name: "Ibne Riead", role: "Designer", color: "#52BE80" },
-    { id: "4", name: "Emily", role: "Designer", color: "#AF7AC5" },
-  ];
+  const [credentials, setCredentials] = useState<{
+    user_id: string | null;
+    auth_key: string | null;
+  } | null>(null);
+
+  useEffect(() => {
+    const fetchCredentials = async () => {
+      const userIdStr = await StorageService.getStorage(
+        CONFIG.HARDCODE_VALUES.USER_ID
+      );
+      const auth_key = await StorageService.getStorage(
+        CONFIG.HARDCODE_VALUES.AUTH_KEY
+      );
+      // Convert user ID to a number if necessary
+      const user_id = userIdStr;
+      setCredentials({ user_id, auth_key });
+    };
+    fetchCredentials();
+  }, []);
+
+  // {  "name": "John Doe",
+  //   "email": "john@example.com",
+  //   "mobile": "12345678912",
+  //   "address": "123 Main Street",
+  //   "department": "Sales",
+  //   "designation": "Manager",
+  //   "joining_date": "2025-01-01",
+  //   "status": "active"}
+
+  const { data, error, isLoading } = useGetEmployeesQuery(credentials);
 
   const [selectedId, setSelectedId] = useState("1");
 
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size={70} color={COLORS.primary} />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={{ color: COLORS.danger }}>
+          Error loading employee details.
+        </Text>
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
       {/* Header */}
       <Header leftIcon="back" title=" Employee List" />
       {/* Empty State Illustration */}
-      {employees === null ? (
+      {data?.data === null ? (
         <View style={styles.content}>
           <Image
             src={"assets/images/card.png"} // Replace with actual image
@@ -52,18 +98,21 @@ export const EmployeeListScreen = ({ navigation }: EmployeeListScreenProps) => {
         </View>
       ) : (
         <FlatList
-          data={employees}
+          data={data?.data}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity
               style={[styles.card, { backgroundColor: colors.card }]}
               onPress={() => {
+                console.log("item id", item.id);
                 setSelectedId(item.id);
-                navigation.navigate("EmployeeDetailScreen");
+                navigation.navigate("EmployeeDetailScreen", item.id);
               }}
             >
-              <View style={[styles.avatar, { backgroundColor: item.color }]}>
-                <Text style={[styles.avatarText, { color: colors.title }]}>
+              <View
+                style={[styles.avatar, { backgroundColor: COLORS.primary }]}
+              >
+                <Text style={[styles.avatarText, { color: COLORS.background }]}>
                   {item.name[0]}
                 </Text>
               </View>
@@ -71,7 +120,7 @@ export const EmployeeListScreen = ({ navigation }: EmployeeListScreenProps) => {
                 <Text style={[styles.name, { color: colors.title }]}>
                   {item.name}
                 </Text>
-                <Text style={[styles.role]}>{item.role}</Text>
+                <Text style={[styles.role]}>{item.department}</Text>
               </View>
               {selectedId === item.id && (
                 <FontAwesome name="dot-circle-o" size={20} color="#478DFF" />
@@ -101,9 +150,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20,
   },
-  illustration: { width: 250, height: 200, marginBottom: 20 },
-  noDataText: { fontSize: 20, fontWeight: "bold", color: "#333" },
-  subText: { fontSize: 14, color: "#666", marginTop: 5 },
+  illustration: {
+    width: 250,
+    height: 200,
+    marginBottom: 20,
+  },
+  noDataText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  subText: {
+    fontSize: 14,
+    color: "#666",
+    marginTop: 5,
+  },
 
   // Floating Button
   fab: {
@@ -141,6 +202,8 @@ const styles = StyleSheet.create({
   info: { flex: 1, marginLeft: 15 },
   name: { fontSize: 13, fontWeight: "bold", color: "#333" },
   role: { fontSize: 12, color: "#777" },
+  loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
+  errorContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
 });
 
 export default EmployeeListScreen;

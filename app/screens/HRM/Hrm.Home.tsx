@@ -1,5 +1,5 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -17,12 +17,16 @@ import {
 } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
 import { useTheme } from "@react-navigation/native";
+import StorageService from "../../lib/StorageService";
+import CONFIG from "../../constants/config";
+import { useGetEmployeesQuery } from "../../redux/api/employee.api";
 
 type HrmHomeScreenProps = StackScreenProps<RootStackParamList, "HrmHomeScreen">;
 
 export const HrmHomeScreen = ({ navigation }: HrmHomeScreenProps) => {
   const theme = useTheme();
   const { colors }: { colors: any } = theme;
+
   return (
     <View style={styles.container}>
       {/* Header */}
