@@ -67,7 +67,6 @@ export const InvoiceDetail = ({ navigation, route }: InvoiceDetailProps) => {
           gen_user_invoice_id: invoiceId,
         }
       );
-      console.log("Rsss", res.data);
       if (res.status) {
         setInvoice(res.data);
       } else {
@@ -197,7 +196,6 @@ export const InvoiceDetail = ({ navigation, route }: InvoiceDetailProps) => {
 
   const items = parseItems();
   const showPdf = (item: object) => {
-    console.log("itemss", item);
     navigation.navigate("FinalInvoiceResult", {
       data: { pdf_url: item.pdf_url },
       previous_screen: "ChooseInvoiceDesign",
@@ -464,7 +462,13 @@ export const InvoiceDetail = ({ navigation, route }: InvoiceDetailProps) => {
               placeholder="Enter amount"
               keyboardType="numeric"
               value={pendingAmount}
-              onChangeText={setPendingAmount}
+              onChangeText={(val) => {
+                if (Number(val) <= Number(invoice.grand_total_amount - invoice.received_amount)) {
+                  setPendingAmount(val)
+                }
+                // invoice.grand_total_amount - invoice.received_amount
+              }
+              }
             />
             <View style={styles.modalButtons}>
               {!isLoading ? (

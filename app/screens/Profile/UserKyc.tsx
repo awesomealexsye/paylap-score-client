@@ -137,7 +137,7 @@ const UserKyc = forwardRef((props, ref) => {
                 <View style={{}}>
                     <Header
                         title={'Aadhar Kyc'}
-                        rightIcon6={'logout'}
+                        rightIcon4={'home'}
                         titleRight
                     />
                     <ScrollView>
@@ -163,6 +163,7 @@ const UserKyc = forwardRef((props, ref) => {
                                             inputRounded
                                             icon={<FontAwesome style={{ opacity: .6 }} name={'address-card'} size={20} color={colors.text} />}
                                             placeholder="Your Aadhaar Card Number"
+                                            maxlength={12}
                                             onChangeText={(value) => setAadhar(value)}
                                         />
                                     </View>

@@ -27,7 +27,7 @@ export const FinalInvoiceResult = ({ navigation, route }: FinalInvoiceResultProp
     const { t } = useTranslation();
 
     const pdf_url = route.params.data.pdf_url;
-    // console.log(pdf_url, "pdf");
+    console.log(pdf_url, "pdf");
     const previous_screen = route.params.previous_screen;
 
     useEffect(() => {

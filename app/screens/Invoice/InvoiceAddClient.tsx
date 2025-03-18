@@ -237,7 +237,7 @@ export const InvoiceAddClient = ({ navigation }: InvoiceAddClientProps) => {
 									value={form.gst}
 									onChangeText={(text) => handleChange('gst', text)}
 									style={[styles.input, { color: colors.title }]}
-									maxlength={12}
+									maxlength={17}
 								/>
 								{errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
 							</View>

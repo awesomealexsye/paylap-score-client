@@ -44,7 +44,7 @@ const ApiService = {
         let authHeader = { Authorization: `Bearer ${jwt_token}` };
         data = { ...common_payload, ...data }
         headers = { ...authHeader, ...headers }
-        console.log("Log ", api_url, headers, data);
+        // console.log("Log ", api_url, headers, data);
         try {
             const res: any = await axios.post(api_url, data, { headers: headers });
             if (res.data.logout_user === true) {
@@ -53,7 +53,7 @@ const ApiService = {
                     return;
                 }
             }
-            console.log(res.data)
+            // console.log(res.data)
             if (res.status == 200) {
                 if (res.data.status == false) {
                     if (res.data.message && typeof res.data.message === 'object') {

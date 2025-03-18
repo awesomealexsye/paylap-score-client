@@ -16,6 +16,7 @@ import { ApiService } from '../../lib/ApiService';
 import { MessagesService } from '../../lib/MessagesService';
 import { ActivityIndicator } from 'react-native-paper';
 import { IMAGES } from '../../constants/Images';
+import CommonService from '../../lib/CommonService';
 
 type AddPaymentScreenProps = StackScreenProps<RootStackParamList, 'AddPayment'>;
 
@@ -42,6 +43,11 @@ const AddPayment = ({ navigation, route }: AddPaymentScreenProps) => {
 
     useFocusEffect(
         useCallback(() => {
+            CommonService.currentUserDetail().then((res) => {
+                if (res.aadhar_card === '') {
+                    navigation.navigate("UserKyc");
+                }
+            })
             setButtonText("Send OTP")
         }, [])
     )
