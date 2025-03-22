@@ -32,24 +32,10 @@ export const EmployeeSuccessScreen = ({
       <Header leftIcon="back" title="Employee Added Successfully " />
       <View style={styles.container}>
         {/* App Download Section */}
-        <View style={[styles.card, { backgroundColor: colors.card }]}>
-          <Text style={[styles.cardTitle, { color: colors.title }]}>
-            Please download app from Playstore
-          </Text>
-          <Text style={[styles.cardText, { color: colors.title }]}>
-            Please click on the below link:
-          </Text>
-          <TouchableOpacity
-            onPress={() => Linking.openURL("http://bit.ly/hryu3a")}
-          >
-            <Text style={styles.link}>http://bit.ly/hryu3a</Text>
-          </TouchableOpacity>
-        </View>
-
         {/* Login Details Section */}
         <View style={[styles.card, { backgroundColor: colors.card }]}>
           <Text style={[styles.cardTitle, { color: colors.title }]}>
-            Employee Login details
+            Employee details
           </Text>
           <Text style={[styles.loginText, { color: colors.title }]}>
             <Text style={[styles.bold, { color: colors.title }]}>Name:</Text>{" "}
@@ -59,7 +45,13 @@ export const EmployeeSuccessScreen = ({
             <Text style={[styles.bold, { color: colors.title }]}>
               Department:
             </Text>{" "}
-            {payload?.department} {payload?.designation}
+            {payload?.department}
+          </Text>
+          <Text style={[styles.loginText, { color: colors.title }]}>
+            <Text style={[styles.bold, { color: colors.title }]}>
+              Designation:
+            </Text>{" "}
+            {payload?.designation}
           </Text>
         </View>
 

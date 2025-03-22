@@ -36,7 +36,7 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
     address: "",
     department: "",
     designation: "",
-    status: "", // default status
+    status: "active", // default status
   });
 
   // Credentials for user_id and auth_key

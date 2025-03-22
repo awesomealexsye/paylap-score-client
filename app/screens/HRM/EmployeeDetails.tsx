@@ -176,6 +176,7 @@ const EmployeeDetailScreen: React.FC<EmployeeDetailScreenProps> = ({
           </Text>
         </View>
 
+
         {/* Buttons */}
         <View style={styles.buttonContainer}>
           <TouchableOpacity
@@ -192,6 +193,26 @@ const EmployeeDetailScreen: React.FC<EmployeeDetailScreenProps> = ({
             <Text style={styles.editText}>Edit</Text>
           </TouchableOpacity>
         </View>
+
+        {/* Manage Salary Button */}
+        <TouchableOpacity
+          style={styles.manageSalaryButton}
+          onPress={() =>
+            navigation.navigate("ManageSalaryScreen", { employeeId: employee.id })
+          }
+        >
+          <Text style={styles.manageSalaryButtonText}>Manage Salary</Text>
+        </TouchableOpacity>
+
+        {/* NEW BUTTON: Account Information */}
+        <TouchableOpacity
+          style={styles.accountInfoButton}
+          onPress={() =>
+            navigation.navigate("AccountInformationScreen", { employeeId: employee.id })
+          }
+        >
+          <Text style={styles.accountInfoButtonText}>Account Information</Text>
+        </TouchableOpacity>
       </View>
     </>
   );
@@ -276,5 +297,31 @@ const styles = StyleSheet.create({
     width: 10,
     borderRadius: 5,
     marginRight: 5,
+  },
+  manageSalaryButton: {
+    backgroundColor: "#4CAF50",
+    borderRadius: 12,
+    padding: 15,
+    alignItems: "center",
+    marginTop: 20,
+  },
+  manageSalaryButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+
+  // NEW Account Info Button
+  accountInfoButton: {
+    backgroundColor: "#9C27B0",
+    borderRadius: 12,
+    padding: 15,
+    alignItems: "center",
+    marginTop: 15,
+  },
+  accountInfoButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
   },
 });

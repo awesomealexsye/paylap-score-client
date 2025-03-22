@@ -54,7 +54,7 @@ export const EmployeeManagementScreen = ({
               title: "Salary Management",
               icon: "credit-card",
               color: "#1E90FF",
-              route: "EmployeeManagementScreen",
+              route: "GenerateEmployeeSalariesListScreen",
             },
           ].map((item, index) => (
             <TouchableOpacity
@@ -84,12 +84,12 @@ export const EmployeeManagementScreen = ({
             color: "#FF5733",
             route: "EmployeeAttendendsList",
           },
-          {
-            title: "Leave Management",
-            icon: "calendar-minus",
-            color: "#1E90FF",
-            route: "EmployeeListScreen",
-          },
+          // {
+          //   title: "Leave Management",
+          //   icon: "calendar-minus",
+          //   color: "#1E90FF",
+          //   route: "EmployeeListScreen",
+          // },
 
           {
             title: "Salary Statement",
