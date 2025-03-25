@@ -18,6 +18,7 @@ import { RootStackParamList } from "../../navigation/RootStackParamList";
 import StorageService from "../../lib/StorageService";
 import CONFIG from "../../constants/config";
 import { useCreateEmployeeMutation } from "../../redux/api/employee.api";
+import { COLORS } from "../../constants/theme";
 
 type AddEmployeeProps = StackScreenProps<RootStackParamList, "AddEmployee">;
 
@@ -99,13 +100,21 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
         style={styles.formContainer}
       >
         <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.profileContainer}>
+            <View style={styles.avatar}>
+              <Text style={styles.avatarText}>
+                {formData?.name ? formData.name[0] : "E"}
+              </Text>
+            </View>
+            <Text style={styles.role}>{formData?.name}</Text>
+          </View>
           <View
             style={[
               styles.profileSection,
               { backgroundColor: colors.background },
             ]}
           >
-            <View style={styles.profileImageContainer}>
+            {/* <View style={styles.profileImageContainer}>
               <Image
                 // source={require('../../assets/profile.png')}
                 style={styles.profileImage}
@@ -113,7 +122,7 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
               <View style={styles.cameraIconContainer}>
                 <Ionicons name="camera" size={16} color={colors.title} />
               </View>
-            </View>
+            </View> */}
             {/* Joining Date */}
             <View style={styles.inputGroup}>
               <Text style={[styles.inputLabel, { color: colors.title }]}>
@@ -138,7 +147,6 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
               </View>
             </View>
           </View>
-
           <View style={styles.formFields}>
             <View style={styles.inputGroup}>
               <Text style={[styles.inputLabel, { color: colors.title }]}>
@@ -325,7 +333,7 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   saveButton: {
-    backgroundColor: "#5C7CFA",
+    backgroundColor: COLORS.primary,
     borderRadius: 8,
     paddingVertical: 14,
     alignItems: "center",
@@ -336,6 +344,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
+  profileContainer: { alignItems: "center", marginVertical: 15 },
+  avatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: COLORS.primary,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  avatarText: { fontSize: 24, color: "white", fontWeight: "bold" },
+  role: { fontSize: 14, color: "#888", marginTop: 5 },
 });
 
 export default AddEmployee;

@@ -176,7 +176,6 @@ const EmployeeDetailScreen: React.FC<EmployeeDetailScreenProps> = ({
           </Text>
         </View>
 
-
         {/* Buttons */}
         <View style={styles.buttonContainer}>
           <TouchableOpacity
@@ -198,7 +197,9 @@ const EmployeeDetailScreen: React.FC<EmployeeDetailScreenProps> = ({
         <TouchableOpacity
           style={styles.manageSalaryButton}
           onPress={() =>
-            navigation.navigate("ManageSalaryScreen", { employeeId: employee.id })
+            navigation.navigate("ManageSalaryScreen", {
+              employeeDetail: employee,
+            })
           }
         >
           <Text style={styles.manageSalaryButtonText}>Manage Salary</Text>
@@ -208,7 +209,7 @@ const EmployeeDetailScreen: React.FC<EmployeeDetailScreenProps> = ({
         <TouchableOpacity
           style={styles.accountInfoButton}
           onPress={() =>
-            navigation.navigate("AccountInformationScreen", { employeeId: employee.id })
+            navigation.navigate("AccountInformationScreen", employee)
           }
         >
           <Text style={styles.accountInfoButtonText}>Account Information</Text>

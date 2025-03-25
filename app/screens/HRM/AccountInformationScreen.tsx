@@ -15,8 +15,10 @@ import { useTheme } from "@react-navigation/native";
 import StorageService from "../../lib/StorageService";
 import CONFIG from "../../constants/config";
 import {
-  useGetEmployeeDetailsQuery,
-} from "../../redux/api/employee.api";
+  useCreateAccountMutation,
+  useUpdateAccountMutation,
+  useGetAccountDetailsMutation,
+} from "../../redux/api/bankAccount.api";
 import { COLORS } from "../../constants/theme";
 import { ActivityIndicator } from "react-native-paper";
 
@@ -25,20 +27,50 @@ type AccountInformationScreenProps = StackScreenProps<
   "AccountInformationScreen"
 >;
 
-export const AccountInformationScreen: React.FC<AccountInformationScreenProps> = ({
-  navigation,
-  route,
-}) => {
-  // We receive the employee ID via route params
-  const { employeeId } = route.params || {};
+export const AccountInformationScreen: React.FC<
+  AccountInformationScreenProps
+> = ({ navigation, route }) => {
+  // We receive the employee/account ID via route params
+  const employee = route.params || {};
   const { colors } = useTheme();
 
-  // For demonstration, we fetch the employee details (optional).
+  // --- State Definitions ---
+
+  // Credentials from local storage
   const [credentials, setCredentials] = useState<{
     user_id: string | null;
     auth_key: string | null;
   } | null>(null);
 
+  // Local state for storing fetched account data
+  const [accountData, setAccountData] = useState<any>(null);
+
+  // For account type selection
+  const [accountType, setAccountType] = useState<"bank" | "upi" | "none">(
+    "none"
+  );
+
+  // Bank details state
+  const [bankDetails, setBankDetails] = useState({
+    account_number: "",
+    ifsc_code: "",
+    branch_name: "",
+  });
+
+  // UPI details state
+  const [upiId, setUpiId] = useState("");
+
+  // --- Endpoint Hooks ---
+  // Get account details
+  const [getAccountDetails, { data, isLoading, error }] =
+    useGetAccountDetailsMutation();
+  // Create and update account endpoints
+  const [createAccount] = useCreateAccountMutation();
+  const [updateAccount] = useUpdateAccountMutation();
+
+  // --- Effects ---
+
+  // Fetch credentials from storage
   useEffect(() => {
     const fetchCredentials = async () => {
       const userIdStr = await StorageService.getStorage(
@@ -50,41 +82,53 @@ export const AccountInformationScreen: React.FC<AccountInformationScreenProps> =
       setCredentials({ user_id: userIdStr, auth_key });
     };
     fetchCredentials();
-  }, [employeeId]);
+  }, [employee?.id]);
 
-  const { data, isLoading, error } = useGetEmployeeDetailsQuery(
-    {
-      id: employeeId,
-      user_id: credentials?.user_id,
-      auth_key: credentials?.auth_key,
-    },
-    { skip: !credentials || !employeeId }
-  );
+  // Fetch account details when credentials and employeeId are available
+  useEffect(() => {
+    if (credentials && employee?.id) {
+      getAccountDetails({
+        id: employee.id,
+        user_id: credentials.user_id,
+        auth_key: credentials.auth_key,
+      })
+        .unwrap()
+        .then((response) => {
+          console.log("Account details fetched:", response);
+          setAccountData(response.data);
+        })
+        .catch((err) => console.error("Error fetching account details:", err));
+    }
+  }, [credentials, employee?.id]);
 
-  // For the account type selection
-  const [accountType, setAccountType] = useState<"bank" | "upi" | "none">("none");
-
-  // Bank fields
-  const [bankDetails, setBankDetails] = useState({
-    accountNumber: "",
-    ifscCode: "",
-    branchName: "",
-  });
-
-  // UPI fields
-  const [upiId, setUpiId] = useState("");
-
-  // Handle saving account info (placeholder logic)
-  const handleSave = () => {
-    // Example payload
+  // --- Save Account Information ---
+  const handleSave = async () => {
+    console.log(employee, "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+    // Prepare payload with the fields (extend with additional fields as needed)
     const payload = {
-      accountType,
-      bankDetails,
+      ...credentials,
+      employee_id: employee?.id,
+      account_type: accountType,
+      ...bankDetails,
       upiId,
     };
-    console.log("Saving account details:", payload);
+    console.log("Prepared account payload:", payload);
+    try {
+      if (accountData) {
+        // Update existing account info
+        const response = await updateAccount(payload).unwrap();
+        console.log("Account updated:", response);
+      } else {
+        // Create new account info
+        const response = await createAccount(payload).unwrap();
+        console.log("Account created:", response);
+      }
+    } catch (error) {
+      console.error("Error saving account info:", error);
+    }
   };
 
+  // --- Render UI ---
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
@@ -96,7 +140,7 @@ export const AccountInformationScreen: React.FC<AccountInformationScreenProps> =
     return (
       <View style={styles.errorContainer}>
         <Text style={{ color: COLORS.danger }}>
-          Error loading employee details.
+          Error loading account details.
         </Text>
       </View>
     );
@@ -110,13 +154,13 @@ export const AccountInformationScreen: React.FC<AccountInformationScreenProps> =
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Optional: show employee name */}
+        {/* Optional: Display account name and ID if available */}
         <View style={styles.employeeInfo}>
           <Text style={styles.employeeName}>
-            {data?.data?.name || "Employee Name"}
+            {accountData?.name || "Employee Name"}
           </Text>
           <Text style={styles.employeeId}>
-            ID: {data?.data?.id || "No ID"}
+            ID: {accountData?.id || "No ID"}
           </Text>
         </View>
 
@@ -135,13 +179,12 @@ export const AccountInformationScreen: React.FC<AccountInformationScreenProps> =
           </View>
         </View>
 
-        {/* Bank Details */}
+        {/* Bank Details Section */}
         {accountType === "bank" && (
           <View style={[styles.section, { backgroundColor: colors.card }]}>
             <Text style={[styles.sectionTitle, { color: colors.title }]}>
               Bank Details
             </Text>
-
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Account Number</Text>
               <TextInput
@@ -149,48 +192,45 @@ export const AccountInformationScreen: React.FC<AccountInformationScreenProps> =
                 placeholder="Enter Account Number"
                 placeholderTextColor="#999"
                 keyboardType="numeric"
-                value={bankDetails.accountNumber}
+                value={bankDetails.account_number}
                 onChangeText={(val) =>
-                  setBankDetails((prev) => ({ ...prev, accountNumber: val }))
+                  setBankDetails((prev) => ({ ...prev, account_number: val }))
                 }
               />
             </View>
-
             <View style={styles.inputGroup}>
               <Text style={styles.label}>IFSC Code</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Enter IFSC Code"
                 placeholderTextColor="#999"
-                value={bankDetails.ifscCode}
+                value={bankDetails.ifsc_code}
                 onChangeText={(val) =>
-                  setBankDetails((prev) => ({ ...prev, ifscCode: val }))
+                  setBankDetails((prev) => ({ ...prev, ifsc_code: val }))
                 }
               />
             </View>
-
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Branch Name</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Enter Branch Name"
                 placeholderTextColor="#999"
-                value={bankDetails.branchName}
+                value={bankDetails.branch_name}
                 onChangeText={(val) =>
-                  setBankDetails((prev) => ({ ...prev, branchName: val }))
+                  setBankDetails((prev) => ({ ...prev, branch_name: val }))
                 }
               />
             </View>
           </View>
         )}
 
-        {/* UPI Details */}
+        {/* UPI Details Section */}
         {accountType === "upi" && (
           <View style={[styles.section, { backgroundColor: colors.card }]}>
             <Text style={[styles.sectionTitle, { color: colors.title }]}>
               UPI Details
             </Text>
-
             <View style={styles.inputGroup}>
               <Text style={styles.label}>UPI ID</Text>
               <TextInput
@@ -215,6 +255,8 @@ export const AccountInformationScreen: React.FC<AccountInformationScreenProps> =
   );
 };
 
+export default AccountInformationScreen;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -225,7 +267,6 @@ const styles = StyleSheet.create({
   },
   loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
   errorContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
-
   employeeInfo: {
     alignItems: "center",
     marginVertical: 20,
@@ -240,7 +281,6 @@ const styles = StyleSheet.create({
     color: "#777",
     marginTop: 4,
   },
-
   section: {
     backgroundColor: "white",
     borderRadius: 12,
@@ -259,7 +299,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     overflow: "hidden",
   },
-
   inputGroup: {
     marginBottom: 12,
   },
@@ -278,7 +317,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#333",
   },
-
   saveButton: {
     backgroundColor: "#478DFF",
     borderRadius: 8,
@@ -292,5 +330,3 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-
-export default AccountInformationScreen;

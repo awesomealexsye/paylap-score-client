@@ -114,6 +114,7 @@ import ManageSalaryScreen from "../screens/HRM/ManageSalaryScreen";
 import AccountInformationScreen from "../screens/HRM/AccountInformationScreen";
 import GenerateEmployeeSalariesListScreen from "../screens/HRM/GenerateEmployeeSalariesListScreen";
 import GenerateEmployeePdfListScreen from "../screens/HRM/GenerateEmployeePdfListScreen";
+import { HRMAddCompany } from "../screens/HRM/AddCompany";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -302,10 +303,23 @@ const StackNavigator = () => {
           component={EmployeeAttendanceDetails}
         />
         <Stack.Screen name="EditEmployee" component={EditEmployee} />
-        <Stack.Screen name="ManageSalaryScreen" component={ManageSalaryScreen} />
-        <Stack.Screen name="AccountInformationScreen" component={AccountInformationScreen} />
-        <Stack.Screen name="GenerateEmployeeSalariesListScreen" component={GenerateEmployeeSalariesListScreen} />
-        <Stack.Screen name="GenerateEmployeePdfListScreen" component={GenerateEmployeePdfListScreen} />
+        <Stack.Screen
+          name="ManageSalaryScreen"
+          component={ManageSalaryScreen}
+        />
+        <Stack.Screen
+          name="AccountInformationScreen"
+          component={AccountInformationScreen}
+        />
+        <Stack.Screen
+          name="GenerateEmployeeSalariesListScreen"
+          component={GenerateEmployeeSalariesListScreen}
+        />
+        <Stack.Screen
+          name="GenerateEmployeePdfListScreen"
+          component={GenerateEmployeePdfListScreen}
+        />
+        <Stack.Screen name="HRMAddCompany" component={HRMAddCompany} />
       </Stack.Navigator>
     </View>
   );

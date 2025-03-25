@@ -1,8 +1,5 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import CONFIG from "../../constants/config";
-import StorageService from "../../lib/StorageService";
 import { MessagesService } from "../../lib/MessagesService";
-import { useEffect, useState } from "react";
+import { api } from ".";
 
 /**
  * Employee interface defines the structure of an employee object.
@@ -13,27 +10,7 @@ export interface Employee {
   email: string;
 }
 
-/**
- * RTK Query API slice for employee operations.
- */
-export const employeeApi = createApi({
-  reducerPath: "employeeApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: `${CONFIG.APP_URL}/api/`,
-    prepareHeaders: async (headers: Headers): Promise<Headers> => {
-      const jwtToken = await StorageService.getStorage(
-        CONFIG.HARDCODE_VALUES.JWT_TOKEN
-      );
-      if (jwtToken) {
-        headers.set("Authorization", `Bearer ${jwtToken}`);
-        headers.set("Content-Type", "application/json");
-      }
-      return headers;
-    },
-  }),
-
-  tagTypes: ["Employee"],
-
+export const employeeApi = api.injectEndpoints({
   endpoints: (builder) => ({
     // Get all employees
     getEmployees: builder.query<
@@ -41,11 +18,15 @@ export const employeeApi = createApi({
       { user_id: string | null; auth_key: string | null }
     >({
       query: ({ user_id, auth_key }) => {
+        if (!user_id || !auth_key) {
+          // You could either throw an error, or return a default/fallback URL.
+          console.log(`user id: ${user_id}`);
+          throw new Error("Missing required authentication parameters.");
+        }
         return `employee?user_id=${user_id}&auth_key=${auth_key}`;
       },
       providesTags: ["Employee"],
     }),
-
     // Get employee details by ID with user_id and auth_key query parameters
     getEmployeeDetails: builder.query<
       Employee,
@@ -121,8 +102,13 @@ export const employeeApi = createApi({
 });
 
 export const {
+  //All Query
+
   useGetEmployeesQuery,
   useGetEmployeeDetailsQuery,
+
+  //All Mutation
+
   useCreateEmployeeMutation,
   useUpdateEmployeeMutation,
   useDeleteEmployeeMutation,

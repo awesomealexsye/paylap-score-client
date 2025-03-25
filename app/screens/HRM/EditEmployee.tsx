@@ -21,6 +21,7 @@ import {
   useUpdateEmployeeMutation,
   useGetEmployeeDetailsQuery,
 } from "../../redux/api/employee.api";
+import { COLORS } from "../../constants/theme";
 
 type EditEmployeeProps = StackScreenProps<RootStackParamList, "EditEmployee">;
 
@@ -141,21 +142,20 @@ export const EditEmployee = ({ navigation, route }: EditEmployeeProps) => {
         style={styles.formContainer}
       >
         <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.profileContainer}>
+            <View style={styles.avatar}>
+              <Text style={styles.avatarText}>
+                {employee?.name ? employee.name[0] : "?"}
+              </Text>
+            </View>
+            <Text style={styles.role}>{employee?.name}</Text>
+          </View>
           <View
             style={[
               styles.profileSection,
               { backgroundColor: colors.background },
             ]}
           >
-            <View style={styles.profileImageContainer}>
-              <Image
-                // source={require('../../assets/profile.png')}
-                style={styles.profileImage}
-              />
-              <View style={styles.cameraIconContainer}>
-                <Ionicons name="camera" size={16} color={colors.title} />
-              </View>
-            </View>
             {/* Joining Date */}
             <View style={styles.inputGroup}>
               <Text style={[styles.inputLabel, { color: colors.title }]}>
@@ -385,9 +385,9 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   saveButton: {
-    backgroundColor: "#5C7CFA",
+    backgroundColor: COLORS.primary,
     borderRadius: 8,
-    paddingVertical: 14,
+    paddingVertical: 15,
     alignItems: "center",
     marginBottom: 80,
   },
@@ -398,6 +398,17 @@ const styles = StyleSheet.create({
   },
   loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
   errorContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
+  profileContainer: { alignItems: "center", marginVertical: 15 },
+  avatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: COLORS.primary,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  avatarText: { fontSize: 24, color: "white", fontWeight: "bold" },
+  role: { fontSize: 14, color: "#888", marginTop: 5 },
 });
 
 export default EditEmployee;
