@@ -40,25 +40,31 @@ export const EmployeeListScreen = ({ navigation }: EmployeeListScreenProps) => {
       const auth_key = await StorageService.getStorage(
         CONFIG.HARDCODE_VALUES.AUTH_KEY
       );
-      // Convert user ID to a number if necessary
-      const user_id = userIdStr;
-      setCredentials({ user_id, auth_key });
+      // Set credentials only if both exist
+      setCredentials({
+        user_id: userIdStr,
+        auth_key: auth_key,
+      });
     };
     fetchCredentials();
   }, []);
 
-  // {  "name": "John Doe",
-  //   "email": "john@example.com",
-  //   "mobile": "12345678912",
-  //   "address": "123 Main Street",
-  //   "department": "Sales",
-  //   "designation": "Manager",
-  //   "joining_date": "2025-01-01",
-  //   "status": "active"}
+  /**
+   * We skip the query if credentials are not yet loaded
+   * to avoid errors (like "Cannot read property 'user_id' of null").
+   */
+  const { data, error, isLoading } = useGetEmployeesQuery(
+    // If credentials exist, pass them to the query;
+    // otherwise pass an empty object, and also skip if credentials is falsy.
+    credentials
+      ? { user_id: credentials.user_id, auth_key: credentials.auth_key }
+      : { user_id: "", auth_key: "" },
+    {
+      skip: !credentials, // Skip the query until credentials is set
+    }
+  );
 
-  const { data, error, isLoading } = useGetEmployeesQuery(credentials);
-
-  const [selectedId, setSelectedId] = useState("1");
+  const [selectedId, setSelectedId] = useState<string | number>("1");
 
   if (isLoading) {
     return (
@@ -77,15 +83,17 @@ export const EmployeeListScreen = ({ navigation }: EmployeeListScreenProps) => {
       </View>
     );
   }
+
   return (
     <View style={styles.container}>
       {/* Header */}
       <Header leftIcon="back" title=" Employee List" />
       {/* Empty State Illustration */}
-      {data?.data === null ? (
+      {data?.data == null ? (
         <View style={styles.content}>
           <Image
-            src={"assets/images/card.png"} // Replace with actual image
+            // If you have a local image, replace src with require(...) or the correct import
+            src={"assets/images/card.png"}
             style={styles.illustration}
             resizeMode="contain"
           />
@@ -99,7 +107,7 @@ export const EmployeeListScreen = ({ navigation }: EmployeeListScreenProps) => {
       ) : (
         <FlatList
           data={data?.data}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => String(item.id)}
           renderItem={({ item }) => (
             <TouchableOpacity
               style={[styles.card, { backgroundColor: colors.card }]}

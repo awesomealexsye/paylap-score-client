@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  Image,
   TouchableOpacity,
   FlatList,
   ScrollView,
   Modal,
-  Platform,
+  Image,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
@@ -16,30 +16,21 @@ import Header from "../../layout/Header";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/RootStackParamList";
+import { ActivityIndicator } from "react-native-paper";
+import { ApiService } from "../../lib/ApiService";
+import { COLORS } from "../../constants/theme";
 
-// Type for employee data
+type Props = StackScreenProps<
+  RootStackParamList,
+  "GenerateEmployeeSalariesListScreen"
+>;
+
+/** The shape of each employee item from the API */
 type Employee = {
   id: number;
   name: string;
-  salary: string; // salary as string for simplicity
-  profileImage: string;
+  total_salary: string; // from API
 };
-
-// Adjust this to your actual route name if needed
-type Props = StackScreenProps<RootStackParamList, "GenerateEmployeeSalariesListScreen">;
-
-const staticEmployees: Employee[] = [
-  { id: 1, name: "Alice Johnson", salary: "12000", profileImage: "https://placehold.co/200/jpg" },
-  { id: 2, name: "Bob Smith", salary: "15000", profileImage: "https://placehold.co/200/jpg" },
-  { id: 3, name: "Charlie Brown", salary: "13000", profileImage: "https://placehold.co/200/jpg" },
-  { id: 4, name: "Diana Ross", salary: "14000", profileImage: "https://placehold.co/200/jpg" },
-  { id: 5, name: "Ethan Hunt", salary: "16000", profileImage: "https://placehold.co/200/jpg" },
-  { id: 6, name: "Fiona Apple", salary: "12500", profileImage: "https://placehold.co/200/jpg" },
-  { id: 7, name: "George Martin", salary: "13500", profileImage: "https://placehold.co/200/jpg" },
-  { id: 8, name: "Hannah Montana", salary: "14500", profileImage: "https://placehold.co/200/jpg" },
-  { id: 9, name: "Ian Somerhalder", salary: "15500", profileImage: "https://placehold.co/200/jpg" },
-  { id: 10, name: "Julia Roberts", salary: "16500", profileImage: "https://placehold.co/200/jpg" },
-];
 
 const GenerateEmployeeSalariesListScreen: React.FC<Props> = ({ navigation }) => {
   const { colors } = useTheme();
@@ -49,15 +40,39 @@ const GenerateEmployeeSalariesListScreen: React.FC<Props> = ({ navigation }) => 
   const [tempDate, setTempDate] = useState(new Date()); // temp date for the picker
   const [showPicker, setShowPicker] = useState(false);
 
-  // Limit to minDate = 1 year before this month, maxDate = current month
-  const now = new Date();
-  const minDate = new Date(now.getFullYear() - 1, now.getMonth(), 1); // 1 year before
-  const maxDate = new Date(now.getFullYear(), now.getMonth(), 1);     // current month
+  // For storing the employees from the API
+  const [employeeList, setEmployeeList] = useState<Employee[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // State for selected employee IDs
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   // Global "select all" state
   const [selectAll, setSelectAll] = useState<boolean>(false);
+
+  // Limit date to minDate = 1 year before this month, maxDate = current month
+  const now = new Date();
+  const minDate = new Date(now.getFullYear() - 1, now.getMonth(), 1); // 1 year before
+  const maxDate = new Date(now.getFullYear(), now.getMonth(), 1); // current month
+
+  /** Fetch employees from API using ApiService.postWithToken */
+  const fetchEmployees = async () => {
+    setIsLoading(true);
+    try {
+      const response = await ApiService.postWithToken("api/employee/all-list", {})
+
+      if (response?.data) {
+        setEmployeeList(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching employee list:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
 
   // Toggle the global "All" checkbox
   const toggleSelectAll = () => {
@@ -65,7 +80,7 @@ const GenerateEmployeeSalariesListScreen: React.FC<Props> = ({ navigation }) => 
       setSelectedIds([]);
       setSelectAll(false);
     } else {
-      setSelectedIds(staticEmployees.map((emp) => emp.id));
+      setSelectedIds(employeeList.map((emp) => emp.id));
       setSelectAll(true);
     }
   };
@@ -78,7 +93,7 @@ const GenerateEmployeeSalariesListScreen: React.FC<Props> = ({ navigation }) => 
     } else {
       const newSelected = [...selectedIds, id];
       setSelectedIds(newSelected);
-      if (newSelected.length === staticEmployees.length) {
+      if (newSelected.length === employeeList.length) {
         setSelectAll(true);
       }
     }
@@ -87,12 +102,18 @@ const GenerateEmployeeSalariesListScreen: React.FC<Props> = ({ navigation }) => 
   // Render each employee row
   const renderEmployeeItem = ({ item }: { item: Employee }) => (
     <View style={styles.itemContainer}>
-      <Image source={{ uri: item.profileImage }} style={styles.profileImage} />
+      <View style={styles.avatar}>
+        <Text style={styles.avatarText}>
+          {item.name ? item.name[0] : "E"}
+        </Text>
+      </View>
       <View style={styles.infoContainer}>
         <Text style={[styles.name, { color: colors.text }]}>{item.name}</Text>
       </View>
       <View style={styles.salaryContainer}>
-        <Text style={[styles.salary, { color: colors.text }]}>{item.salary}</Text>
+        <Text style={[styles.salary, { color: colors.text }]}>
+          {item.total_salary}
+        </Text>
       </View>
       <TouchableOpacity onPress={() => toggleSelectEmployee(item.id)}>
         {selectedIds.includes(item.id) ? (
@@ -105,10 +126,19 @@ const GenerateEmployeeSalariesListScreen: React.FC<Props> = ({ navigation }) => 
   );
 
   // Helper to format only month-year
-  const formatMonthYear = (date: Date) => {
-    const month = date.toLocaleString("default", { month: "short" });
-    const year = date.getFullYear();
-    return `${month} ${year}`;
+  const formatMonthYear = (date: Date, monthInNum = false) => {
+    let month;
+    if (monthInNum) {
+      month = String(date.getMonth() + 1).padStart(2, "0");
+      const year = date.getFullYear();
+      return `${month}-${year}`;
+
+    } else {
+      month = date.toLocaleString("default", { month: "short" });
+      const year = date.getFullYear();
+      return `${month} ${year}`;
+
+    }
   };
 
   // Show the modal date picker
@@ -137,53 +167,104 @@ const GenerateEmployeeSalariesListScreen: React.FC<Props> = ({ navigation }) => 
     setShowPicker(false);
   };
 
-  // Generate Salary -> navigate to PDF list
-  const handleGenerateSalary = () => {
-    navigation.navigate("GenerateEmployeePdfListScreen");
-  };
 
+  // // Generate Salary -> navigate to PDF list (or handle as needed)
+  // const handleGenerateSalary = () => {
+  //   // console.log("GenerateEmployeePdfListScreen", selectedIds, selectedDate);
+  //   const salary_date = formatMonthYear(selectedDate, true);
+  //   navigation.navigate("GenerateEmployeePdfListScreen", { data: { employees_ids: selectedIds, salary_date: salary_date } });
+  // };
+  // Updated handleGenerateSalary function with the requested validations.
+  // 1. Must have at least one selected employee (selectedIds.length >= 1).
+  // 2. The salary date must match the "MM-YYYY" format (e.g., "01-2025").
+  // If any check fails, show an alert message.
+
+  const handleGenerateSalary = () => {
+    // Check if at least one employee is selected
+    if (!selectedIds || selectedIds.length < 1) {
+      Alert.alert("Validation Error", "Please select at least one employee.");
+      return;
+    }
+
+    // Format the date as "MM-YYYY"
+    const salary_date = formatMonthYear(selectedDate, true); // e.g. "02-2025"
+
+    // Validate the "MM-YYYY" format
+    const dateRegex = /^\d{2}-\d{4}$/;
+    if (!dateRegex.test(salary_date)) {
+      Alert.alert(
+        "Validation Error",
+        "Salary date is invalid. Please select a valid month-year."
+      );
+      return;
+    }
+
+    // If all validations pass, navigate to the next screen
+    navigation.navigate("GenerateEmployeePdfListScreen", {
+      data: { employees_ids: selectedIds, salary_date },
+    });
+  };
   return (
     <View style={styles.wrapper}>
       {/* Header */}
       <Header leftIcon="back" title="Generate Salaries" />
 
-      {/* Scrollable container */}
-      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-        {/* Date picker row */}
-        <View style={styles.dateRow}>
-          <Text style={styles.dateLabel}>Select Month-Year:</Text>
-          <TouchableOpacity style={styles.dateButton} onPress={onPressDate}>
-            <Text style={styles.dateButtonText}>{formatMonthYear(selectedDate)}</Text>
-          </TouchableOpacity>
+      {/* Loading state */}
+      {isLoading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size={50} color="#4CAF50" />
         </View>
+      ) : (
+        <>
+          {/* Scrollable container */}
+          <ScrollView
+            contentContainerStyle={styles.container}
+            showsVerticalScrollIndicator={false}
+          >
+            {/* Date picker row */}
+            <View style={styles.dateRow}>
+              <Text style={styles.dateLabel}>Select Month-Year:</Text>
+              <TouchableOpacity style={styles.dateButton} onPress={onPressDate}>
+                <Text style={styles.dateButtonText}>
+                  {formatMonthYear(selectedDate)}
+                </Text>
+              </TouchableOpacity>
+            </View>
 
-        {/* Global "All" checkbox */}
-        <View style={styles.selectAllContainer}>
-          <TouchableOpacity onPress={toggleSelectAll}>
-            {selectAll ? (
-              <Ionicons name="checkbox" size={24} color="#4CAF50" />
-            ) : (
-              <Ionicons name="square-outline" size={24} color="#ccc" />
-            )}
-          </TouchableOpacity>
-          <Text style={[styles.selectAllText, { color: colors.text }]}>All</Text>
-        </View>
+            {/* Global "All" checkbox */}
+            <View style={styles.selectAllContainer}>
+              <TouchableOpacity onPress={toggleSelectAll}>
+                {selectAll ? (
+                  <Ionicons name="checkbox" size={24} color="#4CAF50" />
+                ) : (
+                  <Ionicons name="square-outline" size={24} color="#ccc" />
+                )}
+              </TouchableOpacity>
+              <Text style={[styles.selectAllText, { color: colors.text }]}>
+                All
+              </Text>
+            </View>
 
-        {/* Employee list */}
-        <FlatList
-          data={staticEmployees}
-          renderItem={renderEmployeeItem}
-          keyExtractor={(item) => item.id.toString()}
-          scrollEnabled={false}
-        />
-      </ScrollView>
+            {/* Employee list */}
+            <FlatList
+              data={employeeList}
+              renderItem={renderEmployeeItem}
+              keyExtractor={(item) => item.id.toString()}
+              scrollEnabled={false}
+            />
+          </ScrollView>
 
-      {/* Fixed Generate Salary button */}
-      <View style={styles.generateButtonContainer}>
-        <TouchableOpacity style={styles.generateButton} onPress={handleGenerateSalary}>
-          <Text style={styles.generateButtonText}>Generate Salary</Text>
-        </TouchableOpacity>
-      </View>
+          {/* Fixed Generate Salary button */}
+          <View style={styles.generateButtonContainer}>
+            <TouchableOpacity
+              style={styles.generateButton}
+              onPress={handleGenerateSalary}
+            >
+              <Text style={styles.generateButtonText}>Generate Salary</Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
 
       {/* Modal with custom date/time picker */}
       <Modal
@@ -204,7 +285,10 @@ const GenerateEmployeeSalariesListScreen: React.FC<Props> = ({ navigation }) => 
               maximumDate={maxDate}
             />
             <View style={styles.modalButtonRow}>
-              <TouchableOpacity style={styles.modalButtonCancel} onPress={onPressCancel}>
+              <TouchableOpacity
+                style={styles.modalButtonCancel}
+                onPress={onPressCancel}
+              >
                 <Text style={styles.modalButtonText}>Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.modalButtonOk} onPress={onPressOk}>
@@ -223,6 +307,11 @@ export default GenerateEmployeeSalariesListScreen;
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   container: {
     padding: 15,
@@ -269,6 +358,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     elevation: 2,
   },
+  // Optional image style if you want an avatar
   profileImage: {
     width: 50,
     height: 50,
@@ -350,4 +440,14 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 14,
   },
+  avatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: COLORS.primary,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  avatarText: { fontSize: 24, color: "white", fontWeight: "bold" },
+
 });

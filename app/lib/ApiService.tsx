@@ -69,10 +69,11 @@ const ApiService = {
                     return res.data;
                 }
             } else {
+                console.log("found errr", res.status, res.body);
                 MessagesService.commonMessage(`Something went Wrong, Status:${res.status}`);
             }
         } catch (error) {
-            console.log("Request body ", error);
+            console.log("Request body ", error.response.data);
 
             MessagesService.commonMessage("Internal Server Error");
         }

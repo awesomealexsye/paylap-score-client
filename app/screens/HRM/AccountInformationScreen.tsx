@@ -88,7 +88,7 @@ export const AccountInformationScreen: React.FC<
   useEffect(() => {
     if (credentials && employee?.id) {
       getAccountDetails({
-        id: employee.id,
+        employee_id: employee.id,
         user_id: credentials.user_id,
         auth_key: credentials.auth_key,
       })
@@ -101,27 +101,73 @@ export const AccountInformationScreen: React.FC<
     }
   }, [credentials, employee?.id]);
 
+  // Sync local state with fetched account data
+  useEffect(() => {
+    if (accountData) {
+      // If accountData has account_type, set the accountType accordingly
+      if (accountData.account_type === "bank") {
+        setAccountType("bank");
+        setBankDetails({
+          account_number: accountData.account_number || "",
+          ifsc_code: accountData.ifsc_code || "",
+          branch_name: accountData.branch_name || "",
+        });
+      } else if (accountData.account_type === "upi") {
+        setAccountType("upi");
+        setUpiId(accountData.upi_id || "");
+      } else {
+        setAccountType("none");
+      }
+    } else {
+      setAccountType("none");
+    }
+  }, [accountData]);
+
   // --- Save Account Information ---
   const handleSave = async () => {
-    console.log(employee, "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-    // Prepare payload with the fields (extend with additional fields as needed)
-    const payload = {
-      ...credentials,
+    if (!credentials) return;
+
+    // Determine if we are creating or updating
+    const isUpdate = !!accountData?.id;
+
+    // Prepare payload
+    const payload: any = {
+      user_id: credentials.user_id,
+      auth_key: credentials.auth_key,
       employee_id: employee?.id,
       account_type: accountType,
-      ...bankDetails,
-      upiId,
+      status: "active", // or from user input if needed
     };
+
+    // If it's bank
+    if (accountType === "bank") {
+      payload.account_number = bankDetails.account_number;
+      payload.ifsc_code = bankDetails.ifsc_code;
+      payload.branch_name = bankDetails.branch_name;
+    }
+
+    // If it's UPI
+    if (accountType === "upi") {
+      payload.upi_id = upiId;
+    }
+
+
+    // If updating, include the existing account id
+    if (isUpdate) {
+      payload.id = accountData.id;
+    }
+
     console.log("Prepared account payload:", payload);
+
     try {
-      if (accountData) {
+      if (isUpdate) {
         // Update existing account info
         const response = await updateAccount(payload).unwrap();
-        console.log("Account updated:", response);
+        navigation.goBack();
       } else {
         // Create new account info
         const response = await createAccount(payload).unwrap();
-        console.log("Account created:", response);
+        navigation.goBack();
       }
     } catch (error) {
       console.error("Error saving account info:", error);
@@ -265,8 +311,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingBottom: 40,
   },
-  loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
-  errorContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   employeeInfo: {
     alignItems: "center",
     marginVertical: 20,

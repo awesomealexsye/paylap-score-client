@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,19 +7,16 @@ import {
   ScrollView,
   TouchableOpacity,
   Platform,
-  Image,
-  Animated,
+  Alert,
   Dimensions,
 } from "react-native";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
-import * as ImagePicker from "expo-image-picker";
-import Header from "../../layout/Header";
 import { useTheme } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
+import Header from "../../layout/Header";
 import { RootStackParamList } from "../../navigation/RootStackParamList";
 import StorageService from "../../lib/StorageService";
 import CONFIG from "../../constants/config";
-import { useCreateEmployeeMutation } from "../../redux/api/employee.api";
 import { useCreateCompanyMutation } from "../../redux/api/company.api";
 import { COLORS } from "../../constants/theme";
 
@@ -48,6 +45,10 @@ export const HRMAddCompany = ({ navigation }: HRMAddCompanyProps) => {
   });
 
   const handleInputChange = (fieldName: string, value: string) => {
+    // Convert website input to lowercase automatically
+    if (fieldName === "website") {
+      value = value.toLowerCase();
+    }
     setFormData({ ...formData, [fieldName]: value });
   };
 
@@ -69,9 +70,91 @@ export const HRMAddCompany = ({ navigation }: HRMAddCompanyProps) => {
     fetchCredentials();
   }, []);
 
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const isValidURL = (url: string) => {
+    // A basic URL validation regex
+    const urlRegex =
+      /^(https?:\/\/)?[\w-]+(\.[\w-]+)+[/#?]?.*$/i;
+    return urlRegex.test(url);
+  };
+
   const handleSubmit = async () => {
     if (!credentials) return;
 
+    const {
+      name,
+      email,
+      phone,
+      website,
+      gst,
+      company_address,
+      city,
+      district,
+      state,
+      zipcode,
+    } = formData;
+
+    // Validate mandatory fields
+    if (!name.trim()) {
+      Alert.alert("Validation Error", "Name is mandatory");
+      return;
+    }
+    if (!email.trim()) {
+      Alert.alert("Validation Error", "Email is mandatory");
+      return;
+    }
+    if (!isValidEmail(email.trim())) {
+      Alert.alert("Validation Error", "Invalid email");
+      return;
+    }
+    if (!phone.trim()) {
+      Alert.alert("Validation Error", "Phone is mandatory");
+      return;
+    }
+    // Check phone length = 10
+    if (!/^\d{10}$/.test(phone.trim())) {
+      Alert.alert("Validation Error", "Phone number is not valid");
+      return;
+    }
+    if (!website.trim()) {
+      Alert.alert("Validation Error", "Website URL is mandatory");
+      return;
+    }
+    // Validate website URL
+    if (!isValidURL(website.trim())) {
+      Alert.alert("Validation Error", "Invalid website URL");
+      return;
+    }
+    if (!gst.trim()) {
+      Alert.alert("Validation Error", "GST Number is mandatory");
+      return;
+    }
+    if (!company_address.trim()) {
+      Alert.alert("Validation Error", "Company Address is mandatory");
+      return;
+    }
+    if (!city.trim()) {
+      Alert.alert("Validation Error", "City is mandatory");
+      return;
+    }
+    if (!district.trim()) {
+      Alert.alert("Validation Error", "District is mandatory");
+      return;
+    }
+    if (!state.trim()) {
+      Alert.alert("Validation Error", "State is mandatory");
+      return;
+    }
+    if (!zipcode.trim()) {
+      Alert.alert("Validation Error", "Pin code is mandatory");
+      return;
+    }
+
+    // If all validations pass, proceed with existing functionality
     const payload = {
       user_id: credentials.user_id,
       auth_key: credentials.auth_key,
@@ -315,7 +398,6 @@ export const HRMAddCompany = ({ navigation }: HRMAddCompanyProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
     paddingTop: 40, // or use SafeAreaView for iOS
   },
   profileContainer: { alignItems: "center", marginVertical: 15 },
@@ -342,7 +424,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   card: {
-    // backgroundColor: "#FFFFFF",
     paddingHorizontal: 16,
     paddingVertical: 16,
     marginBottom: 16,
@@ -354,7 +435,6 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    // backgroundColor: "#F1F5F9",
     borderRadius: 8,
     marginBottom: 12,
     borderWidth: 1,

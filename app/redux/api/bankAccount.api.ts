@@ -43,7 +43,7 @@ export const accountApi = api.injectEndpoints({
       async onQueryStarted(arg, { queryFulfilled }) {
         try {
           await queryFulfilled;
-          MessagesService.commonMessage("Account created successfully");
+          MessagesService.commonMessage("Account created successfully", "SUCCESS");
         } catch (error) {
           console.error("Error creating account:", error);
           MessagesService.commonMessage("Account creation failed");
@@ -75,7 +75,7 @@ export const accountApi = api.injectEndpoints({
       async onQueryStarted(arg, { queryFulfilled }) {
         try {
           await queryFulfilled;
-          MessagesService.commonMessage("Account updated successfully");
+          MessagesService.commonMessage("Account updated successfully", "SUCCESS");
         } catch (error) {
           console.error("Error updating account:", error);
           MessagesService.commonMessage("Account update failed");

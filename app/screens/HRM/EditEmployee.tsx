@@ -6,9 +6,9 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  Image,
   Platform,
   KeyboardAvoidingView,
+  Alert,
 } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Header from "../../layout/Header";
@@ -22,6 +22,8 @@ import {
   useGetEmployeeDetailsQuery,
 } from "../../redux/api/employee.api";
 import { COLORS } from "../../constants/theme";
+import DateTimePicker from "@react-native-community/datetimepicker"; // For date picker
+import { Picker } from "@react-native-picker/picker"; // For status dropdown
 
 type EditEmployeeProps = StackScreenProps<RootStackParamList, "EditEmployee">;
 
@@ -35,6 +37,9 @@ export const EditEmployee = ({ navigation, route }: EditEmployeeProps) => {
   // RTK hook for updating employee details
   const [updateEmployee] = useUpdateEmployeeMutation();
 
+  // State for showing/hiding DateTimePicker
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
   // Combined state object for all employee fields
   const [formData, setFormData] = useState({
     joining_date: "",
@@ -44,7 +49,7 @@ export const EditEmployee = ({ navigation, route }: EditEmployeeProps) => {
     address: "",
     department: "",
     designation: "",
-    status: "", // default status
+    status: "active", // default status set to active
   });
 
   // Credentials for user_id and auth_key
@@ -79,22 +84,90 @@ export const EditEmployee = ({ navigation, route }: EditEmployeeProps) => {
   // When data is loaded, update formData with the fetched employee details
   useEffect(() => {
     if (data?.data) {
-      const employee = data.data;
+      const empData = data.data;
       setFormData({
-        joining_date: employee.joining_date || "",
-        name: employee.name || "",
-        email: employee.email || "",
-        mobile: employee.mobile || "",
-        address: employee.address || "",
-        department: employee.department || "",
-        designation: employee.designation || "",
-        status: employee.status || "",
+        joining_date: empData.joining_date || "",
+        name: empData.name || "",
+        email: empData.email || "",
+        mobile: empData.mobile || "",
+        address: empData.address || "",
+        department: empData.department || "",
+        designation: empData.designation || "",
+        status: empData.status || "active",
       });
     }
   }, [data]);
 
+  // Handle date change from DateTimePicker
+  const onChangeDate = (event: any, selectedDate?: Date) => {
+    setShowDatePicker(false);
+    if (selectedDate) {
+      // Format selected date as YYYY-MM-DD
+      const year = selectedDate.getFullYear();
+      const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
+      const day = String(selectedDate.getDate()).padStart(2, "0");
+      const formattedDate = `${year}-${month}-${day}`;
+
+      setFormData({ ...formData, joining_date: formattedDate });
+    }
+  };
+
+  // Basic email validation
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleSave = async () => {
     if (!credentials || !employee?.id) return;
+
+    // ------------------- Client-side validations -------------------
+    if (!formData.joining_date.trim()) {
+      Alert.alert("Validation Error", "Joining Date is mandatory");
+      return;
+    }
+    if (!formData.name.trim()) {
+      Alert.alert("Validation Error", "Full Name is mandatory");
+      return;
+    }
+    if (!formData.email.trim()) {
+      Alert.alert("Validation Error", "Email Address is mandatory");
+      return;
+    }
+    // Validate email
+    if (!isValidEmail(formData.email.trim())) {
+      Alert.alert("Validation Error", "Invalid email");
+      return;
+    }
+    if (!formData.mobile.trim()) {
+      Alert.alert("Validation Error", "Mobile Number is mandatory");
+      return;
+    }
+    // Validate mobile number (must be exactly 10 digits)
+    if (formData.mobile.trim().length !== 10) {
+      Alert.alert(
+        "Validation Error",
+        "Invalid mobile number. Please enter a 10 digit mobile number."
+      );
+      return;
+    }
+    if (!formData.address.trim()) {
+      Alert.alert("Validation Error", "Address is mandatory");
+      return;
+    }
+    if (!formData.department.trim()) {
+      Alert.alert("Validation Error", "Department is mandatory");
+      return;
+    }
+    if (!formData.designation.trim()) {
+      Alert.alert("Validation Error", "Designation is mandatory");
+      return;
+    }
+    if (!formData.status.trim()) {
+      Alert.alert("Validation Error", "Status is mandatory");
+      return;
+    }
+    // -------------------------------------------------------------
 
     const payload = {
       user_id: credentials.user_id,
@@ -106,7 +179,7 @@ export const EditEmployee = ({ navigation, route }: EditEmployeeProps) => {
     try {
       const result = await updateEmployee(payload).unwrap();
       console.log("Employee updated successfully:", result);
-      navigation.navigate("EmployeeSuccessScreen", payload);
+      navigation.navigate("EmployeeManagementScreen");
     } catch (err: any) {
       console.error("Error updating employee:", err);
       if (err.error && err.error.data && err.error.data.message) {
@@ -150,6 +223,7 @@ export const EditEmployee = ({ navigation, route }: EditEmployeeProps) => {
             </View>
             <Text style={styles.role}>{employee?.name}</Text>
           </View>
+
           <View
             style={[
               styles.profileSection,
@@ -162,22 +236,42 @@ export const EditEmployee = ({ navigation, route }: EditEmployeeProps) => {
                 Joining Date
               </Text>
               <View style={styles.dateInputContainer}>
-                <TextInput
+                {/* Similar to AddEmployee: Replace text input with a touchable to open the date picker */}
+                <TouchableOpacity
                   style={[
                     styles.input,
-                    { color: colors.title, backgroundColor: colors.card },
+                    {
+                      color: colors.title,
+                      backgroundColor: colors.card,
+                      justifyContent: "center",
+                    },
                   ]}
-                  placeholder="Enter joining date"
-                  value={formData.joining_date}
-                  placeholderTextColor={colors.title}
-                  onChangeText={(text) =>
-                    setFormData({ ...formData, joining_date: text })
-                  }
-                />
-                <TouchableOpacity style={styles.dateIcon}>
+                  onPress={() => setShowDatePicker(true)}
+                >
+                  <Text style={{ color: colors.title }}>
+                    {formData.joining_date}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.dateIcon}
+                  onPress={() => setShowDatePicker(true)}
+                >
                   <MaterialIcons name="date-range" size={20} color="#999" />
                 </TouchableOpacity>
               </View>
+              {/* Conditionally render the date picker */}
+              {showDatePicker && (
+                <DateTimePicker
+                  value={
+                    formData.joining_date
+                      ? new Date(formData.joining_date)
+                      : new Date()
+                  }
+                  mode="date"
+                  display="default"
+                  onChange={onChangeDate}
+                />
+              )}
             </View>
           </View>
 
@@ -292,22 +386,27 @@ export const EditEmployee = ({ navigation, route }: EditEmployeeProps) => {
               />
             </View>
 
+            {/* Status Dropdown */}
             <View style={styles.inputGroup}>
               <Text style={[styles.inputLabel, { color: colors.title }]}>
                 Status
               </Text>
-              <TextInput
-                style={[
-                  styles.input,
-                  { backgroundColor: colors.card, color: colors.title },
-                ]}
-                placeholder="Enter status"
-                placeholderTextColor={colors.title}
-                value={formData.status}
-                onChangeText={(text) =>
-                  setFormData({ ...formData, status: text })
-                }
-              />
+              <View style={styles.pickerContainer}>
+                <Picker
+                  selectedValue={formData.status}
+                  onValueChange={(itemValue) =>
+                    setFormData({ ...formData, status: itemValue })
+                  }
+                  style={[
+                    styles.input,
+                    { backgroundColor: colors.card, color: colors.title },
+                  ]}
+                  dropdownIconColor={colors.title}
+                >
+                  <Picker.Item label="Active" value="active" />
+                  <Picker.Item label="Inactive" value="inactive" />
+                </Picker>
+              </View>
             </View>
 
             <View style={{ padding: 20 }}>

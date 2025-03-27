@@ -206,16 +206,19 @@ export const ManageSalaryScreen: React.FC<ManageSalaryScreenProps> = ({
       ...(resData ? { id: resData?.id } : { employee_id: employeeDetail?.id }),
     };
 
-    console.log("Prepared payload:", payload);
 
     try {
       if (resData) {
         console.log("resData", resData);
         const response = await updateSalary(payload).unwrap();
-        console.log("Salary updated:", response);
+        if (response?.status === true) {
+          navigation.goBack();
+        }
       } else {
         const response = await createSalary(payload).unwrap();
-        console.log("Salary created:", response);
+        if (response?.status === true) {
+          navigation.goBack();
+        }
       }
     } catch (error) {
       console.error("Error saving salary:", error);

@@ -71,7 +71,7 @@ export const companyApi = api.injectEndpoints({
       async onQueryStarted(arg, { queryFulfilled }) {
         try {
           await queryFulfilled;
-          MessagesService.commonMessage("Company deleted successfully");
+          MessagesService.commonMessage("Company deleted successfully", "SUCCESS");
         } catch (error) {
           console.error("Error deleting Company:", error);
           MessagesService.commonMessage("Company deletion failed");

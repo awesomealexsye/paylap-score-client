@@ -49,7 +49,7 @@ export const employeeApi = api.injectEndpoints({
       async onQueryStarted(arg, { queryFulfilled }) {
         try {
           await queryFulfilled;
-          MessagesService.commonMessage("Employee created successfully");
+          MessagesService.commonMessage("Employee created successfully", "SUCCESS");
         } catch (error) {
           console;
           MessagesService.commonMessage("Employee creation failed");
@@ -69,7 +69,7 @@ export const employeeApi = api.injectEndpoints({
         try {
           await queryFulfilled;
 
-          MessagesService.commonMessage("Employee updated successfully");
+          MessagesService.commonMessage("Employee updated successfully", "SUCCESS");
         } catch (error) {
           MessagesService.commonMessage("Employee update failed");
         }

@@ -8,8 +8,6 @@ import {
 } from "react-native";
 import {
   FontAwesome5,
-  MaterialCommunityIcons,
-  Feather,
   MaterialIcons,
 } from "@expo/vector-icons";
 import { StackScreenProps } from "@react-navigation/stack";
@@ -39,11 +37,12 @@ export const EmployeeManagementScreen = ({
     auth_key: string | null;
   } | null>(null);
 
-  // For the dropdown header
+  // For the dropdown header (company list)
   const [companyList, setCompanyList] = useState<any[]>([]);
   const [selectedCompany, setSelectedCompany] = useState<any>(null);
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
+  // Fetch credentials and possible stored company from local storage
   useEffect(() => {
     const fetchCredentials = async () => {
       const userIdStr = await StorageService.getStorage(
@@ -52,11 +51,30 @@ export const EmployeeManagementScreen = ({
       const auth_key = await StorageService.getStorage(
         CONFIG.HARDCODE_VALUES.AUTH_KEY
       );
+
+      // Retrieve stored company ID and name
+      const storedCompanyId = await StorageService.getStorage(
+        CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_ID
+      );
+      const storedCompanyName = await StorageService.getStorage(
+        CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_NAME
+      );
+
+      let initialSelectedCompany: any = null;
+      if (storedCompanyId && storedCompanyName) {
+        initialSelectedCompany = {
+          id: storedCompanyId,
+          name: storedCompanyName,
+        };
+      }
+
+      setSelectedCompany(initialSelectedCompany);
       setCredentials({ user_id: userIdStr, auth_key });
     };
     fetchCredentials();
   }, []);
 
+  // Fetch company list from API
   useEffect(() => {
     if (credentials && credentials.user_id && credentials.auth_key) {
       getCompanyList({
@@ -65,11 +83,42 @@ export const EmployeeManagementScreen = ({
       })
         .unwrap()
         .then((data) => {
-          // Assuming data.data is an array of companies
-          console.log("data :", data.data);
           setCompanyList(data.data);
           if (data.data && data.data.length > 0) {
-            setSelectedCompany(data.data[0]);
+            // If we already have a selectedCompany from storage, confirm it's valid
+            if (selectedCompany && selectedCompany.id) {
+              const foundCompany = data.data.find(
+                (c: any) => c.id == selectedCompany.id
+              );
+              if (foundCompany) {
+                // If found, set that as selected
+                setSelectedCompany(foundCompany);
+              } else {
+                // If not found, fallback to the first in the list
+                setSelectedCompany(data.data[0]);
+                // Also store in local storage
+                StorageService.setStorage(
+                  CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_ID,
+                  data.data[0].id.toString()
+                );
+                StorageService.setStorage(
+                  CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_NAME,
+                  data.data[0].name
+                );
+              }
+            } else {
+              // No previously selected company, set the first in the list
+              setSelectedCompany(data.data[0]);
+              // Store in local storage
+              StorageService.setStorage(
+                CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_ID,
+                data.data[0].id.toString()
+              );
+              StorageService.setStorage(
+                CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_NAME,
+                data.data[0].name
+              );
+            }
           }
         })
         .catch((err) => {
@@ -78,108 +127,169 @@ export const EmployeeManagementScreen = ({
     }
   }, [credentials]);
 
+  // Handle company selection
+  const handleSelectCompany = (company: any) => {
+    setSelectedCompany(company);
+    setDropdownVisible(false);
+
+    // Store in local storage
+    StorageService.setStorage(
+      CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_ID,
+      company.id.toString()
+    );
+    StorageService.setStorage(
+      CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_NAME,
+      company.name
+    );
+  };
+
+  // Card items
+  const cardItems = [
+    {
+      title: "Manage Company",
+      icon: "building",
+      color: "#28a745",
+      route: "HRMCompanyListScreen",
+    },
+    {
+      title: "Employee Management",
+      icon: "users",
+      color: "#6A5ACD",
+      route: "EmployeeListScreen",
+    },
+    {
+      title: "Salary Management",
+      icon: "credit-card",
+      color: "#1E90FF",
+      route: "GenerateEmployeeSalariesListScreen",
+    },
+    {
+      title: "Time Attendance",
+      icon: "calendar-check",
+      color: "#FF5733",
+      route: "NotAvailable",
+    },
+    {
+      title: "Salary Statement",
+      icon: "file-invoice-dollar",
+      color: "#FF1493",
+      route: "NotAvailable",
+    },
+  ];
+
+  const [mainItem, ...otherItems] = cardItems;
+
   return (
     <View style={styles.container}>
-      {/* Custom header with dropdown */}
+      {/* Custom header */}
       <View style={[styles.header, { backgroundColor: colors.card }]}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        {/* Back Arrow */}
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.headerIconLeft}
+        >
           <MaterialIcons name="arrow-back" size={24} color={colors.title} />
         </TouchableOpacity>
-        <View style={styles.dropdownContainer}>
-          <Text
-            style={[styles.headerTitle, { color: colors.title, fontSize: 15 }]}
-          >
+
+        {/* Title in center */}
+        <View style={styles.headerCenter}>
+          <Text style={[styles.headerTitle, { color: colors.title }]}>
             Employee Management
           </Text>
-          <Text
-            style={[styles.headerTitle, { color: colors.title, opacity: 0.6 }]}
-          >
+        </View>
+
+        {/* Plus Icon to create company */}
+        <TouchableOpacity
+          onPress={() => navigation.navigate("HRMAddCompany")}
+          style={styles.headerIconRight}
+        >
+          <MaterialIcons name="add" size={24} color={colors.title} />
+        </TouchableOpacity>
+      </View>
+
+      {/* Second row in header for Company Selector */}
+      <View
+        style={[
+          styles.headerDropdownRow,
+          { backgroundColor: colors.card, borderTopColor: "#E2E8F0" },
+        ]}
+      >
+        <TouchableOpacity
+          style={styles.companySelectorButton}
+          onPress={() => setDropdownVisible(!dropdownVisible)}
+        >
+          <Text style={[styles.companySelectorButtonText, { color: colors.title }]}>
             {selectedCompany ? selectedCompany.name : "Select Company"}
           </Text>
-          <TouchableOpacity
-            style={styles.dropdownButton}
-            onPress={() => setDropdownVisible(!dropdownVisible)}
-          >
-            <MaterialIcons
-              name="arrow-drop-down"
-              size={24}
-              color={colors.title}
-            />
-          </TouchableOpacity>
-          {dropdownVisible && (
-            <View style={styles.dropdownList}>
-              {companyList?.map((company, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.dropdownItem}
-                  onPress={() => {
-                    setSelectedCompany(company);
-                    setDropdownVisible(false);
-                  }}
-                >
-                  <Text style={styles.dropdownItemText}>{company.name}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          )}
-        </View>
+          <MaterialIcons
+            name={dropdownVisible ? "arrow-drop-up" : "arrow-drop-down"}
+            size={24}
+            color={colors.title}
+          />
+        </TouchableOpacity>
       </View>
+      {dropdownVisible && (
+        <View
+          style={[
+            styles.dropdownList,
+            {
+              backgroundColor: colors.card,
+              borderTopWidth: 0,
+              borderTopLeftRadius: 0,
+              borderTopRightRadius: 0,
+            },
+          ]}
+        >
+          {companyList?.map((company, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.dropdownItem}
+              onPress={() => handleSelectCompany(company)}
+            >
+              <Text style={[styles.dropdownItemText, { color: colors.title }]}>
+                {company.name}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
 
       {/* List Section */}
       <ScrollView style={styles.content}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("HRMAddCompany")}
-          style={[
-            styles.listItem,
-            { backgroundColor: colors.card, borderColor: "gray" },
-          ]}
-        >
-          {/* Icon Container */}
-          <View
-            style={[
-              styles.listIconContainer,
-              { backgroundColor: COLORS.primary },
-            ]}
+        {/* Main card container */}
+        <View style={styles.mainCardContainer}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate(mainItem.route)}
+            style={[styles.mainCard, { backgroundColor: mainItem.color }]}
           >
-            <MaterialIcons
-              name="business"
-              size={20}
-              color={COLORS.background}
-            />
-          </View>
-          {/* Text */}
-          <Text style={[styles.listText, { color: colors.title }]}>
-            Create Company
-          </Text>
-          {/* Arrow */}
-          <Feather name="chevron-right" size={22} color="#999" />
-        </TouchableOpacity>
-        <View
-          style={[
-            styles.gridContainer,
-            { backgroundColor: colors.backgroundColor },
-          ]}
-        >
-          {[
-            {
-              title: "Employee Management",
-              icon: "users",
-              color: "#6A5ACD",
-              route: "EmployeeManagementScreen",
-            },
-            {
-              title: "Salary Management",
-              icon: "credit-card",
-              color: "#1E90FF",
-              route: "GenerateEmployeeSalariesListScreen",
-            },
-          ].map((item, index) => (
-            <TouchableOpacity
-              onPress={() => navigation.navigate(item?.route)}
-              key={index}
-              style={[styles.card, { backgroundColor: COLORS.primary }]}
+            <View
+              style={[
+                styles.iconContainer,
+                { backgroundColor: "rgba(255,255,255,0.2)" },
+              ]}
             >
-              <View style={styles.iconContainer}>
+              <FontAwesome5 name={mainItem.icon} size={30} color="white" />
+            </View>
+            <Text style={[styles.cardText, { color: "white", fontSize: 16 }]}>
+              {mainItem.title}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Two-column grid for other cards */}
+        <View style={styles.gridContainer}>
+          {otherItems.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => navigation.navigate(item.route)}
+              style={[styles.card, { backgroundColor: item.color }]}
+            >
+              <View
+                style={[
+                  styles.iconContainer,
+                  { backgroundColor: "rgba(255,255,255,0.2)" },
+                ]}
+              >
                 <FontAwesome5 name={item.icon} size={24} color="white" />
               </View>
               <Text style={[styles.cardText, { color: "white" }]}>
@@ -188,117 +298,113 @@ export const EmployeeManagementScreen = ({
             </TouchableOpacity>
           ))}
         </View>
-        {[
-          {
-            title: " Employee List",
-            icon: "user-plus",
-            color: "#6A5ACD",
-            route: "EmployeeListScreen",
-          },
-          {
-            title: "Time Attendance",
-            icon: "calendar-check",
-            color: "#FF5733",
-            route: "EmployeeAttendendsList",
-          },
-          {
-            title: "Salary Statement",
-            icon: "file-invoice-dollar",
-            color: "#FF1493",
-            route: "EmployeeAttendanceDetails",
-          },
-        ].map((item, index) => (
-          <TouchableOpacity
-            onPress={() => navigation.navigate(item?.route)}
-            key={index}
-            style={[
-              styles.listItem,
-              { borderColor: item.color, backgroundColor: colors.card },
-            ]}
-          >
-            {/* Icon Container */}
-            <View
-              style={[
-                styles.listIconContainer,
-                { backgroundColor: item.color },
-              ]}
-            >
-              <FontAwesome5 name={item.icon} size={18} color="white" />
-            </View>
-            {/* Text */}
-            <Text style={[styles.listText, { color: colors.title }]}>
-              {item.title}
-            </Text>
-            {/* Arrow */}
-            <Feather name="chevron-right" size={22} color="#999" />
-          </TouchableOpacity>
-        ))}
       </ScrollView>
     </View>
   );
 };
 
+export default EmployeeManagementScreen;
+
 const styles = StyleSheet.create({
   container: { flex: 1 },
+
+  /* Header */
   header: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     paddingVertical: 12,
     elevation: 2,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
-    overflow: "visible", // allow dropdown to be visible
   },
-  dropdownContainer: {
+  headerIconLeft: {
+    width: 40,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  headerCenter: {
     flex: 1,
-    marginLeft: 16,
-    position: "relative",
-    overflow: "visible", // allow dropdown list to overflow
-    zIndex: 1000,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  headerIconRight: {
+    width: 40,
+    alignItems: "center",
+    justifyContent: "center",
   },
   headerTitle: {
-    fontSize: 12,
-    fontWeight: "500",
+    fontSize: 16,
+    fontWeight: "bold",
   },
-  dropdownButton: {
-    position: "absolute",
-    right: 0,
-    top: 0,
-    bottom: 0,
-    justifyContent: "center",
-    paddingHorizontal: 8,
+
+  /* Header Dropdown Row */
+  headerDropdownRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderTopWidth: 1,
   },
-  dropdownList: {
-    position: "absolute",
-    top: 50,
-    left: 0,
-    right: 0,
-    backgroundColor: "#FFFFFF",
+  companySelectorButton: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 8,
     borderWidth: 1,
     borderColor: "#E2E8F0",
-    borderRadius: 10,
-    paddingVertical: 5,
-    zIndex: 10000,
+  },
+  companySelectorButtonText: {
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  dropdownList: {
+    marginHorizontal: 10,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+    paddingVertical: 4,
+  },
+  dropdownItem: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  dropdownItemText: {
+    fontSize: 14,
+  },
+
+  /* Content */
+  content: {
+    padding: 15,
+    zIndex: -10,
+  },
+
+  /* Main Card */
+  mainCardContainer: {
+    marginBottom: 15,
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  mainCard: {
+    width: "100%",
+    paddingVertical: 20,
+    paddingHorizontal: 15,
+    borderRadius: 15,
+    alignItems: "center",
+    elevation: 4,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
+    shadowRadius: 3,
   },
-  dropdownItem: {
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#E2E8F0",
-  },
-  dropdownItemText: {
-    fontSize: 13,
-    color: "#1E293B",
-  },
-  content: { padding: 15, zIndex: -10 },
+
+  /* Grid */
   gridContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -307,16 +413,21 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: "#FFFFFF",
     width: "48%",
-    padding: 10,
+    paddingVertical: 15,
+    paddingHorizontal: 10,
     borderRadius: 15,
     alignItems: "center",
     marginBottom: 15,
-    elevation: 3,
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
   iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 8,
+    width: 50,
+    height: 50,
+    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -327,24 +438,4 @@ const styles = StyleSheet.create({
     marginTop: 10,
     textAlign: "center",
   },
-  listItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 8,
-    borderRadius: 12,
-    marginBottom: 10,
-    borderWidth: 1,
-    position: "relative",
-  },
-  listIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 40,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 15,
-  },
-  listText: { flex: 1, fontSize: 12, fontWeight: "500" },
 });
-
-export default EmployeeManagementScreen;
