@@ -276,7 +276,7 @@ export const InvoiceAddOrganization = ({ navigation, route }: InvoiceAddOrganiza
 						<View style={styles.inputContainer}>
 							<Text style={[styles.label, { color: colors.title }]}>GST Number</Text>
 							<Input
-								maxlength={12}
+								maxlength={35}
 								placeholder="Enter GST Number"
 								value={form.gst}
 								onChangeText={(text) => handleChange('gst', text)}

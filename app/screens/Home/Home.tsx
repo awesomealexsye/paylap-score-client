@@ -77,12 +77,12 @@ export const Home = ({ navigation }: HomeScreenProps) => {
             fetchCustomerList();
             // fetchImageList();
             StorageService.isLoggedIn().then(res => { res === false ? navigation.navigate("MobileSignIn") : null; });
-            // CommonService.currentUserDetail().then((res) => {
-            //     setUserDetail(res);
-            //     if (res.aadhar_card === '') {
-            //         navigation.navigate("UserKyc");
-            //     }
-            // })
+            CommonService.currentUserDetail().then((res) => {
+                setUserDetail(res);
+                // if (res.aadhar_card === '') {
+                //     navigation.navigate("UserKyc");
+                // }
+            })
         }, [])
     );
 
