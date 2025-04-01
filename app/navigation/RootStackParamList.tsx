@@ -145,4 +145,5 @@ export type RootStackParamList = {
 
   HRMAddCompany: any;
   HRMCompanyListScreen: any;
+  ManageAttendanceScreen: any;
 };

@@ -116,6 +116,7 @@ import GenerateEmployeeSalariesListScreen from "../screens/HRM/GenerateEmployeeS
 import GenerateEmployeePdfListScreen from "../screens/HRM/GenerateEmployeePdfListScreen";
 import HRMAddCompany from "../screens/HRM/HRMAddCompany";
 import HRMCompanyListScreen from "../screens/HRM/HRMCompanyListScreen";
+import ManageAttendanceScreen from "../screens/HRM/ManageAttendanceScreen";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -322,6 +323,7 @@ const StackNavigator = () => {
         />
         <Stack.Screen name="HRMAddCompany" component={HRMAddCompany} />
         <Stack.Screen name="HRMCompanyListScreen" component={HRMCompanyListScreen} />
+        <Stack.Screen name="ManageAttendanceScreen" component={ManageAttendanceScreen} />
       </Stack.Navigator>
     </View>
   );

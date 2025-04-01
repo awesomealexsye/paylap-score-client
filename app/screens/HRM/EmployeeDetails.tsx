@@ -214,6 +214,14 @@ const EmployeeDetailScreen: React.FC<EmployeeDetailScreenProps> = ({
         >
           <Text style={styles.accountInfoButtonText}>Account Information</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.accountInfoButton}
+          onPress={() =>
+            navigation.navigate("ManageAttendanceScreen", employee)
+          }
+        >
+          <Text style={styles.accountInfoButtonText}>Attandance</Text>
+        </TouchableOpacity>
       </View>
     </>
   );
