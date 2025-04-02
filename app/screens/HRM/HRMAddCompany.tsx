@@ -9,6 +9,8 @@ import {
   Platform,
   Alert,
   Dimensions,
+  Image,
+  ActivityIndicator,
 } from "react-native";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
@@ -19,6 +21,9 @@ import StorageService from "../../lib/StorageService";
 import CONFIG from "../../constants/config";
 import { useCreateCompanyMutation } from "../../redux/api/company.api";
 import { COLORS } from "../../constants/theme";
+import useImagePicker from "../../customHooks/ImagePickerHook";
+import { ApiService } from "../../lib/ApiService";
+import { MessagesService } from "../../lib/MessagesService";
 
 const { width } = Dimensions.get("window");
 const inputWidth = width - 40;
@@ -30,6 +35,7 @@ export const HRMAddCompany = ({ navigation }: HRMAddCompanyProps) => {
   const { colors }: { colors: any } = theme;
 
   const [createCompany] = useCreateCompanyMutation();
+  const [isLoading, setIsLoading] = useState(false)
 
   const [formData, setFormData] = useState({
     name: "",
@@ -69,6 +75,8 @@ export const HRMAddCompany = ({ navigation }: HRMAddCompanyProps) => {
     };
     fetchCredentials();
   }, []);
+
+  const { image, pickImage } = useImagePicker();
 
   const isValidEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -111,8 +119,8 @@ export const HRMAddCompany = ({ navigation }: HRMAddCompanyProps) => {
       Alert.alert("Validation Error", "Invalid email");
       return;
     }
-    if (!phone.trim()) {
-      Alert.alert("Validation Error", "Phone is mandatory");
+    if (phone.trim().length != 10) {
+      Alert.alert("Validation Error", "Invalid Phone Number");
       return;
     }
     // Check phone length = 10
@@ -159,21 +167,33 @@ export const HRMAddCompany = ({ navigation }: HRMAddCompanyProps) => {
       user_id: credentials.user_id,
       auth_key: credentials.auth_key,
       ...formData,
+      image: image || "", // Add base64 image data if selected
     };
+    // console.log("image", image);
+    setIsLoading(true);
 
-    try {
-      const result = await createCompany(payload).unwrap();
-      console.log("Employee created successfully:", result);
-      navigation.navigate("EmployeeManagementScreen", payload);
-    } catch (err: any) {
-      console.error("Error creating employee:", err);
-      if (err.error && err.error.data && err.error.data.message) {
-        console.error(
-          "Validation errors:",
-          JSON.stringify(err.error.data.message, null, 2)
-        );
+    ApiService.postWithToken("api/hrm/companies/add", payload).then((res) => {
+      setIsLoading(false);
+      MessagesService.commonMessage(res?.message, res?.status ? 'SUCCESS' : 'ERROR');
+      if (res.status == true) {
+        navigation.navigate("EmployeeManagementScreen", payload);
       }
-    }
+    });
+
+
+    // try {
+    //   const result = await createCompany(payload).unwrap();
+    //   console.log("Employee created successfully:", result);
+    // navigation.navigate("EmployeeManagementScreen", payload);
+    // } catch (err: any) {
+    //   console.error("Error creating employee:", err);
+    //   if (err.error && err.error.data && err.error.data.message) {
+    //     console.error(
+    //       "Validation errors:",
+    //       JSON.stringify(err.error.data.message, null, 2)
+    //     );
+    //   }
+    // }
   };
 
   return (
@@ -185,11 +205,13 @@ export const HRMAddCompany = ({ navigation }: HRMAddCompanyProps) => {
       >
         {/* Basic Information Section */}
         <View style={styles.profileContainer}>
-          <View style={styles.avatar}>
-            <Text style={styles.avatarText}>
-              {formData.name ? formData.name[0] : "C"}
-            </Text>
-          </View>
+          <TouchableOpacity onPress={pickImage} style={styles.avatar}>
+            {image ? (
+              <Image source={{ uri: image }} style={styles.avatarImage} />
+            ) : (
+              <MaterialIcons name="camera-alt" size={24} color="white" />
+            )}
+          </TouchableOpacity>
           <Text style={styles.role}>{formData?.name}</Text>
         </View>
         <Text style={[styles.sectionTitle, { color: colors.title }]}>
@@ -246,6 +268,7 @@ export const HRMAddCompany = ({ navigation }: HRMAddCompanyProps) => {
               placeholderTextColor={colors.title}
               keyboardType="phone-pad"
               value={formData.phone}
+              maxLength={10}
               onChangeText={(text) => handleInputChange("phone", text)}
             />
           </View>
@@ -375,6 +398,7 @@ export const HRMAddCompany = ({ navigation }: HRMAddCompanyProps) => {
                 placeholderTextColor={colors.title}
                 keyboardType="numeric"
                 value={formData.zipcode}
+                maxLength={6}
                 onChangeText={(text) => handleInputChange("zipcode", text)}
               />
             </View>
@@ -382,13 +406,15 @@ export const HRMAddCompany = ({ navigation }: HRMAddCompanyProps) => {
         </View>
 
         {/* Submit Button */}
-        <TouchableOpacity
-          style={[styles.button, { backgroundColor: COLORS.primary }]}
-          onPress={handleSubmit}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.buttonText}>Create Company</Text>
-        </TouchableOpacity>
+        {isLoading ? <ActivityIndicator size={'large'} /> :
+          <TouchableOpacity
+            style={[styles.button, { backgroundColor: COLORS.primary }]}
+            onPress={handleSubmit}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.buttonText}>Create Company</Text>
+          </TouchableOpacity>
+        }
       </ScrollView>
     </>
   );
@@ -409,7 +435,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  avatarText: { fontSize: 24, color: "white", fontWeight: "bold" },
+  avatarImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    resizeMode: "cover",
+  },
   role: { fontSize: 14, color: "#888", marginTop: 5 },
   headerTitle: {
     fontSize: 24,

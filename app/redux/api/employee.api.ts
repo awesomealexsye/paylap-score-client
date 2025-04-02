@@ -8,38 +8,44 @@ export interface Employee {
   id: number;
   name: string;
   email: string;
+  // Optionally, include company_id if returned by the API.
+  company_id?: string;
 }
 
 export const employeeApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    // Get all employees
+    // Get all employees, now with company_id parameter
     getEmployees: builder.query<
-      Employee,
-      { user_id: string | null; auth_key: string | null }
+      Employee[],
+      {
+        user_id: string | null;
+        auth_key: string | null;
+        company_id: string | null;
+      }
     >({
-      query: ({ user_id, auth_key }) => {
-        if (!user_id || !auth_key) {
-          // You could either throw an error, or return a default/fallback URL.
-          console.log(`user id: ${user_id}`);
-          throw new Error("Missing required authentication parameters.");
+      query: ({ user_id, auth_key, company_id }) => {
+        if (!user_id || !auth_key || !company_id) {
+          console.log(`Missing parameters: user_id: ${user_id}, auth_key: ${auth_key}, company_id: ${company_id}`);
+          throw new Error("Missing required authentication parameters or company_id.");
         }
-        return `employee?user_id=${user_id}&auth_key=${auth_key}`;
-      },
-      providesTags: ["Employee"],
-    }),
-    // Get employee details by ID with user_id and auth_key query parameters
-    getEmployeeDetails: builder.query<
-      Employee,
-      { id: any; user_id: string | null; auth_key: string | null }
-    >({
-      query: ({ id, user_id, auth_key }) => {
-        return `employee/${id}?user_id=${user_id}&auth_key=${auth_key}`;
+        return `employee?user_id=${user_id}&auth_key=${auth_key}&company_id=${company_id}`;
       },
       providesTags: ["Employee"],
     }),
 
-    // Create a new employee
-    createEmployee: builder.mutation<Employee, Partial<Employee>>({
+    // Get employee details by ID with user_id and auth_key query parameters (company_id not required here)
+    getEmployeeDetails: builder.query<
+      Employee,
+      { id: any; user_id: string | null; auth_key: string | null, company_id: string | null }
+    >({
+      query: ({ id, user_id, auth_key, company_id }) => {
+        return `employee/${id}?user_id=${user_id}&auth_key=${auth_key}&company_id=${company_id}`;
+      },
+      providesTags: ["Employee"],
+    }),
+
+    // Create a new employee, now with company_id parameter passed in the body.
+    createEmployee: builder.mutation<Employee, Partial<Employee> & { company_id: string }>({
       query: (employee) => ({
         url: "employee",
         method: "POST",
@@ -51,7 +57,7 @@ export const employeeApi = api.injectEndpoints({
           await queryFulfilled;
           MessagesService.commonMessage("Employee created successfully", "SUCCESS");
         } catch (error) {
-          console;
+          console.error(error);
           MessagesService.commonMessage("Employee creation failed");
         }
       },
@@ -68,7 +74,6 @@ export const employeeApi = api.injectEndpoints({
       async onQueryStarted(arg, { queryFulfilled }) {
         try {
           await queryFulfilled;
-
           MessagesService.commonMessage("Employee updated successfully", "SUCCESS");
         } catch (error) {
           MessagesService.commonMessage("Employee update failed");
@@ -84,9 +89,8 @@ export const employeeApi = api.injectEndpoints({
       query: ({ id, employee }) => ({
         url: `employee/${id}`,
         method: "DELETE",
-        body: employee, // Remove or adjust the body if your API doesn't expect one for DELETE requests.
+        body: employee,
       }),
-      // Invalidate the employee list on deletion.
       invalidatesTags: ["Employee"],
       async onQueryStarted(arg, { queryFulfilled }) {
         try {
@@ -102,13 +106,8 @@ export const employeeApi = api.injectEndpoints({
 });
 
 export const {
-  //All Query
-
   useGetEmployeesQuery,
   useGetEmployeeDetailsQuery,
-
-  //All Mutation
-
   useCreateEmployeeMutation,
   useUpdateEmployeeMutation,
   useDeleteEmployeeMutation,

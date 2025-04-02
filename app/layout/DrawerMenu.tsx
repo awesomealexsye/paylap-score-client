@@ -79,7 +79,7 @@ const DrawerMenu = () => {
     },
     {
       id: "7",
-      icon: IMAGES.list,
+      icon: IMAGES.savemoney,
       name: t("HRM"),
       navigate: "EmployeeManagementScreen",
     },
@@ -362,7 +362,7 @@ const DrawerMenu = () => {
             >
               {OS == "android" &&
                 appInfo?.ANDROID.VERSION_CODE >
-                  installedAppBuild.APP_VERSION && (
+                installedAppBuild.APP_VERSION && (
                   <>
                     {appInfo?.ANDROID?.IS_MANDATORY ? (
                       <ButtonIcon

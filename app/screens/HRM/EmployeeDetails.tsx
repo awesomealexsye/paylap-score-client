@@ -1,6 +1,12 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/RootStackParamList";
 import Header from "../../layout/Header";
@@ -12,7 +18,6 @@ import {
   useGetEmployeeDetailsQuery,
 } from "../../redux/api/employee.api";
 import { COLORS } from "../../constants/theme";
-import { ActivityIndicator } from "react-native-paper";
 
 type EmployeeDetailScreenProps = StackScreenProps<
   RootStackParamList,
@@ -85,7 +90,7 @@ const EmployeeDetailScreen: React.FC<EmployeeDetailScreenProps> = ({
   return (
     <>
       <Header leftIcon="back" title="Employee Details" />
-      <View style={styles.container}>
+      <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 30 }}>
         {/* Employee Info */}
         <View style={styles.profileContainer}>
           <View style={styles.avatar}>
@@ -96,27 +101,7 @@ const EmployeeDetailScreen: React.FC<EmployeeDetailScreenProps> = ({
           <Text style={styles.role}>{employee?.name}</Text>
         </View>
 
-        {/* Status & Employee ID */}
-        <View style={styles.row}>
-          <View style={[styles.box, { backgroundColor: colors.card }]}>
-            <Text style={[styles.label, { color: colors.title }]}>
-              Department
-            </Text>
-            <View style={styles.statusContainer}>
-              <Text style={[styles.value, { color: colors.title }]}>
-                {employee?.department}
-              </Text>
-            </View>
-          </View>
-          <View style={[styles.box, { backgroundColor: colors.card }]}>
-            <Text style={[styles.label, { color: colors.title }]}>
-              Designation
-            </Text>
-            <Text style={[styles.value, { color: colors.title }]}>
-              {employee?.designation}
-            </Text>
-          </View>
-        </View>
+        {/* Status & Contact */}
         <View style={styles.row}>
           <View style={[styles.box, { backgroundColor: colors.card }]}>
             <Text style={[styles.label, { color: colors.title }]}>
@@ -140,20 +125,19 @@ const EmployeeDetailScreen: React.FC<EmployeeDetailScreenProps> = ({
           </View>
           <View style={[styles.box, { backgroundColor: colors.card }]}>
             <Text style={[styles.label, { color: colors.title }]}>
-              Employee ID
+              Contact Number
             </Text>
             <Text style={[styles.value, { color: colors.title }]}>
-              {employee?.id}
+              {employee?.mobile}
             </Text>
           </View>
         </View>
 
-        {/* Joining Date, Email & Contact */}
+        {/* Joining Date & Email */}
         <View style={[styles.infoCard, { backgroundColor: colors.card }]}>
           <View style={styles.infoRow}>
             <Text style={styles.label}>Joining Date</Text>
             <Text style={styles.label}>Email Address</Text>
-            <Text style={styles.label}>Contact No</Text>
           </View>
           <View style={styles.infoRow}>
             <Text style={[styles.value, { color: colors.title }]}>
@@ -161,9 +145,6 @@ const EmployeeDetailScreen: React.FC<EmployeeDetailScreenProps> = ({
             </Text>
             <Text style={[styles.value, { color: colors.title }]}>
               {employee?.email}
-            </Text>
-            <Text style={[styles.value, { color: colors.title }]}>
-              {employee?.mobile}
             </Text>
           </View>
         </View>
@@ -176,7 +157,7 @@ const EmployeeDetailScreen: React.FC<EmployeeDetailScreenProps> = ({
           </Text>
         </View>
 
-        {/* Buttons */}
+        {/* Buttons Row */}
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={styles.deleteButton}
@@ -205,7 +186,7 @@ const EmployeeDetailScreen: React.FC<EmployeeDetailScreenProps> = ({
           <Text style={styles.manageSalaryButtonText}>Manage Salary</Text>
         </TouchableOpacity>
 
-        {/* NEW BUTTON: Account Information */}
+        {/* Account Info Button */}
         <TouchableOpacity
           style={styles.accountInfoButton}
           onPress={() =>
@@ -214,15 +195,17 @@ const EmployeeDetailScreen: React.FC<EmployeeDetailScreenProps> = ({
         >
           <Text style={styles.accountInfoButtonText}>Account Information</Text>
         </TouchableOpacity>
+
+        {/* Attendance Button (Yellow) */}
         <TouchableOpacity
-          style={styles.accountInfoButton}
+          style={styles.attendanceButton}
           onPress={() =>
             navigation.navigate("ManageAttendanceScreen", employee)
           }
         >
-          <Text style={styles.accountInfoButtonText}>Attandance</Text>
+          <Text style={styles.attendanceButtonText}>Attendance</Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     </>
   );
 };
@@ -230,7 +213,10 @@ const EmployeeDetailScreen: React.FC<EmployeeDetailScreenProps> = ({
 export default EmployeeDetailScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, paddingHorizontal: 15 },
+  container: {
+    flex: 1,
+    paddingHorizontal: 15,
+  },
   loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
   errorContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
   profileContainer: { alignItems: "center", marginVertical: 15 },
@@ -241,9 +227,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#F4B183",
     justifyContent: "center",
     alignItems: "center",
+    marginBottom: 5,
   },
   avatarText: { fontSize: 24, color: "white", fontWeight: "bold" },
-  role: { fontSize: 14, color: "#888", marginTop: 5 },
+  role: { fontSize: 16, color: "#888", marginTop: 5 },
+
   row: { flexDirection: "row", justifyContent: "space-between" },
   box: {
     flex: 1,
@@ -252,6 +240,12 @@ const styles = StyleSheet.create({
     margin: 5,
     borderRadius: 12,
     alignItems: "center",
+    // Slight shadow
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 4,
+    elevation: 2,
   },
   label: { fontSize: 14, color: "#777", fontWeight: "bold" },
   value: { fontSize: 12, fontWeight: "bold", color: "#333" },
@@ -260,6 +254,12 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 12,
     marginTop: 15,
+    // Slight shadow
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 4,
+    elevation: 2,
   },
   infoRow: {
     flexDirection: "row",
@@ -272,7 +272,14 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: "center",
     marginVertical: 10,
+    // Slight shadow
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 4,
+    elevation: 2,
   },
+
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -296,6 +303,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   editText: { color: "#333", fontWeight: "bold", fontSize: 16 },
+
   statusContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -307,6 +315,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginRight: 5,
   },
+
   manageSalaryButton: {
     backgroundColor: "#4CAF50",
     borderRadius: 12,
@@ -320,7 +329,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 
-  // NEW Account Info Button
   accountInfoButton: {
     backgroundColor: "#9C27B0",
     borderRadius: 12,
@@ -330,6 +338,19 @@ const styles = StyleSheet.create({
   },
   accountInfoButtonText: {
     color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+
+  attendanceButton: {
+    backgroundColor: "#FFD700",
+    borderRadius: 12,
+    padding: 15,
+    alignItems: "center",
+    marginTop: 15,
+  },
+  attendanceButtonText: {
+    color: "#333",
     fontWeight: "bold",
     fontSize: 16,
   },

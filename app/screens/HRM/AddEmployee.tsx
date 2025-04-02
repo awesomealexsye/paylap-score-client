@@ -69,6 +69,7 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
       const storedCompanyId = await StorageService.getStorage(
         CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_ID
       );
+      console.log("storedCompanyId", storedCompanyId)
       setCompanyId(storedCompanyId);
     };
     fetchData();

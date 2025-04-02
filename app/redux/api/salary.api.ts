@@ -36,7 +36,7 @@ export const salaryApi = api.injectEndpoints({
       async onQueryStarted(arg, { queryFulfilled }) {
         try {
           await queryFulfilled;
-          MessagesService.commonMessage("Employee created successfully", "SUCCESS");
+          MessagesService.commonMessage("Salary updated successfully", "SUCCESS");
         } catch (error) {
           console;
           MessagesService.commonMessage("Employee creation failed");

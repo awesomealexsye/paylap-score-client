@@ -27,11 +27,16 @@ export const EmployeeListScreen = ({ navigation }: EmployeeListScreenProps) => {
   const theme = useTheme();
   const { colors }: { colors: any } = theme;
 
+  // For storing the company ID
+  const [companyID, setCompanyID] = useState<string | null>(null);
+
+  // For storing user credentials
   const [credentials, setCredentials] = useState<{
     user_id: string | null;
     auth_key: string | null;
   } | null>(null);
 
+  // Fetch credentials and company ID from local storage
   useEffect(() => {
     const fetchCredentials = async () => {
       const userIdStr = await StorageService.getStorage(
@@ -40,7 +45,11 @@ export const EmployeeListScreen = ({ navigation }: EmployeeListScreenProps) => {
       const auth_key = await StorageService.getStorage(
         CONFIG.HARDCODE_VALUES.AUTH_KEY
       );
-      // Set credentials only if both exist
+      const tempCompanyID = await StorageService.getStorage(
+        CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_ID
+      );
+
+      setCompanyID(tempCompanyID);
       setCredentials({
         user_id: userIdStr,
         auth_key: auth_key,
@@ -50,22 +59,26 @@ export const EmployeeListScreen = ({ navigation }: EmployeeListScreenProps) => {
   }, []);
 
   /**
-   * We skip the query if credentials are not yet loaded
-   * to avoid errors (like "Cannot read property 'user_id' of null").
+   * Query to fetch employees. We skip the query until
+   * credentials and companyID are loaded to avoid errors.
    */
   const { data, error, isLoading } = useGetEmployeesQuery(
-    // If credentials exist, pass them to the query;
-    // otherwise pass an empty object, and also skip if credentials is falsy.
     credentials
-      ? { user_id: credentials.user_id, auth_key: credentials.auth_key }
-      : { user_id: "", auth_key: "" },
+      ? {
+        user_id: credentials.user_id || "",
+        auth_key: credentials.auth_key || "",
+        company_id: companyID || "",
+      }
+      : { user_id: "", auth_key: "", company_id: "" },
     {
-      skip: !credentials, // Skip the query until credentials is set
+      skip: !credentials, // Skip until credentials is set
     }
   );
 
+  // Track which item is selected
   const [selectedId, setSelectedId] = useState<string | number>("1");
 
+  // 1. Show loader if API is still fetching data
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
@@ -74,6 +87,7 @@ export const EmployeeListScreen = ({ navigation }: EmployeeListScreenProps) => {
     );
   }
 
+  // 2. Show error if API call fails
   if (error) {
     return (
       <View style={styles.errorContainer}>
@@ -88,8 +102,9 @@ export const EmployeeListScreen = ({ navigation }: EmployeeListScreenProps) => {
     <View style={styles.container}>
       {/* Header */}
       <Header leftIcon="back" title=" Employee List" />
-      {/* Empty State Illustration */}
-      {data?.data == null ? (
+
+      {/* 3. If no employees found, show message. Otherwise, show the list. */}
+      {!data?.data || data.data.length === 0 ? (
         <View style={styles.content}>
           <Image
             // If you have a local image, replace src with require(...) or the correct import
@@ -98,7 +113,7 @@ export const EmployeeListScreen = ({ navigation }: EmployeeListScreenProps) => {
             resizeMode="contain"
           />
           <Text style={[styles.noDataText, { color: colors.title }]}>
-            No Data
+            No employees found
           </Text>
           <Text style={[styles.subText, { color: colors.title }]}>
             Add your employee
@@ -106,7 +121,7 @@ export const EmployeeListScreen = ({ navigation }: EmployeeListScreenProps) => {
         </View>
       ) : (
         <FlatList
-          data={data?.data}
+          data={data.data}
           keyExtractor={(item) => String(item.id)}
           renderItem={({ item }) => (
             <TouchableOpacity
@@ -137,6 +152,7 @@ export const EmployeeListScreen = ({ navigation }: EmployeeListScreenProps) => {
           )}
         />
       )}
+
       {/* Floating Add Button */}
       <TouchableOpacity
         style={styles.fab}

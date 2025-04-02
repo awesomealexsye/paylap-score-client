@@ -23,6 +23,7 @@ type EmployeeSalary = {
   id: number;
   name: string;
   total_salary: string; // from the new API
+  salary_pdf_url: string; // from the new API
 };
 
 const GenerateEmployeePdfListScreen: React.FC<Props> = ({ navigation, route }) => {
@@ -89,9 +90,10 @@ const GenerateEmployeePdfListScreen: React.FC<Props> = ({ navigation, route }) =
       {/* PDF icon on the right - existing functionality */}
       <TouchableOpacity
         onPress={() => {
+          console.log("itemss", item)
           // Hardcoded pdf_url example; adapt as needed
           navigation.navigate("FinalInvoiceResult", {
-            data: { pdf_url: "https://paynest.co.in/api/invoice?invoice_id=MTAwMDUz" },
+            data: { pdf_url: item.salary_pdf_url || "https://paynest.co.in/api/invoice?invoice_id=MTAwMDUz" },
             previous_screen: "GenerateEmployeePdfListScreen",
           });
         }}

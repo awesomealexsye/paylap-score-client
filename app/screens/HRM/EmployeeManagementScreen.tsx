@@ -5,18 +5,16 @@ import {
   TouchableOpacity,
   ScrollView,
   StyleSheet,
+  Modal,
 } from "react-native";
-import {
-  FontAwesome5,
-  MaterialIcons,
-} from "@expo/vector-icons";
+import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/RootStackParamList";
 import { useTheme } from "@react-navigation/native";
-import { COLORS } from "../../constants/theme";
 import StorageService from "../../lib/StorageService";
 import CONFIG from "../../constants/config";
 import { useGetCompanyListMutation } from "../../redux/api/company.api";
+import { COLORS } from "../../constants/theme";
 
 type EmployeeManagementScreenProps = StackScreenProps<
   RootStackParamList,
@@ -26,8 +24,6 @@ type EmployeeManagementScreenProps = StackScreenProps<
 export const EmployeeManagementScreen = ({
   navigation,
 }: EmployeeManagementScreenProps) => {
-  const [getCompanyList] = useGetCompanyListMutation();
-
   const theme = useTheme();
   const { colors }: { colors: any } = theme;
 
@@ -37,12 +33,17 @@ export const EmployeeManagementScreen = ({
     auth_key: string | null;
   } | null>(null);
 
-  // For the dropdown header (company list)
+  // Company data
   const [companyList, setCompanyList] = useState<any[]>([]);
   const [selectedCompany, setSelectedCompany] = useState<any>(null);
-  const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  // Fetch credentials and possible stored company from local storage
+  // Blocking modal if no company is available
+  const [blockedModalVisible, setBlockedModalVisible] = useState(false);
+
+  const [getCompanyList] = useGetCompanyListMutation();
+
+  // Fetch credentials and any stored company from local storage
   useEffect(() => {
     const fetchCredentials = async () => {
       const userIdStr = await StorageService.getStorage(
@@ -52,7 +53,6 @@ export const EmployeeManagementScreen = ({
         CONFIG.HARDCODE_VALUES.AUTH_KEY
       );
 
-      // Retrieve stored company ID and name
       const storedCompanyId = await StorageService.getStorage(
         CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_ID
       );
@@ -83,20 +83,16 @@ export const EmployeeManagementScreen = ({
       })
         .unwrap()
         .then((data) => {
-          setCompanyList(data.data);
+          setCompanyList(data.data || []);
+          // Check if stored company is still valid
           if (data.data && data.data.length > 0) {
-            // If we already have a selectedCompany from storage, confirm it's valid
             if (selectedCompany && selectedCompany.id) {
-              const foundCompany = data.data.find(
+              const found = data.data.find(
                 (c: any) => c.id == selectedCompany.id
               );
-              if (foundCompany) {
-                // If found, set that as selected
-                setSelectedCompany(foundCompany);
-              } else {
-                // If not found, fallback to the first in the list
+              if (!found) {
+                // If stored company not found in new list, fallback to first
                 setSelectedCompany(data.data[0]);
-                // Also store in local storage
                 StorageService.setStorage(
                   CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_ID,
                   data.data[0].id.toString()
@@ -107,9 +103,8 @@ export const EmployeeManagementScreen = ({
                 );
               }
             } else {
-              // No previously selected company, set the first in the list
+              // No previously selected, use the first
               setSelectedCompany(data.data[0]);
-              // Store in local storage
               StorageService.setStorage(
                 CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_ID,
                 data.data[0].id.toString()
@@ -127,10 +122,10 @@ export const EmployeeManagementScreen = ({
     }
   }, [credentials]);
 
-  // Handle company selection
+  // Handle company selection from the modal
   const handleSelectCompany = (company: any) => {
     setSelectedCompany(company);
-    setDropdownVisible(false);
+    setModalVisible(false);
 
     // Store in local storage
     StorageService.setStorage(
@@ -141,6 +136,19 @@ export const EmployeeManagementScreen = ({
       CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_NAME,
       company.name
     );
+  };
+
+  /**
+   * If there's no company in the list or no selectedCompany,
+   * we block navigation and show a "create new company" modal.
+   */
+  const handleCardPress = (route: string) => {
+    if (!selectedCompany || companyList.length === 0) {
+      // Show the blocked modal
+      setBlockedModalVisible(true);
+      return;
+    }
+    navigation.navigate(route);
   };
 
   // Card items
@@ -163,103 +171,131 @@ export const EmployeeManagementScreen = ({
       color: "#1E90FF",
       route: "GenerateEmployeeSalariesListScreen",
     },
-    {
-      title: "Time Attendance",
-      icon: "calendar-check",
-      color: "#FF5733",
-      route: "NotAvailable",
-    },
-    {
-      title: "Salary Statement",
-      icon: "file-invoice-dollar",
-      color: "#FF1493",
-      route: "NotAvailable",
-    },
+    // {
+    //   title: "Time Attendance",
+    //   icon: "calendar-check",
+    //   color: "#FF5733",
+    //   route: "NotAvailable",
+    // },
+    // {
+    //   title: "Salary Statement",
+    //   icon: "file-invoice-dollar",
+    //   color: "#FF1493",
+    //   route: "NotAvailable",
+    // },
   ];
 
   const [mainItem, ...otherItems] = cardItems;
 
   return (
     <View style={styles.container}>
-      {/* Custom header */}
+      {/* Custom Header */}
       <View style={[styles.header, { backgroundColor: colors.card }]}>
-        {/* Back Arrow */}
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.headerIconLeft}
-        >
-          <MaterialIcons name="arrow-back" size={24} color={colors.title} />
-        </TouchableOpacity>
+        {/* First row: Back Arrow + Title */}
+        <View style={styles.headerTopRow}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.headerIconLeft}
+          >
+            <MaterialIcons name="arrow-back" size={24} color={colors.title} />
+          </TouchableOpacity>
 
-        {/* Title in center */}
-        <View style={styles.headerCenter}>
           <Text style={[styles.headerTitle, { color: colors.title }]}>
             Employee Management
           </Text>
         </View>
 
-        {/* Plus Icon to create company */}
-        <TouchableOpacity
-          onPress={() => navigation.navigate("HRMAddCompany")}
-          style={styles.headerIconRight}
-        >
-          <MaterialIcons name="add" size={24} color={colors.title} />
-        </TouchableOpacity>
+        {/* Second row: Company name (left) + Plus icon (right) */}
+        <View style={styles.headerBottomRow}>
+          <TouchableOpacity
+            style={styles.companyNameContainer}
+            onPress={() => setModalVisible(true)}
+          >
+            <Text style={[styles.companyNameText, { color: colors.title }]}>
+              {selectedCompany ? selectedCompany.name : "Select Company"}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate("HRMAddCompany")}
+            style={styles.plusIconContainer}
+          >
+            <MaterialIcons
+              name="add"
+              size={22}
+              color={colors.title}
+              style={{ marginTop: 3 }}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
 
-      {/* Second row in header for Company Selector */}
-      <View
-        style={[
-          styles.headerDropdownRow,
-          { backgroundColor: colors.card, borderTopColor: "#E2E8F0" },
-        ]}
+      {/* Modal for selecting company */}
+      <Modal
+        visible={modalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setModalVisible(false)}
       >
         <TouchableOpacity
-          style={styles.companySelectorButton}
-          onPress={() => setDropdownVisible(!dropdownVisible)}
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setModalVisible(false)}
         >
-          <Text style={[styles.companySelectorButtonText, { color: colors.title }]}>
-            {selectedCompany ? selectedCompany.name : "Select Company"}
-          </Text>
-          <MaterialIcons
-            name={dropdownVisible ? "arrow-drop-up" : "arrow-drop-down"}
-            size={24}
-            color={colors.title}
-          />
+          <View style={[styles.modalContent, { backgroundColor: colors.card }]}>
+            {companyList?.map((company, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.modalItem}
+                onPress={() => handleSelectCompany(company)}
+              >
+                <Text style={[styles.modalItemText, { color: colors.title }]}>
+                  {company.name}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </TouchableOpacity>
-      </View>
-      {dropdownVisible && (
-        <View
-          style={[
-            styles.dropdownList,
-            {
-              backgroundColor: colors.card,
-              borderTopWidth: 0,
-              borderTopLeftRadius: 0,
-              borderTopRightRadius: 0,
-            },
-          ]}
-        >
-          {companyList?.map((company, index) => (
-            <TouchableOpacity
-              key={index}
-              style={styles.dropdownItem}
-              onPress={() => handleSelectCompany(company)}
-            >
-              <Text style={[styles.dropdownItemText, { color: colors.title }]}>
-                {company.name}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      )}
+      </Modal>
 
-      {/* List Section */}
+      {/* Modal if no company is found */}
+      <Modal
+        visible={blockedModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setBlockedModalVisible(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setBlockedModalVisible(false)}
+        >
+          <View style={[styles.modalContent, { backgroundColor: colors.card }]}>
+            <Text style={[styles.blockedTitle, { color: colors.title }]}>
+              No Company Found
+            </Text>
+            <Text style={[styles.blockedMessage, { color: colors.title }]}>
+              Create a new or choose company from top to access these features.
+            </Text>
+            <TouchableOpacity
+              style={styles.createButton}
+              onPress={() => {
+                setBlockedModalVisible(false);
+                navigation.navigate("HRMAddCompany");
+              }}
+            >
+              <Text style={styles.createButtonText}>Create Company</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      </Modal>
+
+      {/* Scrollable List Section */}
       <ScrollView style={styles.content}>
         {/* Main card container */}
         <View style={styles.mainCardContainer}>
           <TouchableOpacity
-            onPress={() => navigation.navigate(mainItem.route)}
+            onPress={() => handleCardPress(mainItem.route)}
             style={[styles.mainCard, { backgroundColor: mainItem.color }]}
           >
             <View
@@ -281,7 +317,7 @@ export const EmployeeManagementScreen = ({
           {otherItems.map((item, index) => (
             <TouchableOpacity
               key={index}
-              onPress={() => navigation.navigate(item.route)}
+              onPress={() => handleCardPress(item.route)}
               style={[styles.card, { backgroundColor: item.color }]}
             >
               <View
@@ -310,27 +346,25 @@ const styles = StyleSheet.create({
 
   /* Header */
   header: {
-    flexDirection: "row",
-    alignItems: "center",
     paddingHorizontal: 10,
-    paddingVertical: 12,
+    paddingVertical: 8,
     elevation: 2,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
   },
+  headerTopRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 6,
+  },
+  headerBottomRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between", // left for company name, right for plus
+  },
   headerIconLeft: {
-    width: 40,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  headerCenter: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  headerIconRight: {
     width: 40,
     alignItems: "center",
     justifyContent: "center",
@@ -338,45 +372,67 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 16,
     fontWeight: "bold",
+    marginLeft: 10,
   },
-
-  /* Header Dropdown Row */
-  headerDropdownRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderTopWidth: 1,
-  },
-  companySelectorButton: {
+  companyNameContainer: {
     flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 6,
+    backgroundColor: "rgba(255,255,255,0.15)",
   },
-  companySelectorButtonText: {
+  companyNameText: {
     fontSize: 14,
     fontWeight: "500",
   },
-  dropdownList: {
-    marginHorizontal: 10,
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
-    borderBottomLeftRadius: 8,
-    borderBottomRightRadius: 8,
-    paddingVertical: 4,
+  plusIconContainer: {
+    width: 40,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  dropdownItem: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+
+  /* Modal */
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.3)",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  dropdownItemText: {
+  modalContent: {
+    width: "80%",
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+  },
+  modalItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+  },
+  modalItemText: {
     fontSize: 14,
+  },
+
+  /* Blocked Modal */
+  blockedTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 6,
+  },
+  blockedMessage: {
+    fontSize: 14,
+    marginBottom: 15,
+  },
+  createButton: {
+    backgroundColor: COLORS.primary,
+    borderRadius: 6,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    alignItems: "center",
+  },
+  createButtonText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "600",
   },
 
   /* Content */
@@ -403,6 +459,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 3,
   },
+  iconContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  cardText: {
+    fontSize: 12,
+    fontWeight: "500",
+    color: "#444",
+    marginTop: 10,
+    textAlign: "center",
+  },
 
   /* Grid */
   gridContainer: {
@@ -423,19 +493,5 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
-  },
-  iconContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  cardText: {
-    fontSize: 12,
-    fontWeight: "500",
-    color: "#444",
-    marginTop: 10,
-    textAlign: "center",
   },
 });
