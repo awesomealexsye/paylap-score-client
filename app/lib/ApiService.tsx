@@ -44,7 +44,7 @@ const ApiService = {
         let authHeader = { Authorization: `Bearer ${jwt_token}` };
         data = { ...common_payload, ...data }
         headers = { ...authHeader, ...headers }
-        // console.log("Log ", api_url, headers, data);
+        console.log("Log ", api_url, headers, data);
         try {
             const res: any = await axios.post(api_url, data, { headers: headers });
             if (res.data.logout_user === true) {
@@ -69,10 +69,11 @@ const ApiService = {
                     return res.data;
                 }
             } else {
+                console.log("found errr", res.status, res.body);
                 MessagesService.commonMessage(`Something went Wrong, Status:${res.status}`);
             }
         } catch (error) {
-            console.log("Request body ", error);
+            console.log("Request body ", error.response.data);
 
             MessagesService.commonMessage("Internal Server Error");
         }

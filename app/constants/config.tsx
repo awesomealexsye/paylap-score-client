@@ -15,12 +15,17 @@ const CONFIG = {
             CLIENT_INFO: 'client_info',
             ITEM_INFO: 'item_info',
         },
+        HRM_SESSION: {
+            COMPANY_ID: 'company_id',
+            COMPANY_NAME: 'company_name',
+        },
 
         THEME_MODE: {
             THEME_MODE: 'THEME_MODE',
             LIGHT: 'LIGHT',
             DARK: 'DARK'
         },
+
         SET_LANGUAGE: 'SET_LANGUAGE',
         REFFERAL_CODE: 'referralCode'
     },

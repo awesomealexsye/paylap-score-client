@@ -1,230 +1,332 @@
-import React from 'react';
-import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
-import { RootStackParamList } from './RootStackParamList';
-import { StatusBar, View, Text } from 'react-native';
-import { useTheme } from '@react-navigation/native';
+import React from "react";
+import {
+  createStackNavigator,
+  CardStyleInterpolators,
+} from "@react-navigation/stack";
+import { RootStackParamList } from "./RootStackParamList";
+import { StatusBar, View, Text } from "react-native";
+import { useTheme } from "@react-navigation/native";
 
-
-import Onboarding from '../screens/Auth/Onboarding';
-import WelCome from '../screens/Auth/WelCome';
-import SignUp from '../screens/Auth/SignUp';
-import SingIn from '../screens/Auth/SingIn';
-import ForgotPassword from '../screens/Auth/ForgotPassword';
-import OTPAuthentication from '../screens/Auth/OTPAuthentication';
-import NewPassword from '../screens/Auth/NewPassword';
-import DrawerNavigation from './DrawerNavigation';
-import BottomNavigation from './BottomNavigation';
-import Notification from '../screens/Notification/Notification';
-import Search from '../screens/Search/Search';
-import Products from '../screens/Category/Products';
-import ProductsDetails from '../screens/Category/ProductsDetails';
-import DeliveryAddress from '../screens/Payment/DeliveryAddress';
-import AddDeliveryAddress from '../screens/Payment/AddDeliveryAddress';
-import Payment from '../screens/Payment/Payment';
-import Addcard from '../screens/Payment/Addcard';
-import Checkout from '../screens/Payment/Checkout';
-import Myorder from '../screens/Myorder/Myorder';
-import Writereview from '../screens/Myorder/Writereview';
-import Rewards from '../screens/Myorder/Rewards';
-import Trackorder from '../screens/Myorder/Trackorder';
-import Chat from '../screens/Chat/Chat';
-import Singlechat from '../screens/Chat/Singlechat';
-import Call from '../screens/Chat/Call';
-import Demo from '../screens/Home/Demo';
-import EditProfile from '../screens/Profile/EditProfile';
-import Components from '../screens/Components/Components';
-import AccordionScreen from '../screens/Components/Accordion';
-import BottomSheet from '../screens/Components/BottomSheet';
-import ModalBox from '../screens/Components/ModalBox';
-import Buttons from '../screens/Components/Buttons';
-import Badges from '../screens/Components/Badges';
-import Charts from '../screens/Components/Charts';
-import Headers from '../screens/Components/Headers';
-import Footers from '../screens/Components/Footers';
-import TabStyle1 from '../components/Footers/FooterStyle1';
-import TabStyle2 from '../components/Footers/FooterStyle2';
-import TabStyle3 from '../components/Footers/FooterStyle3';
-import TabStyle4 from '../components/Footers/FooterStyle4';
-import Inputs from '../screens/Components/Inputs';
-import ListScreen from '../screens/Components/lists';
-import Pricings from '../screens/Components/Pricings';
-import DividerElements from '../screens/Components/DividerElements';
-import Snackbars from '../screens/Components/Snackbars';
-import Socials from '../screens/Components/Socials';
-import SwipeableScreen from '../screens/Components/Swipeable';
-import Tabs from '../screens/Components/Tabs';
-import Tables from '../screens/Components/Tables';
-import Toggles from '../screens/Components/Toggles';
-import AddPayment from '../screens/Payment/AddPayment';
-import MobileSignIn from '../screens/Auth/MobileSignIn';
-import OtpVerify from '../screens/Auth/OtpVerify';
-import UserKyc from '../screens/Profile/UserKyc';
-import AddCustomer from '../screens/Customer/AddCustomer';
-import CustomerTransations from '../screens/Customer/CustomerTransations';
-import CustomerTransationsDetails from '../screens/Customer/CustomerTransactionDetail';
-import CustomerScore from '../screens/Profile/CustomerScore';
-import NotAvailable from '../screens/NotAvailable';
-import EditUserPaymentDetail from '../screens/Payment/EditUserPaymentDetail';
-import ShareApp from '../screens/ShareApp';
-import FindUser from '../screens/Profile/FindUser';
-import LedgerMain from '../screens/LedgerBook/LedgerMain';
-import LedgerAddCustomer from '../screens/LedgerBook/LedgerAddCustomer';
-import LedgerCustomerDetails from '../screens/LedgerBook/LedgerCustomerDetails';
-import CustomerSupport from '../screens/Auth/CustomerSupport';
-import TermsAndConditionsScreen from '../screens/TermAndConditions';
-import Report from '../screens/Customer/Report';
-import UserReferralList from '../screens/Profile/⁠UserReferralList';
-import LedgerCustomerTransationsDetails from '../screens/LedgerBook/LedgerCustomerTransationDetails';
-import LedgerAddPayment from '../screens/LedgerBook/LedgerAddPayment';
-import WithdrawalAmount from '../screens/Refferal/WithdrawalAmount';
-import SelectLanguage from '../screens/SelectLanguage';
-import { AddCompany } from '../screens/InvoiceGenerator/AddCompany';
-import ListCompany from '../screens/InvoiceGenerator/ListCompany';
-import InvoiceGenList from '../screens/InvoiceGenerator/InvoiceGenList';
-import AddItems from '../screens/InvoiceGenerator/AddItems';
-import FinalInvoiceResult from '../screens/InvoiceGenerator/FinalInvoiceResult';
-import AddInvoiceDetails from '../screens/InvoiceGenerator/AddInvoiceDetails';
-import { AddCompanyCustomer } from '../screens/InvoiceGenerator/AddCompanyCustomer';
-import CompanyCustomerList from '../screens/InvoiceGenerator/CompanyCustomerList';
-import InvoiceLists from '../screens/Invoice/InvoiceLists';
-import InvoiceCreate from '../screens/Invoice/InvoiceCreate';
-import InvoiceAddItems from '../screens/Invoice/InvoiceAddItems';
-import InvoiceEditItem from '../screens/Invoice/InvoiceEditItem';
-import InvoiceOrganizations from '../screens/Invoice/InvoiceOrganizations';
-import InvoiceAddOrganization from '../screens/Invoice/InvoiceAddOrganization';
-import InvoiceClients from '../screens/Invoice/InvoiceClients';
-import InvoiceAddClient from '../screens/Invoice/InvoiceAddClient';
-import InvoiceAddNewItems from '../screens/Invoice/InvoiceAddNewItem';
-import ChooseInvoiceDesign from '../screens/Invoice/ChooseInvoiceDesign';
-import InvoiceDetail from '../screens/Invoice/InvoiceDetail';
-
+import Onboarding from "../screens/Auth/Onboarding";
+import WelCome from "../screens/Auth/WelCome";
+import SignUp from "../screens/Auth/SignUp";
+import SingIn from "../screens/Auth/SingIn";
+import ForgotPassword from "../screens/Auth/ForgotPassword";
+import OTPAuthentication from "../screens/Auth/OTPAuthentication";
+import NewPassword from "../screens/Auth/NewPassword";
+import DrawerNavigation from "./DrawerNavigation";
+import BottomNavigation from "./BottomNavigation";
+import Notification from "../screens/Notification/Notification";
+import Search from "../screens/Search/Search";
+import Products from "../screens/Category/Products";
+import ProductsDetails from "../screens/Category/ProductsDetails";
+import DeliveryAddress from "../screens/Payment/DeliveryAddress";
+import AddDeliveryAddress from "../screens/Payment/AddDeliveryAddress";
+import Payment from "../screens/Payment/Payment";
+import Addcard from "../screens/Payment/Addcard";
+import Checkout from "../screens/Payment/Checkout";
+import Myorder from "../screens/Myorder/Myorder";
+import Writereview from "../screens/Myorder/Writereview";
+import Rewards from "../screens/Myorder/Rewards";
+import Trackorder from "../screens/Myorder/Trackorder";
+import Chat from "../screens/Chat/Chat";
+import Singlechat from "../screens/Chat/Singlechat";
+import Call from "../screens/Chat/Call";
+import Demo from "../screens/Home/Demo";
+import EditProfile from "../screens/Profile/EditProfile";
+import Components from "../screens/Components/Components";
+import AccordionScreen from "../screens/Components/Accordion";
+import BottomSheet from "../screens/Components/BottomSheet";
+import ModalBox from "../screens/Components/ModalBox";
+import Buttons from "../screens/Components/Buttons";
+import Badges from "../screens/Components/Badges";
+import Charts from "../screens/Components/Charts";
+import Headers from "../screens/Components/Headers";
+import Footers from "../screens/Components/Footers";
+import TabStyle1 from "../components/Footers/FooterStyle1";
+import TabStyle2 from "../components/Footers/FooterStyle2";
+import TabStyle3 from "../components/Footers/FooterStyle3";
+import TabStyle4 from "../components/Footers/FooterStyle4";
+import Inputs from "../screens/Components/Inputs";
+import ListScreen from "../screens/Components/lists";
+import Pricings from "../screens/Components/Pricings";
+import DividerElements from "../screens/Components/DividerElements";
+import Snackbars from "../screens/Components/Snackbars";
+import Socials from "../screens/Components/Socials";
+import SwipeableScreen from "../screens/Components/Swipeable";
+import Tabs from "../screens/Components/Tabs";
+import Tables from "../screens/Components/Tables";
+import Toggles from "../screens/Components/Toggles";
+import AddPayment from "../screens/Payment/AddPayment";
+import MobileSignIn from "../screens/Auth/MobileSignIn";
+import OtpVerify from "../screens/Auth/OtpVerify";
+import UserKyc from "../screens/Profile/UserKyc";
+import AddCustomer from "../screens/Customer/AddCustomer";
+import CustomerTransations from "../screens/Customer/CustomerTransations";
+import CustomerTransationsDetails from "../screens/Customer/CustomerTransactionDetail";
+import CustomerScore from "../screens/Profile/CustomerScore";
+import NotAvailable from "../screens/NotAvailable";
+import EditUserPaymentDetail from "../screens/Payment/EditUserPaymentDetail";
+import ShareApp from "../screens/ShareApp";
+import FindUser from "../screens/Profile/FindUser";
+import LedgerMain from "../screens/LedgerBook/LedgerMain";
+import LedgerAddCustomer from "../screens/LedgerBook/LedgerAddCustomer";
+import LedgerCustomerDetails from "../screens/LedgerBook/LedgerCustomerDetails";
+import CustomerSupport from "../screens/Auth/CustomerSupport";
+import TermsAndConditionsScreen from "../screens/TermAndConditions";
+import Report from "../screens/Customer/Report";
+import UserReferralList from "../screens/Profile/⁠UserReferralList";
+import LedgerCustomerTransationsDetails from "../screens/LedgerBook/LedgerCustomerTransationDetails";
+import LedgerAddPayment from "../screens/LedgerBook/LedgerAddPayment";
+import WithdrawalAmount from "../screens/Refferal/WithdrawalAmount";
+import SelectLanguage from "../screens/SelectLanguage";
+import { AddCompany } from "../screens/InvoiceGenerator/AddCompany";
+import ListCompany from "../screens/InvoiceGenerator/ListCompany";
+import InvoiceGenList from "../screens/InvoiceGenerator/InvoiceGenList";
+import AddItems from "../screens/InvoiceGenerator/AddItems";
+import FinalInvoiceResult from "../screens/InvoiceGenerator/FinalInvoiceResult";
+import AddInvoiceDetails from "../screens/InvoiceGenerator/AddInvoiceDetails";
+import { AddCompanyCustomer } from "../screens/InvoiceGenerator/AddCompanyCustomer";
+import CompanyCustomerList from "../screens/InvoiceGenerator/CompanyCustomerList";
+import InvoiceLists from "../screens/Invoice/InvoiceLists";
+import InvoiceCreate from "../screens/Invoice/InvoiceCreate";
+import InvoiceAddItems from "../screens/Invoice/InvoiceAddItems";
+import InvoiceEditItem from "../screens/Invoice/InvoiceEditItem";
+import InvoiceOrganizations from "../screens/Invoice/InvoiceOrganizations";
+import InvoiceAddOrganization from "../screens/Invoice/InvoiceAddOrganization";
+import InvoiceClients from "../screens/Invoice/InvoiceClients";
+import InvoiceAddClient from "../screens/Invoice/InvoiceAddClient";
+import InvoiceAddNewItems from "../screens/Invoice/InvoiceAddNewItem";
+import ChooseInvoiceDesign from "../screens/Invoice/ChooseInvoiceDesign";
+import InvoiceDetail from "../screens/Invoice/InvoiceDetail";
+import { HrmHomeScreen } from "../screens/HRM/Hrm.Home";
+import EmployeeManagementScreen from "../screens/HRM/EmployeeManagementScreen";
+import AddEmployeeScreen, {
+  EmployeeListScreen,
+} from "../screens/HRM/EmployeeList";
+import AddEmployee from "../screens/HRM/AddEmployee";
+import EmployeeSuccessScreen from "../screens/HRM/EmployeeAddedSuccessfully";
+import EmployeeDetailScreen from "../screens/HRM/EmployeeDetails";
+import { EmployeeAttendendsList } from "../screens/HRM/EmployeeAttendendsList";
+import EmployeeAttendanceDetails from "../screens/HRM/EmployeeAttendesDetails";
+import EditEmployee from "../screens/HRM/EditEmployee";
+import ManageSalaryScreen from "../screens/HRM/ManageSalaryScreen";
+import AccountInformationScreen from "../screens/HRM/AccountInformationScreen";
+import GenerateEmployeeSalariesListScreen from "../screens/HRM/GenerateEmployeeSalariesListScreen";
+import GenerateEmployeePdfListScreen from "../screens/HRM/GenerateEmployeePdfListScreen";
+import HRMAddCompany from "../screens/HRM/HRMAddCompany";
+import HRMCompanyListScreen from "../screens/HRM/HRMCompanyListScreen";
+import ManageAttendanceScreen from "../screens/HRM/ManageAttendanceScreen";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
 const StackNavigator = () => {
+  const theme = useTheme();
 
-	const theme = useTheme();
+  return (
+    <View style={{ width: "100%", flex: 1 }}>
+      <Stack.Navigator
+        initialRouteName="Onboarding"
+        screenOptions={{
+          headerShown: false,
+          cardStyle: { backgroundColor: "transparent" },
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      >
+        <Stack.Screen name="Onboarding" component={Onboarding} />
+        <Stack.Screen name="WelCome" component={WelCome} />
+        <Stack.Screen name="SignUp" component={SignUp} />
+        {/* <Stack.Screen name="SingIn" component={SingIn} /> */}
+        <Stack.Screen name="MobileSignIn" component={MobileSignIn} />
+        <Stack.Screen name="OtpVerify" component={OtpVerify} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+        <Stack.Screen name="OTPAuthentication" component={OTPAuthentication} />
+        <Stack.Screen name="NewPassword" component={NewPassword} />
+        <Stack.Screen name="DrawerNavigation" component={DrawerNavigation} />
+        <Stack.Screen name="BottomNavigation" component={BottomNavigation} />
+        <Stack.Screen name="Notification" component={Notification} />
+        <Stack.Screen name="Search" component={Search} />
+        <Stack.Screen name="Products" component={Products} />
+        <Stack.Screen name="ProductsDetails" component={ProductsDetails} />
+        <Stack.Screen name="DeliveryAddress" component={DeliveryAddress} />
+        <Stack.Screen
+          name="AddDeliveryAddress"
+          component={AddDeliveryAddress}
+        />
+        <Stack.Screen name="Payment" component={Payment} />
+        <Stack.Screen name="AddPayment" component={AddPayment} />
+        <Stack.Screen name="Addcard" component={Addcard} />
+        <Stack.Screen name="Checkout" component={Checkout} />
+        <Stack.Screen name="Myorder" component={Myorder} />
+        <Stack.Screen name="Trackorder" component={Trackorder} />
+        <Stack.Screen name="Writereview" component={Writereview} />
+        <Stack.Screen name="Rewards" component={Rewards} />
+        <Stack.Screen name="Demo" component={Demo} />
+        <Stack.Screen name="Chat" component={Chat} />
+        <Stack.Screen name="Singlechat" component={Singlechat} />
+        <Stack.Screen name="Call" component={Call} />
+        <Stack.Screen name="EditProfile" component={EditProfile} />
+        <Stack.Screen name="UserKyc" component={UserKyc} />
+        <Stack.Screen name="UserReferralList" component={UserReferralList} />
+        <Stack.Screen name="FindUser" component={FindUser} />
+        <Stack.Screen name="AddCustomer" component={AddCustomer} />
+        <Stack.Screen name="Report" component={Report} />
+        <Stack.Screen
+          name="CustomerTransations"
+          component={CustomerTransations}
+        />
+        <Stack.Screen name="CustomerScore" component={CustomerScore} />
+        <Stack.Screen
+          name="CustomerTransationsDetails"
+          component={CustomerTransationsDetails}
+        />
+        <Stack.Screen name="NotAvailable" component={NotAvailable} />
+        <Stack.Screen
+          name="EditUserPaymentDetail"
+          component={EditUserPaymentDetail}
+        />
+        <Stack.Screen name="Components" component={Components} />
+        <Stack.Screen name="Accordion" component={AccordionScreen} />
+        <Stack.Screen name="BottomSheet" component={BottomSheet} />
+        <Stack.Screen name="ModalBox" component={ModalBox} />
+        <Stack.Screen name="Buttons" component={Buttons} />
+        <Stack.Screen name="Badges" component={Badges} />
+        <Stack.Screen name="Charts" component={Charts} />
+        <Stack.Screen name="Headers" component={Headers} />
+        <Stack.Screen name="Footers" component={Footers} />
+        <Stack.Screen name="TabStyle1" component={TabStyle1} />
+        <Stack.Screen name="TabStyle2" component={TabStyle2} />
+        <Stack.Screen name="TabStyle3" component={TabStyle3} />
+        <Stack.Screen name="TabStyle4" component={TabStyle4} />
+        <Stack.Screen name="Inputs" component={Inputs} />
+        <Stack.Screen name="lists" component={ListScreen} />
+        <Stack.Screen name="Pricings" component={Pricings} />
+        <Stack.Screen name="DividerElements" component={DividerElements} />
+        <Stack.Screen name="Snackbars" component={Snackbars} />
+        <Stack.Screen name="Socials" component={Socials} />
+        <Stack.Screen name="Swipeable" component={SwipeableScreen} />
+        <Stack.Screen name="Tabs" component={Tabs} />
+        <Stack.Screen name="Tables" component={Tables} />
+        <Stack.Screen name="Toggles" component={Toggles} />
+        <Stack.Screen name="ShareApp" component={ShareApp} />
+        <Stack.Screen name="CustomerSupport" component={CustomerSupport} />
+        <Stack.Screen name="WithdrawalAmount" component={WithdrawalAmount} />
 
-	return (
-		<View style={{ width: '100%', flex: 1 }}>
-			<Stack.Navigator
-				initialRouteName='Onboarding'
-				screenOptions={{
-					headerShown: false,
-					cardStyle: { backgroundColor: "transparent" },
-					cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-				}}
-			>
-				<Stack.Screen name="Onboarding" component={Onboarding} />
-				<Stack.Screen name="WelCome" component={WelCome} />
-				<Stack.Screen name="SignUp" component={SignUp} />
-				{/* <Stack.Screen name="SingIn" component={SingIn} /> */}
-				<Stack.Screen name="MobileSignIn" component={MobileSignIn} />
-				<Stack.Screen name="OtpVerify" component={OtpVerify} />
-				<Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-				<Stack.Screen name="OTPAuthentication" component={OTPAuthentication} />
-				<Stack.Screen name="NewPassword" component={NewPassword} />
-				<Stack.Screen name="DrawerNavigation" component={DrawerNavigation} />
-				<Stack.Screen name="BottomNavigation" component={BottomNavigation} />
-				<Stack.Screen name="Notification" component={Notification} />
-				<Stack.Screen name="Search" component={Search} />
-				<Stack.Screen name="Products" component={Products} />
-				<Stack.Screen name="ProductsDetails" component={ProductsDetails} />
-				<Stack.Screen name="DeliveryAddress" component={DeliveryAddress} />
-				<Stack.Screen name="AddDeliveryAddress" component={AddDeliveryAddress} />
-				<Stack.Screen name="Payment" component={Payment} />
-				<Stack.Screen name="AddPayment" component={AddPayment} />
-				<Stack.Screen name="Addcard" component={Addcard} />
-				<Stack.Screen name="Checkout" component={Checkout} />
-				<Stack.Screen name="Myorder" component={Myorder} />
-				<Stack.Screen name="Trackorder" component={Trackorder} />
-				<Stack.Screen name="Writereview" component={Writereview} />
-				<Stack.Screen name="Rewards" component={Rewards} />
-				<Stack.Screen name="Demo" component={Demo} />
-				<Stack.Screen name="Chat" component={Chat} />
-				<Stack.Screen name="Singlechat" component={Singlechat} />
-				<Stack.Screen name="Call" component={Call} />
-				<Stack.Screen name="EditProfile" component={EditProfile} />
-				<Stack.Screen name="UserKyc" component={UserKyc} />
-				<Stack.Screen name="UserReferralList" component={UserReferralList} />
-				<Stack.Screen name="FindUser" component={FindUser} />
-				<Stack.Screen name="AddCustomer" component={AddCustomer} />
-				<Stack.Screen name="Report" component={Report} />
-				<Stack.Screen name="CustomerTransations" component={CustomerTransations} />
-				<Stack.Screen name="CustomerScore" component={CustomerScore} />
-				<Stack.Screen name="CustomerTransationsDetails" component={CustomerTransationsDetails} />
-				<Stack.Screen name="NotAvailable" component={NotAvailable} />
-				<Stack.Screen name="EditUserPaymentDetail" component={EditUserPaymentDetail} />
-				<Stack.Screen name="Components" component={Components} />
-				<Stack.Screen name="Accordion" component={AccordionScreen} />
-				<Stack.Screen name="BottomSheet" component={BottomSheet} />
-				<Stack.Screen name="ModalBox" component={ModalBox} />
-				<Stack.Screen name="Buttons" component={Buttons} />
-				<Stack.Screen name="Badges" component={Badges} />
-				<Stack.Screen name="Charts" component={Charts} />
-				<Stack.Screen name="Headers" component={Headers} />
-				<Stack.Screen name="Footers" component={Footers} />
-				<Stack.Screen name="TabStyle1" component={TabStyle1} />
-				<Stack.Screen name="TabStyle2" component={TabStyle2} />
-				<Stack.Screen name="TabStyle3" component={TabStyle3} />
-				<Stack.Screen name="TabStyle4" component={TabStyle4} />
-				<Stack.Screen name="Inputs" component={Inputs} />
-				<Stack.Screen name="lists" component={ListScreen} />
-				<Stack.Screen name="Pricings" component={Pricings} />
-				<Stack.Screen name="DividerElements" component={DividerElements} />
-				<Stack.Screen name="Snackbars" component={Snackbars} />
-				<Stack.Screen name="Socials" component={Socials} />
-				<Stack.Screen name="Swipeable" component={SwipeableScreen} />
-				<Stack.Screen name="Tabs" component={Tabs} />
-				<Stack.Screen name="Tables" component={Tables} />
-				<Stack.Screen name="Toggles" component={Toggles} />
-				<Stack.Screen name="ShareApp" component={ShareApp} />
-				<Stack.Screen name="CustomerSupport" component={CustomerSupport} />
-				<Stack.Screen name="WithdrawalAmount" component={WithdrawalAmount} />
+        <Stack.Screen
+          name="TermsAndConditionsScreen"
+          component={TermsAndConditionsScreen}
+        />
 
-				<Stack.Screen name="TermsAndConditionsScreen" component={TermsAndConditionsScreen} />
+        {/* ledger book logic */}
 
-				{/* ledger book logic */}
+        <Stack.Screen name="LedgerMain" component={LedgerMain} />
+        <Stack.Screen name="LedgerAddCustomer" component={LedgerAddCustomer} />
+        <Stack.Screen
+          name="LedgerCustomerDetails"
+          component={LedgerCustomerDetails}
+        />
+        <Stack.Screen name="LedgerAddPayment" component={LedgerAddPayment} />
+        <Stack.Screen
+          name="LedgerCustomerTransationsDetails"
+          component={LedgerCustomerTransationsDetails}
+        />
+        <Stack.Screen name="SelectLanguage" component={SelectLanguage} />
 
+        <Stack.Screen name="AddCompany" component={AddCompany} />
+        <Stack.Screen name="ListCompany" component={ListCompany} />
+        <Stack.Screen name="InvoiceGenList" component={InvoiceGenList} />
+        <Stack.Screen name="AddInvoiceDetails" component={AddInvoiceDetails} />
+        <Stack.Screen name="AddItems" component={AddItems} />
+        <Stack.Screen
+          name="FinalInvoiceResult"
+          component={FinalInvoiceResult}
+        />
+        <Stack.Screen
+          name="AddCompanyCustomer"
+          component={AddCompanyCustomer}
+        />
+        <Stack.Screen
+          name="CompanyCustomerList"
+          component={CompanyCustomerList}
+        />
 
-				<Stack.Screen name="LedgerMain" component={LedgerMain} />
-				<Stack.Screen name="LedgerAddCustomer" component={LedgerAddCustomer} />
-				<Stack.Screen name="LedgerCustomerDetails" component={LedgerCustomerDetails} />
-				<Stack.Screen name="LedgerAddPayment" component={LedgerAddPayment} />
-				<Stack.Screen name="LedgerCustomerTransationsDetails" component={LedgerCustomerTransationsDetails} />
-				<Stack.Screen name="SelectLanguage" component={SelectLanguage} />
+        {/* // INVOICE */}
 
-				<Stack.Screen name="AddCompany" component={AddCompany} />
-				<Stack.Screen name="ListCompany" component={ListCompany} />
-				<Stack.Screen name="InvoiceGenList" component={InvoiceGenList} />
-				<Stack.Screen name="AddInvoiceDetails" component={AddInvoiceDetails} />
-				<Stack.Screen name="AddItems" component={AddItems} />
-				<Stack.Screen name="FinalInvoiceResult" component={FinalInvoiceResult} />
-				<Stack.Screen name="AddCompanyCustomer" component={AddCompanyCustomer} />
-				<Stack.Screen name="CompanyCustomerList" component={CompanyCustomerList} />
+        <Stack.Screen name="InvoiceLists" component={InvoiceLists} />
+        <Stack.Screen name="InvoiceAddItems" component={InvoiceAddItems} />
+        <Stack.Screen
+          name="InvoiceAddNewItems"
+          component={InvoiceAddNewItems}
+        />
+        <Stack.Screen name="InvoiceCreate" component={InvoiceCreate} />
+        <Stack.Screen name="InvoiceEditItem" component={InvoiceEditItem} />
+        <Stack.Screen
+          name="InvoiceOrganizations"
+          component={InvoiceOrganizations}
+        />
+        <Stack.Screen
+          name="InvoiceAddOrganization"
+          component={InvoiceAddOrganization}
+        />
+        <Stack.Screen name="InvoiceClients" component={InvoiceClients} />
+        <Stack.Screen name="InvoiceAddClient" component={InvoiceAddClient} />
+        <Stack.Screen
+          name="ChooseInvoiceDesign"
+          component={ChooseInvoiceDesign}
+        />
+        <Stack.Screen name="InvoiceDetail" component={InvoiceDetail} />
 
+        {/* HRM */}
 
-
-
-				{/* // INVOICE */}
-
-
-				<Stack.Screen name="InvoiceLists" component={InvoiceLists} />
-				<Stack.Screen name="InvoiceAddItems" component={InvoiceAddItems} />
-				<Stack.Screen name="InvoiceAddNewItems" component={InvoiceAddNewItems} />
-				<Stack.Screen name="InvoiceCreate" component={InvoiceCreate} />
-				<Stack.Screen name="InvoiceEditItem" component={InvoiceEditItem} />
-				<Stack.Screen name="InvoiceOrganizations" component={InvoiceOrganizations} />
-				<Stack.Screen name="InvoiceAddOrganization" component={InvoiceAddOrganization} />
-				<Stack.Screen name="InvoiceClients" component={InvoiceClients} />
-				<Stack.Screen name="InvoiceAddClient" component={InvoiceAddClient} />
-				<Stack.Screen name="ChooseInvoiceDesign" component={ChooseInvoiceDesign} />
-				<Stack.Screen name="InvoiceDetail" component={InvoiceDetail} />
-
-
-			</Stack.Navigator>
-		</View>
-	)
-}
+        <Stack.Screen name="HrmHomeScreen" component={HrmHomeScreen} />
+        <Stack.Screen
+          name="EmployeeManagementScreen"
+          component={EmployeeManagementScreen}
+        />
+        <Stack.Screen
+          name="EmployeeListScreen"
+          component={EmployeeListScreen}
+        />
+        <Stack.Screen name="AddEmployee" component={AddEmployee} />
+        <Stack.Screen
+          name="EmployeeSuccessScreen"
+          component={EmployeeSuccessScreen}
+        />
+        <Stack.Screen
+          name="EmployeeDetailScreen"
+          component={EmployeeDetailScreen}
+        />
+        <Stack.Screen
+          name="EmployeeAttendendsList"
+          component={EmployeeAttendendsList}
+        />
+        <Stack.Screen
+          name="EmployeeAttendanceDetails"
+          component={EmployeeAttendanceDetails}
+        />
+        <Stack.Screen name="EditEmployee" component={EditEmployee} />
+        <Stack.Screen
+          name="ManageSalaryScreen"
+          component={ManageSalaryScreen}
+        />
+        <Stack.Screen
+          name="AccountInformationScreen"
+          component={AccountInformationScreen}
+        />
+        <Stack.Screen
+          name="GenerateEmployeeSalariesListScreen"
+          component={GenerateEmployeeSalariesListScreen}
+        />
+        <Stack.Screen
+          name="GenerateEmployeePdfListScreen"
+          component={GenerateEmployeePdfListScreen}
+        />
+        <Stack.Screen name="HRMAddCompany" component={HRMAddCompany} />
+        <Stack.Screen name="HRMCompanyListScreen" component={HRMCompanyListScreen} />
+        <Stack.Screen name="ManageAttendanceScreen" component={ManageAttendanceScreen} />
+      </Stack.Navigator>
+    </View>
+  );
+};
 
 export default StackNavigator;
