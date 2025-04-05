@@ -262,6 +262,7 @@ export const EditEmployee = ({ navigation, route }: EditEmployeeProps) => {
               {/* Conditionally render the date picker */}
               {showDatePicker && (
                 <DateTimePicker
+                  style={styles.dateTimePicker}
                   value={
                     formData.joining_date
                       ? new Date(formData.joining_date)
@@ -508,6 +509,10 @@ const styles = StyleSheet.create({
   },
   avatarText: { fontSize: 24, color: "white", fontWeight: "bold" },
   role: { fontSize: 14, color: "#888", marginTop: 5 },
+  dateTimePicker: {
+    backgroundColor: "#fff",
+    borderRadius: 8,
+  },
 });
 
 export default EditEmployee;

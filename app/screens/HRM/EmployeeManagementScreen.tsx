@@ -14,7 +14,7 @@ import { useTheme } from "@react-navigation/native";
 import StorageService from "../../lib/StorageService";
 import CONFIG from "../../constants/config";
 import { useGetCompanyListMutation } from "../../redux/api/company.api";
-import { COLORS } from "../../constants/theme";
+import { COLORS, FONTS } from "../../constants/theme";
 
 type EmployeeManagementScreenProps = StackScreenProps<
   RootStackParamList,
@@ -211,21 +211,9 @@ export const EmployeeManagementScreen = ({
             style={styles.companyNameContainer}
             onPress={() => setModalVisible(true)}
           >
-            <Text style={[styles.companyNameText, { color: colors.title }]}>
+            <Text style={[styles.companyNameText, { color: colors.text }]}>
               {selectedCompany ? selectedCompany.name : "Select Company"}
             </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => navigation.navigate("HRMAddCompany")}
-            style={styles.plusIconContainer}
-          >
-            <MaterialIcons
-              name="add"
-              size={22}
-              color={colors.title}
-              style={{ marginTop: 3 }}
-            />
           </TouchableOpacity>
         </View>
       </View>
@@ -238,21 +226,40 @@ export const EmployeeManagementScreen = ({
         onRequestClose={() => setModalVisible(false)}
       >
         <TouchableOpacity
-          style={styles.modalOverlay}
-          activeOpacity={1}
+          style={[styles.modalOverlay, { backgroundColor: colors.background }]}
+          activeOpacity={0.1}
           onPress={() => setModalVisible(false)}
         >
           <View style={[styles.modalContent, { backgroundColor: colors.card }]}>
+            <TouchableOpacity
+              onPress={() => {
+                setModalVisible(false);
+                navigation.navigate("HRMAddCompany");
+              }}
+              style={styles.plusIconContainer}
+            >
+              <MaterialIcons
+                name="add"
+                size={20}
+                color={colors.title}
+                style={{ marginTop: 0 }}
+              />
+              <Text style={[{ color: colors.title, ...FONTS.fontSemiBold }]}>
+                Add New Company
+              </Text>
+            </TouchableOpacity>
             {companyList?.map((company, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.modalItem}
-                onPress={() => handleSelectCompany(company)}
-              >
-                <Text style={[styles.modalItemText, { color: colors.title }]}>
-                  {company.name}
-                </Text>
-              </TouchableOpacity>
+              <>
+                <TouchableOpacity
+                  key={index}
+                  style={styles.modalItem}
+                  onPress={() => handleSelectCompany(company)}
+                >
+                  <Text style={[styles.modalItemText, { color: colors.title }]}>
+                    {company.name}
+                  </Text>
+                </TouchableOpacity>
+              </>
             ))}
           </View>
         </TouchableOpacity>
@@ -361,8 +368,6 @@ const styles = StyleSheet.create({
   },
   headerBottomRow: {
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between", // left for company name, right for plus
   },
   headerIconLeft: {
     width: 40,
@@ -376,25 +381,21 @@ const styles = StyleSheet.create({
   },
   companyNameContainer: {
     flex: 1,
-    paddingHorizontal: 6,
-    paddingVertical: 3,
-    borderRadius: 6,
-    backgroundColor: "rgba(255,255,255,0.15)",
+    paddingHorizontal: 56,
   },
   companyNameText: {
     fontSize: 14,
     fontWeight: "500",
   },
   plusIconContainer: {
-    width: 40,
-    alignItems: "center",
-    justifyContent: "center",
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
   },
 
   /* Modal */
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.3)",
     justifyContent: "center",
     alignItems: "center",
   },

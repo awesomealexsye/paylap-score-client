@@ -16,6 +16,7 @@ import { useTheme } from "@react-navigation/native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import moment from "moment";
 import { ApiService } from "../../lib/ApiService";
+import { COLORS } from "../../constants/theme";
 
 type ManageAttendanceScreenProps = StackScreenProps<
   RootStackParamList,
@@ -34,7 +35,7 @@ interface DayStatus {
 // Colors for each leave type
 const LEAVE_COLORS: Record<LeaveType, string> = {
   planned: "#4E88FF", // Blue
-  sick: "#FF4E4E",    // Red
+  sick: "#FF4E4E", // Red
   halfDay: "#FFD700", // Yellow
 };
 
@@ -134,7 +135,9 @@ export const ManageAttendanceScreen: React.FC<ManageAttendanceScreenProps> = ({
   // Handle creating/updating a leave for the selected day
   const handleSetLeaveForDay = async (type: LeaveType) => {
     if (selectedDay == null) return;
-    const leave_date = moment(selectedDate).date(selectedDay).format("YYYY-MM-DD");
+    const leave_date = moment(selectedDate)
+      .date(selectedDay)
+      .format("YYYY-MM-DD");
     const payload: any = {
       employee_id: employeeId,
       leave_date,
@@ -146,10 +149,16 @@ export const ManageAttendanceScreen: React.FC<ManageAttendanceScreenProps> = ({
       if (dayStatuses[selectedDay]?.id) {
         // Update existing record
         payload.id = dayStatuses[selectedDay].id;
-        await ApiService.postWithToken("api/hrm/employee-leaves/update", payload);
+        await ApiService.postWithToken(
+          "api/hrm/employee-leaves/update",
+          payload
+        );
       } else {
         // Create a new leave record
-        await ApiService.postWithToken("api/hrm/employee-leaves/store", payload);
+        await ApiService.postWithToken(
+          "api/hrm/employee-leaves/store",
+          payload
+        );
       }
       // Refresh leaves
       await fetchEmployeeLeaves();
@@ -183,7 +192,10 @@ export const ManageAttendanceScreen: React.FC<ManageAttendanceScreenProps> = ({
       <Header leftIcon="back" title="Manage Attendance" />
       <View style={styles.container}>
         {/* Month-Year Display (Date Picker Trigger) */}
-        <TouchableOpacity style={styles.monthYearButton} onPress={showDatePicker}>
+        <TouchableOpacity
+          style={styles.monthYearButton}
+          onPress={showDatePicker}
+        >
           <Text style={styles.monthYearText}>
             {moment(selectedDate).format("MMMM YYYY")}
           </Text>
@@ -203,16 +215,34 @@ export const ManageAttendanceScreen: React.FC<ManageAttendanceScreenProps> = ({
         {/* Legend Row (Planned, Sick/Unplanned, Half-Day) */}
         <View style={styles.legendContainer}>
           <View style={styles.legendItem}>
-            <View style={[styles.legendBox, { backgroundColor: LEAVE_COLORS.planned }]} />
-            <Text style={styles.legendLabel}>Planned Leave</Text>
+            <View
+              style={[
+                styles.legendBox,
+                { backgroundColor: LEAVE_COLORS.planned },
+              ]}
+            />
+            <Text style={[styles.legendLabel, { color: colors.title }]}>
+              Planned Leave
+            </Text>
           </View>
           <View style={styles.legendItem}>
-            <View style={[styles.legendBox, { backgroundColor: LEAVE_COLORS.sick }]} />
-            <Text style={styles.legendLabel}>Sick / Unplanned</Text>
+            <View
+              style={[styles.legendBox, { backgroundColor: LEAVE_COLORS.sick }]}
+            />
+            <Text style={[styles.legendLabel, { color: colors.title }]}>
+              Sick / Unplanned
+            </Text>
           </View>
           <View style={styles.legendItem}>
-            <View style={[styles.legendBox, { backgroundColor: LEAVE_COLORS.halfDay }]} />
-            <Text style={styles.legendLabel}>Half-Day Leave</Text>
+            <View
+              style={[
+                styles.legendBox,
+                { backgroundColor: LEAVE_COLORS.halfDay },
+              ]}
+            />
+            <Text style={[styles.legendLabel, { color: colors.title }]}>
+              Half-Day Leave
+            </Text>
           </View>
         </View>
 
@@ -264,31 +294,53 @@ export const ManageAttendanceScreen: React.FC<ManageAttendanceScreenProps> = ({
           onRequestClose={() => setLeaveModalVisible(false)}
         >
           <View style={styles.modalOverlay}>
-            <View style={styles.leaveModalContent}>
-              <Text style={styles.modalTitle}>
+            <View
+              style={[
+                styles.leaveModalContent,
+                { backgroundColor: colors.background },
+              ]}
+            >
+              <Text style={[styles.modalTitle, { color: colors.title }]}>
                 Day {selectedDay} – {moment(selectedDate).format("MMMM YYYY")}
               </Text>
-              <Text style={styles.modalSubtitle}>Select leave type:</Text>
+              <Text style={[styles.modalSubtitle, { color: colors.text }]}>
+                Select leave type:
+              </Text>
 
               <Pressable
-                style={styles.leaveOptionButton}
+                style={[
+                  styles.leaveOptionButton,
+                  { backgroundColor: colors.card },
+                ]}
                 onPress={() => handleSetLeaveForDay("planned")}
               >
-                <Text style={styles.leaveOptionText}>Planned Leave</Text>
+                <Text style={[styles.leaveOptionText, { color: colors.title }]}>
+                  Planned Leave
+                </Text>
               </Pressable>
 
               <Pressable
-                style={styles.leaveOptionButton}
+                style={[
+                  styles.leaveOptionButton,
+                  { backgroundColor: colors.card },
+                ]}
                 onPress={() => handleSetLeaveForDay("sick")}
               >
-                <Text style={styles.leaveOptionText}>Sick / Unplanned</Text>
+                <Text style={[styles.leaveOptionText, { color: colors.title }]}>
+                  Sick / Unplanned
+                </Text>
               </Pressable>
 
               <Pressable
-                style={styles.leaveOptionButton}
+                style={[
+                  styles.leaveOptionButton,
+                  { backgroundColor: colors.card },
+                ]}
                 onPress={() => handleSetLeaveForDay("halfDay")}
               >
-                <Text style={styles.leaveOptionText}>Half-Day Leave</Text>
+                <Text style={[styles.leaveOptionText, { color: colors.title }]}>
+                  Half-Day Leave
+                </Text>
               </Pressable>
 
               <Pressable
@@ -318,7 +370,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
-    backgroundColor: "#f8f8f8",
   },
   monthYearButton: {
     alignSelf: "center",
@@ -345,20 +396,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   legendBox: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     borderRadius: 4,
     marginRight: 6,
   },
   legendLabel: {
-    fontSize: 8,
+    fontSize: 10,
+    fontWeight: "700",
     color: "#333",
   },
 
   daysContainerWrapper: {
     flex: 1,
     justifyContent: "center", // center vertically
-    alignItems: "center",      // center horizontally
+    alignItems: "center", // center horizontally
   },
   daysContainer: {
     // Additional spacing around the grid
@@ -440,7 +492,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   closeModalButton: {
-    backgroundColor: "#666",
+    backgroundColor: COLORS.danger,
     padding: 12,
     borderRadius: 6,
     marginTop: 12,

@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TextInput,
   ScrollView,
+  Alert,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { StackScreenProps } from "@react-navigation/stack";
@@ -127,6 +128,24 @@ export const AccountInformationScreen: React.FC<
   const handleSave = async () => {
     if (!credentials) return;
 
+    // Validate details based on account type
+    if (accountType === "bank") {
+      if (
+        !bankDetails.account_number ||
+        !bankDetails.ifsc_code ||
+        !bankDetails.branch_name
+      ) {
+        Alert.alert("Incomplete Details", "Details are not filled to save");
+        return;
+      }
+    }
+    if (accountType === "upi") {
+      if (!upiId.trim()) {
+        Alert.alert("Incomplete Details", "Details are not filled to save");
+        return;
+      }
+    }
+
     // Determine if we are creating or updating
     const isUpdate = !!accountData?.id;
 
@@ -150,7 +169,6 @@ export const AccountInformationScreen: React.FC<
     if (accountType === "upi") {
       payload.upi_id = upiId;
     }
-
 
     // If updating, include the existing account id
     if (isUpdate) {
@@ -202,7 +220,7 @@ export const AccountInformationScreen: React.FC<
       >
         {/* Optional: Display account name and ID if available */}
         <View style={styles.employeeInfo}>
-          <Text style={styles.employeeName}>
+          <Text style={[styles.employeeName, { color: colors.title }]}>
             {accountData?.name || "Employee Name"}
           </Text>
           <Text style={styles.employeeId}>
@@ -211,16 +229,30 @@ export const AccountInformationScreen: React.FC<
         </View>
 
         {/* Account Type Picker */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Select Account Type</Text>
-          <View style={styles.pickerContainer}>
+        <View style={[styles.section, { backgroundColor: colors.card }]}>
+          <Text style={[styles.sectionTitle, { color: colors.title }]}>
+            Select Account Type
+          </Text>
+          <View
+            style={[styles.pickerContainer, { backgroundColor: colors.card }]}
+          >
             <Picker
+              style={styles.accountTypePicker}
+              textColor={colors.text}
               selectedValue={accountType}
               onValueChange={(itemValue) => setAccountType(itemValue as any)}
             >
-              <Picker.Item label="-- Choose --" value="none" />
-              <Picker.Item label="Bank Information" value="bank" />
-              <Picker.Item label="UPI" value="upi" />
+              <Picker.Item
+                color={colors.title}
+                label="-- Choose --"
+                value="none"
+              />
+              <Picker.Item
+                color={colors.title}
+                label="Bank Information"
+                value="bank"
+              />
+              <Picker.Item color={colors.title} label="UPI" value="upi" />
             </Picker>
           </View>
         </View>
@@ -228,15 +260,20 @@ export const AccountInformationScreen: React.FC<
         {/* Bank Details Section */}
         {accountType === "bank" && (
           <View style={[styles.section, { backgroundColor: colors.card }]}>
-            <Text style={[styles.sectionTitle, { color: colors.title }]}>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>
               Bank Details
             </Text>
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Account Number</Text>
+              <Text style={[styles.label, { color: colors.title }]}>
+                Account Number
+              </Text>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  { backgroundColor: colors.card, color: colors.title },
+                ]}
                 placeholder="Enter Account Number"
-                placeholderTextColor="#999"
+                placeholderTextColor={colors.title}
                 keyboardType="numeric"
                 value={bankDetails.account_number}
                 onChangeText={(val) =>
@@ -245,11 +282,16 @@ export const AccountInformationScreen: React.FC<
               />
             </View>
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>IFSC Code</Text>
+              <Text style={[styles.label, { color: colors.title }]}>
+                IFSC Code
+              </Text>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  { backgroundColor: colors.card, color: colors.title },
+                ]}
                 placeholder="Enter IFSC Code"
-                placeholderTextColor="#999"
+                placeholderTextColor={colors.title}
                 value={bankDetails.ifsc_code}
                 onChangeText={(val) =>
                   setBankDetails((prev) => ({ ...prev, ifsc_code: val }))
@@ -257,11 +299,16 @@ export const AccountInformationScreen: React.FC<
               />
             </View>
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Branch Name</Text>
+              <Text style={[styles.label, { color: colors.title }]}>
+                Branch Name
+              </Text>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  { backgroundColor: colors.card, color: colors.title },
+                ]}
                 placeholder="Enter Branch Name"
-                placeholderTextColor="#999"
+                placeholderTextColor={colors.title}
                 value={bankDetails.branch_name}
                 onChangeText={(val) =>
                   setBankDetails((prev) => ({ ...prev, branch_name: val }))
@@ -274,15 +321,20 @@ export const AccountInformationScreen: React.FC<
         {/* UPI Details Section */}
         {accountType === "upi" && (
           <View style={[styles.section, { backgroundColor: colors.card }]}>
-            <Text style={[styles.sectionTitle, { color: colors.title }]}>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>
               UPI Details
             </Text>
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>UPI ID</Text>
+              <Text style={[styles.label, { color: colors.title }]}>
+                UPI ID
+              </Text>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  { backgroundColor: colors.card, color: colors.title },
+                ]}
                 placeholder="Enter UPI ID"
-                placeholderTextColor="#999"
+                placeholderTextColor={colors.title}
                 value={upiId}
                 onChangeText={setUpiId}
               />
@@ -345,11 +397,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 10,
-    color: "#333",
+    // color: "#333",
   },
   pickerContainer: {
-    borderWidth: 1,
-    borderColor: "#E0E0E0",
     borderRadius: 8,
     overflow: "hidden",
   },
@@ -359,20 +409,17 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#555",
     marginBottom: 5,
   },
   input: {
     borderWidth: 1,
     borderColor: "#E0E0E0",
-    backgroundColor: "#F5F5F5",
     borderRadius: 8,
     padding: 10,
     fontSize: 14,
-    color: "#333",
   },
   saveButton: {
-    backgroundColor: "#478DFF",
+    backgroundColor: COLORS.primary,
     borderRadius: 8,
     paddingVertical: 14,
     alignItems: "center",
@@ -382,5 +429,10 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
     fontSize: 16,
+  },
+  accountTypePicker: {
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
 });

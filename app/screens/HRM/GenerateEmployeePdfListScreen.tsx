@@ -17,7 +17,10 @@ import { RootStackParamList } from "../../navigation/RootStackParamList";
 import { ApiService } from "../../lib/ApiService"; // <-- Import your API service
 import { COLORS } from "../../constants/theme";
 
-type Props = StackScreenProps<RootStackParamList, "GenerateEmployeePdfListScreen">;
+type Props = StackScreenProps<
+  RootStackParamList,
+  "GenerateEmployeePdfListScreen"
+>;
 
 type EmployeeSalary = {
   id: number;
@@ -26,7 +29,10 @@ type EmployeeSalary = {
   salary_pdf_url: string; // from the new API
 };
 
-const GenerateEmployeePdfListScreen: React.FC<Props> = ({ navigation, route }) => {
+const GenerateEmployeePdfListScreen: React.FC<Props> = ({
+  navigation,
+  route,
+}) => {
   const { colors } = useTheme();
 
   // We get the user_ids and salary_date from route params
@@ -44,7 +50,7 @@ const GenerateEmployeePdfListScreen: React.FC<Props> = ({ navigation, route }) =
     console.log({
       salary_date: salary_date,
       user_ids: employees_ids,
-    })
+    });
     try {
       const response = await ApiService.postWithToken(
         "api/employee/employee-salary-list",
@@ -70,16 +76,14 @@ const GenerateEmployeePdfListScreen: React.FC<Props> = ({ navigation, route }) =
 
   // Render each employee row
   const renderEmployeeItem = ({ item }: { item: EmployeeSalary }) => (
-    <View style={styles.itemContainer}>
+    <View style={[styles.itemContainer, { backgroundColor: colors.card }]}>
       {/* We keep the placeholder image from previous logic */}
       {/* <Image
         source={{ uri: "https://placehold.co/200/jpg" }}
         style={styles.profileImage}
       /> */}
       <View style={styles.avatar}>
-        <Text style={styles.avatarText}>
-          {item.name ? item.name[0] : "E"}
-        </Text>
+        <Text style={styles.avatarText}>{item.name ? item.name[0] : "E"}</Text>
       </View>
       <View style={styles.infoContainer}>
         <Text style={[styles.name, { color: colors.text }]}>{item.name}</Text>
@@ -90,15 +94,23 @@ const GenerateEmployeePdfListScreen: React.FC<Props> = ({ navigation, route }) =
       {/* PDF icon on the right - existing functionality */}
       <TouchableOpacity
         onPress={() => {
-          console.log("itemss", item)
+          console.log("itemss", item);
           // Hardcoded pdf_url example; adapt as needed
           navigation.navigate("FinalInvoiceResult", {
-            data: { pdf_url: item.salary_pdf_url || "https://paynest.co.in/api/invoice?invoice_id=MTAwMDUz" },
+            data: {
+              pdf_url:
+                item.salary_pdf_url ||
+                "https://paynest.co.in/api/invoice?invoice_id=MTAwMDUz",
+            },
             previous_screen: "GenerateEmployeePdfListScreen",
           });
         }}
       >
-        <MaterialCommunityIcons name="file-pdf-box" size={28} color="#f44336" />
+        <MaterialCommunityIcons
+          name="file-pdf-box"
+          size={28}
+          color={COLORS.danger}
+        />
       </TouchableOpacity>
     </View>
   );
@@ -147,9 +159,8 @@ const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 12,
+    paddingVertical: 8,
     paddingHorizontal: 10,
-    backgroundColor: "#fff",
     borderRadius: 10,
     marginBottom: 10,
     elevation: 2,
@@ -172,13 +183,12 @@ const styles = StyleSheet.create({
     fontWeight: "400",
   },
   avatar: {
-    width: 60,
-    height: 60,
+    width: 45,
+    height: 45,
     borderRadius: 30,
     backgroundColor: COLORS.primary,
     justifyContent: "center",
     alignItems: "center",
   },
-  avatarText: { fontSize: 24, color: "white", fontWeight: "bold" },
-
+  avatarText: { fontSize: 22, color: "white", fontWeight: "bold" },
 });

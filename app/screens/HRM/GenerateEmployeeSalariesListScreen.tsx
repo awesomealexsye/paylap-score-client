@@ -32,7 +32,9 @@ type Employee = {
   total_salary: string; // from API
 };
 
-const GenerateEmployeeSalariesListScreen: React.FC<Props> = ({ navigation }) => {
+const GenerateEmployeeSalariesListScreen: React.FC<Props> = ({
+  navigation,
+}) => {
   const { colors } = useTheme();
 
   // For selecting which month-year we generate salary
@@ -58,7 +60,10 @@ const GenerateEmployeeSalariesListScreen: React.FC<Props> = ({ navigation }) => 
   const fetchEmployees = async () => {
     setIsLoading(true);
     try {
-      const response = await ApiService.postWithToken("api/employee/all-list", {})
+      const response = await ApiService.postWithToken(
+        "api/employee/all-list",
+        {}
+      );
 
       if (response?.data) {
         setEmployeeList(response.data);
@@ -101,14 +106,12 @@ const GenerateEmployeeSalariesListScreen: React.FC<Props> = ({ navigation }) => 
 
   // Render each employee row
   const renderEmployeeItem = ({ item }: { item: Employee }) => (
-    <View style={styles.itemContainer}>
+    <View style={[styles.itemContainer, { backgroundColor: colors.card }]}>
       <View style={styles.avatar}>
-        <Text style={styles.avatarText}>
-          {item.name ? item.name[0] : "E"}
-        </Text>
+        <Text style={styles.avatarText}>{item.name ? item.name[0] : "E"}</Text>
       </View>
       <View style={styles.infoContainer}>
-        <Text style={[styles.name, { color: colors.text }]}>{item.name}</Text>
+        <Text style={[styles.name, { color: colors.title }]}>{item.name}</Text>
       </View>
       <View style={styles.salaryContainer}>
         <Text style={[styles.salary, { color: colors.text }]}>
@@ -132,12 +135,10 @@ const GenerateEmployeeSalariesListScreen: React.FC<Props> = ({ navigation }) => 
       month = String(date.getMonth() + 1).padStart(2, "0");
       const year = date.getFullYear();
       return `${month}-${year}`;
-
     } else {
       month = date.toLocaleString("default", { month: "short" });
       const year = date.getFullYear();
       return `${month} ${year}`;
-
     }
   };
 
@@ -166,7 +167,6 @@ const GenerateEmployeeSalariesListScreen: React.FC<Props> = ({ navigation }) => 
   const onPressCancel = () => {
     setShowPicker(false);
   };
-
 
   // // Generate Salary -> navigate to PDF list (or handle as needed)
   // const handleGenerateSalary = () => {
@@ -223,9 +223,14 @@ const GenerateEmployeeSalariesListScreen: React.FC<Props> = ({ navigation }) => 
           >
             {/* Date picker row */}
             <View style={styles.dateRow}>
-              <Text style={styles.dateLabel}>Select Month-Year:</Text>
-              <TouchableOpacity style={styles.dateButton} onPress={onPressDate}>
-                <Text style={styles.dateButtonText}>
+              <Text style={[styles.dateLabel, { color: colors.title }]}>
+                Select Month-Year:
+              </Text>
+              <TouchableOpacity
+                style={[styles.dateButton, { backgroundColor: colors.card }]}
+                onPress={onPressDate}
+              >
+                <Text style={[styles.dateButtonText, { color: colors.title }]}>
                   {formatMonthYear(selectedDate)}
                 </Text>
               </TouchableOpacity>
@@ -274,9 +279,21 @@ const GenerateEmployeeSalariesListScreen: React.FC<Props> = ({ navigation }) => 
         onRequestClose={onPressCancel}
       >
         <View style={styles.modalBackground}>
-          <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Select Month-Year</Text>
+          <View
+            style={[
+              styles.modalContainer,
+              { backgroundColor: colors.background },
+            ]}
+          >
+            <Text style={[styles.modalTitle, { color: colors.text }]}>
+              Select Month-Year
+            </Text>
             <DateTimePicker
+              style={[
+                styles.dateTimePicker,
+                { backgroundColor: colors.background },
+              ]}
+              textColor={colors.title}
               value={tempDate}
               mode="date"
               display="spinner"
@@ -291,7 +308,10 @@ const GenerateEmployeeSalariesListScreen: React.FC<Props> = ({ navigation }) => 
               >
                 <Text style={styles.modalButtonText}>Cancel</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.modalButtonOk} onPress={onPressOk}>
+              <TouchableOpacity
+                style={styles.modalButtonOk}
+                onPress={onPressOk}
+              >
                 <Text style={styles.modalButtonText}>OK</Text>
               </TouchableOpacity>
             </View>
@@ -351,17 +371,16 @@ const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 12,
+    paddingVertical: 4,
     paddingHorizontal: 10,
-    backgroundColor: "#fff",
     borderRadius: 10,
     marginBottom: 10,
     elevation: 2,
   },
   // Optional image style if you want an avatar
   profileImage: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
     borderRadius: 25,
   },
   infoContainer: {
@@ -387,10 +406,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   generateButton: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: COLORS.primary,
     paddingVertical: 15,
-    paddingHorizontal: 40,
-    borderRadius: 25,
+    paddingHorizontal: 100,
+    borderRadius: 15,
   },
   generateButtonText: {
     color: "#fff",
@@ -449,5 +468,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   avatarText: { fontSize: 24, color: "white", fontWeight: "bold" },
-
+  dateTimePicker: {
+    width: "100%",
+    borderRadius: 8,
+    marginVertical: 10,
+  },
 });
