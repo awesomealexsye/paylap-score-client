@@ -42,49 +42,50 @@ const DrawerMenu = () => {
     },
     {
       id: "2",
+      icon: IMAGES.list,
+      name: t("Business"),
+      navigate: "InvoiceLists",
+    },
+    {
+      id: "3",
+      icon: IMAGES.savemoney,
+      name: t("HRM"),
+      navigate: "EmployeeManagementScreen",
+    },
+    {
+      id: "4",
       icon: IMAGES.wallet2,
       name: t("withdrawal"),
       navigate: "WithdrawalAmount",
     },
     {
-      id: "3",
+      id: "5",
       icon: IMAGES.tachometerfast,
       name: t("myCibil"),
       navigate: "CustomerScore",
     },
     {
-      id: "4",
+      id: "6",
       icon: IMAGES.help,
       name: t("support"),
       navigate: "CustomerSupport",
     },
     {
-      id: "5",
+      id: "7",
       icon: IMAGES.termandCondition,
       name: t("ourPolicy"),
       navigate: "TermsAndConditionsScreen",
     },
 
     {
-      id: "6",
+      id: "8",
       icon: IMAGES.share,
       name: t("share"),
       navigate: "ShareApp",
     },
+
     {
-      id: "7",
-      icon: IMAGES.list,
-      name: t("Business"),
-      navigate: "InvoiceLists",
-    },
-    {
-      id: "7",
-      icon: IMAGES.savemoney,
-      name: t("HRM"),
-      navigate: "EmployeeManagementScreen",
-    },
-    {
-      id: "7",
+      id: "9",
       icon: IMAGES.logout,
       name: t("logout"),
       navigate: "MobileSignIn",

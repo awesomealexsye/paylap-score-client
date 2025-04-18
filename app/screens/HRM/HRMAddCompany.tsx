@@ -30,24 +30,27 @@ const inputWidth = width - 40;
 
 type HRMAddCompanyProps = StackScreenProps<RootStackParamList, "HRMAddCompany">;
 
-export const HRMAddCompany = ({ navigation }: HRMAddCompanyProps) => {
+export const HRMAddCompany = ({ navigation, route }: HRMAddCompanyProps) => {
   const theme = useTheme();
   const { colors }: { colors: any } = theme;
+  const { company } = route.params;
+  const isEdit = Boolean(company);
+
 
   const [createCompany] = useCreateCompanyMutation();
   const [isLoading, setIsLoading] = useState(false)
 
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    website: "",
-    gst: "",
-    company_address: "",
-    city: "",
-    district: "",
-    state: "",
-    zipcode: "",
+    name: company?.name || "",
+    email: company?.email || "",
+    phone: company?.phone || "",
+    website: company?.website || "",
+    gst: company?.gst || "",
+    company_address: company?.company_address || "",
+    city: company?.city || "",
+    district: company?.district || "",
+    state: company?.state || "",
+    zipcode: company?.zipcode || "",
   });
 
   const handleInputChange = (fieldName: string, value: string) => {
@@ -169,6 +172,9 @@ export const HRMAddCompany = ({ navigation }: HRMAddCompanyProps) => {
       ...formData,
       image: image || "", // Add base64 image data if selected
     };
+    if (isEdit) {
+      payload.id = company.id;
+    }
     // console.log("image", image);
     setIsLoading(true);
 
@@ -198,7 +204,7 @@ export const HRMAddCompany = ({ navigation }: HRMAddCompanyProps) => {
 
   return (
     <>
-      <Header leftIcon="back" title="Add Company" />
+      <Header leftIcon="back" title={isEdit ? "Edit Company" : "Add Company"} />
       <ScrollView
         style={styles.container}
         contentContainerStyle={{ paddingBottom: 40 }}
@@ -412,7 +418,9 @@ export const HRMAddCompany = ({ navigation }: HRMAddCompanyProps) => {
             onPress={handleSubmit}
             activeOpacity={0.8}
           >
-            <Text style={styles.buttonText}>Create Company</Text>
+            <Text style={styles.buttonText}>
+              {isEdit ? "Update Company" : "Create Company"}
+            </Text>
           </TouchableOpacity>
         }
       </ScrollView>

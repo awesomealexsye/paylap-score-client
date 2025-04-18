@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
     View,
     Text,
@@ -6,8 +6,9 @@ import {
     TouchableOpacity,
     FlatList,
     Alert,
+    Image,
 } from "react-native";
-import { useTheme } from "@react-navigation/native";
+import { useFocusEffect, useTheme } from "@react-navigation/native";
 import {
     useGetCompanyListMutation,
     useDeleteCompanyMutation,
@@ -18,6 +19,7 @@ import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { COLORS } from "../../constants/theme";
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/RootStackParamList";
+import { ApiService } from "../../lib/ApiService";
 
 type HRMCompanyListScreenProps = StackScreenProps<
     RootStackParamList,
@@ -40,6 +42,7 @@ const HRMCompanyListScreen = ({ navigation }: HRMCompanyListScreenProps) => {
     // State for the list of companies
     const [companyData, setCompanyData] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
+    const [otpInfo, setOtpInfo] = useState('');
 
     // State for form validation errors
     const [errors, setErrors] = useState<{ name?: string; email?: string; phone?: string }>({});
@@ -59,12 +62,22 @@ const HRMCompanyListScreen = ({ navigation }: HRMCompanyListScreenProps) => {
     }, []);
 
     // Fetch companies once we have credentials
-    useEffect(() => {
-        if (credentials?.user_id && credentials?.auth_key) {
-            fetchCompanies();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [credentials]);
+    // useEffect(() => {
+    //     if (credentials?.user_id && credentials?.auth_key) {
+    //         fetchCompanies();
+    //     }
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [credentials]);
+
+    useFocusEffect(
+        useCallback(() => {
+            if (credentials?.user_id && credentials?.auth_key) {
+                fetchCompanies();
+            }
+        }, [credentials])
+    );
+
+
 
     // Fetch companies from the API
     const fetchCompanies = async () => {
@@ -105,35 +118,49 @@ const HRMCompanyListScreen = ({ navigation }: HRMCompanyListScreenProps) => {
         // Existing logic to create a company...
     };
 
+    const sentOtp = async () => {
+        const res = await ApiService.postWithToken(
+            `api/hrm/companies/sent-otp-to-delete`, {})
+        console.log("res", res);
+        if (res.status === 200) {
+            Alert.alert("Success", "OTP sent to your mobile number.");
+        }
+    }
+
     // Handle deleting a company
     const handleDelete = (companyId: number) => {
+        console.log("Deleting company with ID:", companyId);
         if (!credentials) return;
-
-        Alert.alert(
-            "Delete Company",
-            "Are you sure you want to delete this company?",
+        sentOtp()
+        Alert.prompt(
+            "OTP Verification",
+            "Enter the OTP sent to your mobile number",
             [
                 { text: "Cancel", style: "cancel" },
                 {
                     text: "Delete",
                     style: "destructive",
-                    onPress: async () => {
+                    onPress: async (otp) => {
+                        if (!otp) {
+                            Alert.alert("Error", "OTP is required to delete the company.");
+                            return;
+                        }
+                        setOtpInfo(otp);
                         try {
-                            await deleteCompany({
-                                id: companyId,
-                                payload: {
-                                    user_id: credentials.user_id,
-                                    auth_key: credentials.auth_key,
-                                },
-                            }).unwrap();
+                            await ApiService.postWithToken(
+                                `api/hrm/companies/delete/${companyId}`, {
+                                otp: otp,
+                            })
                             // Refresh the list
                             fetchCompanies();
                         } catch (err) {
                             console.error("Error deleting company:", err);
+                            Alert.alert("Error", "Failed to delete company. Please try again.");
                         }
                     },
                 },
-            ]
+            ],
+            "plain-text"
         );
     };
 
@@ -146,7 +173,10 @@ const HRMCompanyListScreen = ({ navigation }: HRMCompanyListScreenProps) => {
             <View style={[styles.card, { backgroundColor: colors.card }]}>
                 {/* Avatar on the left */}
                 <View style={styles.avatar}>
-                    <Text style={styles.avatarText}>{firstLetter}</Text>
+                    {/* <Text style={{}}>{JSON.stringify(item.image)}</Text> */}
+                    <Image style={{ height: 40, width: 40, borderRadius: 50 }}
+                        src={`${CONFIG.APP_URL}/uploads/companies/${item.image}`} />
+
                 </View>
 
                 {/* Main content */}
@@ -163,6 +193,13 @@ const HRMCompanyListScreen = ({ navigation }: HRMCompanyListScreenProps) => {
                 </View>
 
                 {/* Delete button on the far right */}
+                <TouchableOpacity
+                    style={[styles.deleteButton, { backgroundColor: "blue" }]}
+                    onPress={() => navigation.navigate("HRMAddCompany", { company: item })}
+                >
+                    <FontAwesome5 name="edit" size={16} color="#fff" />
+                </TouchableOpacity>
+
                 <TouchableOpacity
                     style={[styles.deleteButton, { backgroundColor: "red" }]}
                     onPress={() => handleDelete(item.id)}
@@ -189,21 +226,27 @@ const HRMCompanyListScreen = ({ navigation }: HRMCompanyListScreenProps) => {
             </View>
 
             {/* Scrollable list of companies */}
-            <FlatList
-                data={companyData}
-                keyExtractor={(item, index) =>
-                    item?.id?.toString() || index.toString()
-                }
-                renderItem={renderCompanyItem}
-                onRefresh={fetchCompanies}
-                refreshing={loading}
-                contentContainerStyle={{ paddingBottom: 100, paddingHorizontal: 16 }}
-            />
+            {companyData.length !== 0 ? (
+                <FlatList
+                    data={companyData}
+                    keyExtractor={(item, index) =>
+                        item?.id?.toString() || index.toString()
+                    }
+                    renderItem={renderCompanyItem}
+                    onRefresh={fetchCompanies}
+                    refreshing={loading}
+                    contentContainerStyle={{ paddingBottom: 100, paddingHorizontal: 16 }}
+                />
+
+            ) : <>
+                <Text style={{ textAlign: 'center', fontSize: 14 }} >No Company List...</Text>
+            </>
+            }
 
             {/* Floating 'Create New Company' button (moved to right side) */}
             <TouchableOpacity
                 style={styles.floatingButton}
-                onPress={() => navigation.navigate("HRMAddCompany")}
+                onPress={() => navigation.navigate("HRMAddCompany", { company: null })}
             >
                 <FontAwesome5 name="plus" size={20} color="#fff" />
             </TouchableOpacity>

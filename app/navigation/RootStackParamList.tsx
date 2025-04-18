@@ -143,7 +143,7 @@ export type RootStackParamList = {
   GenerateEmployeeSalariesListScreen: any;
   GenerateEmployeePdfListScreen: any;
 
-  HRMAddCompany: any;
+  HRMAddCompany: { company: any };
   HRMCompanyListScreen: any;
   ManageAttendanceScreen: any;
 };

@@ -19,6 +19,8 @@ import { RootStackParamList } from "../../navigation/RootStackParamList";
 import { ActivityIndicator } from "react-native-paper";
 import { ApiService } from "../../lib/ApiService";
 import { COLORS } from "../../constants/theme";
+import StorageService from "../../lib/StorageService";
+import CONFIG from "../../constants/config";
 
 type Props = StackScreenProps<
   RootStackParamList,
@@ -60,9 +62,10 @@ const GenerateEmployeeSalariesListScreen: React.FC<Props> = ({
   const fetchEmployees = async () => {
     setIsLoading(true);
     try {
+      const company_id = await StorageService.getStorage(CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_ID);
       const response = await ApiService.postWithToken(
         "api/employee/all-list",
-        {}
+        { company_id: company_id }
       );
 
       if (response?.data) {

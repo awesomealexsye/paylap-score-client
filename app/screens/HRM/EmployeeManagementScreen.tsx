@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import {
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/RootStackParamList";
-import { useTheme } from "@react-navigation/native";
+import { useFocusEffect, useTheme } from "@react-navigation/native";
 import StorageService from "../../lib/StorageService";
 import CONFIG from "../../constants/config";
 import { useGetCompanyListMutation } from "../../redux/api/company.api";
@@ -75,23 +75,36 @@ export const EmployeeManagementScreen = ({
   }, []);
 
   // Fetch company list from API
-  useEffect(() => {
-    if (credentials && credentials.user_id && credentials.auth_key) {
-      getCompanyList({
-        user_id: credentials.user_id,
-        auth_key: credentials.auth_key,
-      })
-        .unwrap()
-        .then((data) => {
-          setCompanyList(data.data || []);
-          // Check if stored company is still valid
-          if (data.data && data.data.length > 0) {
-            if (selectedCompany && selectedCompany.id) {
-              const found = data.data.find(
-                (c: any) => c.id == selectedCompany.id
-              );
-              if (!found) {
-                // If stored company not found in new list, fallback to first
+  useFocusEffect(
+    useCallback(() => {
+      if (credentials && credentials.user_id && credentials.auth_key) {
+        getCompanyList({
+          user_id: credentials.user_id,
+          auth_key: credentials.auth_key,
+        })
+          .unwrap()
+          .then((data) => {
+            setCompanyList(data.data || []);
+            // Check if stored company is still valid
+            if (data.data && data.data.length > 0) {
+              if (selectedCompany && selectedCompany.id) {
+                const found = data.data.find(
+                  (c: any) => c.id == selectedCompany.id
+                );
+                if (!found) {
+                  // If stored company not found in new list, fallback to first
+                  setSelectedCompany(data.data[0]);
+                  StorageService.setStorage(
+                    CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_ID,
+                    data.data[0].id.toString()
+                  );
+                  StorageService.setStorage(
+                    CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_NAME,
+                    data.data[0].name
+                  );
+                }
+              } else {
+                // No previously selected, use the first
                 setSelectedCompany(data.data[0]);
                 StorageService.setStorage(
                   CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_ID,
@@ -102,25 +115,14 @@ export const EmployeeManagementScreen = ({
                   data.data[0].name
                 );
               }
-            } else {
-              // No previously selected, use the first
-              setSelectedCompany(data.data[0]);
-              StorageService.setStorage(
-                CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_ID,
-                data.data[0].id.toString()
-              );
-              StorageService.setStorage(
-                CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_NAME,
-                data.data[0].name
-              );
             }
-          }
-        })
-        .catch((err) => {
-          console.error("Error fetching companies:", err);
-        });
-    }
-  }, [credentials]);
+          })
+          .catch((err) => {
+            console.error("Error fetching companies:", err);
+          });
+      }
+    }, [credentials])
+  );
 
   // Handle company selection from the modal
   const handleSelectCompany = (company: any) => {
@@ -234,7 +236,7 @@ export const EmployeeManagementScreen = ({
             <TouchableOpacity
               onPress={() => {
                 setModalVisible(false);
-                navigation.navigate("HRMAddCompany");
+                navigation.navigate("HRMAddCompany", { company: null });
               }}
               style={styles.plusIconContainer}
             >
@@ -288,7 +290,7 @@ export const EmployeeManagementScreen = ({
               style={styles.createButton}
               onPress={() => {
                 setBlockedModalVisible(false);
-                navigation.navigate("HRMAddCompany");
+                navigation.navigate("HRMAddCompany", { company: null });
               }}
             >
               <Text style={styles.createButtonText}>Create Company</Text>
