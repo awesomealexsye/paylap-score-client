@@ -32,65 +32,85 @@ interface InstalledAppBuild {
 }
 const DrawerMenu = () => {
   const { t } = useTranslation();
-
-  const MenuItems = [
+  const [MenuItems, setMenuItems] = useState<any>([
     {
       id: "1",
       icon: IMAGES.home,
       name: t("home"),
       navigate: "Home",
     },
+
     {
-      id: "2",
+      id: "3",
       icon: IMAGES.list,
       name: t("Business"),
       navigate: "InvoiceLists",
     },
     {
-      id: "3",
+      id: "4",
       icon: IMAGES.savemoney,
       name: t("HRM"),
       navigate: "EmployeeManagementScreen",
     },
     {
-      id: "4",
+      id: "5",
       icon: IMAGES.wallet2,
       name: t("withdrawal"),
       navigate: "WithdrawalAmount",
     },
     {
-      id: "5",
+      id: "6",
       icon: IMAGES.tachometerfast,
       name: t("myCibil"),
       navigate: "CustomerScore",
     },
     {
-      id: "6",
+      id: "7",
       icon: IMAGES.help,
       name: t("support"),
       navigate: "CustomerSupport",
     },
     {
-      id: "7",
+      id: "8",
       icon: IMAGES.termandCondition,
       name: t("ourPolicy"),
       navigate: "TermsAndConditionsScreen",
     },
 
     {
-      id: "8",
+      id: "9",
       icon: IMAGES.share,
       name: t("share"),
       navigate: "ShareApp",
     },
 
     {
-      id: "9",
+      id: "10",
       icon: IMAGES.logout,
       name: t("logout"),
       navigate: "MobileSignIn",
     },
-  ];
+  ]);
+
+  useEffect(() => {
+    CommonService.currentUserDetail().then((res) => {
+      if (res?.aadhar_card === '') {
+        setMenuItems((prev: any[]) => {
+          const exists = prev.some(item => item.id === "2");
+          if (exists) return prev;
+          const newItems = [...prev];
+          newItems.splice(1, 0, {
+            id: "2",
+            icon: IMAGES.bank,
+            name: t("User Kyc"),
+            navigate: "UserKyc",
+          });
+          return newItems;
+        });
+      }
+    })
+  }, [])
+
 
   const { OS } = Platform;
   type AppConfig = {
