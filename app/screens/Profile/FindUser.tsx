@@ -45,7 +45,7 @@ const FindUser = forwardRef((props, ref) => {
     const [isLoading, setIsLoading] = useState(false);
     const [showDetail, setShowDetail] = useState(false);
 
-    const [aadhar, setAadhar] = useState("936107513622");
+    const [aadhar, setAadhar] = useState("");
     useFocusEffect(
         useCallback(() => {
             setShowDetail(false);

@@ -205,6 +205,16 @@ const EmployeeDetailScreen: React.FC<EmployeeDetailScreenProps> = ({
         >
           <Text style={styles.attendanceButtonText}>Attendance</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.advanceAmountButton}
+          onPress={() =>
+            navigation.navigate("ManageAdvanceAmountScreen", employee)
+          }
+        >
+          <Text style={styles.advanceAmountButtonText}>Advance Amount</Text>
+        </TouchableOpacity>
+
       </ScrollView>
     </>
   );
@@ -349,8 +359,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 15,
   },
+  advanceAmountButton: {
+    backgroundColor: "#FF1211",
+    borderRadius: 12,
+    padding: 15,
+    alignItems: "center",
+    marginTop: 15,
+  },
   attendanceButtonText: {
     color: "#333",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  advanceAmountButtonText: {
+    color: "#fff",
     fontWeight: "bold",
     fontSize: 16,
   },

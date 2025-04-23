@@ -6,14 +6,18 @@ import {
   ScrollView,
   StyleSheet,
   Modal,
+  Image,
 } from "react-native";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/RootStackParamList";
 import { useFocusEffect, useTheme } from "@react-navigation/native";
 import StorageService from "../../lib/StorageService";
+import { ApiService } from "../../lib/ApiService";
 import CONFIG from "../../constants/config";
-import { useGetCompanyListMutation } from "../../redux/api/company.api";
+// import { useGetCompanyListMutation } from "../../redux/api/company.api";
+import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
+import { useRef, useMemo } from "react";
 import { COLORS, FONTS } from "../../constants/theme";
 
 type EmployeeManagementScreenProps = StackScreenProps<
@@ -36,12 +40,31 @@ export const EmployeeManagementScreen = ({
   // Company data
   const [companyList, setCompanyList] = useState<any[]>([]);
   const [selectedCompany, setSelectedCompany] = useState<any>(null);
-  const [modalVisible, setModalVisible] = useState(false);
+
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const snapPoints = useMemo(() => ["25%", "50%"], []);
+
+  // Home‑count data
+  const [homeCount, setHomeCount] = useState<{ company_count: number; employee_count: number; emp_leave_count: number; }>({
+    company_count: 0,
+    employee_count: 0,
+    emp_leave_count: 0,
+  });
 
   // Blocking modal if no company is available
   const [blockedModalVisible, setBlockedModalVisible] = useState(false);
+  useFocusEffect(
+    useCallback(() => {
+      const fetchHomeCount = async () => {
+        const res: any = await ApiService.postWithToken("api/employee/hrm-home-count", {});
+        if (res && res.status) {
+          setHomeCount(res.data);
+        }
+      };
+      fetchHomeCount();
+    }, [credentials])
+  );
 
-  const [getCompanyList] = useGetCompanyListMutation();
 
   // Fetch credentials and any stored company from local storage
   useEffect(() => {
@@ -74,62 +97,55 @@ export const EmployeeManagementScreen = ({
     fetchCredentials();
   }, []);
 
-  // Fetch company list from API
   useFocusEffect(
     useCallback(() => {
-      if (credentials && credentials.user_id && credentials.auth_key) {
-        getCompanyList({
+      if (credentials?.user_id && credentials?.auth_key) {
+        ApiService.postWithToken("api/hrm/companies/list", {
           user_id: credentials.user_id,
           auth_key: credentials.auth_key,
         })
-          .unwrap()
-          .then((data) => {
-            setCompanyList(data.data || []);
-            // Check if stored company is still valid
-            if (data.data && data.data.length > 0) {
-              if (selectedCompany && selectedCompany.id) {
-                const found = data.data.find(
-                  (c: any) => c.id == selectedCompany.id
-                );
-                if (!found) {
-                  // If stored company not found in new list, fallback to first
-                  setSelectedCompany(data.data[0]);
+          .then((res: any) => {
+            if (res?.status) {
+              setCompanyList(res.data || []);
+              // Same “retain previously selected” logic
+              if (res.data && res.data.length > 0) {
+                if (selectedCompany && selectedCompany.id) {
+                  const found = res.data.find((c: any) => c.id == selectedCompany.id);
+                  if (!found) {
+                    setSelectedCompany(res.data[0]);
+                    StorageService.setStorage(
+                      CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_ID,
+                      res.data[0].id.toString()
+                    );
+                    StorageService.setStorage(
+                      CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_NAME,
+                      res.data[0].name
+                    );
+                  }
+                } else {
+                  setSelectedCompany(res.data[0]);
                   StorageService.setStorage(
                     CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_ID,
-                    data.data[0].id.toString()
+                    res.data[0].id.toString()
                   );
                   StorageService.setStorage(
                     CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_NAME,
-                    data.data[0].name
+                    res.data[0].name
                   );
                 }
-              } else {
-                // No previously selected, use the first
-                setSelectedCompany(data.data[0]);
-                StorageService.setStorage(
-                  CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_ID,
-                  data.data[0].id.toString()
-                );
-                StorageService.setStorage(
-                  CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_NAME,
-                  data.data[0].name
-                );
               }
             }
           })
-          .catch((err) => {
-            console.error("Error fetching companies:", err);
-          });
+          .catch((err) => console.error("Error fetching companies:", err));
       }
     }, [credentials])
   );
 
-  // Handle company selection from the modal
+  // Handle company selection from the bottom sheet
   const handleSelectCompany = (company: any) => {
     setSelectedCompany(company);
-    setModalVisible(false);
+    bottomSheetRef.current?.close();
 
-    // Store in local storage
     StorageService.setStorage(
       CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_ID,
       company.id.toString()
@@ -211,7 +227,7 @@ export const EmployeeManagementScreen = ({
         <View style={styles.headerBottomRow}>
           <TouchableOpacity
             style={styles.companyNameContainer}
-            onPress={() => setModalVisible(true)}
+            onPress={() => bottomSheetRef.current?.expand()}
           >
             <Text style={[styles.companyNameText, { color: colors.text }]}>
               {selectedCompany ? selectedCompany.name : "Select Company"}
@@ -220,52 +236,33 @@ export const EmployeeManagementScreen = ({
         </View>
       </View>
 
-      {/* Modal for selecting company */}
-      <Modal
-        visible={modalVisible}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setModalVisible(false)}
+
+      {/* Bottom‑sheet for company selection */}
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={-1}
+        snapPoints={snapPoints}
+        enablePanDownToClose
       >
-        <TouchableOpacity
-          style={[styles.modalOverlay, { backgroundColor: colors.background }]}
-          activeOpacity={0.1}
-          onPress={() => setModalVisible(false)}
-        >
-          <View style={[styles.modalContent, { backgroundColor: colors.card }]}>
+        <BottomSheetFlatList
+          data={companyList}
+          keyExtractor={(item: any) => item.id.toString()}
+          renderItem={({ item }) => (
             <TouchableOpacity
-              onPress={() => {
-                setModalVisible(false);
-                navigation.navigate("HRMAddCompany", { company: null });
-              }}
-              style={styles.plusIconContainer}
+              style={{ flexDirection: "row", alignItems: "center", padding: 12 }}
+              onPress={() => handleSelectCompany(item)}
             >
-              <MaterialIcons
-                name="add"
-                size={20}
-                color={colors.title}
-                style={{ marginTop: 0 }}
+              <Image
+                source={{ uri: `${CONFIG.APP_URL}/uploads/companies/${item.image}` }}
+                style={{ width: 36, height: 36, borderRadius: 18, marginRight: 12 }}
               />
-              <Text style={[{ color: colors.title, ...FONTS.fontSemiBold }]}>
-                Add New Company
+              <Text style={{ fontSize: 14, color: colors.title }}>
+                {item.name}
               </Text>
             </TouchableOpacity>
-            {companyList?.map((company, index) => (
-              <>
-                <TouchableOpacity
-                  key={index}
-                  style={styles.modalItem}
-                  onPress={() => handleSelectCompany(company)}
-                >
-                  <Text style={[styles.modalItemText, { color: colors.title }]}>
-                    {company.name}
-                  </Text>
-                </TouchableOpacity>
-              </>
-            ))}
-          </View>
-        </TouchableOpacity>
-      </Modal>
+          )}
+        />
+      </BottomSheet>
 
       {/* Modal if no company is found */}
       <Modal
@@ -301,6 +298,21 @@ export const EmployeeManagementScreen = ({
 
       {/* Scrollable List Section */}
       <ScrollView style={styles.content}>
+        {/* Home‑count row */}
+        <View style={styles.countRow}>
+          <View style={[styles.countCard, { backgroundColor: colors.card }]}>
+            <Text style={styles.countNumber}>{homeCount.company_count}</Text>
+            <Text style={styles.countLabel}>Company</Text>
+          </View>
+          <View style={[styles.countCard, { backgroundColor: colors.card }]}>
+            <Text style={styles.countNumber}>{homeCount.employee_count}</Text>
+            <Text style={styles.countLabel}>Employees</Text>
+          </View>
+          <View style={[styles.countCard, { backgroundColor: colors.card }]}>
+            <Text style={styles.countNumber}>{homeCount.emp_leave_count}</Text>
+            <Text style={styles.countLabel}>Leaves&nbsp;Today</Text>
+          </View>
+        </View>
         {/* Main card container */}
         <View style={styles.mainCardContainer}>
           <TouchableOpacity
@@ -496,5 +508,34 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
+  },
+  /* Home‑count cards */
+  countRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 15,
+  },
+  countCard: {
+    flex: 1,
+    borderRadius: 12,
+    paddingVertical: 12,
+    marginHorizontal: 4,
+    alignItems: "center",
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  countNumber: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: COLORS.primary,
+  },
+  countLabel: {
+    fontSize: 12,
+    fontWeight: "500",
+    color: "#444",
+    marginTop: 4,
   },
 });
