@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react";
+// app/screens/HRM/EmployeeManagementScreen.tsx
+
+import React, { useCallback, useEffect, useState, useRef, useMemo } from "react";
 import {
   View,
   Text,
@@ -15,10 +17,8 @@ import { useFocusEffect, useTheme } from "@react-navigation/native";
 import StorageService from "../../lib/StorageService";
 import { ApiService } from "../../lib/ApiService";
 import CONFIG from "../../constants/config";
-// import { useGetCompanyListMutation } from "../../redux/api/company.api";
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
-import { useRef, useMemo } from "react";
-import { COLORS, FONTS } from "../../constants/theme";
+import { COLORS } from "../../constants/theme";
 
 type EmployeeManagementScreenProps = StackScreenProps<
   RootStackParamList,
@@ -44,8 +44,12 @@ export const EmployeeManagementScreen = ({
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ["25%", "50%"], []);
 
-  // Home‑count data
-  const [homeCount, setHomeCount] = useState<{ company_count: number; employee_count: number; emp_leave_count: number; }>({
+  // Home-count data
+  const [homeCount, setHomeCount] = useState<{
+    company_count: number;
+    employee_count: number;
+    emp_leave_count: number;
+  }>({
     company_count: 0,
     employee_count: 0,
     emp_leave_count: 0,
@@ -53,10 +57,14 @@ export const EmployeeManagementScreen = ({
 
   // Blocking modal if no company is available
   const [blockedModalVisible, setBlockedModalVisible] = useState(false);
+
   useFocusEffect(
     useCallback(() => {
       const fetchHomeCount = async () => {
-        const res: any = await ApiService.postWithToken("api/employee/hrm-home-count", {});
+        const res: any = await ApiService.postWithToken(
+          "api/employee/hrm-home-count",
+          {}
+        );
         if (res && res.status) {
           setHomeCount(res.data);
         }
@@ -64,7 +72,6 @@ export const EmployeeManagementScreen = ({
       fetchHomeCount();
     }, [credentials])
   );
-
 
   // Fetch credentials and any stored company from local storage
   useEffect(() => {
@@ -82,12 +89,17 @@ export const EmployeeManagementScreen = ({
       const storedCompanyName = await StorageService.getStorage(
         CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_NAME
       );
+      // load the previously‐stored image key
+      const storedCompanyImg = await StorageService.getStorage(
+        CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_IMG
+      );
 
       let initialSelectedCompany: any = null;
       if (storedCompanyId && storedCompanyName) {
         initialSelectedCompany = {
           id: storedCompanyId,
           name: storedCompanyName,
+          image: storedCompanyImg || null,
         };
       }
 
@@ -107,10 +119,12 @@ export const EmployeeManagementScreen = ({
           .then((res: any) => {
             if (res?.status) {
               setCompanyList(res.data || []);
-              // Same “retain previously selected” logic
+              // retain previously selected company if still available
               if (res.data && res.data.length > 0) {
                 if (selectedCompany && selectedCompany.id) {
-                  const found = res.data.find((c: any) => c.id == selectedCompany.id);
+                  const found = res.data.find(
+                    (c: any) => c.id == selectedCompany.id
+                  );
                   if (!found) {
                     setSelectedCompany(res.data[0]);
                     StorageService.setStorage(
@@ -120,6 +134,10 @@ export const EmployeeManagementScreen = ({
                     StorageService.setStorage(
                       CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_NAME,
                       res.data[0].name
+                    );
+                    StorageService.setStorage(
+                      CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_IMG,
+                      res.data[0].image
                     );
                   }
                 } else {
@@ -131,6 +149,10 @@ export const EmployeeManagementScreen = ({
                   StorageService.setStorage(
                     CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_NAME,
                     res.data[0].name
+                  );
+                  StorageService.setStorage(
+                    CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_IMG,
+                    res.data[0].image
                   );
                 }
               }
@@ -154,6 +176,11 @@ export const EmployeeManagementScreen = ({
       CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_NAME,
       company.name
     );
+    // persist the image filename so we can show it in the header
+    StorageService.setStorage(
+      CONFIG.HARDCODE_VALUES.HRM_SESSION.COMPANY_IMG,
+      company.image
+    );
   };
 
   /**
@@ -162,7 +189,6 @@ export const EmployeeManagementScreen = ({
    */
   const handleCardPress = (route: string) => {
     if (!selectedCompany || companyList.length === 0) {
-      // Show the blocked modal
       setBlockedModalVisible(true);
       return;
     }
@@ -189,20 +215,7 @@ export const EmployeeManagementScreen = ({
       color: "#1E90FF",
       route: "GenerateEmployeeSalariesListScreen",
     },
-    // {
-    //   title: "Time Attendance",
-    //   icon: "calendar-check",
-    //   color: "#FF5733",
-    //   route: "NotAvailable",
-    // },
-    // {
-    //   title: "Salary Statement",
-    //   icon: "file-invoice-dollar",
-    //   color: "#FF1493",
-    //   route: "NotAvailable",
-    // },
   ];
-
   const [mainItem, ...otherItems] = cardItems;
 
   return (
@@ -215,9 +228,12 @@ export const EmployeeManagementScreen = ({
             onPress={() => navigation.goBack()}
             style={styles.headerIconLeft}
           >
-            <MaterialIcons name="arrow-back" size={24} color={colors.title} />
+            <MaterialIcons
+              name="arrow-back"
+              size={24}
+              color={colors.title}
+            />
           </TouchableOpacity>
-
           <Text style={[styles.headerTitle, { color: colors.title }]}>
             Employee Management
           </Text>
@@ -229,15 +245,29 @@ export const EmployeeManagementScreen = ({
             style={styles.companyNameContainer}
             onPress={() => bottomSheetRef.current?.expand()}
           >
-            <Text style={[styles.companyNameText, { color: colors.text }]}>
-              {selectedCompany ? selectedCompany.name : "Select Company"}
-            </Text>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              {selectedCompany?.image && (
+                <Image
+                  source={{
+                    uri: `${CONFIG.APP_URL}/uploads/companies/${selectedCompany.image}`,
+                  }}
+                  style={{
+                    width: 24,
+                    height: 24,
+                    borderRadius: 12,
+                    marginRight: 8,
+                  }}
+                />
+              )}
+              <Text style={[styles.companyNameText, { color: colors.text }]}>
+                {selectedCompany ? selectedCompany.name : "Select Company"}
+              </Text>
+            </View>
           </TouchableOpacity>
         </View>
       </View>
 
-
-      {/* Bottom‑sheet for company selection */}
+      {/* Bottom-sheet for company selection */}
       <BottomSheet
         ref={bottomSheetRef}
         index={-1}
@@ -249,11 +279,17 @@ export const EmployeeManagementScreen = ({
           keyExtractor={(item: any) => item.id.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity
-              style={{ flexDirection: "row", alignItems: "center", padding: 12 }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                padding: 12,
+              }}
               onPress={() => handleSelectCompany(item)}
             >
               <Image
-                source={{ uri: `${CONFIG.APP_URL}/uploads/companies/${item.image}` }}
+                source={{
+                  uri: `${CONFIG.APP_URL}/uploads/companies/${item.image}`,
+                }}
                 style={{ width: 36, height: 36, borderRadius: 18, marginRight: 12 }}
               />
               <Text style={{ fontSize: 14, color: colors.title }}>
@@ -298,7 +334,7 @@ export const EmployeeManagementScreen = ({
 
       {/* Scrollable List Section */}
       <ScrollView style={styles.content}>
-        {/* Home‑count row */}
+        {/* Home-count row */}
         <View style={styles.countRow}>
           <View style={[styles.countCard, { backgroundColor: colors.card }]}>
             <Text style={styles.countNumber}>{homeCount.company_count}</Text>
@@ -310,9 +346,10 @@ export const EmployeeManagementScreen = ({
           </View>
           <View style={[styles.countCard, { backgroundColor: colors.card }]}>
             <Text style={styles.countNumber}>{homeCount.emp_leave_count}</Text>
-            <Text style={styles.countLabel}>Leaves&nbsp;Today</Text>
+            <Text style={styles.countLabel}>Leaves Today</Text>
           </View>
         </View>
+
         {/* Main card container */}
         <View style={styles.mainCardContainer}>
           <TouchableOpacity
@@ -364,8 +401,6 @@ export default EmployeeManagementScreen;
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-
-  /* Header */
   header: {
     paddingHorizontal: 10,
     paddingVertical: 8,
@@ -401,13 +436,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
   },
-  plusIconContainer: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-  },
-
-  /* Modal */
   modalOverlay: {
     flex: 1,
     justifyContent: "center",
@@ -419,15 +447,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 15,
   },
-  modalItem: {
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-  },
-  modalItemText: {
-    fontSize: 14,
-  },
-
-  /* Blocked Modal */
   blockedTitle: {
     fontSize: 16,
     fontWeight: "bold",
@@ -449,14 +468,38 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
   },
-
-  /* Content */
   content: {
     padding: 15,
     zIndex: -10,
   },
-
-  /* Main Card */
+  countRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 15,
+  },
+  countCard: {
+    flex: 1,
+    borderRadius: 12,
+    paddingVertical: 12,
+    marginHorizontal: 4,
+    alignItems: "center",
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  countNumber: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: COLORS.primary,
+  },
+  countLabel: {
+    fontSize: 12,
+    fontWeight: "500",
+    color: "#444",
+    marginTop: 4,
+  },
   mainCardContainer: {
     marginBottom: 15,
     flexDirection: "row",
@@ -488,8 +531,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     textAlign: "center",
   },
-
-  /* Grid */
   gridContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -508,34 +549,5 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
-  },
-  /* Home‑count cards */
-  countRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 15,
-  },
-  countCard: {
-    flex: 1,
-    borderRadius: 12,
-    paddingVertical: 12,
-    marginHorizontal: 4,
-    alignItems: "center",
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-  },
-  countNumber: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: COLORS.primary,
-  },
-  countLabel: {
-    fontSize: 12,
-    fontWeight: "500",
-    color: "#444",
-    marginTop: 4,
   },
 });

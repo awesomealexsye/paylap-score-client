@@ -95,7 +95,7 @@ export const employeeApi = api.injectEndpoints({
       async onQueryStarted(arg, { queryFulfilled }) {
         try {
           await queryFulfilled;
-          MessagesService.commonMessage("Employee deleted successfully");
+          MessagesService.commonMessage("Employee deleted successfully", "SUCCESS");
         } catch (error) {
           console.error("Error deleting employee:", error);
           MessagesService.commonMessage("Employee deletion failed");

@@ -157,7 +157,7 @@ export const ManageSalaryScreen: React.FC<ManageSalaryScreenProps> = ({
       <View style={{ flex: 1, marginRight: 8 }}>
         <TextInput
           style={[styles.componentName, { color: colors.title }]}
-          placeholder="Component Name"
+          placeholder="name"
           placeholderTextColor={colors.title}
           value={item.name}
           onChangeText={(val) =>
@@ -172,7 +172,7 @@ export const ManageSalaryScreen: React.FC<ManageSalaryScreenProps> = ({
       <View style={{ flex: 1, marginRight: 8 }}>
         <TextInput
           style={[styles.componentValue, { color: colors.title }]}
-          placeholder="Value"
+          placeholder="value"
           placeholderTextColor={colors.title}
           keyboardType="numeric"
           value={item.amount}
@@ -275,30 +275,28 @@ export const ManageSalaryScreen: React.FC<ManageSalaryScreenProps> = ({
             </View>
           </View>
 
-          {/* Deduction */}
-          <View style={styles.salaryRow}>
-            <Text style={[styles.salaryLabel, { color: colors.title }]}>
-              Deduction
-            </Text>
-            <View style={styles.inputWrapper}>
-              <TextInput
-                style={[
-                  styles.salaryInput,
-                  {
-                    backgroundColor: colors.background || "#fff",
-                    color: colors.title,
-                  },
-                ]}
-                placeholder="0"
-                placeholderTextColor="#999"
-                keyboardType="numeric"
-                value={salaryData.deduction}
-                onChangeText={(val) =>
-                  setSalaryData((prev) => ({ ...prev, deduction: val }))
-                }
-              />
-            </View>
-          </View>
+          {/* Salary Components Section */}
+          <Text
+            style={[styles.salaryTitle, { color: colors.title, marginTop: 20 }]}
+          >
+            Salary Components
+          </Text>
+          <TouchableOpacity
+            style={styles.addComponentBtn}
+            onPress={addSalaryComponent}
+          >
+            <Ionicons name="add-circle-outline" size={18} color="#478DFF" />
+            <Text style={styles.addComponentText}>Add Salary Component</Text>
+          </TouchableOpacity>
+          <FlatList
+            data={salaryComponents}
+            keyExtractor={(item) =>
+              item.id ? item.id.toString() : Math.random().toString()
+            }
+            renderItem={renderSalaryComponentItem}
+            style={{ marginBottom: 10 }}
+            scrollEnabled={false}
+          />
 
           {/* Total Salary (auto-calculated) */}
           <View style={styles.salaryRow}>
@@ -322,29 +320,6 @@ export const ManageSalaryScreen: React.FC<ManageSalaryScreenProps> = ({
               />
             </View>
           </View>
-
-          {/* Salary Components Section */}
-          <Text
-            style={[styles.salaryTitle, { color: colors.title, marginTop: 20 }]}
-          >
-            Salary Components
-          </Text>
-          <TouchableOpacity
-            style={styles.addComponentBtn}
-            onPress={addSalaryComponent}
-          >
-            <Ionicons name="add-circle-outline" size={18} color="#478DFF" />
-            <Text style={styles.addComponentText}>Add Salary Component</Text>
-          </TouchableOpacity>
-          <FlatList
-            data={salaryComponents}
-            keyExtractor={(item) =>
-              item.id ? item.id.toString() : Math.random().toString()
-            }
-            renderItem={renderSalaryComponentItem}
-            style={{ marginBottom: 10 }}
-            scrollEnabled={false}
-          />
           {/* Save Salary Button */}
           <TouchableOpacity
             style={styles.saveSalaryButton}
@@ -352,6 +327,10 @@ export const ManageSalaryScreen: React.FC<ManageSalaryScreenProps> = ({
           >
             <Text style={styles.saveSalaryButtonText}>Save Salary</Text>
           </TouchableOpacity>
+
+
+
+
         </View>
       </ScrollView>
     </>

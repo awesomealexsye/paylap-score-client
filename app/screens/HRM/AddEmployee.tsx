@@ -10,6 +10,7 @@ import {
   Platform,
   KeyboardAvoidingView,
   Alert, // <-- Added for showing alerts
+  Modal,
 } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Header from "../../layout/Header";
@@ -44,6 +45,11 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
 
   // For showing/hiding the DateTimePicker
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  // Temporary date state for iOS picker modal
+  const [tempDate, setTempDate] = useState<Date>(
+    formData.joining_date ? new Date(formData.joining_date) : new Date()
+  );
 
   // Credentials for user_id and auth_key
   const [credentials, setCredentials] = useState<{
@@ -84,9 +90,20 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
       const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
       const day = String(selectedDate.getDate()).padStart(2, "0");
       const formattedDate = `${year}-${month}-${day}`;
-
       setFormData({ ...formData, joining_date: formattedDate });
     }
+  };
+
+  const onPressCancel = () => {
+    setShowDatePicker(false);
+  };
+
+  const onPressOk = () => {
+    const year = tempDate.getFullYear();
+    const month = String(tempDate.getMonth() + 1).padStart(2, "0");
+    const day = String(tempDate.getDate()).padStart(2, "0");
+    setFormData({ ...formData, joining_date: `${year}-${month}-${day}` });
+    setShowDatePicker(false);
   };
 
   // Basic email validation regex
@@ -218,47 +235,62 @@ export const AddEmployee = ({ navigation }: AddEmployeeProps) => {
             <Text style={styles.role}>{formData?.name}</Text>
           </View>
           <View
-            style={[
-              styles.profileSection,
-              { backgroundColor: colors.background },
-            ]}
+            style={styles.formFields}
           >
             {/* Joining Date */}
             <View style={styles.inputGroup}>
               <Text style={[styles.inputLabel, { color: colors.title }]}>
                 Joining Date
               </Text>
-              <View style={styles.dateInputContainer}>
-                <TouchableOpacity
-                  style={[
-                    styles.input,
-                    {
-                      color: colors.title,
-                      backgroundColor: colors.card,
-                      justifyContent: "center",
-                    },
-                  ]}
-                  onPress={() => setShowDatePicker(true)}
+              <TouchableOpacity
+                style={[styles.input, { backgroundColor: colors.card }]}
+                onPress={() => {
+                  setTempDate(formData.joining_date ? new Date(formData.joining_date) : new Date());
+                  setShowDatePicker(true);
+                }}
+              >
+                <Text style={{ color: colors.title }}>
+                  {formData.joining_date || "YYYY-MM-DD"}
+                </Text>
+              </TouchableOpacity>
+
+              {Platform.OS === "ios" ? (
+                <Modal
+                  visible={showDatePicker}
+                  transparent
+                  animationType="fade"
+                  onRequestClose={onPressCancel}
                 >
-                  <Text style={{ color: colors.title }}>
-                    {formData.joining_date}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.dateIcon}
-                  onPress={() => setShowDatePicker(true)}
-                >
-                  <MaterialIcons name="date-range" size={20} color="#999" />
-                </TouchableOpacity>
-              </View>
-              {/* Conditionally render the date picker */}
-              {showDatePicker && (
-                <DateTimePicker
-                  value={new Date(formData.joining_date)}
-                  mode="date"
-                  display="default"
-                  onChange={onChangeDate}
-                />
+                  <View style={styles.modalBackground}>
+                    <View style={[styles.modalContainer, { backgroundColor: colors.background }]}>
+                      <DateTimePicker
+                        value={tempDate}
+                        mode="date"
+                        display="spinner"
+                        onChange={(_, date) => date && setTempDate(date)}
+                        maximumDate={new Date()}
+                      />
+                      <View style={styles.modalButtonRow}>
+                        <TouchableOpacity onPress={onPressCancel}>
+                          <Text style={styles.modalButtonText}>Cancel</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={onPressOk}>
+                          <Text style={styles.modalButtonText}>OK</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  </View>
+                </Modal>
+              ) : (
+                showDatePicker && (
+                  <DateTimePicker
+                    value={new Date(formData.joining_date || new Date())}
+                    mode="date"
+                    display="default"
+                    onChange={onChangeDate}
+                    maximumDate={new Date()}
+                  />
+                )
               )}
             </View>
           </View>
@@ -471,6 +503,27 @@ const styles = StyleSheet.create({
   },
   avatarText: { fontSize: 24, color: "white", fontWeight: "bold" },
   role: { fontSize: 14, color: "#888", marginTop: 5 },
+  modalBackground: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.4)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContainer: {
+    width: "80%",
+    borderRadius: 8,
+    padding: 16,
+  },
+  modalButtonRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 12,
+  },
+  modalButtonText: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: COLORS.primary,
+  },
 });
 
 export default AddEmployee;

@@ -9,6 +9,7 @@ import {
   Modal,
   Image,
   Alert,
+  Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
@@ -274,53 +275,58 @@ const GenerateEmployeeSalariesListScreen: React.FC<Props> = ({
         </>
       )}
 
-      {/* Modal with custom date/time picker */}
-      <Modal
-        visible={showPicker}
-        transparent
-        animationType="fade"
-        onRequestClose={onPressCancel}
-      >
-        <View style={styles.modalBackground}>
-          <View
-            style={[
-              styles.modalContainer,
-              { backgroundColor: colors.background },
-            ]}
-          >
-            <Text style={[styles.modalTitle, { color: colors.text }]}>
-              Select Month-Year
-            </Text>
-            <DateTimePicker
-              style={[
-                styles.dateTimePicker,
-                { backgroundColor: colors.background },
-              ]}
-              textColor={colors.title}
-              value={tempDate}
-              mode="date"
-              display="spinner"
-              onChange={onChangeDate}
-              minimumDate={minDate}
-              maximumDate={maxDate}
-            />
-            <View style={styles.modalButtonRow}>
-              <TouchableOpacity
-                style={styles.modalButtonCancel}
-                onPress={onPressCancel}
-              >
-                <Text style={styles.modalButtonText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.modalButtonOk}
-                onPress={onPressOk}
-              >
-                <Text style={styles.modalButtonText}>OK</Text>
-              </TouchableOpacity>
+      {/* Date Picker */}
+      {Platform.OS === 'ios' ? (
+        <Modal
+          visible={showPicker}
+          transparent
+          animationType="fade"
+          onRequestClose={onPressCancel}
+        >
+          <View style={styles.modalBackground}>
+            <View style={[styles.modalContainer, { backgroundColor: colors.background }]}>
+              <Text style={[styles.modalTitle, { color: colors.text }]}>
+                Select Month-Year
+              </Text>
+              <DateTimePicker
+                style={[styles.dateTimePicker, { backgroundColor: colors.background }]}
+                textColor={colors.title}
+                value={tempDate}
+                mode="date"
+                display="spinner"
+                onChange={onChangeDate}
+                minimumDate={minDate}
+                maximumDate={maxDate}
+              />
+              <View style={styles.modalButtonRow}>
+                <TouchableOpacity style={styles.modalButtonCancel} onPress={onPressCancel}>
+                  <Text style={styles.modalButtonText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.modalButtonOk} onPress={onPressOk}>
+                  <Text style={styles.modalButtonText}>OK</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
+      ) : (
+        showPicker && (
+          <DateTimePicker
+            value={selectedDate}
+            mode="date"
+            display="calendar"
+            onChange={(event, date) => {
+              if (date) {
+                date.setDate(1);
+                setSelectedDate(date);
+              }
+              setShowPicker(false);
+            }}
+            minimumDate={minDate}
+            maximumDate={maxDate}
+          />
+        )
+      )}
     </View>
   );
 };

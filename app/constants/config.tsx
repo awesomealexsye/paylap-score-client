@@ -18,6 +18,7 @@ const CONFIG = {
         HRM_SESSION: {
             COMPANY_ID: 'company_id',
             COMPANY_NAME: 'company_name',
+            COMPANY_IMG: 'company_img',
         },
 
         THEME_MODE: {
@@ -35,13 +36,13 @@ const CONFIG = {
     },
     APP_BUILD: {
         ANDROID: {
-            APP_VERSION: 54,
-            APP_VERSION_NAME: '1.0.54',
+            APP_VERSION: 55,
+            APP_VERSION_NAME: '1.0.55',
             APP_URL: "https://play.google.com/store/apps/details?id=com.paylap.paylapscore"
         },
         IOS: {
-            APP_VERSION: 54,
-            APP_VERSION_NAME: '1.0.54',
+            APP_VERSION: 55,
+            APP_VERSION_NAME: '1.0.55',
             APP_URL: "https://apps.apple.com/us/app/paylap-score/id6736965791"
         }
     },

@@ -208,7 +208,7 @@ const DrawerMenu = () => {
         (OS == "ios" && res.IOS.VERSION_CODE > app_build.APP_VERSION) ||
         (OS == "android" && res.ANDROID.VERSION_CODE > app_build.APP_VERSION)
       ) {
-        // setModalVisible(true);
+        setModalVisible(true);
       } else {
         setModalVisible(false);
       }

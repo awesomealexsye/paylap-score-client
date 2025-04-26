@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  Alert,
 } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { StackScreenProps } from "@react-navigation/stack";
@@ -68,6 +69,18 @@ const EmployeeDetailScreen: React.FC<EmployeeDetailScreenProps> = ({
       navigation.navigate("EmployeeListScreen");
     }
   }, [credentials, deleteEmployee, employeeId, navigation]);
+
+  const confirmDelete = useCallback(() => {
+    Alert.alert(
+      "Confirm Delete",
+      "Are you sure you want to delete this user?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Delete", style: "destructive", onPress: handleDelete },
+      ],
+      { cancelable: true }
+    );
+  }, [handleDelete]);
 
   if (isLoading) {
     return (
@@ -161,7 +174,7 @@ const EmployeeDetailScreen: React.FC<EmployeeDetailScreenProps> = ({
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={styles.deleteButton}
-            onPress={handleDelete}
+            onPress={confirmDelete}
             disabled={isDeleting}
           >
             <Text style={styles.deleteText}>Delete</Text>

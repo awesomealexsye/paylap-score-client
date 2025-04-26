@@ -9,6 +9,7 @@ import {
   Platform,
   KeyboardAvoidingView,
   Alert,
+  Modal,
 } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Header from "../../layout/Header";
@@ -51,6 +52,9 @@ export const EditEmployee = ({ navigation, route }: EditEmployeeProps) => {
     designation: "",
     status: "active", // default status set to active
   });
+  const [tempJoiningDate, setTempJoiningDate] = useState<Date>(
+    formData.joining_date ? new Date(formData.joining_date) : new Date()
+  );
 
   // Credentials for user_id and auth_key
   const [credentials, setCredentials] = useState<{
@@ -107,9 +111,21 @@ export const EditEmployee = ({ navigation, route }: EditEmployeeProps) => {
       const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
       const day = String(selectedDate.getDate()).padStart(2, "0");
       const formattedDate = `${year}-${month}-${day}`;
-
       setFormData({ ...formData, joining_date: formattedDate });
     }
+  };
+
+  const onPressCancel = () => {
+    setShowDatePicker(false);
+  };
+
+  const onPressOk = () => {
+    // format tempJoiningDate to YYYY-MM-DD and save
+    const year = tempJoiningDate.getFullYear();
+    const month = String(tempJoiningDate.getMonth() + 1).padStart(2, "0");
+    const day = String(tempJoiningDate.getDate()).padStart(2, "0");
+    setFormData({ ...formData, joining_date: `${year}-${month}-${day}` });
+    setShowDatePicker(false);
   };
 
   // Basic email validation
@@ -225,53 +241,68 @@ export const EditEmployee = ({ navigation, route }: EditEmployeeProps) => {
           </View>
 
           <View
-            style={[
-              styles.profileSection,
-              { backgroundColor: colors.background },
-            ]}
+            style={styles.formFields}
           >
             {/* Joining Date */}
             <View style={styles.inputGroup}>
               <Text style={[styles.inputLabel, { color: colors.title }]}>
                 Joining Date
               </Text>
-              <View style={styles.dateInputContainer}>
-                {/* Similar to AddEmployee: Replace text input with a touchable to open the date picker */}
-                <TouchableOpacity
-                  style={[
-                    styles.input,
-                    {
-                      color: colors.title,
-                      backgroundColor: colors.card,
-                      justifyContent: "center",
-                    },
-                  ]}
-                  onPress={() => setShowDatePicker(true)}
+              <TouchableOpacity
+                style={[styles.input, { backgroundColor: colors.card }]}
+                onPress={() => {
+                  setTempJoiningDate(
+                    formData.joining_date ? new Date(formData.joining_date) : new Date()
+                  );
+                  setShowDatePicker(true);
+                }}
+              >
+                <Text style={{ color: colors.title }}>
+                  {formData.joining_date || "YYYY-MM-DD"}
+                </Text>
+              </TouchableOpacity>
+
+              {Platform.OS === "ios" ? (
+                <Modal
+                  visible={showDatePicker}
+                  transparent
+                  animationType="fade"
+                  onRequestClose={onPressCancel}
                 >
-                  <Text style={{ color: colors.title }}>
-                    {formData.joining_date}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.dateIcon}
-                  onPress={() => setShowDatePicker(true)}
-                >
-                  <MaterialIcons name="date-range" size={20} color="#999" />
-                </TouchableOpacity>
-              </View>
-              {/* Conditionally render the date picker */}
-              {showDatePicker && (
-                <DateTimePicker
-                  style={styles.dateTimePicker}
-                  value={
-                    formData.joining_date
-                      ? new Date(formData.joining_date)
-                      : new Date()
-                  }
-                  mode="date"
-                  display="default"
-                  onChange={onChangeDate}
-                />
+                  <View style={styles.modalBackground}>
+                    <View style={[styles.modalContainer, { backgroundColor: colors.card }]}>
+                      <DateTimePicker
+                        value={tempJoiningDate}
+                        mode="date"
+                        display="spinner"
+                        onChange={(_, date) => date && setTempJoiningDate(date)}
+                        maximumDate={new Date()}
+                      />
+                      <View style={styles.modalButtonRow}>
+                        <TouchableOpacity onPress={onPressCancel}>
+                          <Text style={styles.modalButtonText}>Cancel</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={onPressOk}>
+                          <Text style={styles.modalButtonText}>OK</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  </View>
+                </Modal>
+              ) : (
+                showDatePicker && (
+                  <DateTimePicker
+                    value={
+                      formData.joining_date
+                        ? new Date(formData.joining_date)
+                        : new Date()
+                    }
+                    mode="date"
+                    display="default"
+                    onChange={onChangeDate}
+                    maximumDate={new Date()}
+                  />
+                )
               )}
             </View>
           </View>
@@ -477,10 +508,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
   },
-  dateIcon: {
-    position: "absolute",
-    right: 12,
-  },
   formFields: {
     paddingBottom: 24,
   },
@@ -512,6 +539,29 @@ const styles = StyleSheet.create({
   dateTimePicker: {
     backgroundColor: "#fff",
     borderRadius: 8,
+  },
+
+  modalBackground: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.4)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContainer: {
+    width: "80%",
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    padding: 16,
+  },
+  modalButtonRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 12,
+  },
+  modalButtonText: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: COLORS.primary,
   },
 });
 
