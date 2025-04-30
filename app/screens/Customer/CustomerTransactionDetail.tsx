@@ -13,6 +13,7 @@ import Header from '../../layout/Header';
 import CustomerTransactionTable from './CustomerTransactionTable';
 import { ApiService } from '../../lib/ApiService';
 import { useTranslation } from 'react-i18next';
+import { MessagesService } from '../../lib/MessagesService';
 
 type CustomerTransationsDetailsScreenProps = StackScreenProps<RootStackParamList, 'CustomerTransationsDetails'>;
 
@@ -53,8 +54,16 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
         }
         setIsLoading(false)
     };
+    const sendReminder = async () => {
+        setIsLoading(true)
+        const res = await ApiService.postWithToken("api/reminder/paylapscore", { received_id: customer.customer_id, pending_date: customer.estimated_given_date, amount: customer.amount });
+        if (res.status) {
+            MessagesService.commonMessage(res.message, res.status ? 'SUCCESS' : 'ERROR');
+        }
+        setIsLoading(false)
+
+    };
     const handlePayment = async () => {
-        console.log("hello...")
         navigation.navigate("AddPayment", { item: customer, transaction_type: showPayButton, existPayment: true });
 
     }
@@ -150,6 +159,7 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
             />
 
             <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: 'center', paddingVertical: 20 }}>
+
                 {/* Customer Details Card */}
                 <View style={[styles.card, { backgroundColor: colors.card }]}>
                     <View style={styles.customerItem}>
@@ -239,10 +249,23 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
             {customer.amount > 0 &&
                 <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
                     <ButtonIcon
+                        color={'red'}
+                        onPress={sendReminder}
+                        title={'Send Reminder'}
+                        iconDirection='left'
+                        icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'bell'} size={18} />}
+                    />
+                </View>
+            }
+
+
+            {customer.amount > 0 &&
+                <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
+                    <ButtonIcon
                         color={showPayButton == 'DEBIT' ? 'red' : 'green'}
                         onPress={handlePayment}
                         title={showPayButton == 'CREDIT' ? t('credit') : t('debit')}
-                        iconDirection='right'
+                        iconDirection='left'
                         icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'rupee'} size={18} />}
                     />
                 </View>}
@@ -250,7 +273,7 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
                 <ButtonIcon
                     onPress={shareTransaction}
                     title={t('share')}
-                    iconDirection='right'
+                    iconDirection='left'
                     icon={<FontAwesome style={{ color: COLORS.white, marginLeft: 10 }} name={'share'} size={18} />}
                 />
             </View>

@@ -67,6 +67,7 @@ export const InvoiceDetail = ({ navigation, route }: InvoiceDetailProps) => {
           gen_user_invoice_id: invoiceId,
         }
       );
+      console.log("Invoice Detail", res.data);
       if (res.status) {
         setInvoice(res.data);
       } else {
@@ -193,6 +194,15 @@ export const InvoiceDetail = ({ navigation, route }: InvoiceDetailProps) => {
       </View>
     );
   }
+  const sendReminder = async () => {
+    setIsLoading(true)
+    const res = await ApiService.postWithToken("api/reminder/business", { received_id: invoice.client_id, pending_date: invoice.expected_given_data, amount: invoice.grand_total_amount - invoice.received_amount });
+    if (res.status) {
+      MessagesService.commonMessage(res.message, res.status ? 'SUCCESS' : 'ERROR');
+    }
+    setIsLoading(false)
+
+  };
 
   const items = parseItems();
   const showPdf = (item: object) => {
@@ -228,14 +238,24 @@ export const InvoiceDetail = ({ navigation, route }: InvoiceDetailProps) => {
             <Text style={styles.statusText}>{invoice.invoice_status}</Text>
           </View>
           {parseFloat(invoice.full_amount_received) === 0 && (
-            <View style={styles.paymentIcon}>
-              <TouchableOpacity
-                onPress={() => setModalVisible(true)}
-                style={styles.pendingButton}
-              >
-                <FontAwesome name="plus" size={18} color="#fff" />
-              </TouchableOpacity>
-            </View>
+            <>
+              <View style={styles.paymentIcon}>
+                <TouchableOpacity
+                  onPress={() => sendReminder()}
+                  style={styles.reminderButton}
+                >
+                  <FontAwesome name="bell" size={18} color="#fff" />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.paymentIcon}>
+                <TouchableOpacity
+                  onPress={() => setModalVisible(true)}
+                  style={styles.pendingButton}
+                >
+                  <FontAwesome name="plus" size={18} color="#fff" />
+                </TouchableOpacity>
+              </View>
+            </>
           )}
 
           {/* Invoice Header */}
@@ -542,6 +562,12 @@ const styles = StyleSheet.create({
   },
   pendingButton: {
     backgroundColor: COLORS.primary,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 10,
+  },
+  reminderButton: {
+    backgroundColor: COLORS.danger,
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 10,

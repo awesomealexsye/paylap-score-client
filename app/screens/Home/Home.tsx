@@ -181,7 +181,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                 <Text style={{ ...FONTS.fontRegular, fontSize: SIZES.fontXs, color: colors.title }}>Namaste</Text>
                                 <Text adjustsFontSizeToFit={true} style={{ ...FONTS.fontSemiBold, fontSize: SIZES.font, color: colors.title, }}>
 
-                                    {userDetail.name.split(' ')[0]}
+                                    {userDetail?.name && userDetail.name.split(' ')[0]}
 
                                 </Text>
                             </View>
