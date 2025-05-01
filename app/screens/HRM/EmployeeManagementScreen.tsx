@@ -1,6 +1,12 @@
 // app/screens/HRM/EmployeeManagementScreen.tsx
 
-import React, { useCallback, useEffect, useState, useRef, useMemo } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+} from "react";
 import {
   View,
   Text,
@@ -228,11 +234,7 @@ export const EmployeeManagementScreen = ({
             onPress={() => navigation.goBack()}
             style={styles.headerIconLeft}
           >
-            <MaterialIcons
-              name="arrow-back"
-              size={24}
-              color={colors.title}
-            />
+            <MaterialIcons name="arrow-back" size={24} color={colors.title} />
           </TouchableOpacity>
           <Text style={[styles.headerTitle, { color: colors.title }]}>
             Employee Management
@@ -273,16 +275,22 @@ export const EmployeeManagementScreen = ({
         index={-1}
         snapPoints={snapPoints}
         enablePanDownToClose
+        backgroundStyle={{ backgroundColor: colors.background }}
       >
         <BottomSheetFlatList
           data={companyList}
+          style={{ backgroundColor: colors.card }}
+          contentContainerStyle={{ paddingBottom: 20 }}
           keyExtractor={(item: any) => item.id.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                padding: 12,
+                paddingVertical: 12,
+                paddingHorizontal: 16,
+                borderBottomWidth: 1,
+                borderBottomColor: "gray",
               }}
               onPress={() => handleSelectCompany(item)}
             >
@@ -290,9 +298,17 @@ export const EmployeeManagementScreen = ({
                 source={{
                   uri: `${CONFIG.APP_URL}/uploads/companies/${item.image}`,
                 }}
-                style={{ width: 36, height: 36, borderRadius: 18, marginRight: 12 }}
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 20,
+                  marginRight: 12,
+                  backgroundColor: "#eee",
+                }}
               />
-              <Text style={{ fontSize: 14, color: colors.title }}>
+              <Text
+                style={{ fontSize: 16, color: colors.title, flexShrink: 1 }}
+              >
                 {item.name}
               </Text>
             </TouchableOpacity>
@@ -338,15 +354,21 @@ export const EmployeeManagementScreen = ({
         <View style={styles.countRow}>
           <View style={[styles.countCard, { backgroundColor: colors.card }]}>
             <Text style={styles.countNumber}>{homeCount.company_count}</Text>
-            <Text style={styles.countLabel}>Company</Text>
+            <Text style={[styles.countLabel, { color: colors.title }]}>
+              Company
+            </Text>
           </View>
           <View style={[styles.countCard, { backgroundColor: colors.card }]}>
             <Text style={styles.countNumber}>{homeCount.employee_count}</Text>
-            <Text style={styles.countLabel}>Employees</Text>
+            <Text style={[styles.countLabel, { color: colors.title }]}>
+              Employees
+            </Text>
           </View>
           <View style={[styles.countCard, { backgroundColor: colors.card }]}>
             <Text style={styles.countNumber}>{homeCount.emp_leave_count}</Text>
-            <Text style={styles.countLabel}>Leaves Today</Text>
+            <Text style={[styles.countLabel, { color: colors.title }]}>
+              Leaves Today
+            </Text>
           </View>
         </View>
 
