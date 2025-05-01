@@ -36,9 +36,8 @@ export const HRMAddCompany = ({ navigation, route }: HRMAddCompanyProps) => {
   const { company } = route.params;
   const isEdit = Boolean(company);
 
-
   const [createCompany] = useCreateCompanyMutation();
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     name: company?.name || "",
@@ -88,8 +87,7 @@ export const HRMAddCompany = ({ navigation, route }: HRMAddCompanyProps) => {
 
   const isValidURL = (url: string) => {
     // A basic URL validation regex
-    const urlRegex =
-      /^(https?:\/\/)?[\w-]+(\.[\w-]+)+[/#?]?.*$/i;
+    const urlRegex = /^(https?:\/\/)?[\w-]+(\.[\w-]+)+[/#?]?.*$/i;
     return urlRegex.test(url);
   };
 
@@ -180,12 +178,14 @@ export const HRMAddCompany = ({ navigation, route }: HRMAddCompanyProps) => {
 
     ApiService.postWithToken("api/hrm/companies/add", payload).then((res) => {
       setIsLoading(false);
-      MessagesService.commonMessage(res?.message, res?.status ? 'SUCCESS' : 'ERROR');
+      MessagesService.commonMessage(
+        res?.message,
+        res?.status ? "SUCCESS" : "ERROR"
+      );
       if (res.status == true) {
         navigation.navigate("EmployeeManagementScreen", payload);
       }
     });
-
 
     // try {
     //   const result = await createCompany(payload).unwrap();
@@ -218,7 +218,9 @@ export const HRMAddCompany = ({ navigation, route }: HRMAddCompanyProps) => {
               <MaterialIcons name="camera-alt" size={24} color="white" />
             )}
           </TouchableOpacity>
-          <Text style={styles.role}>{formData?.name}</Text>
+          <Text style={[styles.role, { color: colors.title }]}>
+            {formData?.name}
+          </Text>
         </View>
         <Text style={[styles.sectionTitle, { color: colors.title }]}>
           Basic Information
@@ -234,7 +236,7 @@ export const HRMAddCompany = ({ navigation, route }: HRMAddCompanyProps) => {
               style={styles.inputIcon}
             />
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: colors.title }]}
               placeholder="Company Name"
               placeholderTextColor={colors.title}
               value={formData.name}
@@ -251,7 +253,7 @@ export const HRMAddCompany = ({ navigation, route }: HRMAddCompanyProps) => {
               style={styles.inputIcon}
             />
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: colors.title }]}
               placeholder="Email Address"
               placeholderTextColor={colors.title}
               keyboardType="email-address"
@@ -269,7 +271,7 @@ export const HRMAddCompany = ({ navigation, route }: HRMAddCompanyProps) => {
               style={styles.inputIcon}
             />
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: colors.title }]}
               placeholder="Phone Number"
               placeholderTextColor={colors.title}
               keyboardType="phone-pad"
@@ -288,7 +290,7 @@ export const HRMAddCompany = ({ navigation, route }: HRMAddCompanyProps) => {
               style={styles.inputIcon}
             />
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: colors.title }]}
               placeholder="Website URL"
               placeholderTextColor={colors.title}
               keyboardType="url"
@@ -306,7 +308,7 @@ export const HRMAddCompany = ({ navigation, route }: HRMAddCompanyProps) => {
               style={styles.inputIcon}
             />
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: colors.title }]}
               placeholder="GST Number"
               placeholderTextColor={colors.title}
               value={formData.gst}
@@ -329,7 +331,7 @@ export const HRMAddCompany = ({ navigation, route }: HRMAddCompanyProps) => {
               style={styles.inputIcon}
             />
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: colors.title }]}
               placeholder="Company Address"
               placeholderTextColor={colors.title}
               multiline
@@ -350,7 +352,7 @@ export const HRMAddCompany = ({ navigation, route }: HRMAddCompanyProps) => {
                 style={styles.inputIcon}
               />
               <TextInput
-                style={styles.input}
+                style={[styles.input, { color: colors.title }]}
                 placeholder="City"
                 placeholderTextColor={colors.title}
                 value={formData.city}
@@ -365,7 +367,7 @@ export const HRMAddCompany = ({ navigation, route }: HRMAddCompanyProps) => {
                 style={styles.inputIcon}
               />
               <TextInput
-                style={styles.input}
+                style={[styles.input, { color: colors.title }]}
                 placeholder="District"
                 placeholderTextColor={colors.title}
                 value={formData.district}
@@ -384,7 +386,7 @@ export const HRMAddCompany = ({ navigation, route }: HRMAddCompanyProps) => {
                 style={styles.inputIcon}
               />
               <TextInput
-                style={styles.input}
+                style={[styles.input, { color: colors.title }]}
                 placeholder="State"
                 placeholderTextColor={colors.title}
                 value={formData.state}
@@ -399,7 +401,7 @@ export const HRMAddCompany = ({ navigation, route }: HRMAddCompanyProps) => {
                 style={styles.inputIcon}
               />
               <TextInput
-                style={styles.input}
+                style={[styles.input, { color: colors.title }]}
                 placeholder="Pin code"
                 placeholderTextColor={colors.title}
                 keyboardType="numeric"
@@ -412,7 +414,9 @@ export const HRMAddCompany = ({ navigation, route }: HRMAddCompanyProps) => {
         </View>
 
         {/* Submit Button */}
-        {isLoading ? <ActivityIndicator size={'large'} /> :
+        {isLoading ? (
+          <ActivityIndicator size={"large"} />
+        ) : (
           <TouchableOpacity
             style={[styles.button, { backgroundColor: COLORS.primary }]}
             onPress={handleSubmit}
@@ -422,7 +426,7 @@ export const HRMAddCompany = ({ navigation, route }: HRMAddCompanyProps) => {
               {isEdit ? "Update Company" : "Create Company"}
             </Text>
           </TouchableOpacity>
-        }
+        )}
       </ScrollView>
     </>
   );
