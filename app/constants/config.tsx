@@ -36,13 +36,13 @@ const CONFIG = {
     },
     APP_BUILD: {
         ANDROID: {
-            APP_VERSION: 56,
-            APP_VERSION_NAME: '1.0.56',
+            APP_VERSION: 57,
+            APP_VERSION_NAME: '1.0.57',
             APP_URL: "https://play.google.com/store/apps/details?id=com.paylap.paylapscore"
         },
         IOS: {
-            APP_VERSION: 56,
-            APP_VERSION_NAME: '1.0.56',
+            APP_VERSION: 57,
+            APP_VERSION_NAME: '1.0.57',
             APP_URL: "https://apps.apple.com/us/app/paylap-score/id6736965791"
         }
     },
