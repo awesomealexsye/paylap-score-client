@@ -56,7 +56,7 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
     };
     const sendReminder = async () => {
         setIsLoading(true)
-        const res = await ApiService.postWithToken("api/reminder/paylapscore", { received_id: customer.customer_id, pending_date: customer.estimated_given_date, amount: customer.amount });
+        const res = await ApiService.postWithToken("api/reminder/paylapscore", { received_id: customer.customer_id, pending_date: customer.estimated_given_date, amount: customer.amount, record_id: customer.id });
         if (res.status) {
             MessagesService.commonMessage(res.message, res.status ? 'SUCCESS' : 'ERROR');
         }
@@ -246,7 +246,7 @@ export const CustomerTransationsDetails = ({ navigation, route }: CustomerTransa
 
 
             {/* Share Button */}
-            {customer.amount > 0 &&
+            {customer.amount > 0 && customer.transaction_type !== "CREDIT" &&
                 <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
                     <ButtonIcon
                         color={'red'}

@@ -67,7 +67,6 @@ export const InvoiceDetail = ({ navigation, route }: InvoiceDetailProps) => {
           gen_user_invoice_id: invoiceId,
         }
       );
-      console.log("Invoice Detail", res.data);
       if (res.status) {
         setInvoice(res.data);
       } else {
@@ -196,7 +195,7 @@ export const InvoiceDetail = ({ navigation, route }: InvoiceDetailProps) => {
   }
   const sendReminder = async () => {
     setIsLoading(true)
-    const res = await ApiService.postWithToken("api/reminder/business", { received_id: invoice.client_id, pending_date: invoice.expected_given_data, amount: invoice.grand_total_amount - invoice.received_amount });
+    const res = await ApiService.postWithToken("api/reminder/business", { received_id: invoice.client_id, pending_date: invoice.expected_given_data, amount: invoice.grand_total_amount - invoice.received_amount, company_id: invoice.company_id, record_id: invoice.id });
     if (res.status) {
       MessagesService.commonMessage(res.message, res.status ? 'SUCCESS' : 'ERROR');
     }
