@@ -47,6 +47,12 @@ const DrawerMenu = () => {
       navigate: "InvoiceLists",
     },
     {
+      id: "3",
+      icon: IMAGES.list,
+      name: t("Gym Management"),
+      navigate: "GymOwnerHome",
+    },
+    {
       id: "4",
       icon: IMAGES.savemoney,
       name: t("HRM"),
@@ -94,9 +100,9 @@ const DrawerMenu = () => {
 
   useEffect(() => {
     CommonService.currentUserDetail().then((res) => {
-      if (res?.aadhar_card === '') {
+      if (res?.aadhar_card === "") {
         setMenuItems((prev: any[]) => {
-          const exists = prev.some(item => item.id === "2");
+          const exists = prev.some((item) => item.id === "2");
           if (exists) return prev;
           const newItems = [...prev];
           newItems.splice(1, 0, {
@@ -108,9 +114,8 @@ const DrawerMenu = () => {
           return newItems;
         });
       }
-    })
-  }, [])
-
+    });
+  }, []);
 
   const { OS } = Platform;
   type AppConfig = {
@@ -157,7 +162,7 @@ const DrawerMenu = () => {
     { APP_VERSION: 0, APP_VERSION_NAME: "" }
   );
   useEffect(() => {
-    getAppversion();
+    //getAppversion();
   }, []);
 
   // useEffect(() => {
@@ -383,7 +388,7 @@ const DrawerMenu = () => {
             >
               {OS == "android" &&
                 appInfo?.ANDROID.VERSION_CODE >
-                installedAppBuild.APP_VERSION && (
+                  installedAppBuild.APP_VERSION && (
                   <>
                     {appInfo?.ANDROID?.IS_MANDATORY ? (
                       <ButtonIcon

@@ -147,4 +147,16 @@ export type RootStackParamList = {
   HRMCompanyListScreen: any;
   ManageAttendanceScreen: any;
   ManageAdvanceAmountScreen: any;
+
+  //GYM
+
+  CustomerHome: any;
+  CustomerDetails: any;
+  GymOwnerHome: any;
+  GymMembers: any;
+  GymTrainers: any;
+  ActivePlans: any;
+  GymRevenue: any;
+  DailyAttendance: any;
+  AddMember: any;
 };

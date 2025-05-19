@@ -118,6 +118,15 @@ import HRMAddCompany from "../screens/HRM/HRMAddCompany";
 import HRMCompanyListScreen from "../screens/HRM/HRMCompanyListScreen";
 import ManageAttendanceScreen from "../screens/HRM/ManageAttendanceScreen";
 import ManageAdvanceAmountScreen from "../screens/HRM/ManageAdvanceAmountScreen";
+import { CustomerHome } from "../screens/Gym/CustomerHome";
+import { CustomerDetails } from "../screens/Gym/CustomerDetails";
+import { GymOwnerHome } from "../screens/Gym/GymOwnerHome";
+import { GymMembers } from "../screens/Gym/GymMembers";
+import { GymTrainers } from "../screens/Gym/GymTrainers";
+import { ActivePlans } from "../screens/Gym/ActivePlans";
+import { GymRevenue } from "../screens/Gym/GymRevenue";
+import { DailyAttendance } from "../screens/Gym/DailyAttendance";
+import { AddMember } from "../screens/Gym/AddMember";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -212,14 +221,11 @@ const StackNavigator = () => {
         <Stack.Screen name="ShareApp" component={ShareApp} />
         <Stack.Screen name="CustomerSupport" component={CustomerSupport} />
         <Stack.Screen name="WithdrawalAmount" component={WithdrawalAmount} />
-
         <Stack.Screen
           name="TermsAndConditionsScreen"
           component={TermsAndConditionsScreen}
         />
-
         {/* ledger book logic */}
-
         <Stack.Screen name="LedgerMain" component={LedgerMain} />
         <Stack.Screen name="LedgerAddCustomer" component={LedgerAddCustomer} />
         <Stack.Screen
@@ -232,7 +238,6 @@ const StackNavigator = () => {
           component={LedgerCustomerTransationsDetails}
         />
         <Stack.Screen name="SelectLanguage" component={SelectLanguage} />
-
         <Stack.Screen name="AddCompany" component={AddCompany} />
         <Stack.Screen name="ListCompany" component={ListCompany} />
         <Stack.Screen name="InvoiceGenList" component={InvoiceGenList} />
@@ -250,9 +255,7 @@ const StackNavigator = () => {
           name="CompanyCustomerList"
           component={CompanyCustomerList}
         />
-
         {/* // INVOICE */}
-
         <Stack.Screen name="InvoiceLists" component={InvoiceLists} />
         <Stack.Screen name="InvoiceAddItems" component={InvoiceAddItems} />
         <Stack.Screen
@@ -276,9 +279,7 @@ const StackNavigator = () => {
           component={ChooseInvoiceDesign}
         />
         <Stack.Screen name="InvoiceDetail" component={InvoiceDetail} />
-
         {/* HRM */}
-
         <Stack.Screen name="HrmHomeScreen" component={HrmHomeScreen} />
         <Stack.Screen
           name="EmployeeManagementScreen"
@@ -323,9 +324,29 @@ const StackNavigator = () => {
           component={GenerateEmployeePdfListScreen}
         />
         <Stack.Screen name="HRMAddCompany" component={HRMAddCompany} />
-        <Stack.Screen name="HRMCompanyListScreen" component={HRMCompanyListScreen} />
-        <Stack.Screen name="ManageAttendanceScreen" component={ManageAttendanceScreen} />
-        <Stack.Screen name="ManageAdvanceAmountScreen" component={ManageAdvanceAmountScreen} />
+        <Stack.Screen
+          name="HRMCompanyListScreen"
+          component={HRMCompanyListScreen}
+        />
+        <Stack.Screen
+          name="ManageAttendanceScreen"
+          component={ManageAttendanceScreen}
+        />
+        <Stack.Screen
+          name="ManageAdvanceAmountScreen"
+          component={ManageAdvanceAmountScreen}
+        />
+        {/* GYM */}
+
+        <Stack.Screen name="CustomerHome" component={CustomerHome} />
+        <Stack.Screen name="CustomerDetails" component={CustomerDetails} />
+        <Stack.Screen name="GymOwnerHome" component={GymOwnerHome} />
+        <Stack.Screen name="GymMembers" component={GymMembers} />
+        <Stack.Screen name="GymTrainers" component={GymTrainers} />
+        <Stack.Screen name="ActivePlans" component={ActivePlans} />
+        <Stack.Screen name="GymRevenue" component={GymRevenue} />
+        <Stack.Screen name="DailyAttendance" component={DailyAttendance} />
+        <Stack.Screen name="AddMember" component={AddMember} />
       </Stack.Navigator>
     </View>
   );
